@@ -1,6 +1,8 @@
 #ifndef BST_H
 # define BST_H
 
+#include <stdbool.h>
+
 #define NONE					0
 #define PIPE					1
 #define REDIRECTION_GREATHER	2
@@ -11,7 +13,7 @@
 typedef struct					s_bst
 {
 	unsigned char				operator;
-	char						*cmd[2];
+	char						*cmd[2]; // probally this need to be char ** or changed
 	struct s_bst				*next;
 	struct s_bst				*back;
 }								t_bst;

@@ -6,13 +6,12 @@
 /*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/09/21 18:23:24 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/09/22 14:17:47 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <bst.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 t_bst		*new_node(const unsigned char operator, char *cmd[2], t_bst *back)
 {
@@ -37,7 +36,7 @@ t_bst		*build_bst(char *operators, char **cmds)
 {
 	t_bst	*tail;
 	t_bst	*head;
-	char	*cmds_format_conv[2];
+	char	*cmds_format_conv[2]; // cmds has to be malloc
 	int		it[2];
 
 	tail = NULL;
