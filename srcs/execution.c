@@ -6,7 +6,7 @@
 /*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 13:55:19 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/09/22 21:39:23 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/09/22 22:01:50 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@
 
 /* Have to add the libft for have the libc fcts */
 
-/* Have to add the env (char **) and the return value $?
-*/
 static bool			is_builting(const int ac, const char **argv, t_data *data)
 {
 	const char		*name = argv[0];
@@ -36,7 +34,7 @@ static bool			is_builting(const int ac, const char **argv, t_data *data)
 	else if (!ft_strncmp(name, "unset", 6))
 		data->return_status = ft_unset(ac, argv, data);
 	else if (!ft_strncmp(name, "env", 4))
-		data->return_status = ft_env(data);
+		data->return_status = ft_env(data->envp); // wrong
 	else if (!ft_strncmp(name, "exit", 5))
 		data->return_status = ft_exit(data);
 	else
@@ -97,9 +95,7 @@ static bool		open_and_dup_fd(t_bst *head)
 				|| dup2(fd, STDOUT_FILENO) < 0)
 			return (false);
 	}
-	if (close(fd) < 0)
-		return (false);
-	return (true);
+	return (!(close(fd) < 0));
 }
 
 bool			execute_redirections_cmd(t_bst *curr, t_data *data)
