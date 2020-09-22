@@ -1,4 +1,4 @@
-- Correct litle mistakes in execution
+
 - Do pipes function in execution
 - Parse
 - Env variables
