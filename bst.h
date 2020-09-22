@@ -1,6 +1,7 @@
 #ifndef BST_H
 # define BST_H
 
+#include <minishell.h>
 #include <stdbool.h>
 
 #define NONE					0
@@ -19,6 +20,7 @@ typedef struct					s_bst
 }								t_bst;
 
 t_bst							*new_node(const unsigned char operator, char *cmd[2], t_bst *back);
-t_bst							*build_bst(char *operators, char **cmds);
+t_bst							*build_bst(t_token *operators, t_token **cmds);
+void							execute_bst(t_bst *head, t_data *data);
 
 #endif

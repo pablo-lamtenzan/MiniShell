@@ -6,7 +6,7 @@
 /*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/09/22 14:17:47 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/09/22 18:34:45 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ t_bst		*new_node(const unsigned char operator, char *cmd[2], t_bst *back)
 		will be parsed, a new call of this function will be done.
 		Number of bst = Number of semicolons + 1
 */
-t_bst		*build_bst(char *operators, char **cmds)
+t_bst		*build_bst(t_token *operators, t_token **cmds)
 {
 	t_bst	*tail;
 	t_bst	*head;
@@ -71,21 +71,21 @@ t_bst		*build_bst(char *operators, char **cmds)
 	If this is right, the engine is built in this function.
 */
 
-void		execute_bst(t_bst *head)
+void		execute_bst(t_bst *head, t_data *data)
 {
 	if (head->operator & NONE)
-		execute_simple_cmd(head->cmd[0]);
+		execute_simple_cmd(head->cmd[0], data);
 	else
 	{
 		/* The idea is start here with his fcts and if after a pipe there is another pipe or
 			an redirection the function execute_pipe must handle this.
 		*/
 		if (head->operator & PIPE)
-			execute_pipe_cmd(head);
+			execute_pipe_cmd(head, data);
 		/* This function will be called once if there are a redirection in the first node*/
 		if (head->operator & REDIRECTION_GREATHER || head->operator & REDIRECTION_LESSER
 			|| head->operator & REDIRECTION_DGREATHER)
-			execute_redirections_cmd(head);
+			execute_redirections_cmd(head, data);
 	}
 }
 /* The previous function will call the executers functions (calling execve or calling a function
