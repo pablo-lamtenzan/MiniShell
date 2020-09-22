@@ -3,4 +3,5 @@
 - Parse
 - Env variables
 - Global struct
-- 
+- Correct envp var
+- Import libs
