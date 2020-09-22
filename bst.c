@@ -6,7 +6,7 @@
 /*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/09/22 18:34:45 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/09/22 21:06:31 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ t_bst		*new_node(const unsigned char operator, char *cmd[2], t_bst *back)
 
 	if (!(new = (t_bst *)malloc(sizeof(t_bst))))
 		return (NULL);
+	new->next = NULL;
 	if (back)
 		back->next = new;
 	new->back = back;
@@ -32,7 +33,7 @@ t_bst		*new_node(const unsigned char operator, char *cmd[2], t_bst *back)
 		will be parsed, a new call of this function will be done.
 		Number of bst = Number of semicolons + 1
 */
-t_bst		*build_bst(t_token *operators, t_token **cmds)
+t_bst		*build_bst(t_token *operators, t_token *cmds)
 {
 	t_bst	*tail;
 	t_bst	*head;
@@ -42,23 +43,26 @@ t_bst		*build_bst(t_token *operators, t_token **cmds)
 	tail = NULL;
 	it[0] = 0;
 	it[1] = 0;
-	while (*(operators + it[0]))
+	while (operators)
 	{
 		if (tail)
 		{
 			cmds_format_conv[0] = NULL;
-			cmds_format_conv[1] = *(cmds + it[1]++);
+			cmds_format_conv[1] = cmds->data;
+			cmds = cmds->next;
 		}
 		else
 		{
-			cmds_format_conv[0] = *(cmds + it[1]++);
-			cmds_format_conv[1] = *(cmds + it[1]++);
-		}
-		if (tail == NULL)
+			cmds_format_conv[0] = cmds->data;
+			cmds = cmds->next;
+			cmds_format_conv[1] = cmds->data;
+			cmds = cmds->next;
 			head = tail;
-		if (!(tail = new_node(*(operators + it[0]++), cmds_format_conv, tail))
-				|| *(cmds + it[1]) == NULL)
+		}
+		if (!(tail = new_node(operators->type, cmds_format_conv, tail))
+				|| cmds == NULL)
 			return (NULL);
+		operators = operators->next;
 	}
 	return (head);
 }
@@ -71,10 +75,10 @@ t_bst		*build_bst(t_token *operators, t_token **cmds)
 	If this is right, the engine is built in this function.
 */
 
-void		execute_bst(t_bst *head, t_data *data)
+void		*execute_bst(t_bst *head, t_data *data)
 {
 	if (head->operator & NONE)
-		execute_simple_cmd(head->cmd[0], data);
+		execute_simple_cmd(data);
 	else
 	{
 		/* The idea is start here with his fcts and if after a pipe there is another pipe or
