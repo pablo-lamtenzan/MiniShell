@@ -6,12 +6,13 @@
 /*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 13:55:19 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/09/22 22:01:50 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/09/23 17:22:02 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <bst.h>
-#include <minishell.h>
+#include <minishell.h> // rm this when i could include without error builtins.h
+//#include <builtins.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -34,7 +35,7 @@ static bool			is_builting(const int ac, const char **argv, t_data *data)
 	else if (!ft_strncmp(name, "unset", 6))
 		data->return_status = ft_unset(ac, argv, data);
 	else if (!ft_strncmp(name, "env", 4))
-		data->return_status = ft_env(data->envp); // wrong
+		data->return_status = ft_env(data->env); // should ve a t_map
 	else if (!ft_strncmp(name, "exit", 5))
 		data->return_status = ft_exit(data);
 	else
@@ -49,6 +50,7 @@ bool			execute_simple_cmd(t_bst *curr, t_data *data)
 {
 	char		*execution_path;
 	char		**argv;
+	char		**envp;
 	int			ac;
 
 	if (!(argv = token_tab(curr->cmd[0], &ac)))
@@ -56,18 +58,18 @@ bool			execute_simple_cmd(t_bst *curr, t_data *data)
 	if (!is_builting(ac, argv, data))
 	{
 		if (!(execution_path = path_get(argv[0], \
-				map_get(data->envp, "PATH")->value)))
+				map_get(data->env, "PATH")->value)))
 			return (!(data->return_status = 127) & \
 					ft_dprintf(2, "path not found! name is [%s]\n", data->argv[0]) & \
 					free_five_ptrs(&argv, NULL, NULL, NULL, NULL));
-		if (!(data->envp = map_export(data->envp)))
+		if (!(envp = map_export(data->env)))
 			return (ft_dprintf(2, "could not export environment!") & \
 					free_five_ptrs(&argv, &execution_path, NULL, NULL, NULL));
-		data->return_status = execve(execution_path, argv + 1, data->envp);
+		data->return_status = execve(execution_path, argv + 1, envp);
 		ft_printf("HAVE TO CUSTOMIZE THIS ERROR MSG SMOOTHLY\n");
 		return (false);
 	}
-	free_five_ptrs(&argv, &execution_path, &data->envp, NULL, NULL);
+	free_five_ptrs(&argv, &execution_path, &envp, NULL, NULL);
 	return (true);
 }
 
@@ -102,6 +104,7 @@ bool			execute_redirections_cmd(t_bst *curr, t_data *data)
 {
 	char		*execution_path;
 	char		**argv;
+	char		**envp;
 	int			ac;
 
 	if (!(argv = token_tab(curr->cmd[0], &ac)))
@@ -114,14 +117,14 @@ bool			execute_redirections_cmd(t_bst *curr, t_data *data)
 		if (!is_builting(ac, argv, data))
 		{
 			if (!(execution_path = path_get(argv[0], \
-				map_get(data->envp, "PATH")->value)))
+				map_get(data->env, "PATH")->value)))
 				return (!(data->return_status = 127) & \
 					ft_dprintf(2, "path not found! name is [%s]\n", data->argv[0]) & \
 					free_five_ptrs(&argv, NULL, NULL, NULL, NULL));
-			if (!(data->envp = map_export(data->envp)))
+			if (!(envp = map_export(data->env)))
 				return (ft_dprintf(2, "could not export environment!") & \
 				free_five_ptrs(&argv, &execution_path, NULL, NULL, NULL));
-			data->return_status = execve(execution_path, argv + 1, data->envp);
+			data->return_status = execve(execution_path, argv + 1, envp);
 			ft_printf("HAVE TO CUSTOMIZE THIS ERROR MSG SMOOTHLY\n");
 			return (false);
 		}
@@ -130,7 +133,7 @@ bool			execute_redirections_cmd(t_bst *curr, t_data *data)
 		while (waitpid(data->pid, NULL, 0) <= 0)
 			;
 		data->pid = 0;
-		free_five_ptrs(&argv, &execution_path, &data->envp, NULL, NULL);
+		free_five_ptrs(&argv, &execution_path, &envp, NULL, NULL);
 		return (true);
 	}
 

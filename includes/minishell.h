@@ -1,11 +1,13 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+#define PATH_MAX	4096
+
 typedef struct		s_data
 {
 	int				ac;
 	char			**argv;
-	char			**envp;
+	char			**env; // has to be a t_map
 	int				pid;
 	int				return_status;
 }					t_data;

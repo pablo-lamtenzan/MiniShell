@@ -1,4 +1,4 @@
-#include "builtins.h"
+#include <minishell.h>
 
 int	print_env(t_map *map)
 {
@@ -19,8 +19,8 @@ int	ft_export(int ac, char **av, t_data *data)
 
 	if (ac == 1)
 	{
-		map_sort(&data->envp, &map_cmp);
-		print_env(t->env);
+		map_sort(&data->env, &map_cmp);
+		print_env(data->env);
 	}
 	else
 	{
@@ -32,12 +32,12 @@ int	ft_export(int ac, char **av, t_data *data)
 					t->name, av[0], av[ac]);
 				return (1);
 			} */
-			if ((var = map_get(data->envp, av[ac])))
+			if ((var = map_get(data->env, av[ac])))
 			{
-				if (!map_set(&data->envp, var->key, var->value))
+				if (!map_set(&data->env, var->key, var->value))
 					return (1);
 			}
-			else if (!map_set(&data->envp, av[ac], ""))
+			else if (!map_set(&data->env, av[ac], ""))
 				return (1);
 		}
 	}
