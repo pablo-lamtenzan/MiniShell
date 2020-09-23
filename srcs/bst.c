@@ -6,7 +6,7 @@
 /*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/09/22 21:06:31 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/09/23 17:28:44 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ t_bst		*build_bst(t_token *operators, t_token *cmds)
 {
 	t_bst	*tail;
 	t_bst	*head;
-	char	*cmds_format_conv[2]; // cmds has to be malloc
+	char	*cmds_format_conv[2]; // cmds->data has to be malloc
 	int		it[2];
 
 	tail = NULL;
@@ -75,10 +75,10 @@ t_bst		*build_bst(t_token *operators, t_token *cmds)
 	If this is right, the engine is built in this function.
 */
 
-void		*execute_bst(t_bst *head, t_data *data)
+void		execute_bst(t_bst *head, t_data *data)
 {
 	if (head->operator & NONE)
-		execute_simple_cmd(data);
+		execute_simple_cmd(head, data);
 	else
 	{
 		/* The idea is start here with his fcts and if after a pipe there is another pipe or

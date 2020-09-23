@@ -6,12 +6,26 @@
 /*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 18:13:09 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/09/22 18:26:57 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/09/23 17:44:22 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 #include <stdbool.h>
+
+t_token		*token_clear(t_token **tokens)
+{
+	t_token	*next;
+
+	while (*tokens)
+	{
+		next = (*tokens)->next;
+		free((*tokens)->data);
+		free(*tokens);
+		*tokens = next;
+	}
+	return (*tokens);
+}
 
 bool		lexer_tokenize(char **input, t_token **cmds,
 		t_token **operators, bool *semicolon)

@@ -6,7 +6,7 @@
 /*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 17:33:34 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/09/22 18:31:13 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/09/23 18:27:43 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,16 @@ int			routine(char *input, t_data *data) // need to add the global struct
 	*/
 	while (semicolon)
 	{
-		if (*input == '\0'
-				|| !lexer_tokenize(&input, &comands, &operators, &semicolon)
+		if (*input == '\0' \
+				|| !lexer_tokenize(&input, &comands, &operators, &semicolon) \
 				|| !(bst = build_bst(operators, comands)))
 			return (false);
+		token_clear(&operators);
+		/* and comands will be freed while i call free_four_ptrs_and_bst later in execute_bts */
 		execute_bst(bst, data);
-		free_all();
+		
 	}
+	free(data); // build a function to free all the allocation into the data struct if there is
 	return (true);
 }
 
@@ -51,7 +54,7 @@ int			main(int ac, char **argv, char **envp)
 		return (false);
 	data->ac = ac;
 	data->argv = argv;
-	data->envp = envp;
+	// have to set up data->envp
 	data->pid = 0;
 	return (routine(matrix_to_string(argv), data));
 }
