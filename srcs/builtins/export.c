@@ -13,9 +13,9 @@ int	print_env(t_map *map)
 	return (0);
 }
 
-int	ft_export(int ac, char **av, t_data *data)
+int	ft_export(int ac, const char **av, t_data *data)
 {
-	t_map	*var
+	t_map	*var;
 
 	if (ac == 1)
 	{

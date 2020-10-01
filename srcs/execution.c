@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 13:55:19 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/01 17:18:14 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/01 18:42:00 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,23 +35,26 @@ size_t		token_count(t_token *tokens)
 }
 
 char**		token_tab(t_token *tokens, int *n)
-{
+ {
 	const int			count = token_count(tokens);
-	char				**tab;
+	char				**array;
 	t_token				*next;
+	int					i;
 
-	if (!(tab = malloc(sizeof(*tab) * (count + 1))))
+	if (!(array = malloc(sizeof(*array) * (count + 1))))
 		return (NULL);
+	if (n == NULL)
+		n = &i;
 	*n = 0;
 	while (tokens)
 	{
 		next = tokens->next;
-		tab[(*n)++] = tokens->data;
+		array[(*n)++] = tokens->data;
 		//free(tokens);
 		tokens = next;
 	}
-	tab[*n] = NULL;
-	return (tab);
+	array[*n] = NULL;
+	return (array);
 }
 
 static bool			is_builting(const int ac, const char **argv, t_data *data)
@@ -80,7 +83,7 @@ static bool			is_builting(const int ac, const char **argv, t_data *data)
 /* I'm modifying data->envp, probally a bad idea TO SEE LATER*/
 
 /* Normally witouth redirecting the fd, dont need to fork */
-bool				execute_simple_cmd(t_bst *curr, t_data *data)
+bool				execute_simple_cmd(t_bst *curr, t_data *data) // tokenize -> token -> 
 {
 	char			*execution_path;
 	char			**argv;
@@ -218,7 +221,7 @@ static bool			execute_child_process(t_pipe2 *p, char *cmd, t_data *data)
 	return (true);
 }
 
-bool				execute_pipes_cmd(t_bst *curr, t_data *data)
+bool				execute_pipe_cmd(t_bst *curr, t_data *data)
 {
 	t_pipe2			p;
 	char			*cmd;

@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   bst.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/09/23 21:10:20 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/01 18:48:32 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <bst.h>
 #include <stdlib.h>
 
-t_bst		*new_node(const unsigned char operator, char *cmd[2], t_bst *back)
+t_bst		*new_node(const unsigned char operator, char **cmd[2], t_bst *back)
 {
 	t_bst	*new;
 

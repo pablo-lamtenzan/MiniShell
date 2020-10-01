@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 21:57:11 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/09/23 17:10:24 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/01 18:17:45 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
-#include <unistd.h>
 
-int		ft_cd(int ac, char **argv, t_data *data)
+int		ft_cd(int ac, char const **argv, t_data *data)
 {
 	char	path[PATH_MAX];
 	char	cwd[PATH_MAX];

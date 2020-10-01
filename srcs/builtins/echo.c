@@ -1,6 +1,6 @@
 #include <minishell.h>
 
-int	ft_echo(int ac, char **argv)
+int	ft_echo(int ac, const char **argv)
 {
 	char	opt;
 	short	arg;

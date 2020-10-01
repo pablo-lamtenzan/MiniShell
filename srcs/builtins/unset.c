@@ -1,6 +1,6 @@
 #include <minishell.h>
 
-int	ft_unset(int ac, char **av, t_data *data)
+int	ft_unset(int ac, const char **av, t_data *data)
 {
 	// TODO: glob env
 	while (ac-- > 1)
