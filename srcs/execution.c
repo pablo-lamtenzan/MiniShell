@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 13:55:19 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/01 18:42:00 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/01 20:18:23 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,27 +86,23 @@ static bool			is_builting(const int ac, const char **argv, t_data *data)
 bool				execute_simple_cmd(t_bst *curr, t_data *data) // tokenize -> token -> 
 {
 	char			*execution_path;
-	char			**argv;
 	char			**envp;
-	int				ac;
 
-	if (!(argv = token_tab(curr->cmd[0], &ac)))
-		return (false);
-	if (!is_builting(ac, argv, data))
+	if (!is_builting(curr->ac[0], argv, data))
 	{
-		if (!(execution_path = path_get(argv[0], \
+		if (!(execution_path = path_get(*curr->av[0], \
 				map_get(data->env, "PATH")->value)))
 			return (!(data->return_status = 127) & \
-					ft_dprintf(2, "path not found! name is [%s]\n", data->argv[0]) & \
-					free_four_ptrs_and_bst(&argv, NULL, NULL, NULL, &curr));
+					ft_dprintf(2, "path not found! name is [%s]\n", *curr->av[0]) & \
+					free_four_ptrs_and_bst(NULL, NULL, NULL, NULL, &curr));
 		if (!(envp = map_export(data->env)))
 			return (ft_dprintf(2, "could not export environment!") & \
-					free_four_ptrs_and_bst(&argv, &execution_path, NULL, NULL, &curr));
-		data->return_status = execve(execution_path, argv + 1, envp);
+					free_four_ptrs_and_bst(NULL, &execution_path, NULL, NULL, &curr));
+		data->return_status = execve(execution_path, curr->av[0], envp);
 		ft_printf("HAVE TO CUSTOMIZE THIS ERROR MSG SMOOTHLY\n");
 		return (false);
 	}
-	free_four_ptrs_and_bst(&argv, &execution_path, &envp, NULL, &curr);
+	free_four_ptrs_and_bst(NULL, &execution_path, &envp, NULL, &curr);
 	return (true);
 }
 
@@ -140,28 +136,23 @@ static bool			open_and_dup_stdio(t_bst *head)
 bool				execute_redirections_cmd(t_bst *curr, t_data *data)
 {
 	char			*execution_path;
-	char			**argv;
 	char			**envp;
-	int				ac;
-
-	if (!(argv = token_tab(curr->cmd[0], &ac)))
-		return (false);
 
 	if (!(data->pid = fork()))
 	{
 		if (!open_and_dup_stdio(curr))
 			return (false);
-		if (!is_builting(ac, argv, data))
+		if (!is_builting(curr->ac[0], argv, data))
 		{
-			if (!(execution_path = path_get(argv[0], \
+			if (!(execution_path = path_get(*curr->av[0], \
 				map_get(data->env, "PATH")->value)))
 				return (!(data->return_status = 127) & \
-					ft_dprintf(2, "path not found! name is [%s]\n", data->argv[0]) & \
-					free_four_ptrs_and_bst(&argv, NULL, NULL, NULL, &curr));
+					ft_dprintf(2, "path not found! name is [%s]\n", curr->av[0]) & \
+					free_four_ptrs_and_bst(NULL, NULL, NULL, NULL, &curr));
 			if (!(envp = map_export(data->env)))
 				return (ft_dprintf(2, "could not export environment!") & \
-				free_four_ptrs_and_bst(&argv, &execution_path, NULL, NULL, &curr));
-			data->return_status = execve(execution_path, argv + 1, envp);
+				free_four_ptrs_and_bst(NULL, &execution_path, NULL, NULL, &curr));
+			data->return_status = execve(execution_path, curr->av[0], envp);
 			ft_printf("HAVE TO CUSTOMIZE THIS ERROR MSG SMOOTHLY\n");
 			return (false);
 		}
@@ -170,20 +161,16 @@ bool				execute_redirections_cmd(t_bst *curr, t_data *data)
 		while (waitpid(data->pid, NULL, 0) <= 0)
 			;
 		data->pid = 0;
-		free_four_ptrs_and_bst(&argv, &execution_path, &envp, NULL, &curr);
+		free_four_ptrs_and_bst(NULL, &execution_path, &envp, NULL, &curr);
 		return (true);
 	}
 }
 
-static bool			execute_child_process(t_pipe2 *p, char *cmd, t_data *data)
+static bool			execute_child_process(t_pipe2 *p, char **av, uint32_t ac, t_data *data)
 {
 	char			execution_path;
-	char			**argv;
-	int				ac;
 	char			**envp;
 
-	if (!(argv = token_tab(cmd , &ac)))
-		return (false);
 	if (!(data->pid = fork()))
 	{
 		if (p->in[0])
@@ -198,15 +185,15 @@ static bool			execute_child_process(t_pipe2 *p, char *cmd, t_data *data)
 		}
 		if (!is_builting(ac, argv, data))
 		{
-			if (!(execution_path = path_get(argv[0], \
+			if (!(execution_path = path_get(av[0], \
 				map_get(data->env, "PATH")->value)))
 				return (!(data->return_status = 127) & \
-					ft_dprintf(2, "path not found! name is [%s]\n", data->argv[0]) & \
-					free_four_ptrs_and_bst(&argv, NULL, NULL, NULL, NULL));
+					ft_dprintf(2, "path not found! name is [%s]\n", av[0]) & \
+					free_four_ptrs_and_bst(NULL, NULL, NULL, NULL, NULL));
 			if (!(envp = map_export(data->env)))
 				return (ft_dprintf(2, "could not export environment!") & \
-				free_four_ptrs_and_bst(&argv, &execution_path, NULL, NULL, NULL));
-			data->return_status = execve(execution_path, argv + 1, envp);
+				free_four_ptrs_and_bst(NULL, &execution_path, NULL, NULL, NULL));
+			data->return_status = execve(execution_path, av[0], envp);
 			ft_printf("HAVE TO CUSTOMIZE THIS ERROR MSG SMOOTHLY\n");
 			exit(0); // to test
 			return (false);
@@ -217,27 +204,23 @@ static bool			execute_child_process(t_pipe2 *p, char *cmd, t_data *data)
 	while (waitpid(data->pid, NULL, 0) < 0)
 		;
 	data->pid = 0;
-	free_five_ptrs(&execution_path, &argv, &envp, NULL, NULL);
+	free_five_ptrs(&execution_path, NULL, &envp, NULL, NULL);
 	return (true);
 }
 
 bool				execute_pipe_cmd(t_bst *curr, t_data *data)
 {
 	t_pipe2			p;
-	char			*cmd;
 	bool			once;
 
 	p.in[0] = 0;
-	//p.in[1] = 0; NO NEEDED? 
 	once = true;
 
 	while (curr)
 	{
 		pipe(p.fd);
-		cmd = curr->cmd[1];
-		if (once)
-			cmd = curr->cmd[0];
-		if (!execute_child_process(&p, cmd, data) || close (p.fd[1]) < 0)
+		if (!execute_child_process(&p, curr->av[once ? 0 : 1], curr->ac[once ? 0 : 1], data) \
+				|| close (p.fd[1]) < 0)
 			return (false);
 		p.in[0] = p.fd[0];
 		if (!once)
@@ -262,13 +245,13 @@ bool				execute_pipe_cmd(t_bst *curr, t_data *data)
 			|| curr->next->operator & REDIRECTION_DGREATHER \
 			|| curr->next->operator & REDIRECTION_LESSER))
 	{
-		curr->cmd[0] = curr->cmd[1];
-		curr->cmd[1] = curr->next->cmd[1];
+		curr->av[0] = curr->av[1];
+		curr->av[1] = curr->next->av[1];
 		execute_redirections_cmd(curr, data);
 	}
 	else
 	{
-		curr->cmd[0] = curr->cmd[1];
+		curr->av[0] = curr->av[1];
 		execute_simple_cmd(curr, data);
 	}
 	return (true);

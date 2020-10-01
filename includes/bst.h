@@ -28,8 +28,8 @@ typedef struct		s_data
 typedef struct					s_bst
 {
 	t_operator					operator;
-	char						**cmd[2];
-	uint16_t					size_1[2];
+	char						**av[2];
+	uint32_t					ac[2];
 	struct s_bst				*next;
 	struct s_bst				*back;
 }								t_bst;
