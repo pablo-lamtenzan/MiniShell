@@ -34,7 +34,7 @@ typedef struct					s_bst
 
 typedef struct		s_token
 {
-	char			*data;
+	char			**data;
 	unsigned char	type;
 	struct s_token	*next;
 }					t_token;
