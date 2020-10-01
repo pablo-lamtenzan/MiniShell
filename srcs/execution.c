@@ -6,7 +6,7 @@
 /*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 13:55:19 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/09/23 20:47:33 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/01 17:18:14 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,40 @@
 #include <sys/wait.h>
 
 /* Have to add the libft for have the libc fcts */
+
+size_t		token_count(t_token *tokens)
+{
+	size_t	count;
+
+	count = 0;
+	while (tokens)
+	{
+		//ft_printf("token count [%p]\n", tokens);
+		count++;
+		tokens = tokens->next;
+	}
+	return (count);
+}
+
+char**		token_tab(t_token *tokens, int *n)
+{
+	const int			count = token_count(tokens);
+	char				**tab;
+	t_token				*next;
+
+	if (!(tab = malloc(sizeof(*tab) * (count + 1))))
+		return (NULL);
+	*n = 0;
+	while (tokens)
+	{
+		next = tokens->next;
+		tab[(*n)++] = tokens->data;
+		//free(tokens);
+		tokens = next;
+	}
+	tab[*n] = NULL;
+	return (tab);
+}
 
 static bool			is_builting(const int ac, const char **argv, t_data *data)
 {
@@ -165,10 +199,10 @@ static bool			execute_child_process(t_pipe2 *p, char *cmd, t_data *data)
 				map_get(data->env, "PATH")->value)))
 				return (!(data->return_status = 127) & \
 					ft_dprintf(2, "path not found! name is [%s]\n", data->argv[0]) & \
-					free_four_ptrs_and_bst(&argv, NULL, NULL, NULL, &curr));
+					free_four_ptrs_and_bst(&argv, NULL, NULL, NULL, NULL));
 			if (!(envp = map_export(data->env)))
 				return (ft_dprintf(2, "could not export environment!") & \
-				free_four_ptrs_and_bst(&argv, &execution_path, NULL, NULL, &curr));
+				free_four_ptrs_and_bst(&argv, &execution_path, NULL, NULL, NULL));
 			data->return_status = execve(execution_path, argv + 1, envp);
 			ft_printf("HAVE TO CUSTOMIZE THIS ERROR MSG SMOOTHLY\n");
 			exit(0); // to test
@@ -222,7 +256,7 @@ bool				execute_pipes_cmd(t_bst *curr, t_data *data)
 				be executed or redirected bellow
 	*/	
 	if (curr->next && (curr->next->operator & REDIRECTION_GREATHER \
-			||curr->next->operator & REDIRECTION_DGREATHER \
+			|| curr->next->operator & REDIRECTION_DGREATHER \
 			|| curr->next->operator & REDIRECTION_LESSER))
 	{
 		curr->cmd[0] = curr->cmd[1];

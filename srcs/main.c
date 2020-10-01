@@ -6,7 +6,7 @@
 /*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 17:33:34 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/09/23 18:27:43 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/09/23 20:56:42 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,5 +56,7 @@ int			main(int ac, char **argv, char **envp)
 	data->argv = argv;
 	// have to set up data->envp
 	data->pid = 0;
-	return (routine(matrix_to_string(argv), data));
+	// just for remember to free
+	return (routine(matrix_to_string(argv), data) \
+			| free_five_ptrs(&data, (void *)0, (void *)0, (void *)0, (void *)0));
 }

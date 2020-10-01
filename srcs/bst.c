@@ -6,7 +6,7 @@
 /*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/09/23 17:28:44 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/09/23 21:10:20 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,10 @@ void		execute_bst(t_bst *head, t_data *data)
 			an redirection the function execute_pipe must handle this.
 		*/
 		if (head->operator & PIPE)
+		{
 			execute_pipe_cmd(head, data);
+			free_four_ptrs_and_bst(NULL, NULL, NULL, NULL, &head);
+		}
 		/* This function will be called once if there are a redirection in the first node*/
 		if (head->operator & REDIRECTION_GREATHER || head->operator & REDIRECTION_LESSER
 			|| head->operator & REDIRECTION_DGREATHER)
