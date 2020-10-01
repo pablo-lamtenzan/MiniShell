@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/01 19:57:47 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/01 22:13:06 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ t_bst		*new_node(const unsigned char operator, char **cmd[2], t_bst *back)
 	if (back)
 		back->next = new;
 	new->back = back;
-	new->cmd[0] = cmd[0];
-	new->cmd[1] = cmd[1];
+	new->av[0] = cmd[0];
+	new->av[1] = cmd[1];
 	new->operator = operator;
 	return (new);
 }
