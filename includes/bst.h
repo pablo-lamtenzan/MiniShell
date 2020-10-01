@@ -5,15 +5,7 @@
 #include <libft.h>
 #include <term/term.h>
 #include <stdint.h>
-
-#define NONE					0
-#define PIPE					1
-#define REDIRECTION_GREATHER	2
-#define REDIRECTION_LESSER		4
-#define REDIRECTION_DGREATHER	8
-#define SEMICOLON				16
-
-typedef uint8_t t_operator;
+#include <cmd.h>
 
 typedef struct		s_data
 {
@@ -27,19 +19,12 @@ typedef struct		s_data
 
 typedef struct					s_bst
 {
-	t_operator					operator;
+	t_operator_t				operator;
 	char						**cmd[2];
 	uint16_t					size_1[2];
 	struct s_bst				*next;
 	struct s_bst				*back;
 }								t_bst;
-
-typedef struct		s_token
-{
-	char			**data;
-	t_operator		type;
-	struct s_token	*next;
-}					t_token;
 
 /*
 typedef struct  	s_pipe

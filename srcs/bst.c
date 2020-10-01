@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/01 18:48:32 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/01 19:57:47 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,14 @@ t_bst		*build_bst(t_token *operators, t_token *cmds)
 		if (tail)
 		{
 			cmds_format_conv[0] = NULL;
-			cmds_format_conv[1] = cmds->data;
+			cmds_format_conv[1] = cmds->av;
 			cmds = cmds->next;
 		}
 		else
 		{
-			cmds_format_conv[0] = cmds->data;
+			cmds_format_conv[0] = cmds->av;
 			cmds = cmds->next;
-			cmds_format_conv[1] = cmds->data;
+			cmds_format_conv[1] = cmds->av;
 			cmds = cmds->next;
 			head = tail;
 		}
