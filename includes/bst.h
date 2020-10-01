@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <libft.h>
 #include <term/term.h>
+#include <stdint.h>
 
 #define NONE					0
 #define PIPE					1
@@ -12,22 +13,23 @@
 #define REDIRECTION_DGREATHER	8
 #define SEMICOLON				16
 
+typedef uint8_t t_operator;
+
 typedef struct		s_data
 {
-	int				ac;
-	char			**argv;
+	int32_t			ac;
+	int8_t			**argv;
 	t_map			*env;
 	t_caps			*caps;
-	int				pid;
-	int				return_status;
+	int32_t			pid;
+	int8_t			return_status;
 }					t_data;
 
 typedef struct					s_bst
 {
-	unsigned char				operator;
-	char						**cmd[2]; // probally this need to be char ** or changed
-	size_t						size_1;
-	size_t						size_2;
+	t_operator					operator;
+	char						**cmd[2];
+	uint16_t					size_1[2];
 	struct s_bst				*next;
 	struct s_bst				*back;
 }								t_bst;
@@ -35,10 +37,11 @@ typedef struct					s_bst
 typedef struct		s_token
 {
 	char			**data;
-	unsigned char	type;
+	t_operator		type;
 	struct s_token	*next;
 }					t_token;
 
+/*
 typedef struct  	s_pipe
 {
 	int				fd[2];
@@ -47,11 +50,12 @@ typedef struct  	s_pipe
 	int				in;
 	int				out;
 }					t_pipe;
+*/
 
 typedef struct		s_pipe2
 {
-	int				in[2];
-	int				fd[2];
+	int8_t			in[2];
+	int32_t			fd[2];
 }					t_pipe2;
 
 t_bst							*new_node(const unsigned char operator, char **cmd[2], t_bst *back);
