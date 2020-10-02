@@ -19,7 +19,7 @@ typedef struct		s_data
 
 typedef struct					s_bst
 {
-	t_operator					operator;
+	t_operator_t				operator;
 	char						**av[2];
 	uint32_t					ac[2];
 	struct s_bst				*next;
@@ -44,14 +44,18 @@ typedef struct		s_pipe2
 }					t_pipe2;
 
 t_bst							*new_node(const unsigned char operator, char **cmd[2], t_bst *back);
-t_bst							*build_bst(t_token *operators, t_token *cmds);
-
+t_bst							*build_bst(t_operator *operators, t_cmd *cmds);
 void							execute_bst(t_bst *head, t_data *data);
 bool							execute_simple_cmd(t_bst *curr, t_data *data);
 bool							execute_redirections_cmd(t_bst *curr, t_data *data);
 bool							execute_pipe_cmd(t_bst *curr, t_data *data);
 bool							free_four_ptrs_and_bst(void **ptr1, void **ptr2, void **ptr3,
 	void **ptr4, t_bst **bst);
+bool							free_one_ptr(void **ptr);
+bool							free_bst_node(t_bst **bst);
+
+bool							is_builting(const int ac, const char **argv, t_data *data);
+bool							get_path_and_envp(char **execution_path, char ***envp, char *cmd_name, t_data *data);
 
 t_token							*token_clear(t_token **tokens);
 char**							token_tab(t_token *tokens, int *n);

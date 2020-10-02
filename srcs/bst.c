@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   bst.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/01 22:13:06 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/02 16:30:04 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <bst.h>
 #include <stdlib.h>
 
-t_bst		*new_node(const unsigned char operator, char **cmd[2], t_bst *back)
+t_bst		*new_node(const t_operator_t operator, char **cmd[2], t_bst *back)
 {
 	t_bst	*new;
 
@@ -33,7 +33,7 @@ t_bst		*new_node(const unsigned char operator, char **cmd[2], t_bst *back)
 		will be parsed, a new call of this function will be done.
 		Number of bst = Number of semicolons + 1
 */
-t_bst		*build_bst(t_token *operators, t_token *cmds)
+t_bst		*build_bst(t_operator *operators, t_cmd *cmds)
 {
 	t_bst	*tail;
 	t_bst	*head;

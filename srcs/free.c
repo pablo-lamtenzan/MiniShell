@@ -6,7 +6,7 @@
 /*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 21:11:04 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/01 20:19:42 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/02 17:04:51 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,26 @@ bool		free_five_ptrs(void **ptr1, void **ptr2, void **ptr3, void **ptr4,
 		free(*ptr4);
 	if (*ptr5)
 		free(*ptr5);
+	return (false);
+}
+
+bool		free_one_ptr(void **ptr)
+{
+	if (*ptr)
+		free(*ptr);
+	return (false);
+}
+
+bool		free_bst_node(t_bst **bst)
+{
+	if (*bst)
+	{
+		if ((*bst)->av[0])
+			free((*bst)->av[0]);
+		if ((*bst)->av[1])
+			free((*bst)->av[1]);
+		free(*bst);
+	}
 	return (false);
 }
 
