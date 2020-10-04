@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   bst.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/02 16:30:04 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/04 20:14:39 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <bst.h>
 #include <stdlib.h>
 
-t_bst		*new_node(const t_operator_t operator, char **cmd[2], t_bst *back)
+t_bst		*new_node(const t_operator_t operator, char* *cmd[2], t_bst *back)
 {
 	t_bst	*new;
 
@@ -35,10 +35,10 @@ t_bst		*new_node(const t_operator_t operator, char **cmd[2], t_bst *back)
 */
 t_bst		*build_bst(t_operator *operators, t_cmd *cmds)
 {
-	t_bst	*tail;
-	t_bst	*head;
-	char	*cmds_format_conv[2]; // cmds->data has to be malloc
-	int		it[2];
+	t_bst			*tail;
+	t_bst			*head;
+	char**			cmds_format_conv[2]; // cmds->data has to be malloc
+	int				it[2];
 
 	tail = NULL;
 	it[0] = 0;
@@ -75,10 +75,10 @@ t_bst		*build_bst(t_operator *operators, t_cmd *cmds)
 	If this is right, the engine is built in this function.
 */
 
-void		execute_bst(t_bst *head, t_data *data)
+void		execute_bst(t_bst *head, t_term *term)
 {
 	if (head->operator & NONE)
-		execute_simple_cmd(head, data);
+		execute_simple_cmd(head, term);
 	else
 	{
 		/* The idea is start here with his fcts and if after a pipe there is another pipe or
@@ -86,13 +86,13 @@ void		execute_bst(t_bst *head, t_data *data)
 		*/
 		if (head->operator & PIPE)
 		{
-			execute_pipe_cmd(head, data);
-			free_four_ptrs_and_bst(NULL, NULL, NULL, NULL, &head);
+			execute_pipe_cmd(head, term);
+			free_bst_node(&head);
 		}
 		/* This function will be called once if there are a redirection in the first node*/
-		if (head->operator & REDIRECTION_GREATHER || head->operator & REDIRECTION_LESSER
-			|| head->operator & REDIRECTION_DGREATHER)
-			execute_redirections_cmd(head, data);
+		if (head->operator & REDIR_GR || head->operator & REDIR_LE
+			|| head->operator & REDIR_DG)
+			execute_redirections_cmd(head, term);
 	}
 }
 /* The previous function will call the executers functions (calling execve or calling a function

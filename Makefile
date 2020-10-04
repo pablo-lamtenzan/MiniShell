@@ -5,20 +5,22 @@ INCDIR	=		includes
 OBJDIR	=		objs
 CC		=		/usr/bin/clang
 RM		=		/bin/rm
-CFLAGS	=		-Wall -Wextra -Werror
+CFLAGS	=		-Wall -Wextra -Werror -g3
 IFLAGS	=		-I$(INCDIR) -I$(LIBFT)/includes
 LFLAGS	=		-L$(LIBFT) -lft -lcurses -ltermcap
 
 SRCS	=		$(addprefix $(SRCDIR)/,											\
 					$(addprefix builtins/,										\
 						cd.c echo.c env.c exit.c export.c pwd.c unset.c)		\
-					bst.c execution.c free.c lexer.c main.c)
+					bst.c cmd.c execution.c free.c lexer.c main.c operator.c	\
+					path.c pipe.c token.c)
 
 OBJDS	=		$(addprefix $(OBJDIR)/, builtins)
 
 OBJS	=		$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 
-HDRS	=		$(addprefix $(INCDIR)/, bst.h builtins.h minishell.h)
+HDRS	=		$(addprefix $(INCDIR)/, bst.h builtins.h cmd.h lexer.h			\
+					minishell.h operator.h path.h token.h)
 
 all:			libft $(NAME)
 

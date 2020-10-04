@@ -4,12 +4,12 @@ t_cmd			*cmd_clear(t_cmd **cmd_list)
 {
 	t_cmd	*curr;
 
-	while (curr = *cmd_list)
+	while ((curr = *cmd_list))
 	{
 		*cmd_list = curr->next;
 		free(curr);
 	}
-	return (curr);
+	return (NULL);
 }
 
 t_cmd			*tokens_export(t_token *tokens)
@@ -18,10 +18,10 @@ t_cmd			*tokens_export(t_token *tokens)
 	t_cmd			*cmd;
 	t_token			*curr;
 
-	if (cmd = malloc(sizeof(*cmd)))
+	if ((cmd = malloc(sizeof(*cmd))))
 	{
 		cmd->ac = 0;
-		if (cmd->av = malloc(sizeof(*cmd->av) * (count + 1)))
+		if ((cmd->av = malloc(sizeof(*cmd->av) * (count + 1))))
 		{
 			curr = tokens;
 			while (curr)
@@ -31,10 +31,14 @@ t_cmd			*tokens_export(t_token *tokens)
 			}
 			cmd->av[cmd->ac] = NULL;
 		}
-		free(cmd);
+		else
+		{
+			free(cmd);
+			cmd = NULL;
+		}
 	}
 	token_clear(&tokens, true);
-	return (NULL);
+	return (cmd);
 }
 
 t_cmd			*cmd_add(t_cmd **cmd_list, t_cmd *cmd)

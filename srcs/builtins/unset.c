@@ -1,6 +1,6 @@
 #include <minishell.h>
 
-int	ft_unset(int ac, const char **av, t_data *data)
+int	ft_unset(int ac, char* *av, t_term *term)
 {
 	// TODO: glob env
 	while (ac-- > 1)
@@ -11,7 +11,7 @@ int	ft_unset(int ac, const char **av, t_data *data)
 				t->name, av[0], av[ac]);
 			return (1);
 		} */
-		data->env = map_del(data->env, av[ac]);
+		term->env = map_del(term->env, av[ac]);
 		//glob_env = map_del(cmd->glob_env, cmd->av[cmd->ac]);
 	}
 	return (0);

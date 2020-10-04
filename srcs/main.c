@@ -3,60 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 17:33:34 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/09/23 20:56:42 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/04 20:28:46 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <bst.h>
 #include <minishell.h>
 
-char		*matrix_to_string(char **matrix)
+int			exec(const char *input, t_term *term) // need to add the global struct
 {
-	// TO DO
-	return ((char *)0);
-}
+	t_cmd		*command;
+	t_operator	*operators;
+	t_bst		*bst;
+	int			status;
 
-int			routine(char *input, t_data *data) // need to add the global struct
-{
-	t_token	*comands;
-	t_token	*operators;
-	t_bst	*bst;
-	bool	semicolon;
-
-	semicolon = true;
 	/* The steps for execute a comand are lexer, bst build, execution and
 		free. If there a semicolon we just have to repeat the process until
 		there are semicolons
 	*/
-	while (semicolon)
+	while ((status = lexer_tokenize(&input, &command, &operators)) > 0)
 	{
-		if (*input == '\0' \
-				|| !lexer_tokenize(&input, &comands, &operators, &semicolon) \
-				|| !(bst = build_bst(operators, comands)))
+		if (!(bst = build_bst(operators, command)))
 			return (false);
-		token_clear(&operators);
+		operator_clear(&operators);
 		/* and comands will be freed while i call free_four_ptrs_and_bst later in execute_bts */
-		execute_bst(bst, data);
+		execute_bst(bst, term);
 		
 	}
-	free(data); // build a function to free all the allocation into the data struct if there is
+	if (status == ERROR)
+		return (false);
 	return (true);
 }
 
-int			main(int ac, char **argv, char **envp)
+int			main(int ac, const char **av, const char **envp)
 {
-	t_data	*data;
+	int	status;
 
-	if (!(data = malloc(sizeof(t_data))))
-		return (false);
-	data->ac = ac;
-	data->argv = argv;
-	// have to set up data->envp
-	data->pid = 0;
-	// just for remember to free
-	return (routine(matrix_to_string(argv), data) \
-			| free_five_ptrs(&data, (void *)0, (void *)0, (void *)0, (void *)0));
+	status = term_prompt(ac, av, envp, exec);
+	// TODO: Free everything
+	return (status);
 }

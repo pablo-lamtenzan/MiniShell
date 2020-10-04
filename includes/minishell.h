@@ -5,5 +5,6 @@
 #include <stdbool.h>
 #include <bst.h>
 #include <builtins.h>
+#include <lexer.h>
 
 #endif
