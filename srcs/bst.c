@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/04 20:14:39 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/05 00:00:04 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,11 +53,18 @@ t_bst		*build_bst(t_operator *operators, t_cmd *cmds)
 		}
 		else
 		{
-			cmds_format_conv[0] = cmds->av;
-			cmds = cmds->next;
-			cmds_format_conv[1] = cmds->av;
-			cmds = cmds->next;
-			head = tail;
+			if (cmds)
+			{
+				cmds_format_conv[0] = cmds->av;
+				cmds = cmds->next;
+				if (cmds)
+				{
+					cmds_format_conv[1] = cmds->av;
+					cmds = cmds->next;
+					head = tail;
+				}
+			}
+			
 		}
 		if (!(tail = new_node(operators->type, cmds_format_conv, tail))
 				|| cmds == NULL)

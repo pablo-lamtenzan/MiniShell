@@ -1,6 +1,7 @@
 #ifndef CMD_H
 # define CMD_H
 
+# include <libft.h> // TODO: Remove
 # include <unistd.h>
 # include <token.h>
 # include <operator.h>

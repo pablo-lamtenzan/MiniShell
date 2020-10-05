@@ -9,33 +9,55 @@ CFLAGS	=		-Wall -Wextra -Werror -g3
 IFLAGS	=		-I$(INCDIR) -I$(LIBFT)/includes
 LFLAGS	=		-L$(LIBFT) -lft -lcurses -ltermcap
 
-SRCS	=		$(addprefix $(SRCDIR)/,											\
-					$(addprefix builtins/,										\
-						cd.c echo.c env.c exit.c export.c pwd.c unset.c)		\
-					bst.c cmd.c execution.c free.c lexer.c main.c operator.c	\
-					path.c pipe.c token.c)
+SRCS	=		$(addprefix $(SRCDIR)/,\
+					$(addprefix builtins/,\
+						cd.c\
+						echo.c\
+						env.c\
+						exit.c\
+						export.c\
+						pwd.c unset.c\
+					)\
+					bst.c\
+					cmd.c\
+					execution.c\
+					free.c\
+					lexer.c\
+					main.c\
+					operator.c\
+					path.c\
+					pipe.c\
+					token.c\
+				)
 
 OBJDS	=		$(addprefix $(OBJDIR)/, builtins)
 
 OBJS	=		$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 
-HDRS	=		$(addprefix $(INCDIR)/, bst.h builtins.h cmd.h lexer.h			\
-					minishell.h operator.h path.h token.h)
+HDRS	=		$(addprefix $(INCDIR)/,\
+					bst.h\
+					builtins.h\
+					cmd.h\
+					lexer.h\
+					minishell.h\
+					operator.h\
+					path.h\
+					token.h\
+				)
 
 all:			libft $(NAME)
 
 libft:
-    make -C $(LIBFT) libft.a CC="$(CC)" CFLAGS="$(CFLAGS)"
+	make -C $(LIBFT) NAME=libft.a CC="$(CC)" CFLAGS="$(CFLAGS)"
 
 $(LIBFT)/libft.a: libft
 
-$(OBJDS):
-	mkdir -p $@
-	
 $(NAME):		$(OBJDS) $(OBJS) $(LIBFT)/libft.a
 	@echo LINK $(NAME)
-	$(CC) $(OBJS) $(CFLAGS) $(IFLAGS) $(LFLAGS) -o $(NAME)
+	$(CC) $(OBJS) $(CFLAGS) $(LFLAGS) -o $(NAME)
 
+$(OBJDS):
+	mkdir -p $@
 
 $(OBJDIR)/%.o:	$(SRCDIR)/%.c $(HDRS) Makefile
 	@echo CC $<
@@ -53,6 +75,6 @@ fclean:			clean
 
 re:				fclean all
 
-.PHONY	=		all libft clean fclean re
+.PHONY:			libft clean fclean
 
 $(VERBOSE).SILENT:
