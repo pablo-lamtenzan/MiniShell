@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 18:13:09 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/05 13:47:26 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/05 13:58:49 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ int					lexer_tokenize(const char **input, t_cmd **cmds,
 	*cmds = NULL;
 	*operators = NULL;
 	status = EMPTY;
-	while (**input)
+	while (**input && !(status & SEMICOL))
 	{
 		ft_dprintf(2, "[lexer][input]: '%s'\n", *input);
 		if ((status = parse_operation(input, cmds, operators)) < 0)
