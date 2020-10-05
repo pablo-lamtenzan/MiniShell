@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 18:13:09 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/05 13:58:49 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/05 14:14:40 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ static int			parse_operation(const char **input, t_cmd **cmds,
 {
 	int				status;
 
+	status = TOKEN;
 	if (!parse_cmd(cmds, &status, input))
 	{
 		ft_dprintf(2, "Error: get_next_cmd returned NULL!\n");
