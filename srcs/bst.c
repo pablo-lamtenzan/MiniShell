@@ -6,14 +6,14 @@
 /*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/06 17:21:37 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/06 18:44:25 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <bst.h>
 #include <stdlib.h>
 
-t_bst		*new_node(const t_operator_t operator, char* *cmd[2], t_bst *back)
+static t_bst		*new_node(const t_operator_t operator, int ac[2], char* *cmd[2], t_bst *back)
 {
 	t_bst	*new;
 
@@ -23,6 +23,8 @@ t_bst		*new_node(const t_operator_t operator, char* *cmd[2], t_bst *back)
 	if (back)
 		back->next = new;
 	new->back = back;
+	new->ac[0] = ac[0];
+	new->ac[1] = ac[1];
 	new->av[0] = cmd[0];
 	new->av[1] = cmd[1];
 	new->operator = operator;
@@ -33,12 +35,13 @@ t_bst		*new_node(const t_operator_t operator, char* *cmd[2], t_bst *back)
 		will be parsed, a new call of this function will be done.
 		Number of bst = Number of semicolons + 1
 */
-t_bst		*build_bst(t_operator *operators, t_cmd *cmds)
+t_bst			*build_bst(t_operator *operators, t_cmd *cmds)
 {
-	t_bst			*tail;
-	t_bst			*head;
-	char**			cmds_format_conv[2]; // cmds->data has to be malloc
-	int				it[2];
+	t_bst		*tail;
+	t_bst		*head;
+	char**		cmds_format_conv[2];
+	int			ac[2];
+	int			it[2];
 
 	head = NULL;
 	tail = NULL;
@@ -54,6 +57,8 @@ t_bst		*build_bst(t_operator *operators, t_cmd *cmds)
 		{
 			cmds_format_conv[0] = NULL;
 			cmds_format_conv[1] = cmds->av;
+			ac[0] = 0;
+			ac[1] = cmds->ac;
 			cmds = cmds->next;
 		}
 		else
@@ -61,19 +66,22 @@ t_bst		*build_bst(t_operator *operators, t_cmd *cmds)
 			if (cmds)
 			{
 				cmds_format_conv[0] = cmds->av;
+				ac[0] = cmds->ac;
+				
 				//ft_printf("[DBG] av[0][0] value is %s\n", cmds_format_conv[0][0]);
 				//ft_printf("[DBG] av[0][1] value is %s\n", cmds_format_conv[0][1]);
 				cmds = cmds->next;
 				if (cmds)
 				{
 					cmds_format_conv[1] = cmds->av;
+					ac[1] = cmds->ac;
 					cmds = cmds->next;
 					head = tail;
 				}
 			}
 			
 		}
-		if (!(tail = new_node(operators->type, cmds_format_conv, tail))
+		if (!(tail = new_node(operators->type, ac, cmds_format_conv, tail))
 				/*|| cmds == NULL*/)
 			return (NULL);
 		if (!head)
@@ -91,7 +99,7 @@ t_bst		*build_bst(t_operator *operators, t_cmd *cmds)
 	If this is right, the engine is built in this function.
 */
 
-void		execute_bst(t_bst *head, t_term *term)
+void			execute_bst(t_bst *head, t_term *term)
 {
 	if (!(head->operator & NONE))
 		execute_simple_cmd(head, term);

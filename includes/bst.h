@@ -33,7 +33,6 @@ typedef struct		s_pipe2
 	int32_t			fd[2];
 }					t_pipe2;
 
-t_bst							*new_node (unsigned char operator, char **cmd[2], t_bst *back);
 t_bst							*build_bst(t_operator *operators, t_cmd *cmds);
 void							execute_bst(t_bst *head, t_term *data);
 bool							execute_simple_cmd(t_bst *curr, t_term *data);
