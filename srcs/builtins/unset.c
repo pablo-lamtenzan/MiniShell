@@ -1,9 +1,9 @@
 #include <minishell.h>
 
-int	ft_unset(int ac, char* *av, t_term *term)
+int	ft_unset(t_builtin_args *args)
 {
 	// TODO: glob env
-	while (ac-- > 1)
+	while (args->ac-- > 1)
 	{
 		/* if (!key_check(av[ac]))
 		{
@@ -11,7 +11,7 @@ int	ft_unset(int ac, char* *av, t_term *term)
 				t->name, av[0], av[ac]);
 			return (1);
 		} */
-		term->env = map_del(term->env, av[ac]);
+		args->t->env = map_del(args->t->env, args->av[args->ac]);
 		//glob_env = map_del(cmd->glob_env, cmd->av[cmd->ac]);
 	}
 	return (0);

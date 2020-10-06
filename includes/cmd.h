@@ -8,7 +8,7 @@
 
 typedef struct      s_cmd
 {
-	char*		*av;
+	char			**av;
 	int				ac;
 	struct s_cmd	*next;
 }					t_cmd;

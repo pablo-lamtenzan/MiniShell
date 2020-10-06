@@ -1,11 +1,16 @@
 #include <minishell.h>
 
-int	ft_env(t_map *env)
+void	env_print(int fd, t_map *env)
 {
 	if (env)
 	{
-		ft_env(env->next);
-		ft_printf("%s=%s\n", env->key, env->value);
+		env_print(fd, env->next);
+		ft_dprintf(fd, "%s=%s\n", env->key, env->value);
 	}
+}
+
+int		ft_env(t_builtin_args *args)
+{
+	env_print(1, args->t->env);
 	return (0);
 }

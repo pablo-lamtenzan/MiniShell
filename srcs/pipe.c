@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/02 17:24:51 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/06 21:34:07 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/07 01:21:34 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
-#include <sys/stat.h>
-#include <sys/wait.h>
+#include <execution.h>
 
 static bool			select_fd(t_pipe2 **p)
 {
@@ -27,7 +25,7 @@ static bool			select_fd(t_pipe2 **p)
 	return (true);
 }
 
-static bool			is_builtin_pipe(char *name, t_pipe2 **p)
+bool			is_builtin_pipe(char *name, t_pipe2 **p)
 {
 		return ((!ft_strncmp(name, "echo", 5) || !ft_strncmp(name, "cd", 3) \
 				|| !ft_strncmp(name, "pwd", 4) || !ft_strncmp(name, "export", 7) \
@@ -37,18 +35,31 @@ static bool			is_builtin_pipe(char *name, t_pipe2 **p)
 
 static bool			execute_child_process(t_pipe2 *p, char **av, uint32_t ac, t_term *term)
 {
+	const t_builtin	builtin = builtin_get(av[0]);
 	char			*execution_path;
 	char			**envp;
+	t_builtin_args	args;
 
 	execution_path = NULL;
 	envp = NULL;
-	if (!is_builtin_pipe(av[0], &p) && !exec_builtin(ac, av, term))
+	if (builtin)
 	{
+		args.ac = ac;
+		args.av = av;
+		args.t = term;
+		redir_fds(args.fds, NULL, NONE);
+		if (!(select_fd(&p)))
+			ft_dprintf(2, "[exec][pipe] Error with 'select_fd'!");
+		builtin(&args);
+	}
+	else
+	{
+		if (!(get_path_and_envp(&execution_path, &envp, *av, term)))
+			return (false);
 		if (!(term->pid = fork()))
 		{
-			if (!(select_fd(&p)) \
-					|| !(get_path_and_envp(&execution_path, &envp, *av, term)))
-				return (false);
+			if (!(select_fd(&p)))
+				exit (1);
 			term->st = execve(execution_path, av, envp);
 			ft_printf("minishell: %s: command not found\n", av[0]);
 			exit(0); // need that but in other format, exit fork while execve fails

@@ -3,65 +3,70 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 13:55:19 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/06 22:24:57 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/07 01:50:01 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <bst.h>
-#include <minishell.h> // rm this when i could include without error builtins.h
-//#include <builtins.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <sys/wait.h>
-#include <path.h>
+#include <execution.h>
 
-bool				exec_builtin(int ac, char* *argv, t_term *term)
+bool	redir_fds(int *fds, const char *filepath, t_operator_t op)
 {
-	const char		*name = argv[0];
+	static const int	umask = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 
-	ft_dprintf(2, "[exec] %s\n", name);
-	if (!ft_strncmp(name, "echo", 5))
-		term->st = ft_echo(ac, argv);
-	else if (!ft_strncmp(name, "cd", 3))
-		term->st = ft_cd(ac, argv, term);
-	else if (!ft_strncmp(name, "pwd", 4))
-		term->st = ft_pwd();
-	else if (!ft_strncmp(name, "export", 7))
-		term->st = ft_export(ac, argv, term);
-	else if (!ft_strncmp(name, "unset", 6))
-		term->st = ft_unset(ac, argv, term);
-	else if (!ft_strncmp(name, "env", 4))
-		term->st = ft_env(term->env); // should ve a t_map
-	else if (!ft_strncmp(name, "exit", 5))
-		term->st = ft_exit(term);
+	if (op & REDIR_GR)
+		fds[1] = open(filepath, O_WRONLY | O_CREAT | O_TRUNC, umask);
+	else if (op & REDIR_DG)
+		fds[1] = open(filepath, O_WRONLY | O_CREAT | O_APPEND, umask);
+	else if (op & REDIR_LE)
+		fds[0] = open(filepath, O_RDONLY);
 	else
-		return (false);
-	ft_dprintf(2, "term status after builting is %d\n", term->st);
-	return (true);
-}
-static bool			is_builting(char *name, t_bst *curr)
-{
-	return ((!ft_strncmp(name, "echo", 5) || !ft_strncmp(name, "cd", 3) \
-			|| !ft_strncmp(name, "pwd", 4) || !ft_strncmp(name, "export", 7) \
-			|| !ft_strncmp(name, "unset", 6) || !ft_strncmp(name, "env", 4) \
-			|| !ft_strncmp(name, "exit", 5)) && open_and_dup_stdio(curr));
+	{
+		fds[0] = 0;
+		fds[1] = 1;
+		return (true);
+	}
+	return (fds[0] >= 0 && fds[1] >= 0);
 }
 
-bool				get_path_and_envp(char **execution_path, char***envp, char *cmd_name, t_term *term)
+void	close_fds(int *fds)
 {
-	if (!(*execution_path = path_get(cmd_name, map_get(term->env, "PATH")->value)) && !(term->st = 127))
+	if (fds[0] != 0)
+		close(fds[0]);
+	if (fds[1] != 1)
+		close(fds[1]);
+}
+
+bool				exec_builtin(t_builtin_args *args)
+{
+	const t_builtin	builtin_fn = builtin_get(args->av[0]);
+
+	if (builtin_fn)
 	{
-		ft_dprintf(2, "path not found! name is [%s]\n", cmd_name);
-		return (false);
+		builtin_fn(args);
+		return (true);
+	}
+	return (false);
+}
+
+bool				get_path_and_envp(char **filepath, char***envp, char *cmd_name, t_term *term)
+{
+	t_map	*path;
+
+	if (!(path = map_get(term->env, "PATH"))
+	|| !path->value
+	|| !(*filepath = path_get(cmd_name, path->value)))
+	{
+		term->st = 127;
+		ft_dprintf(2, "[exec][path] cannot find '%s'\n", cmd_name);
+		return (true);
 	}
 	if (!(*envp = map_export(term->env)))
 	{
 		ft_dprintf(2, "could not export environment!");
-		free(execution_path);
+		free(filepath);
 		return (false);
 	}
 	return (true);
@@ -70,26 +75,50 @@ bool				get_path_and_envp(char **execution_path, char***envp, char *cmd_name, t_
 /* I'm modifying data->envp, probally a bad idea TO SEE LATER*/
 
 /* Normally witouth redirecting the fd, dont need to fork */
+void				exec_and_join(const char *filepath, char *const *av, char *const *ep, t_term *t)
+{
+	// TODO: Error handling (WIFEXITED ...)
+	ft_dprintf(2, "[exec][path] '%s'\n", filepath);
+	if (!(t->pid = fork()))
+	{
+		t->st = execve(filepath, av, ep);
+		ft_dprintf(2, "minishell: %s: execve returned '%d'!\n", av[0], t->st);
+		exit(1);
+		return ;
+	}
+	else if (t->pid < 0)
+	{
+		t->st = 127;
+		return ;
+	}
+	while (waitpid(t->pid, NULL, 0) <= 0)
+		;
+	t->pid = 0;
+}
+
 bool				execute_simple_cmd(t_bst *curr, t_term *term) // tokenize -> token -> 
 {
-	char	*execution_path = NULL;
-	char*	*envp = NULL;
+	const t_builtin	builtin = builtin_get(curr->av[0][0]);
+	char			*execution_path = NULL;
+	char*			*envp = NULL;
+	t_builtin_args	args;
 
-	if (!exec_builtin(curr->ac[0], curr->av[0], term))
+	
+	if (builtin)
 	{
-		if (!(get_path_and_envp(&execution_path, &envp, *curr->av[0], term)))
+		if (!redir_fds(args.fds, (curr->av[1]) ? curr->av[1][0] : NULL, curr->operator))
+			ft_dprintf(2, "[exec][redir] Error!\n");
+		args.ac = curr->ac[0];
+		args.av = curr->av[0];
+		args.t = term;
+		builtin(&args);
+		close_fds(args.fds);
+	}
+	else
+	{
+		if (!(get_path_and_envp(&execution_path, &envp, curr->av[0][0], term)))
 				return (free_bst_node(&curr));
-		ft_dprintf(2, "[exec][path] '%s'\n", execution_path);
-		if (!(term->pid = fork()))
-		{
-			term->st = execve(execution_path, curr->av[0], envp);
-			ft_printf("minishell: %s: command not found\n", curr->av[0][0]);
-		}
-		else if (term->pid < 0)
-			return (!(term->st = 127));
-		while (waitpid(term->pid, NULL, 0) <= 0)
-			;
-		term->pid = 0;
+		exec_and_join(execution_path, curr->av[0], envp, term);
 		free_ptrs_and_bst(execution_path, envp, NULL);
 		// have to free curr ?
 	}
@@ -121,31 +150,31 @@ bool			open_and_dup_stdio(t_bst *curr)
 				|| dup2(fd, STDOUT_FILENO) < 0)
 			return (false);
 	}
-	return (fd > 0 && (close(fd) > 0));
+	return (fd > 0 && !(close(fd) > 0));
 }
 
 bool				execute_redirections_cmd(t_bst *curr, t_term *term)
 {
-	char	*execution_path = NULL;
-	char	**envp = NULL;
+	const t_builtin	builtin = builtin_get(curr->av[0][0]);
+	char			*execution_path = NULL;
+	char			**envp = NULL;
+	t_builtin_args	args;
 
-	if (!is_builting(curr->av[0][0], curr) && !exec_builtin(curr->ac[0], curr->av[0], term))
+	if (builtin)
+	{
+		if (!redir_fds(args.fds, (curr->av[1]) ? curr->av[1][0] : NULL, curr->operator))
+			ft_dprintf(2, "[exec][redir] Error!\n");
+		args.ac = curr->ac[0];
+		args.av = curr->av[0];
+		args.t = term;
+		builtin(&args);
+		close_fds(args.fds);
+	}
+	else
 	{
 		if (!(get_path_and_envp(&execution_path, &envp, *curr->av[0], term)))
 			return (free_bst_node(&curr));
-		if (!(term->pid = fork()))
-		{
-			if (!open_and_dup_stdio(curr))
-				return (false);
-			term->st = execve(execution_path, curr->av[0], envp);
-			ft_printf("minishell: %s: command not found\n", curr->av[0][0]);
-			return (false);
-		}
-		else if (term->pid < 0)
-			return (!(term->st = 127));
-		while (waitpid(term->pid, NULL, 0) <= 0)
-			;
-		term->pid = 0;
+		exec_and_join(execution_path, curr->av[0], envp, term);
 		free_ptrs_and_bst((void*)execution_path, (void*)envp, NULL);
 		// have to free curr ?
 	}

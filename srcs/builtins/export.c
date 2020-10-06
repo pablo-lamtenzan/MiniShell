@@ -1,30 +1,30 @@
 #include <minishell.h>
 
-int	print_env(t_map *map)
+int	print_env(int fd, t_map *env)
 {
-	if (map)
+	if (env)
 	{
-		if (map->value && *map->value)
-			ft_printf("declare -x %s=\"%s\"\n", map->key, map->value);
+		if (env->value && *env->value)
+			ft_printf("declare -x %s=\"%s\"\n", env->key, env->value);
 		else
-			ft_printf("declare -x %s\n", map->key);
-		print_env(map->next);
+			ft_printf("declare -x %s\n", env->key);
+		print_env(fd, env->next);
 	}
 	return (0);
 }
 
-int	ft_export(int ac, char* *av, t_term *term)
+int	ft_export(t_builtin_args *args)
 {
 	t_map	*var;
 
-	if (ac == 1)
+	if (args->ac == 1)
 	{
-		map_sort(&term->env, &map_cmp);
-		print_env(term->env);
+		map_sort(&args->t->env, &map_cmp);
+		print_env(1, args->t->env);
 	}
 	else
 	{
-		while (ac-- > 1)
+		while (args->ac-- > 1)
 		{
 			/* if (!key_check(av[ac])) // TODO: Key checks on export builtin
 			{
@@ -32,12 +32,12 @@ int	ft_export(int ac, char* *av, t_term *term)
 					t->name, av[0], av[ac]);
 				return (1);
 			} */
-			if ((var = map_get(term->env, av[ac])))
+			if ((var = map_get(args->t->env, args->av[args->ac])))
 			{
-				if (!map_set(&term->env, var->key, var->value))
+				if (!map_set(&args->t->env, var->key, var->value))
 					return (1);
 			}
-			else if (!map_set(&term->env, av[ac], ""))
+			else if (!map_set(&args->t->env, args->av[args->ac], ""))
 				return (1);
 		}
 	}

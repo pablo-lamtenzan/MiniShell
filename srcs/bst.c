@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   bst.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/06 20:34:12 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/07 01:50:11 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <bst.h>
 #include <stdlib.h>
 
-static t_bst		*new_node(const t_operator_t operator, int ac[2], char* *cmd[2], t_bst *back)
+static t_bst		*new_node(const t_operator_t operator, t_cmd *cmds[2], t_bst *back)
 {
 	t_bst	*new;
 
@@ -23,10 +23,26 @@ static t_bst		*new_node(const t_operator_t operator, int ac[2], char* *cmd[2], t
 	if (back)
 		back->next = new;
 	new->back = back;
-	new->ac[0] = ac[0];
-	new->ac[1] = ac[1];
-	new->av[0] = cmd[0];
-	new->av[1] = cmd[1];
+	if (cmds[0])
+	{
+		new->ac[0] = cmds[0]->ac;
+		new->av[0] = cmds[0]->av;
+	}
+	else
+	{
+		new->ac[0] = 0;
+		new->av[0] = NULL;
+	}
+	if (cmds[1])
+	{
+		new->ac[1] = cmds[1]->ac;
+		new->av[1] = cmds[1]->av;
+	}
+	else
+	{
+		new->ac[1] = 0;
+		new->av[1] = NULL;
+	}
 	new->operator = operator;
 	return (new);
 }
@@ -39,8 +55,7 @@ t_bst			*build_bst(t_operator *operators, t_cmd *cmds)
 {
 	t_bst		*tail;
 	t_bst		*head;
-	char**		cmds_format_conv[2];
-	int			ac[2];
+	t_cmd		*cmds_conv[2];
 	int			it[2];
 
 	head = NULL;
@@ -53,36 +68,21 @@ t_bst			*build_bst(t_operator *operators, t_cmd *cmds)
 	//ft_printf("Type of operator is %i\n", operators->type);
 	while (operators)
 	{
+		cmds_conv[0] = NULL;
+		cmds_conv[1] = NULL;
 		if (tail)
+			cmds_conv[1] = cmds;
+		else if (cmds)
 		{
-			cmds_format_conv[0] = NULL;
-			cmds_format_conv[1] = cmds->av;
-			ac[0] = 0;
-			ac[1] = cmds->ac;
-			cmds = cmds->next;
-		}
-		else
-		{
-			if (cmds)
+			cmds_conv[0] = cmds;
+			if ((cmds = cmds->next))
 			{
-				cmds_format_conv[0] = cmds->av;
-				ac[0] = cmds->ac;
-				
-				//ft_printf("[DBG] av[0][0] value is %s\n", cmds_format_conv[0][0]);
-				//ft_printf("[DBG] av[0][1] value is %s\n", cmds_format_conv[0][1]);
+				cmds_conv[1] = cmds;
 				cmds = cmds->next;
-				if (cmds)
-				{
-					cmds_format_conv[1] = cmds->av;
-					ac[1] = cmds->ac;
-					cmds = cmds->next;
-					head = tail;
-				}
+				head = tail;
 			}
-			
 		}
-		if (!(tail = new_node(operators->type, ac, cmds_format_conv, tail))
-				/*|| cmds == NULL*/)
+		if (!(tail = new_node(operators->type, cmds_conv, tail)))
 			return (NULL);
 		if (!head)
 			head = tail;

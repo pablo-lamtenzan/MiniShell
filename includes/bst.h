@@ -10,7 +10,7 @@
 typedef struct					s_bst
 {
 	t_operator_t				operator;
-	char*					*av[2];
+	char						**av[2];
 	uint32_t					ac[2];
 	struct s_bst				*next;
 	struct s_bst				*back;
@@ -41,7 +41,6 @@ bool							execute_pipe_cmd(t_bst *curr, t_term *data);
 bool							free_ptrs_and_bst(void *ptr1, void *ptr2, t_bst **bst);
 bool							free_one_ptr(void *ptr);
 bool							free_bst_node(t_bst **bst);
-bool							exec_builtin(int ac, char* *argv, t_term *term);
 bool							open_and_dup_stdio(t_bst *curr);
 //bool							is_builtin(int ac, char* *argv, t_term *data);
 bool							get_path_and_envp(char **execution_path, char***envp, char *cmd_name, t_term *term);

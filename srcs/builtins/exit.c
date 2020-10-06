@@ -1,12 +1,12 @@
 #include <minishell.h>
 #include <stdlib.h>
 
-int		ft_exit(t_term *term)
+int		ft_exit(t_builtin_args *args)
 {
-	//term_destroy(t); TO DO i supose it just free all the allocated stuff
+	term_destroy(args->t);
 	write(1, "exit\n", 5);
-	tputs(term->caps.insert_end, 0, &ft_putchar); // i dunno men
-	ft_dprintf(2, "exiting with status code %d", term->st);
-	exit(term->st);
-	return (term->st);
+	tputs(args->t->caps.insert_end, 0, &ft_putchar); // i dunno men
+	ft_dprintf(2, "exiting with status code %d", args->t->st);
+	exit(args->t->st);
+	return (args->t->st);
 }

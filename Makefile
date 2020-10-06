@@ -11,12 +11,14 @@ LFLAGS	=		-L$(LIBFT) -lft -lcurses -ltermcap
 
 SRCS	=		$(addprefix $(SRCDIR)/,\
 					$(addprefix builtins/,\
+						builtins.c\
 						cd.c\
 						echo.c\
 						env.c\
 						exit.c\
 						export.c\
-						pwd.c unset.c\
+						pwd.c\
+						unset.c\
 					)\
 					bst.c\
 					cmd.c\
@@ -38,6 +40,7 @@ HDRS	=		$(addprefix $(INCDIR)/,\
 					bst.h\
 					builtins.h\
 					cmd.h\
+					execution.h\
 					lexer.h\
 					minishell.h\
 					operator.h\

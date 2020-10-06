@@ -7,6 +7,6 @@
 
 # include <libft.h>
 
-char	*path_get(char *name, char *path);
+char	*path_get(const char *name, char *path);
 
 #endif
