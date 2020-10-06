@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 18:13:09 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/06 18:51:47 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/06 18:54:15 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,8 @@ static int			parse_operation(const char **input, t_cmd **cmds,
 	}
 	else if (*cmds && !*operators && !(*operators = operator_new(NONE)))
 		return (ERROR);
-	(*input)++;
+	if (**input)
+		(*input)++;
 	return (status);
 }
 
