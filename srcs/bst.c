@@ -6,7 +6,7 @@
 /*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/06 18:44:25 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/06 19:45:37 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ t_bst			*build_bst(t_operator *operators, t_cmd *cmds)
 
 void			execute_bst(t_bst *head, t_term *term)
 {
-	if (!(head->operator & NONE))
+	if (head->operator == NONE)
 		execute_simple_cmd(head, term);
 	else
 	{

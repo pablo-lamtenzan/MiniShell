@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/02 17:24:51 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/06 18:15:32 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/06 19:58:15 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static bool			execute_child_process(t_pipe2 *p, char **av, uint32_t ac, t_term *
 	{
 		if (!(select_fd(&p)))
 			return (false);
-		if (!exec_builtin(ac, av, term))
+		if (!exec_builtin(ac, av, term, false, NULL))
 		{
 			if (!(get_path_and_envp(&execution_path, &envp, *av, term)))
 				return (false);
