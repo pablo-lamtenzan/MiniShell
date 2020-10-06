@@ -41,9 +41,9 @@ bool							execute_pipe_cmd(t_bst *curr, t_term *data);
 bool							free_ptrs_and_bst(void *ptr1, void *ptr2, t_bst **bst);
 bool							free_one_ptr(void *ptr);
 bool							free_bst_node(t_bst **bst);
-bool							exec_builtin(int ac, char* *argv, t_term *term, bool redirection, t_bst *curr);
+bool							exec_builtin(int ac, char* *argv, t_term *term);
 bool							open_and_dup_stdio(t_bst *curr);
-bool							is_builtin(int ac, char* *argv, t_term *data);
+//bool							is_builtin(int ac, char* *argv, t_term *data);
 bool							get_path_and_envp(char **execution_path, char***envp, char *cmd_name, t_term *term);
 
 #endif

@@ -5,7 +5,7 @@ INCDIR	=		includes
 OBJDIR	=		objs
 CC		=		/usr/bin/clang
 RM		=		/bin/rm
-CFLAGS	=		-Wall -Wextra -Werror -g3
+CFLAGS	=		-Wall -Wextra -Werror -g3 #-fsanitize=address
 IFLAGS	=		-I$(INCDIR) -I$(LIBFT)/includes
 LFLAGS	=		-L$(LIBFT) -lft -lcurses -ltermcap
 

@@ -6,7 +6,7 @@
 /*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/06 19:45:37 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/06 20:34:12 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ void			execute_bst(t_bst *head, t_term *term)
 		if (head->operator & PIPE)
 		{
 			execute_pipe_cmd(head, term);
-			free_bst_node(&head);
+			//free_bst_node(&head);
 		}
 		/* This function will be called once if there are a redirection in the first node*/
 		if (head->operator & REDIR_GR || head->operator & REDIR_LE

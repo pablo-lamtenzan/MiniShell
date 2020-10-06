@@ -6,7 +6,7 @@
 /*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 13:55:19 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/06 20:20:27 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/06 21:42:14 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,9 @@
 #include <sys/wait.h>
 #include <path.h>
 
-bool				exec_builtin(int ac, char* *argv, t_term *term, bool redirection, t_bst *curr)
+bool				exec_builtin(int ac, char* *argv, t_term *term)
 {
 	const char		*name = argv[0];
-
-	if (redirection && !open_and_dup_stdio(curr))
-				return (false);
-	curr ? 0 : (void)curr; // -Wall -Wextra -Werror
 
 	ft_dprintf(2, "[exec] %s\n", name);
 	if (!ft_strncmp(name, "echo", 5))
@@ -44,8 +40,15 @@ bool				exec_builtin(int ac, char* *argv, t_term *term, bool redirection, t_bst 
 		term->st = ft_exit(term);
 	else
 		return (false);
-	ft_printf("term status after builting is %d\n", term->st);
+	ft_dprintf(2, "term status after builting is %d\n", term->st);
 	return (true);
+}
+static bool			is_builting(char *name, t_bst *curr)
+{
+	return ((!ft_strncmp(name, "echo", 5) || !ft_strncmp(name, "cd", 3) \
+			|| !ft_strncmp(name, "pwd", 4) || !ft_strncmp(name, "export", 7) \
+			|| !ft_strncmp(name, "unset", 6) || !ft_strncmp(name, "env", 4) \
+			|| !ft_strncmp(name, "exit", 5)) && open_and_dup_stdio(curr));
 }
 
 bool				get_path_and_envp(char **execution_path, char***envp, char *cmd_name, t_term *term)
@@ -72,7 +75,7 @@ bool				execute_simple_cmd(t_bst *curr, t_term *term) // tokenize -> token ->
 	char	*execution_path = NULL;
 	char*	*envp = NULL;
 
-	if (!exec_builtin(curr->ac[0], curr->av[0], term, false, NULL))
+	if (!exec_builtin(curr->ac[0], curr->av[0], term))
 	{
 		if (!(get_path_and_envp(&execution_path, &envp, *curr->av[0], term)))
 				return (free_bst_node(&curr));
@@ -80,7 +83,7 @@ bool				execute_simple_cmd(t_bst *curr, t_term *term) // tokenize -> token ->
 		if (!(term->pid = fork()))
 		{
 			term->st = execve(execution_path, curr->av[0], envp);
-			ft_printf("execve returned\n");
+			ft_printf("minishell: %s: command not found\n", curr->av[0][0]);
 		}
 		else if (term->pid < 0)
 			return (!(term->st = 127));
@@ -118,8 +121,7 @@ bool			open_and_dup_stdio(t_bst *curr)
 				|| dup2(fd, STDOUT_FILENO) < 0)
 			return (false);
 	}
-	ft_printf("Close return value: %d\n", close(fd));
-	return (fd > 0 /*&& !(close(fd) < 0)*/);
+	return (fd > 0 && !(close(fd) < 0));
 }
 
 bool				execute_redirections_cmd(t_bst *curr, t_term *term)
@@ -127,16 +129,16 @@ bool				execute_redirections_cmd(t_bst *curr, t_term *term)
 	char	*execution_path = NULL;
 	char	**envp = NULL;
 
-	if (!exec_builtin(curr->ac[0], curr->av[0], term, true, curr))
+	if (!is_builting(curr->av[0][0], curr) && !exec_builtin(curr->ac[0], curr->av[0], term))
 	{
+		if (!(get_path_and_envp(&execution_path, &envp, *curr->av[0], term)))
+			return (free_bst_node(&curr));
 		if (!(term->pid = fork()))
 		{
-			//if (!open_and_dup_stdio(curr))
-			//	return (false);
-			if (!(get_path_and_envp(&execution_path, &envp, *curr->av[0], term)))
-				return (free_bst_node(&curr));
+			if (!open_and_dup_stdio(curr))
+				return (false);
 			term->st = execve(execution_path, curr->av[0], envp);
-			ft_printf("HAVE TO CUSTOMIZE THIS ERROR MSG SMOOTHLY\n");
+			ft_printf("minishell: %s: command not found\n", curr->av[0][0]);
 			return (false);
 		}
 		else if (term->pid < 0)
@@ -146,7 +148,6 @@ bool				execute_redirections_cmd(t_bst *curr, t_term *term)
 		term->pid = 0;
 		free_ptrs_and_bst((void*)execution_path, (void*)envp, NULL);
 		// have to free curr ?
-		return (true);
 	}
 	return (true);
 }
