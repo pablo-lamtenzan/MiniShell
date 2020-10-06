@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 18:13:09 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/05 14:14:40 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/05 16:49:37 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,18 +41,16 @@ static int      	lex_type(int status, char c)
 static t_operator	*lex_operator(const char **txt)
 {
 	t_operator		*new;
-	int				pos;
+	const int		pos = ft_strpos(OPERATORS, *(*txt++));
 
-	new = NULL;
-	if ((pos = ft_strpos(OPERATORS, *(*txt++))) > 0)
+	new = (pos > 0) ? malloc(sizeof(*new)) : NULL;
+	if (new)
 	{
-		if ((new = malloc(sizeof(*new)))){
-			if (pos == REDIR_GR && **txt == '>')
-				new->type = REDIR_DG;
-			else
-				new->type = (1 << pos);
-			new->next = NULL;
-		}
+		if (pos == REDIR_GR && **txt == '>')
+			new->type = REDIR_DG;
+		else
+			new->type = (1 << pos);
+		new->next = NULL;
 	}
 	return (new);
 }
