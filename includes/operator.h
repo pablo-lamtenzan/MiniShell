@@ -2,6 +2,7 @@
 # define OPERATOR_H
 
 # include <stdlib.h>
+# include <inttypes.h>
 
 # define OPERATORS "|><;"
 

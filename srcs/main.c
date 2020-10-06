@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 17:33:34 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/05 01:32:37 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/06 17:33:36 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,17 +57,42 @@ int			exec(const char *input, t_term *term) // need to add the global struct
 		free. If there a semicolon we just have to repeat the process until
 		there are no semicolons left
 	*/
+
+	/* Lexer Problems:
+		- when there is a semicolon "opeartors" doesn't have an address
+		- redirection doesn't goes further than lexer.c (inf loop)
+		- pipe doesn't goes further than lexer.c (returns error)
+
+		Builtins problems:
+		- echo
+		- export
+		- unset
+		
+		Builting seems to work:
+		- exit
+		- pwd
+		- cd
+		- env
+	*/
 	while ((status = lexer_tokenize(&input, &commands, &operators)) > 0)
 	{
+		ft_dprintf(2, "[exec][operators address] %p\n", operators);
 		ft_dprintf(2, "[exec][input] %s\n", input);
 		ft_dprintf(2, "[exec][status] %d\n", status);
 		cmd_print(commands, operators);
+		//ft_dprintf(2, "Goes into build_bst\n");
 		if (!(bst = build_bst(operators, commands)))
 			return (false);
+		/*
+		ft_dprintf(2, "[bst][address] %p\n", bst);
+		ft_dprintf(2, "[bst][operator] %d\n", bst->operator);
+		ft_dprintf(2, "[bst][av[0][0]] %s\n", bst->av[0][0]);
+		ft_dprintf(2, "[bst][av[0][1]] %s\n", bst->av[0][1]);
+		*/
 		operator_clear(&operators);
 		cmd_clear(&commands);
 		/* and comands will be freed while i call free_four_ptrs_and_bst later in execute_bts */
-		//execute_bst(bst, term);
+		execute_bst(bst, term);
 		(void) term;
 		
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 13:55:19 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/04 20:41:32 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/06 17:37:29 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ bool				is_builtin(int ac, char* *argv, t_term *term)
 		term->st = ft_exit(term);
 	else
 		return (false);
+	ft_printf("term status after builting is %d\n", term->st);
 	return (true);
 }
 
@@ -66,9 +67,9 @@ bool				execute_simple_cmd(t_bst *curr, t_term *term) // tokenize -> token ->
 	char	*execution_path = NULL;
 	char*	*envp = NULL;
 
-	if (!(term->pid = fork()))
+	if (!is_builtin(curr->ac[0], curr->av[0], term))
 	{
-		if (!is_builtin(curr->ac[0], curr->av[0], term))
+		if (!(term->pid = fork()))
 		{
 			if (!(get_path_and_envp(&execution_path, &envp, *curr->av[0], term)))
 				return (free_bst_node(&curr));
@@ -76,13 +77,15 @@ bool				execute_simple_cmd(t_bst *curr, t_term *term) // tokenize -> token ->
 			ft_printf("HAVE TO CUSTOMIZE THIS ERROR MSG SMOOTHLY\n");
 			return (false);
 		}
+		else if (term->pid < 0)
+			return (!(term->st = 127));
+		while (waitpid(term->pid, NULL, 0) <= 0)
+			;
+		term->pid = 0;
+		free_ptrs_and_bst(execution_path, envp, NULL);
+		// have to free curr ?
+		return (true);
 	}
-	else if (term->pid < 0)
-		return (!(term->st = 127));
-	while (waitpid(term->pid, NULL, 0) <= 0)
-		;
-	term->pid = 0;
-	free_ptrs_and_bst(execution_path, envp, &curr);
 	return (true);
 }
 
@@ -137,6 +140,7 @@ bool				execute_redirections_cmd(t_bst *curr, t_term *term)
 	while (waitpid(term->pid, NULL, 0) <= 0)
 		;
 	term->pid = 0;
-	free_ptrs_and_bst((void*)execution_path, (void*)envp, &curr);
+	free_ptrs_and_bst((void*)execution_path, (void*)envp, NULL);
+	// have to free curr ?
 	return (true);
 }
