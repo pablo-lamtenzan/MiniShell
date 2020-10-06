@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 17:33:34 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/06 18:54:43 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/06 19:03:14 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void cmd_print(t_cmd *commands, t_operator *operators)
 			while (i < commands->ac)
 			{
 				ft_dprintf(2, "%s", commands->av[i++]);
-				if (i == commands->ac - 1)
+				if (i < commands->ac)
 					ft_dprintf(2, " ");
 			}
 			if ((commands = commands->next))
