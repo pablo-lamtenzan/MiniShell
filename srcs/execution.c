@@ -6,7 +6,7 @@
 /*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 13:55:19 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/06 22:24:57 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/06 23:09:02 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ bool			open_and_dup_stdio(t_bst *curr)
 				|| dup2(fd, STDOUT_FILENO) < 0)
 			return (false);
 	}
-	return (fd > 0 && (close(fd) > 0));
+	return (fd > 0 && !(close(fd) < 0));
 }
 
 bool				execute_redirections_cmd(t_bst *curr, t_term *term)

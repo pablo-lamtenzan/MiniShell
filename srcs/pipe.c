@@ -6,7 +6,7 @@
 /*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/02 17:24:51 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/06 21:34:07 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/06 23:01:09 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ bool				execute_pipe_cmd(t_bst *curr, t_term *term)
 	{
 		pipe(p.fd);
 		if (!execute_child_process(&p, curr->av[once ? 0 : 1], curr->ac[once ? 0 : 1], term) \
-				|| close (p.fd[1]) < 0)
+				|| (close (p.fd[1]) < 0))
 			return (false);
 		p.in[0] = p.fd[0];
 		if (!once)
