@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bst.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/05 00:00:04 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/06 17:21:37 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,14 @@ t_bst		*build_bst(t_operator *operators, t_cmd *cmds)
 	char**			cmds_format_conv[2]; // cmds->data has to be malloc
 	int				it[2];
 
+	head = NULL;
 	tail = NULL;
 	it[0] = 0;
 	it[1] = 0;
+	if (!operators)
+		ft_dprintf(2, "operators null address in build_bst\n");
+	//ft_printf("Address of operator is %p\n", operators);
+	//ft_printf("Type of operator is %i\n", operators->type);
 	while (operators)
 	{
 		if (tail)
@@ -56,6 +61,8 @@ t_bst		*build_bst(t_operator *operators, t_cmd *cmds)
 			if (cmds)
 			{
 				cmds_format_conv[0] = cmds->av;
+				//ft_printf("[DBG] av[0][0] value is %s\n", cmds_format_conv[0][0]);
+				//ft_printf("[DBG] av[0][1] value is %s\n", cmds_format_conv[0][1]);
 				cmds = cmds->next;
 				if (cmds)
 				{
@@ -67,8 +74,10 @@ t_bst		*build_bst(t_operator *operators, t_cmd *cmds)
 			
 		}
 		if (!(tail = new_node(operators->type, cmds_format_conv, tail))
-				|| cmds == NULL)
+				/*|| cmds == NULL*/)
 			return (NULL);
+		if (!head)
+			head = tail;
 		operators = operators->next;
 	}
 	return (head);
@@ -84,7 +93,7 @@ t_bst		*build_bst(t_operator *operators, t_cmd *cmds)
 
 void		execute_bst(t_bst *head, t_term *term)
 {
-	if (head->operator & NONE)
+	if (!(head->operator & NONE))
 		execute_simple_cmd(head, term);
 	else
 	{
