@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 13:55:19 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/06 17:37:29 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/06 18:31:32 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,11 @@
 #include <sys/wait.h>
 #include <path.h>
 
-bool				is_builtin(int ac, char* *argv, t_term *term)
+bool				exec_builtin(int ac, char* *argv, t_term *term)
 {
 	const char		*name = argv[0];
 
+	ft_dprintf(2, "[exec] %s\n", name);
 	if (!ft_strncmp(name, "echo", 5))
 		term->st = ft_echo(ac, argv);
 	else if (!ft_strncmp(name, "cd", 3))
@@ -67,15 +68,15 @@ bool				execute_simple_cmd(t_bst *curr, t_term *term) // tokenize -> token ->
 	char	*execution_path = NULL;
 	char*	*envp = NULL;
 
-	if (!is_builtin(curr->ac[0], curr->av[0], term))
+	if (!exec_builtin(curr->ac[0], curr->av[0], term))
 	{
+		if (!(get_path_and_envp(&execution_path, &envp, *curr->av[0], term)))
+				return (free_bst_node(&curr));
+		ft_dprintf(2, "[exec][path] '%s'\n", execution_path);
 		if (!(term->pid = fork()))
 		{
-			if (!(get_path_and_envp(&execution_path, &envp, *curr->av[0], term)))
-				return (free_bst_node(&curr));
 			term->st = execve(execution_path, curr->av[0], envp);
-			ft_printf("HAVE TO CUSTOMIZE THIS ERROR MSG SMOOTHLY\n");
-			return (false);
+			ft_printf("execve returned\n");
 		}
 		else if (term->pid < 0)
 			return (!(term->st = 127));
@@ -84,7 +85,6 @@ bool				execute_simple_cmd(t_bst *curr, t_term *term) // tokenize -> token ->
 		term->pid = 0;
 		free_ptrs_and_bst(execution_path, envp, NULL);
 		// have to free curr ?
-		return (true);
 	}
 	return (true);
 }
@@ -126,7 +126,7 @@ bool				execute_redirections_cmd(t_bst *curr, t_term *term)
 	{
 		if (!open_and_dup_stdio(curr))
 			return (false);
-		if (!is_builtin(curr->ac[0], curr->av[0], term))
+		if (!exec_builtin(curr->ac[0], curr->av[0], term))
 		{
 			if (!(get_path_and_envp(&execution_path, &envp, *curr->av[0], term)))
 				return (free_bst_node(&curr));

@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 18:13:09 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/05 16:49:37 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/06 18:51:47 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,10 @@ static t_operator	*lex_operator(const char **txt)
 	t_operator		*new;
 	const int		pos = ft_strpos(OPERATORS, *(*txt++));
 
-	new = (pos > 0) ? malloc(sizeof(*new)) : NULL;
+	new = (pos >= 0) ? malloc(sizeof(*new)) : NULL;
 	if (new)
 	{
+		ft_dprintf(2, "[lexer][operator] %c\n", OPERATORS[pos]);
 		if (pos == REDIR_GR && **txt == '>')
 			new->type = REDIR_DG;
 		else
@@ -93,16 +94,16 @@ static int			parse_operation(const char **input, t_cmd **cmds,
 		cmd_clear(cmds);
 		return (ERROR);
 	}
-	ft_dprintf(2, "[lexer][status]: %d\n", status);
-	if (status & SEMICOL)
+	ft_dprintf(2, "[lexer][status] %d\n", status);
+
+	if (status & OP)
 	{
-		(*input)++;
-		return (status);
+		if (!operator_add(operators, lex_operator(input)))
+			return (ERROR);
 	}
-	if (status & OP && !operator_add(operators, lex_operator(input)))
+	else if (*cmds && !*operators && !(*operators = operator_new(NONE)))
 		return (ERROR);
-	if (!*operators && !(*operators = operator_new(NONE)))
-		return (ERROR);
+	(*input)++;
 	return (status);
 }
 
@@ -116,7 +117,7 @@ int					lexer_tokenize(const char **input, t_cmd **cmds,
 	status = EMPTY;
 	while (**input && !(status & SEMICOL))
 	{
-		ft_dprintf(2, "[lexer][input]: '%s'\n", *input);
+		ft_dprintf(2, "[lexer][input] '%s'\n", *input);
 		if ((status = parse_operation(input, cmds, operators)) < 0)
 		{
 			cmd_clear(cmds);

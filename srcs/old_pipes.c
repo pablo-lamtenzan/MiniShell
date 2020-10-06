@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/23 20:21:37 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/04 20:15:38 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/06 18:15:33 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ static bool			OLD______pipe_execution(t_pipe *p, t_bst *curr, t_term *term, int 
 			return (false);
 		if (p->out && dup2(p->fd_write, STDOUT_FILENO) < 0)
 			return (false);
-		if (!is_builtin(ac, argv, data))
+		if (!exec_builtin(ac, argv, data))
 		{
 			if (!(execution_path = path_get(argv[0], \
 				map_get(data->env, "PATH")->value)))

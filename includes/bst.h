@@ -43,7 +43,7 @@ bool							free_ptrs_and_bst(void *ptr1, void *ptr2, t_bst **bst);
 bool							free_one_ptr(void *ptr);
 bool							free_bst_node(t_bst **bst);
 
-bool							is_builtin(int ac, char* *argv, t_term *data);
+bool							exec_builtin(int ac, char* *argv, t_term *data);
 bool							get_path_and_envp(char **execution_path, char***envp, char *cmd_name, t_term *term);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/02 17:24:51 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/04 20:41:03 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/06 18:15:32 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static bool			execute_child_process(t_pipe2 *p, char **av, uint32_t ac, t_term *
 	{
 		if (!(select_fd(&p)))
 			return (false);
-		if (!is_builtin(ac, av, term))
+		if (!exec_builtin(ac, av, term))
 		{
 			if (!(get_path_and_envp(&execution_path, &envp, *av, term)))
 				return (false);
