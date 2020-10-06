@@ -4,6 +4,7 @@ int	ft_echo(int ac, char* *av)
 {
 	char	opt;
 	short	arg;
+
 //	char	**env;
 
 // TODO:	env = envp;
