@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 13:55:19 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/07 01:53:24 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/07 21:44:08 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,7 @@ bool	redir_fds(int *fds, const char *filepath, t_operator_t op)
 	else if (op & REDIR_LE)
 		fds[0] = open(filepath, O_RDONLY);
 	else
-	{
-		fds[0] = 0;
-		fds[1] = 1;
-		return (true);
-	}
+		return (!(fds[0] = 0) && (fds[1] = 1));
 	return (fds[0] >= 0 && fds[1] >= 0);
 }
 
@@ -75,15 +71,17 @@ bool				get_path_and_envp(char **filepath, char***envp, char *cmd_name, t_term *
 /* I'm modifying data->envp, probally a bad idea TO SEE LATER*/
 
 /* Normally witouth redirecting the fd, dont need to fork */
-void				exec_and_join(const char *filepath, char *const *av, char *const *ep, t_term *t)
+void				exec_and_join(const char *filepath, char **av_ep[2], t_term *t, t_bst *curr)
 {
 	// TODO: Error handling (WIFEXITED ...)
 	ft_dprintf(2, "[exec][path] '%s'\n", filepath);
 	if (!(t->pid = fork()))
 	{
-		t->st = execve(filepath, av, ep);
-		ft_dprintf(2, "minishell: %s: execve returned '%d'!\n", av[0], t->st);
-		exit(1);
+		if (curr)
+			open_and_dup_stdio(curr);
+		t->st = execve(filepath, av_ep[0], av_ep[1]);
+		ft_dprintf(2, "minishell: %s: execve returned '%d'!\n", av_ep[0][0], t->st);
+		exit(EXIT_FAILURE);
 		return ;
 	}
 	else if (t->pid < 0)
@@ -102,6 +100,7 @@ bool				execute_simple_cmd(t_bst *curr, t_term *term) // tokenize -> token ->
 	char			*execution_path = NULL;
 	char*			*envp = NULL;
 	t_builtin_args	args;
+	char**			av_ep[2];
 
 	
 	if (builtin)
@@ -118,7 +117,9 @@ bool				execute_simple_cmd(t_bst *curr, t_term *term) // tokenize -> token ->
 	{
 		if (!(get_path_and_envp(&execution_path, &envp, curr->av[0][0], term)))
 				return (free_bst_node(&curr));
-		exec_and_join(execution_path, curr->av[0], envp, term);
+		av_ep[0] = curr->av[0];
+		av_ep[1] = envp;
+		exec_and_join(execution_path, av_ep, term, NULL);
 		free_ptrs_and_bst(execution_path, envp, NULL);
 		// have to free curr ?
 	}
@@ -159,6 +160,7 @@ bool				execute_redirections_cmd(t_bst *curr, t_term *term)
 	char			*execution_path = NULL;
 	char			**envp = NULL;
 	t_builtin_args	args;
+	char**			av_ep[2];
 
 	if (builtin)
 	{
@@ -174,7 +176,9 @@ bool				execute_redirections_cmd(t_bst *curr, t_term *term)
 	{
 		if (!(get_path_and_envp(&execution_path, &envp, *curr->av[0], term)))
 			return (free_bst_node(&curr));
-		exec_and_join(execution_path, curr->av[0], envp, term);
+		av_ep[0] = curr->av[0];
+		av_ep[1] = envp;
+		exec_and_join(execution_path, av_ep, term, curr);
 		free_ptrs_and_bst((void*)execution_path, (void*)envp, NULL);
 		// have to free curr ?
 	}
