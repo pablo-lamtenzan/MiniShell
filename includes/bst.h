@@ -7,6 +7,9 @@
 #include <stdint.h>
 #include <cmd.h>
 
+# define READ					0
+# define WRITE					1
+
 typedef struct					s_bst
 {
 	t_operator_t				operator;
@@ -30,6 +33,7 @@ typedef struct  	s_pipe
 typedef struct		s_pipe2
 {
 	int8_t			in[2];
+	int8_t			status;
 	int32_t			fd[2];
 }					t_pipe2;
 
@@ -44,5 +48,7 @@ bool							free_bst_node(t_bst **bst);
 bool							open_and_dup_stdio(t_bst *curr);
 //bool							is_builtin(int ac, char* *argv, t_term *data);
 bool							get_path_and_envp(char **execution_path, char***envp, char *cmd_name, t_term *term);
+
+void close_fds(int *fds);
 
 #endif

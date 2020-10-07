@@ -6,29 +6,11 @@
 /*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 18:07:45 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/07 20:50:52 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/07 22:32:48 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
-
-bool					redir_fds(int* fds, const char* filepath, t_operator_t op)
-{
-	static const int	umask = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
-
-	if (op & REDIR_GR \
-		&& (fds[1] = open(filepath, O_WRONLY | O_CREAT | O_TRUNC, umask)) < 0)
-		return (false);
-	else if (op & REDIR_DG \
-		&& (fds[1] = open(filepath, O_WRONLY | O_CREAT | O_APPEND, umask)) < 0)
-		return (false);
-	else if (op & REDIR_LE \
-		&& (fds[0] = open(filepath, O_RDONLY)) < 0)
-		return (false);
-	else
-		return (!(fds[0] = 0) && (fds[1] = 1));
-	return (fds[0] >= 0 && fds[1] >= 0);
-}
 
 static bool		select_fd(t_pipe2* p)
 {
@@ -42,6 +24,28 @@ static bool		select_fd(t_pipe2* p)
 	return (!close(p->status == READ ? p->fd[WRITE] : p->fd[READ]));
 }
 
+void				exec_and_join_pipes(const char *filepath, char **av_ep[2], t_term *t, t_pipe2 *p)
+{
+	// TODO: Error handling (WIFEXITED ...)
+	ft_dprintf(2, "[exec][path] '%s'\n", filepath);
+	if (!(t->pid = fork()))
+	{
+		select_fd(p);
+		t->st = execve(filepath, av_ep[0], av_ep[1]);
+		ft_dprintf(2, "minishell: %s: execve returned '%d'!\n", av_ep[0][0], t->st);
+		exit(EXIT_FAILURE);
+		return ;
+	}
+	else if (t->pid < 0)
+	{
+		t->st = 127;
+		return ;
+	}
+	while (waitpid(t->pid, NULL, 0) <= 0)
+		;
+	t->pid = 0;
+}
+
 static bool		execute_child_process(t_pipe2* p, int32_t ac, char** av ,
 		t_term* term)
 {
@@ -49,37 +53,29 @@ static bool		execute_child_process(t_pipe2* p, int32_t ac, char** av ,
 	char*			execution_path;
 	char**			envp;
 	t_builtin_args	args;
+	char			**av_ep[2];
 
 	execution_path = NULL;
 	envp = NULL;
 	ft_dprintf(2, "[PIPES CHILD EXEC][command name is: %s]\n", av[0]);
 	if (builtin)
 	{
-		args = (t_builtin_args){.ac=ac, .av=av, .t=term};
+		args.ac = ac;
+		args.av = av;
+		args.t = term;
 		if (!redir_fds(args.fds, NULL, NONE) || !select_fd(p))
 			ft_dprintf(2, "[exec][pipe] Error with 'select_fd'!");
 		builtin(&args);
+		close_fds(args.fds);
 	}
 	else
 	{
 		if (!get_path_and_envp(&execution_path, &envp, *av, term))
 			return (false);
-		if (!(term->pid = fork()) && select_fd(p))
-		{
-			term->st = execve(execution_path, av, envp);
-			ft_printf("minishell: %s: command not found\n", av[0]);
-			exit(EXIT_FAILURE);
-			return (false);
-		}
-		else if (term->pid < 0)
-			return (!(term->pid = 0));
-		else
-			return (false);
-		while (waitpid(term->pid, NULL, 0) < 0)
-			;
-		free(execution_path);
-		free(envp);
-		term->pid = 0;
+		av_ep[0] = av;
+		av_ep[1] = envp;
+		exec_and_join_pipes(execution_path, av_ep, term, p);
+		free_ptrs_and_bst(execution_path, envp, NULL);
 	}
 	return (!close(p->status == READ ? p->fd[WRITE] : p->fd[READ]));
 }
@@ -111,13 +107,13 @@ bool				execute_pipe_cmd(t_bst *curr, t_term *term)
 	int32_t debug_it = 1;
 	while (42)
 	{
-		ft_dprintf(2, "[PIPES EXEC][LOOPS %d TIMES]\n", debug_it);
+		ft_dprintf(2, "[PIPES EXEC][LOOPS %d TIMES]\n", debug_it++);
 		if (pipe(p.fd) < 0)
 			return (false);
 		if (!execute_child_process(&p, curr->ac[do_while ? 0 : 1], \
 				curr->av[do_while ? 0 : 1], term))
 			return (false);
-		p.status = p.status == READ ? WRITE : READ;
+		p.status = p.status == READ ? WRITE : READ; // should it be just 1 the first time read and the rest write ?
 		if (do_while == false)
 			curr = curr->next;
 		// break if there's only 1 pipe or before the last if there are more
@@ -125,11 +121,18 @@ bool				execute_pipe_cmd(t_bst *curr, t_term *term)
 			break ;
 		do_while = false;
 	}
-	ft_dprintf(2, "[PIPE EXEC][NAME OF LAST IS : %s]\n", curr->av[0][0]);
+	ft_dprintf(2, "THIS LINE SHOULD BE ALWAYS EXECUTED\n");
+	ft_dprintf(2, "[PIPE EXEC][NAME OF LAST IS : %s]\n", curr->av[1][0]);
 	// then redirect the previous output to stdin
 	if (dup2(STDIN_FILENO, p.fd[READ]) < 0 || close(p.fd[WRITE]) < 0)
 		return (false);
-	
 	// finally execute (now the previous output is in stdin)
 	return (execute_cmd_or_redirection(&p, curr, term));
 }
+
+/* Notes:
+	- Nothing works per the moment
+	- No-builtins pipe are better than builtins pipes
+	- No-builtins pipe loop correctly put have no output
+	- Builtins pipe doesn't loop`correctly
+*/
