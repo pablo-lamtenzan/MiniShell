@@ -28,7 +28,7 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 					main.c\
 					operator.c\
 					path.c\
-					pipe.c\
+					new_pipes.c\
 					token.c\
 				)
 
