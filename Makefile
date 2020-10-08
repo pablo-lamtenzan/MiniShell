@@ -23,12 +23,14 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 					bst.c\
 					cmd.c\
 					execution.c\
+					execution_fill.c\
 					free.c\
 					lexer.c\
 					main.c\
 					operator.c\
 					path.c\
-					new_pipes.c\
+					pipes.c\
+					pipes_fill.c\
 					token.c\
 				)
 

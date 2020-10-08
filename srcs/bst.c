@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   bst.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/07 01:50:11 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/08 21:37:44 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <bst.h>
+#include <execution.h>
 #include <stdlib.h>
 
 static t_bst		*new_node(const t_operator_t operator, t_cmd *cmds[2], t_bst *back)
@@ -110,7 +110,7 @@ void			execute_bst(t_bst *head, t_term *term)
 		*/
 		if (head->operator & PIPE)
 		{
-			execute_pipe_cmd(head, term);
+			execute_pipes_cmd(-1, head, term);
 			//free_bst_node(&head);
 		}
 		/* This function will be called once if there are a redirection in the first node*/

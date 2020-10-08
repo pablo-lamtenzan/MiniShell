@@ -320,7 +320,7 @@ int	main(int ac, char **av, char **ep)
 	cmds = NULL;
 	cmd_add(&cmds, cmd_new("/bin/ls", av, ep));
 	cmd_add(&cmds, cmd_new("/bin/cat", (char *[2]){"-e", (char *)NULL}, ep));
-	cmd_add(&cmds, cmd_new("/usr/bin/rev", av, ep));
+	//cmd_add(&cmds, cmd_new("/usr/bin/rev", av, ep));
 	exec_pipe(cmds, 0);
 //	example_simple_redir(bins[0], avs[0], eps[0]);
 	return (0);
