@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 17:33:34 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/06 19:03:14 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/09 17:10:41 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,27 +58,6 @@ int			exec(const char *input, t_term *term) // need to add the global struct
 	t_bst		*bst;
 	int			status;
 
-	/* The steps to execute a comand are lexer, bst build, execution and
-		free. If there a semicolon we just have to repeat the process until
-		there are no semicolons left
-	*/
-
-	/* Lexer Problems:
-		- when there is a semicolon "opeartors" doesn't have an address
-		- redirection doesn't goes further than lexer.c (inf loop)
-		- pipe doesn't goes further than lexer.c (returns error)
-
-		Builtins problems:
-		- echo
-		- export
-		- unset
-		
-		Builting seems to work:
-		- exit
-		- pwd
-		- cd
-		- env
-	*/
 	while ((status = lexer_tokenize(&input, &commands, &operators)) > 0)
 	{
 		ft_dprintf(2, "[exec][operators address] %p\n", operators);

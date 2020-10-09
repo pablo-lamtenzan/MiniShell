@@ -6,7 +6,7 @@
 /*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 18:07:45 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/08 22:28:22 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/09 17:05:31 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,10 @@ bool			execute_pipes_cmd(int in_fd, t_bst* curr, t_term* term)
 
 	if (curr)
 	{
-		fds[0] = in_fd == -1 ? STDIN_FILENO : in_fd;
+		fds[0] = in_fd == INIT ? STDIN_FILENO : in_fd;
 		fds[1] = STDOUT_FILENO;
 		fds[2] = STDERR_FILENO;
-		if (in_fd == -1 || (curr->next && curr->next->operator & PIPE))
+		if (in_fd == INIT || (curr->next && curr->next->operator & PIPE))
 		{
 			if (pipe(fildes) < 0)
 				return (false);
