@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/08 21:58:48 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/10 16:10:22 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/10 16:58:59 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ bool				get_path_and_envp(char** filepath, char*** envp, char* cmd_name, t_term*
 	return (true);
 }
 
-bool	close_fds(int *fds)
+
+bool	dup_stdio(int fds[3])
 {
 	int i;
 
@@ -42,11 +43,18 @@ bool	close_fds(int *fds)
 	{
 		if (fds[i] != i)
 		{
-			dprintf(2, "[redir] closing %d\n", fds[i]); // DEBUG
+			dprintf(2, "[redir][dup] %d -> %d\n", fds[i], i);
+			if (dup2(fds[i], i) < 0)
+			{
+				dprintf(2, "[redir][dup][error] dup2 returned '-1'!\n");
+				dprintf(2, "[errno] %d: %s\n", errno, strerror(errno));
+				return (false);
+			}
+			dprintf(2, "[redir][close] fork fd '%d'...\n", fds[i]);
 			if (close(fds[i]) < 0)
 			{
-				dprintf(2, "[redir] close returned '-1'!\n"); // DEBUG
-				dprintf(2, "[errno] %d: %s\n", errno, strerror(errno)); // DEBUG
+				dprintf(2, "[redir][close][error] close(%d) returned -1!\n", fds[i]);
+				dprintf(2, "[errno] %d: %s\n", errno, strerror(errno));
 				return (false);
 			}
 		}
@@ -73,4 +81,26 @@ bool	redir_fds(int* fds, const char* filepath, t_operator_t op)
 	dprintf(2, "[redir][opened] '%s'!\n", filepath); // DEBUG
 	dprintf(2, "[redir] fds[0] = %d, fds[1] = %d!\n", fds[0], fds[1]); // DEBUG
 	return (fds[0] >= 0 && fds[1] >= 0);
+}
+
+bool	close_fds(int *fds)
+{
+	int i;
+
+	i = 0;
+	while (i < 3)
+	{
+		if (fds[i] != i)
+		{
+			dprintf(2, "[redir] closing %d\n", fds[i]); // DEBUG
+			if (close(fds[i]) < 0)
+			{
+				dprintf(2, "[redir] close returned '-1'!\n"); // DEBUG
+				dprintf(2, "[errno] %d: %s\n", errno, strerror(errno)); // DEBUG
+				return (false);
+			}
+		}
+		i++;
+	}
+	return (true);
 }
