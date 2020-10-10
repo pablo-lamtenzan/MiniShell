@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 13:55:19 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/10 17:50:34 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/10 20:22:06 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,15 +96,19 @@ bool				exec_pipe_cmd(t_bst *curr, t_term *term, int in_fd, int index)
 {
 	t_args	args;
 	int		pipe_fds[2]; // pipes
+	bool ret;
 
-	if (curr)
+	if (curr && ((ret = redir_fds(args.fds, curr->next->av[1] ? curr->next->av[1][0] : NULL, curr->next->operator))
+			|| redir_fds(args.fds, curr->av[1] ? curr->av[1][0] : NULL, curr->operator)))
 	{
+		ft_dprintf(2, "[EXEC PIPE CMD][RET OF REDIR FDS] %d\n", ret);
 		args.fds[0] = in_fd;
-		args.fds[1] = STDOUT_FILENO;
-		args.fds[2] = STDERR_FILENO;
+		//args.fds[1] = STDOUT_FILENO;
+		//args.fds[2] = STDERR_FILENO;
 		args.ac = curr->ac[index];
 		args.av = curr->av[index];
-		if (index == 0 || curr->next)
+		if (index == 0 || (curr->next && (curr->next->operator & PIPE || (curr->next->next \
+				&& (curr->next->operator & REDIR_GR || curr->next->operator & REDIR_DG || curr->next->operator & REDIR_LE)))))
 		{
 			if (pipe(pipe_fds) < 0)
 			{

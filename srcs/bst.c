@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bst.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/10 18:41:54 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/10 19:48:30 by plamtenz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,20 +91,18 @@ bool			execute_bst(t_bst *head, t_term *term)
 {
 	t_args	args;
 
-	if (redir_fds(args.fds, head->av[1] ? head->av[1][0] : NULL, head->operator))
+	if (head->operator & PIPE)
 	{
-		if (head->operator & PIPE)
-		{
-			ft_dprintf(2, "[exec][pipe] executing...\n");
-			exec_pipe_cmd(head, term, STDIN_FILENO, 0);
-		}
-		else
-		{
-			ft_dprintf(2, "[exec][cmd] executing...\n");
-			args.ac = head->ac[0];
-			args.av = head->av[0];
-			exec_cmd(&args, term);
-		}
+		ft_dprintf(2, "[exec][pipe] executing...\n");
+		exec_pipe_cmd(head, term, STDIN_FILENO, 0);
+	}
+	else
+	{
+		ft_dprintf(2, "[exec][cmd] executing...\n");
+		args.ac = head->ac[0];
+		args.av = head->av[0];
+			if (redir_fds(args.fds, head->av[1] ? head->av[1][0] : NULL, head->operator))
+		exec_cmd(&args, term);
 		return (true);
 		//return (close_fds(args.fds));
 	}
