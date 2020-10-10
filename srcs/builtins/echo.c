@@ -1,10 +1,11 @@
 #include <minishell.h>
 
-int	ft_echo(t_builtin_args *args)
+int	ft_echo(t_args *args, t_term *t)
 {
 	char	opt;
 	short	arg;
 
+	(void) t;
 	arg = 1;
 	opt = 0;
 	if (args->ac > 1)

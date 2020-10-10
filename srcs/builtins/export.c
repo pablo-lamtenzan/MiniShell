@@ -13,14 +13,14 @@ int	print_env(int fd, t_map *env)
 	return (0);
 }
 
-int	ft_export(t_builtin_args *args)
+int	ft_export(t_args *args, t_term *t)
 {
 	t_map	*var;
 
 	if (args->ac == 1)
 	{
-		map_sort(&args->t->env, &map_cmp);
-		print_env(1, args->t->env);
+		map_sort(&t->env, &map_cmp);
+		print_env(1, t->env);
 	}
 	else
 	{
@@ -32,12 +32,12 @@ int	ft_export(t_builtin_args *args)
 					t->name, av[0], av[ac]);
 				return (1);
 			} */
-			if ((var = map_get(args->t->env, args->av[args->ac])))
+			if ((var = map_get(t->env, args->av[args->ac])))
 			{
-				if (!map_set(&args->t->env, var->key, var->value))
+				if (!map_set(&t->env, var->key, var->value))
 					return (1);
 			}
-			else if (!map_set(&args->t->env, args->av[args->ac], ""))
+			else if (!map_set(&t->env, args->av[args->ac], ""))
 				return (1);
 		}
 	}

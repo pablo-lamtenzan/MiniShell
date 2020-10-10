@@ -9,8 +9,9 @@ void	env_print(int fd, t_map *env)
 	}
 }
 
-int		ft_env(t_builtin_args *args)
+int		ft_env(t_args *args, t_term *t)
 {
-	env_print(1, args->t->env);
+	(void) args;
+	env_print(1, t->env);
 	return (0);
 }

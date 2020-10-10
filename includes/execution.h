@@ -7,9 +7,13 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 
+# include <errno.h> // If this is allowed
+# include <string.h>
+
 # include <libft.h>
 
 # include <bst.h>
+# include <args.h>
 # include <builtins.h>
 # include <path.h>
 
@@ -26,16 +30,15 @@ typedef struct				s_builtin_exec
 	char**					av;
 }							t_builtin_exec;
 
-bool						execute_simple_cmd(t_bst* curr, t_term* data);
-bool						execute_redirections_cmd(t_bst* curr, t_term* data);
-bool						execute_pipe_cmd(t_bst* curr, t_term* data);
-bool						exec_builtin(t_builtin_args* args);
+bool						exec_cmd(t_args *args, t_term *term);
+bool						exec_pipe_cmd(t_bst *curr, t_term *term, int in_fd, int index);
+
+
 bool	            		redir_fds(int* fds, const char* filepath, t_operator_t op);
-bool						execute_pipes_cmd(int in_fd, t_bst* curr, t_term* term);
-bool						if_builtin_exec(const t_builtin_exec b, t_term* term, int32_t fds[3]);
+
 bool						get_path_and_envp(char** execution_path, char*** envp, char* cmd_name, t_term* term);
-bool						open_and_dup_stdio(t_bst *curr);
-void						close_fds(int* fds);
+
+bool						close_fds(int *fds);
 bool						dup_stdio(int fds[3]);
 
 # endif

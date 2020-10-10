@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bst.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/08 21:37:44 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/10 16:47:08 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static t_bst		*new_node(const t_operator_t operator, t_cmd *cmds[2], t_bst *back
 {
 	t_bst	*new;
 
-	if (!(new = (t_bst *)malloc(sizeof(t_bst))))
+	if (!(new = malloc(sizeof(t_bst))))
 		return (NULL);
 	new->next = NULL;
 	if (back)
@@ -44,6 +44,8 @@ static t_bst		*new_node(const t_operator_t operator, t_cmd *cmds[2], t_bst *back
 		new->av[1] = NULL;
 	}
 	new->operator = operator;
+	ft_dprintf(2, "[bst][token] %s - %s\n",
+		new->av[0] ? new->av[0][0] : NULL, new->av[1] ? new->av[1][0] : NULL);
 	return (new);
 }
 
@@ -71,7 +73,10 @@ t_bst			*build_bst(t_operator *operators, t_cmd *cmds)
 		cmds_conv[0] = NULL;
 		cmds_conv[1] = NULL;
 		if (tail)
+		{
 			cmds_conv[1] = cmds;
+			cmds = cmds->next;
+		}
 		else if (cmds)
 		{
 			cmds_conv[0] = cmds;
@@ -99,26 +104,30 @@ t_bst			*build_bst(t_operator *operators, t_cmd *cmds)
 	If this is right, the engine is built in this function.
 */
 
-void			execute_bst(t_bst *head, t_term *term)
+bool			execute_bst(t_bst *head, t_term *term)
 {
-	if (head->operator == NONE)
-		execute_simple_cmd(head, term);
-	else
+	t_args	args;
+
+	if (redir_fds(args.fds, head->av[1] ? head->av[1][0] : NULL, head->operator))
 	{
-		/* The idea is start here with his fcts and if after a pipe there is another pipe or
-			an redirection the function execute_pipe must handle this.
-		*/
 		if (head->operator & PIPE)
 		{
-			execute_pipes_cmd(-1, head, term);
-			//free_bst_node(&head);
+			ft_dprintf(2, "[exec][pipe] executing...\n");
+			exec_pipe_cmd(head, term, STDIN_FILENO, 0);
 		}
-		/* This function will be called once if there are a redirection in the first node*/
-		if (head->operator & REDIR_GR || head->operator & REDIR_LE
-			|| head->operator & REDIR_DG)
-			execute_redirections_cmd(head, term);
+		else
+		{
+			ft_dprintf(2, "[exec][cmd] executing...\n");
+			args.ac = head->ac[0];
+			args.av = head->av[0];
+			exec_cmd(&args, term);
+		}
+		return (true);
+		//return (close_fds(args.fds));
 	}
+	return (false);
 }
+
 /* The previous function will call the executers functions (calling execve or calling a function
 	who calls execve)
 */

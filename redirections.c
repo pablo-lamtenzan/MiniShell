@@ -50,7 +50,7 @@ int		close_files(int *fds)
 			dprintf(2, "[redir] closing %d\n", fds[i]);
 			if (close(fds[i]) < 0)
 			{
-				dprintf(2, "[redir] dup2 returned '-1'!\n");
+				dprintf(2, "[redir] close returned '-1'!\n");
 				dprintf(2, "[errno] %d: %s\n", errno, strerror(errno));
 				return (-1);
 			}
@@ -141,30 +141,6 @@ bool	exec_and_join(const char *binary, char* const *av, char *const *ep, int *st
 	return (true);
 }
 
-/* void old()
-{
-	//pipe
-	if (!(pid = fork()))
-	{;
-		dprintf(2, "[exec][child] executing '%s'...\n", cmds->binary);
-		dup_stdio(fds);
-		// *(int*)0=0; // Use this to simulate SEGFAULT
-		ret = execve(cmds->binary, cmds->av, cmds->ep);
-		dprintf(2, "[exec][child] execve returned '%d'!\n", ret);
-		dprintf(2, "[errno] %d: %s\n", errno, strerror(errno));
-		exit(ret);
-	}
-	else if (pid < 0)
-	{
-		dprintf(2, "[exec][parent] error: pid is '%d'!\n", pid);
-		dprintf(2, "[errno] %d: %s\n", errno, strerror(errno));
-		return (false);
-	}
-	dprintf(2, "[exec][parent] joining child with pid '%d'!\n", pid);
-	while (!waitpid(pid, &status, 0))
-		;
-} */
-
 bool	exec_pipe(t_cmd *cmds, int in_fd)
 {
 	int		fds[3];
@@ -194,10 +170,6 @@ bool	exec_pipe(t_cmd *cmds, int in_fd)
 			// last command
 			exec_and_join(cmds->binary, cmds->av, cmds->ep, &status, fds);
 		}
-	}
-	else
-	{
-		// cleanup
 	}
 	return (true);
 }
@@ -231,56 +203,6 @@ int	example_simple_redir(const char *binary, char *const *av, char *const *ep)
 		&& close_files(fds)
 		&& handle_status(status)
 	);
-}
-
-int	example_pipe(const char *binary[3], char *av[3][3], char *ep[3][1])
-{
-	static const int	count = 3;
-	int					i;
-	int					pipe_fds[2];
-	int					fds[STDIO_CT];
-	int					status;
-
-	i = 0;
-	while (i < count - 1)
-	{
-		if (pipe(pipe_fds) < 0)
-		{
-			dprintf(2, "[pipe][error] pipe returned '-1'!\n");
-			dprintf(2, "[errno] %d: %s\n", errno, strerror(errno));
-			return (-1);
-		}
-		dprintf(2, "[pipe] pipe_fds[0] = %d, pipe_fds[1] = %d\n", pipe_fds[0], pipe_fds[1]);
-		if (i % 2 == 0) // first and third
-		{
-			fds[0] = 0;
-			fds[1] = pipe_fds[1];
-			fds[2] = 2;
-		}
-		else
-		{
-			dprintf(2, "[pipe][close] pipe_fds[1] = '%d'...\n", pipe_fds[1]);
-			if (close(pipe_fds[1]) < 0)
-			{
-				dprintf(2, "[pipe][close] returned '-1'!\n");
-				dprintf(2, "[errno] %d: %s\n", errno, strerror(errno));
-			}
-			fds[0] = pipe_fds[0];
-			fds[1] = 1;
-			fds[2] = 2;
-		}
-		exec_and_join(binary[i], av[i], ep[i], &status, fds);
-		dprintf(2, "[pipe][close] pipe_fds[1] = '%d'...\n", pipe_fds[1]);
-		if (close(pipe_fds[1]) < 0)
-		{
-			dprintf(2, "[pipe][close] returned '-1'!\n");
-			dprintf(2, "[errno] %d: %s\n", errno, strerror(errno));
-			return (0);
-		}
-		i++;
-	}
-	close_files(fds);
-	return (0);
 }
 
 t_cmd	*cmd_new(const char *binary, char *const *av, char *const *ep)

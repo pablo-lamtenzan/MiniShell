@@ -3,117 +3,150 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 13:55:19 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/08 22:50:22 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/10 16:41:20 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 
-static bool		if_builtin_exec2(const t_builtin_exec b, t_bst* curr, t_term* term)
+static int	handle_status(int status)
 {
-	const t_builtin builtin = builtin_get(b.av[0]);
-	t_builtin_args	args;
-
-	if (builtin)
+	if (WIFEXITED(status))
 	{
-		if (!redir_fds(args.fds, (curr->av[1]) ? curr->av[1][0] : NULL, curr->operator))
-			ft_dprintf(2, "[exec][redir] Error!\n");
-		args.ac = curr->ac[0];
-		args.av = curr->av[0];
-		args.t = term;
-		term->st = builtin(&args);
-		close_fds(args.fds);
+		status = WEXITSTATUS(status);
+		dprintf(2, "[exec][status] child exited with status '%d'!\n", status);
+		return (status);
 	}
-	return (builtin);
+	if (WIFSIGNALED(status))
+	{
+		status = WTERMSIG(status);
+		dprintf(2, "[exec][status] %s\n", strsignal(status));
+		return (status);
+	}
+	dprintf(2, "[exec][status] cannot retrieve child status!\n");
+	return (status);
 }
 
-static bool			exec_and_join(const char* filepath, char** av_ep[2], t_term* t, t_bst* curr)
+static int			exec_and_join(t_args *args, t_term* t)
 {
-	// TODO: Error handling (WIFEXITED ...)
-	ft_dprintf(2, "[exec][path] '%s'\n", filepath);
+	int	status;
+
 	if (!(t->pid = fork()))
 	{
-		if (curr)
-			open_and_dup_stdio(curr);
-		t->st = execve(filepath, av_ep[0], av_ep[1]);
-		ft_dprintf(2, "minishell: %s: execve returned '%d'!\n", av_ep[0][0], t->st);
+		dprintf(2, "[exec][child] executing '%s'...\n", (const char *)args->exec); // DEBUG
+		if (dup_stdio(args->fds))
+		{
+			status = execve((const char *)args->exec, args->av, args->ep);
+			ft_dprintf(2, "%s: %s: execve returned '%d'!\n", t->name, args->av[0], status);
+			ft_dprintf(2, "[errno] %d: %s\n", errno, strerror(errno)); // DEBUG
+		}
+		else
+			ft_dprintf(2, "[exec][child][dup] failed!\n");
 		exit(EXIT_FAILURE);
-		return (false);
 	}
 	else if (t->pid < 0)
-		return (!(t->st = 127));
-	while (waitpid(t->pid, NULL, 0) <= 0)
+	{
+		ft_dprintf(2, "[exec][parent] error: pid is '%d'!\n", t->pid); // DEBUG
+		ft_dprintf(2, "[errno] %d: %s\n", errno, strerror(errno));
+		return (errno);
+	}
+	ft_dprintf(2, "[exec][parent] joining child with pid '%d'!\n", t->pid); // DEBUG
+	while (waitpid(t->pid, &status, 0) <= 0)
 		;
-	return (!(t->pid = 0));
+	ft_dprintf(2, "[exec][parent] joined child!\n");
+	return (handle_status(status));
 }
 
-bool				execute_simple_cmd(t_bst* curr, t_term* term)
+bool				exec_cmd(t_args *args, t_term *term)
 {
-	char*			execution_path = NULL;
-	char**			envp = NULL;
-	t_builtin_exec	b;
-	char**			av_ep[2];
+	const t_builtin	builtin = builtin_get(args->av[0]);
 
-	b.ac = curr->ac[0];
-	b.av = curr->av[0];
-	b.fds = NULL;
-	if (!if_builtin_exec2(b, curr, term))
+	if (builtin)
+		term->st = builtin(args, term);
+	else if (get_path_and_envp((char **)&args->exec, (char ***)&args->ep, args->av[0], term))
+		term->st = exec_and_join(args, term); // TODO: REFACTOR du turfu
+	else
 	{
-		if (!(get_path_and_envp(&execution_path, &envp, curr->av[0][0], term)))
-				return (free_bst_node(&curr));
-		av_ep[0] = curr->av[0];
-		av_ep[1] = envp;
-		exec_and_join(execution_path, av_ep, term, NULL);
-		free_ptrs_and_bst(execution_path, envp, NULL);
-		// have i to free curr ?
+		ft_dprintf(2, "[exec][cmd] '%s': File not found!\n", args->av[0]); // DEBUG
+		return (false);
+	}
+	close_fds(args->fds);
+	return (true);
+}
+
+bool				exec_pipe_cmd(t_bst *curr, t_term *term, int in_fd, int index)
+{
+	t_args	args;
+	int		pipe_fds[2]; // pipes
+
+	if (curr)
+	{
+		args.fds[0] = in_fd;
+		args.fds[1] = STDOUT_FILENO;
+		args.fds[2] = STDERR_FILENO;
+		args.ac = curr->ac[index];
+		args.av = curr->av[index];
+		if (index == 0 || curr->next)
+		{
+			if (pipe(pipe_fds) < 0)
+			{
+				ft_dprintf(2, "[pipe][error] pipe returned '-1'!\n"); // DEBUG
+				ft_dprintf(2, "[errno] %d: %s\n", errno, strerror(errno)); // DEBUG
+				return (false);
+			}
+			ft_dprintf(2, "[pipe] pipe[0] = %d, pipe[1] = %d\n", pipe_fds[0], pipe_fds[1]);
+			args.fds[1] = pipe_fds[1];
+			if (!exec_cmd(&args, term))
+			{
+				ft_dprintf(2, "[pipe][exec] failed!\n");
+				return (false);
+			}
+			if (false && !close(pipe_fds[1]))
+			{
+				ft_dprintf(2, "[pipe][error] close(%d) returned '-1'!\n", pipe_fds[1]); // DEBUG
+				ft_dprintf(2, "[errno] %d: %s\n", errno, strerror(errno)); // DEBUG
+				return (false);
+			}
+			ft_dprintf(2, "[pipe][next] index: %d, next: %p\n", index, curr->next);
+			return (exec_pipe_cmd(index == 1 ? curr->next : curr, term, pipe_fds[0], 1));
+		}
+		else
+		{
+			ft_dprintf(2, "[pipe][last] index: %d, next: %p\n", index, curr->next);
+			return (exec_cmd(&args, term)); // TODO: Differentiate between errors and status
+		}
 	}
 	return (true);
 }
 
-bool			open_and_dup_stdio(t_bst* curr)
+bool	dup_stdio(int fds[3])
 {
-	int				fd;
+	int i;
 
-	fd = -1;
-	if (curr->operator & REDIR_GR \
-			&& ((fd = open(curr->av[1][0], O_WRONLY | O_CREAT | O_TRUNC, \
-			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) < 0 \
-			|| dup2(fd, STDOUT_FILENO) < 0))
-		return (false);
-	else if (curr->operator & REDIR_LE \
-			&& ((fd = open(curr->av[1][0], O_RDONLY)) < 0 \
-			|| dup2(fd, STDIN_FILENO) < 0))
-		return (false);
-	else if (curr->operator & REDIR_DG \
-			&& ((fd = open(curr->av[1][0],  O_WRONLY | O_APPEND | O_CREAT | O_TRUNC, \
-			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) < 0 \
-			|| dup2(fd, STDOUT_FILENO) < 0))
-		return (false);
-	return (fd > 0 && !(close(fd) < 0));
-}
-
-bool				execute_redirections_cmd(t_bst* curr, t_term* term)
-{
-	char*			execution_path = NULL;
-	char**			envp = NULL;
-	t_builtin_exec	b;
-	char**			av_ep[2];
-
-	b.ac = curr->ac[0];
-	b.av = curr->av[0];
-	b.fds = NULL;
-	if (!if_builtin_exec2(b, curr, term))
+	i = 0;
+	while (i < 3)
 	{
-		if (!(get_path_and_envp(&execution_path, &envp, *curr->av[0], term)))
-			return (free_bst_node(&curr));
-		av_ep[0] = curr->av[0];
-		av_ep[1] = envp;
-		exec_and_join(execution_path, av_ep, term, curr);
-		free_ptrs_and_bst((void*)execution_path, (void*)envp, NULL);
-		// have to free curr ?
+		if (fds[i] != i)
+		{
+			dprintf(2, "[redir][dup] %d -> %d\n", fds[i], i);
+			if (dup2(fds[i], i) < 0)
+			{
+				dprintf(2, "[redir][dup][error] dup2 returned '-1'!\n");
+				dprintf(2, "[errno] %d: %s\n", errno, strerror(errno));
+				return (false);
+			}
+			dprintf(2, "[redir][close] fork fd '%d'...\n", fds[i]);
+			if (close(fds[i]) < 0)
+			{
+				dprintf(2, "[redir][close][error] close(%d) returned -1!\n", fds[i]);
+				dprintf(2, "[errno] %d: %s\n", errno, strerror(errno));
+				return (false);
+			}
+		}
+		i++;
 	}
 	return (true);
 }
