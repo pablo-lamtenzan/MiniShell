@@ -79,7 +79,7 @@ static bool			parse_cmd(t_cmd **cmds, int *status,
 				return (token_clear(&tokens, true));
 		}
 	}
-	return (cmd_add(cmds, tokens_export(tokens)));
+	return (!tokens || cmd_add(cmds, tokens_export(tokens)));
 }
 
 static int			parse_operation(const char **input, t_cmd **cmds,
@@ -90,7 +90,7 @@ static int			parse_operation(const char **input, t_cmd **cmds,
 	status = TOKEN;
 	if (!parse_cmd(cmds, &status, input))
 	{
-		ft_dprintf(2, "Error: get_next_cmd returned NULL!\n");
+		ft_dprintf(2, "Error: get_next_cmd returned false!\n");
 		cmd_clear(cmds);
 		return (ERROR);
 	}
@@ -126,7 +126,7 @@ int					lexer_tokenize(const char **input, t_cmd **cmds,
 			return (ERROR);
 		}
 	}
-	if (status == EMPTY)
-		return (status);
+	if (status == EMPTY || !*operators)
+		return (EMPTY);
 	return (status & SEMICOL ? CONTINUE : END);
 }
