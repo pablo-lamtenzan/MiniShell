@@ -19,9 +19,10 @@
 
 # define READ				0
 # define WRITE				1
+# define INIT				-1
 
-# define EXEPT				in_fd < 0 ? 0 : 1
-# define NEXT_NODE			in_fd == -1 ? curr : curr->next
+# define EXEPT				in_fd == INIT ? 0 : 1
+# define NEXT_NODE			in_fd == INIT ? curr : curr->next
 
 typedef struct				s_builtin_exec
 {
