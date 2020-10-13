@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bst.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/10 19:48:30 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/13 23:17:26 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ bool			execute_bst(t_bst *head, t_term *term)
 		ft_dprintf(2, "[exec][cmd] executing...\n");
 		args.ac = head->ac[0];
 		args.av = head->av[0];
-			if (redir_fds(args.fds, head->av[1] ? head->av[1][0] : NULL, head->operator))
+			if (redir_fds(args.fds, head->av[1] ? head->av[1][0] : NULL, head->operator, STDIN_FILENO))
 		exec_cmd(&args, term);
 		return (true);
 		//return (close_fds(args.fds));

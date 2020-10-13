@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_fill.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/08 21:58:48 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/10 16:58:59 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/13 23:14:11 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,11 +63,11 @@ bool	dup_stdio(int fds[3])
 	return (true);
 }
 
-bool	redir_fds(int* fds, const char* filepath, t_operator_t op)
+bool	redir_fds(int* fds, const char* filepath, t_operator_t op, int int_fd)
 {
 	static const int	umask = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 
-	fds[0] = STDIN_FILENO;
+	fds[0] = int_fd;
 	fds[1] = STDOUT_FILENO;
 	fds[2] = STDERR_FILENO;
 	if (op & REDIR_GR)

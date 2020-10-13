@@ -35,7 +35,7 @@ bool						exec_cmd(t_args *args, t_term *term);
 bool						exec_pipe_cmd(t_bst *curr, t_term *term, int in_fd, int index);
 
 
-bool	            		redir_fds(int* fds, const char* filepath, t_operator_t op);
+bool						redir_fds(int* fds, const char* filepath, t_operator_t op, int int_fd);
 
 bool						get_path_and_envp(char** execution_path, char*** envp, char* cmd_name, t_term* term);
 
