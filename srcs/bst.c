@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/18 18:12:14 by pablo            ###   ########.fr       */
+/*   Updated: 2020/10/18 19:04:36 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,21 @@ bool			execute_bst(t_bst* head, t_bst* exec, t_term* term)
 		{
 			if (head->next && !(head->next->operator & PIPE))
 				return (execute_bst(head->next, exec ? exec : head, term));
+			else if (head->next && head->next->operator & PIPE)
+			{
+				// INPUT: cat < a | cat -e
+				// 1) redir stdout to pipe read
+				// 2) (another option) redir stdout to head->next->av[0]
+				// 3) execute pipes normally
+
+				// INPUT: ls | cat < a | cat -e
+				// 1) execute ls
+				// 2) in pipe fct execute cat < a
+				// 3) in pipe fct execute cat -e
+				
+				// Conclusion: is better to handle all that in the pipes fct
+				;
+			}
 			ft_dprintf(2, "EXEC\n");
 			exec_cmd(&args, term);
 		}
