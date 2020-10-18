@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 17:33:34 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/18 18:13:06 by pablo            ###   ########.fr       */
+/*   Updated: 2020/10/18 18:26:31 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,23 @@ void cmd_print(t_cmd *commands, t_operator *operators)
 	}
 }
 
+void		clear_bst(t_bst* bst)
+{
+	t_bst*	aux;
+
+	int debug = 0;
+
+	while (bst)
+	{
+		ft_dprintf(2, "[CLEAR BST NODE %d]\n", ++debug);
+		aux = bst;
+		bst = bst->next;
+		free(aux->av[0]);
+		free(aux->av[1]);
+		free(aux);
+	}
+}
+
 int			exec(const char *input, t_term *term) // need to add the global struct
 {
 	t_cmd		*commands;
@@ -77,6 +94,7 @@ int			exec(const char *input, t_term *term) // need to add the global struct
 		cmd_clear(&commands);
 		/* and comands will be freed while i call free_four_ptrs_and_bst later in execute_bts */
 		execute_bst(bst, NULL, term);
+		clear_bst(bst);
 		ft_dprintf(2, "[exec] Done\n");
 	}
 	if (status == ERROR)
