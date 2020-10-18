@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plamtenz <plamtenz@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 17:33:34 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/09 17:10:41 by plamtenz         ###   ########.fr       */
+/*   Updated: 2020/10/18 18:13:06 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ int			exec(const char *input, t_term *term) // need to add the global struct
 		operator_clear(&operators);
 		cmd_clear(&commands);
 		/* and comands will be freed while i call free_four_ptrs_and_bst later in execute_bts */
-		execute_bst(bst, term);
+		execute_bst(bst, NULL, term);
 		ft_dprintf(2, "[exec] Done\n");
 	}
 	if (status == ERROR)

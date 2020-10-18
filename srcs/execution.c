@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 13:55:19 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/13 23:18:39 by pablo            ###   ########.fr       */
+/*   Updated: 2020/10/18 18:04:10 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,13 +97,16 @@ bool				exec_pipe_cmd(t_bst *curr, t_term *term, int in_fd, int index)
 	t_args	args;
 	int		pipe_fds[2]; // pipes
 
-	if (curr && (curr->next && (redir_fds(args.fds, curr->next->av[1] ? curr->next->av[1][0] : NULL, curr->next->operator, in_fd)
-			/*|| redir_fds(args.fds, curr->av[1] ? curr->av[1][0] : NULL, curr->operator)*/)))
+	if (curr)
 	{
-		//ft_dprintf(2, "[EXEC PIPE CMD][RET OF REDIR FDS] %d\n", ret);
-		//args.fds[0] = in_fd;
-		//args.fds[1] = STDOUT_FILENO;
-		//args.fds[2] = STDERR_FILENO;
+		if (!curr->next || (curr->next && curr->next->operator & PIPE))
+		{
+			args.fds[0] = in_fd;
+			args.fds[1] = STDOUT_FILENO;
+			args.fds[2] = STDERR_FILENO;
+		}
+		else if (curr->next && !redir_fds(args.fds, curr->next->av[1] ? curr->next->av[1][0] : NULL, curr->next->operator, in_fd))
+			return (false);
 		args.ac = curr->ac[index];
 		args.av = curr->av[index];
 		if (index == 0 || (curr->next && (curr->next->operator & PIPE || (curr->next->next \
@@ -137,5 +140,6 @@ bool				exec_pipe_cmd(t_bst *curr, t_term *term, int in_fd, int index)
 			return (exec_cmd(&args, term)); // TODO: Differentiate between errors and status
 		}
 	}
+	dprintf(2, "PIPE DIDN'T EXECUTED\n");
 	return (true);
 }

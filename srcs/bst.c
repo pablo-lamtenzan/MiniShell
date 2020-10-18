@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/13 23:17:26 by pablo            ###   ########.fr       */
+/*   Updated: 2020/10/18 18:12:14 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ t_bst*				build_bst(t_operator* operators, t_cmd* cmds)
 	return (head);
 }
 
-bool			execute_bst(t_bst *head, t_term *term)
+bool			execute_bst(t_bst* head, t_bst* exec, t_term* term)
 {
 	t_args	args;
 
@@ -99,10 +99,23 @@ bool			execute_bst(t_bst *head, t_term *term)
 	else
 	{
 		ft_dprintf(2, "[exec][cmd] executing...\n");
-		args.ac = head->ac[0];
-		args.av = head->av[0];
-			if (redir_fds(args.fds, head->av[1] ? head->av[1][0] : NULL, head->operator, STDIN_FILENO))
-		exec_cmd(&args, term);
+		if (!exec)
+		{
+			args.ac = head->ac[0];
+			args.av = head->av[0];
+		}
+		else
+		{
+			args.ac = exec->ac[0];
+			args.av = exec->av[0];
+		}
+		if (redir_fds(args.fds, head->av[1] ? head->av[1][0] : NULL, head->operator, STDIN_FILENO))
+		{
+			if (head->next && !(head->next->operator & PIPE))
+				return (execute_bst(head->next, exec ? exec : head, term));
+			ft_dprintf(2, "EXEC\n");
+			exec_cmd(&args, term);
+		}
 		return (true);
 		//return (close_fds(args.fds));
 	}
