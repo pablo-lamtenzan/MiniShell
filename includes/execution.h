@@ -41,5 +41,6 @@ bool						get_path_and_envp(char** execution_path, char*** envp, char* cmd_name,
 
 bool						close_fds(int *fds);
 bool						dup_stdio(int fds[3]);
+void						free_env_and_path(t_args *args);
 
 # endif

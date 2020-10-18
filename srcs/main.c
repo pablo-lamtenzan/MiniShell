@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 17:33:34 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/18 18:26:31 by pablo            ###   ########.fr       */
+/*   Updated: 2020/10/18 20:09:57 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ void cmd_print(t_cmd *commands, t_operator *operators)
 void		clear_bst(t_bst* bst)
 {
 	t_bst*	aux;
+	int		i;
 
 	int debug = 0;
 
@@ -62,7 +63,13 @@ void		clear_bst(t_bst* bst)
 		ft_dprintf(2, "[CLEAR BST NODE %d]\n", ++debug);
 		aux = bst;
 		bst = bst->next;
+		i = 0;
+		//while (aux->av[0][i++])
+		//	free(aux->av[0][i]);
 		free(aux->av[0]);
+		i = 0;
+		//while (aux->av[1][i++])
+		//	free(aux->av[1][i]);
 		free(aux->av[1]);
 		free(aux);
 	}

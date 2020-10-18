@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/18 19:04:36 by pablo            ###   ########.fr       */
+/*   Updated: 2020/10/18 20:25:06 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,7 @@ bool			execute_bst(t_bst* head, t_bst* exec, t_term* term)
 			ft_dprintf(2, "EXEC\n");
 			exec_cmd(&args, term);
 		}
+		free_env_and_path(&args);
 		return (true);
 		//return (close_fds(args.fds));
 	}

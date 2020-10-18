@@ -6,11 +6,24 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 13:55:19 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/18 18:04:10 by pablo            ###   ########.fr       */
+/*   Updated: 2020/10/18 20:24:43 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
+
+void		free_env_and_path(t_args *args)
+{
+	char**	aux;
+	int		i;
+
+	aux = (char **)args->ep;
+	i = 0;
+	while (aux && aux[i++])
+		free(aux[i]);
+	free(aux);
+	free(args->exec);
+}
 
 static int	handle_status(int status)
 {
@@ -68,6 +81,7 @@ static t_executable	exec_get(t_args *args, t_term *term)
 	int					i;
 
 	i = 0;
+	args->exec = NULL;
 	while (i < 7 && ft_strncmp(args->av[0], names[i], lengths[i]))
 		i++;
 	if (i < 7)
@@ -85,6 +99,7 @@ bool				exec_cmd(t_args *args, t_term *term)
 		term->st = exec(args, term);
 	else
 	{
+		free_env_and_path(args);
 		ft_dprintf(2, "[exec][cmd] '%s': File not found!\n", args->av[0]); // DEBUG
 		return (false);
 	}
