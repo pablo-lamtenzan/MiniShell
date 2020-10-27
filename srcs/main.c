@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 17:33:34 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/18 20:09:57 by pablo            ###   ########.fr       */
+/*   Updated: 2020/10/27 12:49:20 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,12 +80,15 @@ int			exec(const char *input, t_term *term) // need to add the global struct
 	t_cmd		*commands;
 	t_operator	*operators;
 	t_bst		*bst;
+	const char*		cp = ft_strdup(input);
+	char* start = (char*)cp;
 	int			status;
 
-	while ((status = lexer_tokenize(&input, &commands, &operators)) > 0)
+	while ((status = lexer_tokenize(&cp, &commands, &operators)) > 0)
 	{
+		ft_dprintf(2, "······························································ new bst ! [%d]\n", status);
 		ft_dprintf(2, "[exec][operators address] %p\n", operators);
-		ft_dprintf(2, "[exec][input] '%s'\n", input);
+		ft_dprintf(2, "[exec][input] '%s'\n", cp);
 		ft_dprintf(2, "[exec][status] %d\n", status);
 		cmd_print(commands, operators);
 		//ft_dprintf(2, "Goes into build_bst\n");
@@ -104,6 +107,7 @@ int			exec(const char *input, t_term *term) // need to add the global struct
 		clear_bst(bst);
 		ft_dprintf(2, "[exec] Done\n");
 	}
+	free(start);
 	if (status == ERROR)
 		return (false);
 	return (true);

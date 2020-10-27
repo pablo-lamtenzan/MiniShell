@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 13:55:19 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/27 07:48:54 by pablo            ###   ########.fr       */
+/*   Updated: 2020/10/27 12:33:26 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,10 +138,8 @@ bool				exec_pipe_cmd(t_bst *curr, t_term *term, int in_fd, int index)
 	t_args	args;
 	int		pipe_fds[2]; // pipes
 
-	ft_dprintf(2, "##############################################################\n");
 	if (curr)
 	{
-		printf("------------------------------------------------> operator is [%d]\n", curr->operator);
 		if (!curr->next || (curr->next && curr->next->operator & PIPE))
 		{
 			args.fds[0] = in_fd;
@@ -152,13 +150,11 @@ bool				exec_pipe_cmd(t_bst *curr, t_term *term, int in_fd, int index)
 			return (false);
 		args.ac = curr->ac[index];
 		args.av = curr->av[index];
-		ft_dprintf(2, "----------------------------------------> ac is: [%d], av is [\"%s\"]\n", args.ac, *(char**)args.av);
 		if (curr->operator & REDIR_LE && curr->next && curr->back)
 		{
 			ft_dprintf(2, "Goes here\n");
 			args.ac = curr->back->ac[1];
 			args.av = curr->back->av[1];
-			ft_dprintf(2, "----------------------------------------> ac is: [%d], av is [%s]\n", args.ac, (char*)args.av);
 		}
 		if ((curr->operator & REDIR_LE && curr->next) || index == 0 || (curr->next && (curr->next->operator & PIPE || (curr->next->next \
 				&& (curr->next->operator & REDIR_GR || curr->next->operator & REDIR_DG || curr->next->operator & REDIR_LE)))))

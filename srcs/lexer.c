@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 18:13:09 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/10 18:29:27 by chamada          ###   ########.fr       */
+/*   Updated: 2020/10/27 13:06:13 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,37 @@ static bool			parse_cmd(t_cmd **cmds, int *status,
 	return (!tokens || cmd_add(cmds, tokens_export(tokens)));
 }
 
+static bool			is_operator(char x)
+{
+	return (x == '|' || x == '>' || x == '<' || x == ';');
+}
+
+static int 			correct_status(int *status, t_operator** op, char** input)
+{
+	char*			tmp;
+
+	tmp = *input;
+	if ((*op)->type & PIPE)
+	{
+		while (*tmp && !is_operator(*tmp))
+			tmp++;
+		if (*tmp == '<')
+		{
+			(*op)->type = SEMICOL;
+			*status = SEMICOL;
+		}
+	}
+	else if ((*op)->type & REDIR_GR || (*op)->type & REDIR_DG)
+	{
+		ft_dprintf(2, "GOES HERE................................................\n");
+		while (*tmp && !is_operator(*tmp))
+			tmp++;
+		if (*tmp == '|')
+			*(*input + (tmp - *input)) = ';';
+	}
+	return (*status);
+}
+
 static int			parse_operation(const char **input, t_cmd **cmds,
 	t_operator **operators)
 {
@@ -100,6 +131,7 @@ static int			parse_operation(const char **input, t_cmd **cmds,
 	{
 		if (!operator_add(operators, lex_operator(input)))
 			return (ERROR);
+		correct_status(&status, operators, (char**)input);
 	}
 	else if (*cmds && !*operators && !(*operators = operator_new(NONE)))
 		return (ERROR);
