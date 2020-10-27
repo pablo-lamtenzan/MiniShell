@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/08 21:58:48 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/13 23:14:11 by pablo            ###   ########.fr       */
+/*   Updated: 2020/10/27 07:15:05 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ bool	redir_fds(int* fds, const char* filepath, t_operator_t op, int int_fd)
 {
 	static const int	umask = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 
+	ft_dprintf(2, "---------------------------------> filepath is [\"%s\"]\n", filepath);
 	fds[0] = int_fd;
 	fds[1] = STDOUT_FILENO;
 	fds[2] = STDERR_FILENO;

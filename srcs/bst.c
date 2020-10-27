@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/18 20:25:06 by pablo            ###   ########.fr       */
+/*   Updated: 2020/10/27 06:25:32 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,11 +87,25 @@ t_bst*				build_bst(t_operator* operators, t_cmd* cmds)
 	return (head);
 }
 
+bool			cmd_is_pipe(t_bst* head)
+{
+	t_bst*	cp;
+
+	cp = head;
+	while (cp)
+	{
+		if (cp->operator & PIPE)
+			return (true);
+		cp = cp->next;
+	}
+	return (false);
+}
+
 bool			execute_bst(t_bst* head, t_bst* exec, t_term* term)
 {
 	t_args	args;
 
-	if (head->operator & PIPE)
+	if (cmd_is_pipe(head))
 	{
 		ft_dprintf(2, "[exec][pipe] executing...\n");
 		exec_pipe_cmd(head, term, STDIN_FILENO, 0);
@@ -113,21 +127,6 @@ bool			execute_bst(t_bst* head, t_bst* exec, t_term* term)
 		{
 			if (head->next && !(head->next->operator & PIPE))
 				return (execute_bst(head->next, exec ? exec : head, term));
-			else if (head->next && head->next->operator & PIPE)
-			{
-				// INPUT: cat < a | cat -e
-				// 1) redir stdout to pipe read
-				// 2) (another option) redir stdout to head->next->av[0]
-				// 3) execute pipes normally
-
-				// INPUT: ls | cat < a | cat -e
-				// 1) execute ls
-				// 2) in pipe fct execute cat < a
-				// 3) in pipe fct execute cat -e
-				
-				// Conclusion: is better to handle all that in the pipes fct
-				;
-			}
 			ft_dprintf(2, "EXEC\n");
 			exec_cmd(&args, term);
 		}

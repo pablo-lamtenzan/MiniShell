@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 13:55:19 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/18 20:24:43 by pablo            ###   ########.fr       */
+/*   Updated: 2020/10/27 07:48:54 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,24 +107,60 @@ bool				exec_cmd(t_args *args, t_term *term)
 	return (true);
 }
 
+// if rev red found 
+// exec rev red 
+// next is pipe ?
+	// red stdout 
+// else
+	// exec rev and re-check
+// exec pipe if pipe or is the last
+int				handle_rev_red_intra_pipe(t_bst** curr, t_args* args, int pipefd)
+{
+	while ((*curr)->operator & REDIR_LE)
+	{
+		if (redir_fds(args->fds, (*curr)->av[1] ? (*curr)->av[1][0] : NULL, (*curr)->operator, STDIN_FILENO))
+		{
+			if ((*curr)->next && (*curr)->next->operator & PIPE)
+				args->fds[1] = pipefd;
+		}
+		*curr = (*curr)->next;
+		ft_dprintf(2, ">>>> %p\n", curr);
+		ft_dprintf(2, ">>>> operator before is: [%d]\n", (*curr)->operator);
+	}
+	return (0);
+}
+
+// problem cat < a | cat -e
+// cat is lost and takes a as builting name
+
 bool				exec_pipe_cmd(t_bst *curr, t_term *term, int in_fd, int index)
 {
 	t_args	args;
 	int		pipe_fds[2]; // pipes
 
+	ft_dprintf(2, "##############################################################\n");
 	if (curr)
 	{
+		printf("------------------------------------------------> operator is [%d]\n", curr->operator);
 		if (!curr->next || (curr->next && curr->next->operator & PIPE))
 		{
 			args.fds[0] = in_fd;
 			args.fds[1] = STDOUT_FILENO;
 			args.fds[2] = STDERR_FILENO;
 		}
-		else if (curr->next && !redir_fds(args.fds, curr->next->av[1] ? curr->next->av[1][0] : NULL, curr->next->operator, in_fd))
+		else if (!(curr->operator & REDIR_LE) && curr->next && !redir_fds(args.fds, curr->next->av[1] ? curr->next->av[1][0] : NULL, curr->next->operator, in_fd))
 			return (false);
 		args.ac = curr->ac[index];
 		args.av = curr->av[index];
-		if (index == 0 || (curr->next && (curr->next->operator & PIPE || (curr->next->next \
+		ft_dprintf(2, "----------------------------------------> ac is: [%d], av is [\"%s\"]\n", args.ac, *(char**)args.av);
+		if (curr->operator & REDIR_LE && curr->next && curr->back)
+		{
+			ft_dprintf(2, "Goes here\n");
+			args.ac = curr->back->ac[1];
+			args.av = curr->back->av[1];
+			ft_dprintf(2, "----------------------------------------> ac is: [%d], av is [%s]\n", args.ac, (char*)args.av);
+		}
+		if ((curr->operator & REDIR_LE && curr->next) || index == 0 || (curr->next && (curr->next->operator & PIPE || (curr->next->next \
 				&& (curr->next->operator & REDIR_GR || curr->next->operator & REDIR_DG || curr->next->operator & REDIR_LE)))))
 		{
 			if (pipe(pipe_fds) < 0)
@@ -133,8 +169,11 @@ bool				exec_pipe_cmd(t_bst *curr, t_term *term, int in_fd, int index)
 				ft_dprintf(2, "[errno] %d: %s\n", errno, strerror(errno)); // DEBUG
 				return (false);
 			}
-			ft_dprintf(2, "[pipe] pipe[0] = %d, pipe[1] = %d\n", pipe_fds[0], pipe_fds[1]);
 			args.fds[1] = pipe_fds[1];
+			if (curr->operator & REDIR_LE)
+				handle_rev_red_intra_pipe(&curr, &args, pipe_fds[1]);
+			ft_dprintf(2, ">>>> %p\n", curr);
+			ft_dprintf(2, ">>>> operator after is: [%d]\n", curr->operator);
 			if (!exec_cmd(&args, term))
 			{
 				ft_dprintf(2, "[pipe][exec] failed!\n");
