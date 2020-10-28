@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 13:55:19 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/27 12:33:26 by pablo            ###   ########.fr       */
+/*   Updated: 2020/10/28 04:36:28 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,9 +130,7 @@ int				handle_rev_red_intra_pipe(t_bst** curr, t_args* args, int pipefd)
 	return (0);
 }
 
-// problem cat < a | cat -e
-// cat is lost and takes a as builting name
-
+// multiple cmd < | cmd < a | ... doesn't work
 bool				exec_pipe_cmd(t_bst *curr, t_term *term, int in_fd, int index)
 {
 	t_args	args;

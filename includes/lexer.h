@@ -19,6 +19,6 @@
 # define CONTINUE   2
 # define ERROR      -1
 
-int lexer_tokenize(const char **input, t_cmd **cmds, t_operator **operators);
+int lexer_tokenize(char **input, t_cmd **cmds, t_operator **operators);
 
 #endif

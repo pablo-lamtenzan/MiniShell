@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/21 17:23:02 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/27 06:25:32 by pablo            ###   ########.fr       */
+/*   Updated: 2020/10/28 09:04:55 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@ static t_bst*		new_node(const t_operator_t operator, t_cmd* cmds[2],
 	new->back = back;
 	assign_values(new, cmds);
 	new->operator = operator;
-	ft_dprintf(2, "[bst][token] %s - %s\n",
-		new->av[0] ? new->av[0][0] : NULL, new->av[1] ? new->av[1][0] : NULL);
+	ft_dprintf(2, "[bst][token] %s - %s [type=%d]\n",
+		new->av[0] ? new->av[0][0] : NULL, new->av[1] ? new->av[1][0] : NULL, new->operator);
 	return (new);
 }
 
@@ -63,17 +63,22 @@ t_bst*				build_bst(t_operator* operators, t_cmd* cmds)
 
 	head = NULL;
 	tail = NULL;
-	while (operators)
+	while (operators /*&& !(operators->type & EXCEPTION)*/)
 	{
 		cmds_conv[0] = NULL;
 		cmds_conv[1] = NULL;
 		if (tail)
 		{
+			ft_dprintf(2, "2\n");
+			ft_dprintf(2, "operator is [%d]\n", operators->type);
+			//ft_dprintf(2, "%s\n", cmds->av[0]);
 			cmds_conv[1] = cmds;
 			cmds = cmds->next;
 		}
 		else if (cmds && (cmds_conv[0] = cmds) && (cmds = cmds->next))
 		{
+			ft_dprintf(2, "1\n");
+			ft_dprintf(2, "%s\n", cmds->av[0]);
 			cmds_conv[1] = cmds;
 			cmds = cmds->next;
 			head = tail;
@@ -112,7 +117,7 @@ bool			execute_bst(t_bst* head, t_bst* exec, t_term* term)
 	}
 	else
 	{
-		ft_dprintf(2, "[exec][cmd] executing...\n");
+		ft_dprintf(2, "[exec][cmd] executing... operator is [%d]\n", head->operator);
 		if (!exec)
 		{
 			args.ac = head->ac[0];

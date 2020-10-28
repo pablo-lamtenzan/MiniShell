@@ -6,12 +6,47 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 18:13:09 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/27 13:06:13 by pablo            ###   ########.fr       */
+/*   Updated: 2020/10/28 09:50:46 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <lexer.h>
 
+static bool			is_operator(char x)
+{
+	return (x == '|' || x == '>' || x == '<' || x == ';');
+}
+
+static bool			correct_input(char** input)
+{
+	char*			cp = *input;
+	char*			c1;
+	
+	//while (!is_operator(*cp))
+	//	cp++;
+	if (*cp == '|')
+	{
+		c1 = cp;
+		cp += *(cp + 1) ? 1 : 0;
+		while(!is_operator(*cp))
+			cp++;
+		ft_dprintf(2, "next op is [%c]\n", *cp);
+		if (*cp == '<')
+			(*input)[c1 - *input] = ';';				
+	}
+	else if (*cp == '>')
+	{
+		c1 = cp;
+		cp += *(cp + 1) ? 1 : 0;
+		while(!is_operator(*cp))
+			cp++;
+		if (*cp == '|')
+			(*input)[cp - *input] = ';';				
+	}
+	ft_dprintf(2, "cp is >>> [%c]\n", *cp);
+	ft_dprintf(2, "input is >>> [%c]\n", **input);
+	return (true);
+}
 // lex_type: Get the type of the current token
 static int      	lex_type(int status, char c)
 {
@@ -57,7 +92,7 @@ static t_operator	*lex_operator(const char **txt)
 }
 
 static bool			parse_cmd(t_cmd **cmds, int *status,
-	const char **input)
+	char **input)
 {
 	const char	*start;
 	t_token		*tokens;
@@ -69,7 +104,7 @@ static bool			parse_cmd(t_cmd **cmds, int *status,
 		while (ft_isspace(**input))
 			(*input)++;
 		start = *input;
-		while (**input && ((*status = lex_type(*status, **input)) & TOKEN))
+		while (**input && correct_input(input) && ((*status = lex_type(*status, **input)) & TOKEN))
 			(*input)++;
 		if (*input != start)
 		{
@@ -82,38 +117,7 @@ static bool			parse_cmd(t_cmd **cmds, int *status,
 	return (!tokens || cmd_add(cmds, tokens_export(tokens)));
 }
 
-static bool			is_operator(char x)
-{
-	return (x == '|' || x == '>' || x == '<' || x == ';');
-}
-
-static int 			correct_status(int *status, t_operator** op, char** input)
-{
-	char*			tmp;
-
-	tmp = *input;
-	if ((*op)->type & PIPE)
-	{
-		while (*tmp && !is_operator(*tmp))
-			tmp++;
-		if (*tmp == '<')
-		{
-			(*op)->type = SEMICOL;
-			*status = SEMICOL;
-		}
-	}
-	else if ((*op)->type & REDIR_GR || (*op)->type & REDIR_DG)
-	{
-		ft_dprintf(2, "GOES HERE................................................\n");
-		while (*tmp && !is_operator(*tmp))
-			tmp++;
-		if (*tmp == '|')
-			*(*input + (tmp - *input)) = ';';
-	}
-	return (*status);
-}
-
-static int			parse_operation(const char **input, t_cmd **cmds,
+static int			parse_operation(char **input, t_cmd **cmds,
 	t_operator **operators)
 {
 	int				status;
@@ -129,9 +133,9 @@ static int			parse_operation(const char **input, t_cmd **cmds,
 
 	if (status & OP)
 	{
-		if (!operator_add(operators, lex_operator(input)))
+		if (!operator_add(operators, lex_operator((const char**)input)))
 			return (ERROR);
-		correct_status(&status, operators, (char**)input);
+		//correct_status(&status, operators, (char**)input);
 	}
 	else if (*cmds && !*operators && !(*operators = operator_new(NONE)))
 		return (ERROR);
@@ -140,7 +144,7 @@ static int			parse_operation(const char **input, t_cmd **cmds,
 	return (status);
 }
 
-int					lexer_tokenize(const char **input, t_cmd **cmds,
+int					lexer_tokenize(char **input, t_cmd **cmds,
 	t_operator **operators)
 {
 	int	status;
@@ -157,6 +161,10 @@ int					lexer_tokenize(const char **input, t_cmd **cmds,
 			operator_clear(operators);
 			return (ERROR);
 		}
+		t_operator* cp = *operators;
+		while (cp->next)
+			cp = cp->next;
+		ft_dprintf(2, "-#########################------------########-> [lexer]OPERATOR IS: [%d] [%p] STATUS IS [%d]\n", cp->type, cp, status);
 	}
 	if (status == EMPTY || !*operators)
 		return (EMPTY);

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 17:33:34 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/27 12:49:20 by pablo            ###   ########.fr       */
+/*   Updated: 2020/10/28 09:56:16 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int			exec(const char *input, t_term *term) // need to add the global struct
 	t_cmd		*commands;
 	t_operator	*operators;
 	t_bst		*bst;
-	const char*		cp = ft_strdup(input);
+	char*		cp = ft_strdup(input);
 	char* start = (char*)cp;
 	int			status;
 
@@ -94,6 +94,13 @@ int			exec(const char *input, t_term *term) // need to add the global struct
 		//ft_dprintf(2, "Goes into build_bst\n");
 		if (!(bst = build_bst(operators, commands)))
 			return (false);
+		
+		t_bst* cp = bst;
+		while (cp)
+		{
+			ft_dprintf(2, "-----------------> [bst][node type is][%d]\n", cp->operator);
+			cp = cp->next;
+		}
 		/*
 		ft_dprintf(2, "[bst][address] %p\n", bst);
 		ft_dprintf(2, "[bst][operator] %d\n", bst->operator);
@@ -108,10 +115,13 @@ int			exec(const char *input, t_term *term) // need to add the global struct
 		ft_dprintf(2, "[exec] Done\n");
 	}
 	free(start);
+	ft_dprintf(2, "END ---------------------------------------------------------------------------------------------\n\n\n");
 	if (status == ERROR)
 		return (false);
 	return (true);
 }
+
+// < > and ... | < > to fix
 
 int			main(int ac, const char **av, const char **envp)
 {
