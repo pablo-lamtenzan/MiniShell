@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 18:13:09 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/28 09:50:46 by pablo            ###   ########.fr       */
+/*   Updated: 2020/10/28 10:43:52 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static bool			correct_input(char** input)
 	{
 		c1 = cp;
 		cp += *(cp + 1) ? 1 : 0;
-		while(!is_operator(*cp))
+		while(*cp && !is_operator(*cp))
 			cp++;
 		ft_dprintf(2, "next op is [%c]\n", *cp);
 		if (*cp == '<')
@@ -38,7 +38,7 @@ static bool			correct_input(char** input)
 	{
 		c1 = cp;
 		cp += *(cp + 1) ? 1 : 0;
-		while(!is_operator(*cp))
+		while(*cp && !is_operator(*cp))
 			cp++;
 		if (*cp == '|')
 			(*input)[cp - *input] = ';';				
