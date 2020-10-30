@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/30 00:52:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/10/30 04:05:38 by pablo            ###   ########.fr       */
+/*   Updated: 2020/10/30 06:49:51 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,10 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 
+#include <errno.h>
+
 #include <libft.h>
+#include <builtins.h>
 
 # define NONE       0
 # define PIPE       1
@@ -47,82 +50,106 @@ typedef struct  s_bst
     t_tok_t     type;
 }               t_bst;
 
+t_exec;
+
+typedef int	(*t_executable)(t_exec *args, t_term *term);
+typedef struct s_term
+{
+	t_map			*env;
+	char			*name;
+	pid_t			pid;
+	int				st;
+	struct termios	s_ios;
+	struct termios	s_ios_bkp;
+	t_line			*line;
+	t_caps			caps;
+	t_cursor		cursor;
+	t_clip			clip;
+	t_hist			hist;
+	int				(*exec)(const char*, struct s_term*);
+	
+};				t_term;
+
+
 typedef struct  s_exec
 {
-	int			fds[3];
-	char		fidex_fds; // flags used for multiple redirection
-	void		*(*exec)();
-	int			ac;
-    char *const	*av;
-    char *const	*ep;
+	int				fds[3];
+	char			fidex_fds; // flags used for multiple redirection
+	t_executable	exec;
+	const char*		execution_path;
+	int				ac;
+    char*const*		av;
+    char*const*		ep;
 }				t_exec;
 
-// 3 options:
+// 3 cases:
 // - root is PIPE: 1 bst (n nodes) -> JOB
 // - root is REDIR: 1 bst (n nodes) -> CMD
-// - root is NONE: 1 node -> CMD
-void execute_cmd(t_bst* cmd, t_exec* info);
-void update_info(t_exec** info, t_tok_t next_type);
+// - root is CDM: 1 node -> CMD
+void execute_cmd(t_bst* cmd, t_exec* info, t_term* term);
+void update_info(t_exec** info, t_tok_t next_type, char* filename);
 int redirections_handler(t_exec** info, t_tok_t type, void* filename);
+void get_exec(t_exec** info, t_term* term);
+bool close_pipe_fds(int* fds);
+void destroy_execve_args(t_exec* info);
 
-void		execute_bst(t_bst* root)
+void		execute_bst(t_bst* root, t_term* term)
 {
 	t_exec	info;
 
 	ft_bzero(&info, sizeof(t_exec));
 	info.fds[STDOUT] = STDOUT;
 	if (root->type & PIPE)
-		execute_job(root, &info);
+		execute_job(root, &info, term);
 	else
-		execute_cmd(root, &info);
+		execute_cmd(root, &info, term);
 }
 
-
-// this function is called on a pipe and iterates pipe to pipe until the (pipe/redir) end cmd
-// info fd must be 0 and 1 before this fct call
-void        execute_job(t_bst* job, t_exec* info)
+// this function is called on a pipe and iterates pipe to pipe until the (pipe/redir) end operator in root's b branch
+void        execute_job(t_bst* job, t_exec* info, t_term* term)
 {
 	/* IMPORTANT:
 		last b must be a cmd, ALWAYS!
 	*/
 
-    // init/update the executions fds
-    update_info(&info, job->b ? ((t_bst*)job->b)->type : -1);
+    // update the executions fds
+    update_info(&info, job->b ? ((t_bst*)job->b)->type : -1, job->b && ((t_bst*)job->b)->type & (REDIR_GR | REDIR_DG | REDIR_LE) ? ((t_bst*)job->b)->b : NULL);
 
     // execution of left branch using the updated fds
-    execute_cmd(job->a, info);
+    execute_cmd(job->a, info, term);
 
     // recursion and end condition (execute_cmd in last b)
     if (job->b && job->type & PIPE)
-        execute_job(job->b, info);
+        execute_job(job->b, info, term);
     else if (job->b && job->type & (REDIR_GR | REDIR_DG | REDIR_LE))
-		; // the redirection must be handled in update info but i can have an undefined nb of redirects
+		return ;
 	else
-		execute_cmd(job->b, info);
+		execute_cmd(job->b, info, term);
 }
 
 // this function is called by execute_job and will execute the left branch of the job
-void        execute_cmd(t_bst* cmd, t_exec* info)
+void        execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
 {
 	// ovewrite info fds and returns true if node is a redirection
 	redirections_handler(&info, cmd->type, cmd->b);
 	// goes left until find the cmd
 	if (!(cmd->type & CMD))
-    	execute_cmd(cmd->a, info);
-	// executes the cmd in the given exections fds
+    	execute_cmd(cmd->a, info, term);
+	// executes the cmd in the given executions fds
 	else
 	{
 		info->ac = 0; // to calc somewhere
 		info->av = cmd->a;
-		info->ep = NULL; // to get somewhere
-		info->exec = get_exec(info->av[0]);
-		info->exec(info);
-
-		/* IMP: Put where i gonna do the dup2 the fixed fds */
+		get_exec(&info, term);
+		if (info->exec)
+			info->exec(info, term);
+		else
+			destroy_execve_args(info);
+		close_pipe_fds(info->fds);
 	}
 }
 
-void        update_info(t_exec** info, t_tok_t next_type)
+void        update_info(t_exec** info, t_tok_t next_type, char* filename)
 {
 	bool	update;
 	int		pipe_fds[2];
@@ -142,8 +169,12 @@ void        update_info(t_exec** info, t_tok_t next_type)
 		// Inter pipe ? redirect stdout
 		if (next_type & PIPE)
 			update = false;
-		else if (next_type & (REDIR_GR | REDIR_DG | REDIR_LE)) // redir (only can be the last b)
-			; // open fd, dup 2 stdout/in to fd, and put the fixed fd
+		else if (next_type & (REDIR_GR | REDIR_DG | REDIR_LE) && filename) // redir (only can be the last b)
+		{
+			// executed one time if the last b is a redirection (need it cause i have to redirect the pipe to this fd)
+			redirections_handler(info, next_type, filename);
+			dup_stdio((*info)->fds, (*info)->fidex_fds);
+		}
 	}
 	// pipe part 1,3,5...
 	if (!update)
@@ -171,4 +202,118 @@ int		redirections_handler(t_exec** info, t_tok_t type, void* filename)
 	else
 		return (0); // Type is not redir
 	return ((*info)->fds[0] | (*info)->fds[1] >= 0 ? 1 : -1); // -1 fatal error
+}
+
+static int	handle_wstatus(int wstatus)
+{
+	if (WIFEXITED(wstatus))
+	{
+		wstatus = WEXITSTATUS(wstatus);
+		dprintf(2, "[exec][status] child exited with status '%d'!\n", wstatus);
+		return (wstatus);
+	}
+	if (WIFSIGNALED(wstatus))
+	{
+		wstatus = WTERMSIG(wstatus);
+		dprintf(2, "[exec][status] %s\n", strsignal(wstatus));
+		return (wstatus);
+	}
+	dprintf(2, "[exec][status] cannot retrieve child status!\n");
+	return (wstatus);
+}
+
+bool	dup_stdio(int* fds, char* flags)
+{
+	int i;
+
+	i = -1;
+	while (++i < 3)
+		if ((*flags & A_CONST_GR && i == STDOUT) || (*flags & A_CONST_LE && i == STDIN))
+			continue ;
+		if (fds[i] != i && (dup2(fds[i], i) < 0 || close(fds[i]) < 0))
+			return (false);
+		else if (fds[i] != i) // need this cause we need to noly dup2 to the fist file if there are multiple "< or > or >>"
+		{
+			if (i == 0)
+				*flags |= A_CONST_LE;
+			else if (i == 1)
+				*flags |= A_CONST_GR;
+		}
+	return (true);
+}
+
+int execute_child(t_exec* info, t_term* term)
+{
+	int		wstatus;
+
+	if (!(term->pid = fork()))
+	{
+		if (dup_stdio(info->fds, &info->fidex_fds))
+		{
+			wstatus = execve(info->execution_path, info->av, info->ep);
+			ft_dprintf(2, "%s: %s: execve returned '%d'!\n", term->name, info->av[0], wstatus);
+		}
+		exit(EXIT_FAILURE);
+	}
+	else if (term->pid < 0)
+		return (errno);
+	while (waitpid(term->pid, &wstatus, 0) <= 0)
+		;
+	return (handle_wstatus(wstatus));
+}
+
+bool	build_execve_args(t_exec** info, t_term* term)
+{
+	t_map*	path;
+
+	if (!(path = map_get(term->env, "PATH")) \
+			|| !path->value \
+			|| !((*info)->execution_path = path_get((*info)->av[0], path->value)))
+		return (!(term->st = 127));
+	if (!((*info)->ep = map_export(term->env)))
+	{
+		free((*info)->execution_path);
+		return (false);
+	}
+	return (true);
+}
+
+void	get_exec(t_exec** info, t_term* term)
+{
+	const char			*names[] = {"echo", "cd", "pwd", "export", "unset", "env", "exit"};
+	const int			lengths[] = {4, 3, 4, 7, 5, 4, 5};
+	const t_executable 	builtins[] = {&ft_echo, &ft_cd, &ft_pwd, &ft_export, &ft_unset, &ft_env, &ft_exit};
+	int					i;
+
+	i = 0;
+	while (i < 7 && ft_strncmp((*info)->av[0], names[i], lengths[i]))
+		i++;
+	if (i < 7)
+		(*info)->exec = builtins[i];
+	else if (build_execve_args(&info, term))
+		(*info)->exec = &execute_child;
+}
+
+bool	close_pipe_fds(int* fds)
+{
+	int	i;
+
+	i = -1;
+	while (++i < 3)
+		if (fds[i] == i && close(fds[i] < 0))
+			return (false);
+	return (true);
+}
+
+void	destroy_execve_args(t_exec* info)
+{
+	char**	aux;
+	int		i;
+
+	aux = (char**)info->ep;
+	i = 0;
+	while (aux && aux[i++])
+		free(aux);
+	free(aux);
+	free(info->execution_path);
 }
