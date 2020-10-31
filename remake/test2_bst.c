@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/30 23:16:52 by pablo             #+#    #+#             */
-/*   Updated: 2020/10/31 05:16:54 by pablo            ###   ########.fr       */
+/*   Updated: 2020/10/31 23:06:50 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,16 +55,19 @@ t_tok*		find_last_operator(t_tok* start, t_tok* end)
 {
 	t_tok*	last;
 
-	last = start;
-	while (last->next != end)
-		last = last->next;
-	if (last->type & CMD && start != last)
+	if (start != last)
 	{
-		while (start->next != last)
-			start = start->next;
+		last = start;
+		while (last->next && last->next != end)
+			last = last->next;
+		if (last->type & CMD)
+		{
+			while (start->next && start->next != last)
+				start = start->next;
+		}
+		else
+			start = last;
 	}
-	else
-		start = last;
 	return (start);
 }
 
@@ -75,7 +78,7 @@ t_bst*		build_job(t_tok* tokens, t_tok* delim)
     t_tok* 	tk1;
 	t_bst*	node;
 
-	dprintf(2, "[BST]Loops [%d] times!\n", db2++);
+	dprintf(2, "[JOB]Loops [%d] times!\n", db2++);
 
 	if (!(node = malloc(sizeof(t_bst))))
 		return (NULL);
@@ -136,7 +139,7 @@ t_bst*		get_bst_root(t_tok* tokens)
 {
 	t_tok*	last_node;
 
-	if ((last_node = is_pipe_cmd(tokens)))
+	if (!(last_node = is_pipe_cmd(tokens)))
 		return (build_bst(tokens));
 	else if (tokens->next)
 		return (build_job(tokens, last_node));
@@ -175,7 +178,7 @@ t_bst*		build_bst(t_tok* tokens)
 
 	// If there's a pipe further, call itself and repeat starting in the next pipe
     if ((tk2 = find_next_operator(tk1->next, PIPE))->type & PIPE)
-        node->b = build_bst(tk2);
+        node->b = build_bst(tk1->next);
 
 	// If there's a redirection further, build redirection in node a starting in current b node
 	else if ((tk3 = find_next_operator(tk1->next, REDIR_GR | REDIR_LE | REDIR_DG))->type & (REDIR_GR | REDIR_LE | REDIR_DG))
@@ -186,6 +189,7 @@ t_bst*		build_bst(t_tok* tokens)
 		node->b = build_job(tk1->next, NULL);
 	return (node);
 }
+
 // testing stuff
 char* get_token_name(int code)
 {
