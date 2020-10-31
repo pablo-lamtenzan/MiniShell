@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/28 20:11:08 by pablo             #+#    #+#             */
-/*   Updated: 2020/10/30 00:37:47 by pablo            ###   ########.fr       */
+/*   Updated: 2020/10/31 00:06:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,6 @@
 # define REDIR_DG   8
 # define SEMICOLON  16
 # define CMD		32
-
-# define LEFT       1
-# define RIGHT      2
 
 typedef char    t_tok_t;
 
