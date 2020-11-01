@@ -156,5 +156,5 @@ Then, just have to overwrite the "fds" values and execute. Let's continue with t
 			     /     \
 			 [ cat ]  [file2]          // execute cat in fds = {file2, file1, pipe_write}
 
-// Don't forget that fds[2] is only for pipe's write fd! Its value doesn't affect the exectution. 
+// Don't forget that fds[2] is only for pipe's write fd! Its value doesn't affect a cmd exectution. 
 ```
