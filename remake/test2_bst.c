@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/30 23:16:52 by pablo             #+#    #+#             */
-/*   Updated: 2020/10/31 23:06:50 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/01 01:23:16 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,8 @@ t_bst*		build_bst(t_tok* tokens);
 
 t_tok*		find_next_operator(t_tok* start, t_tok_t type)
 {
-	if (!start)
-		return (start);
 	while (start->next && !(start->type & type))
-		start = start->next;
+		start = start->next ? start->next : start;
 	return (start);
 }
 
@@ -55,7 +53,7 @@ t_tok*		find_last_operator(t_tok* start, t_tok* end)
 {
 	t_tok*	last;
 
-	if (start != last)
+	if (start != end)
 	{
 		last = start;
 		while (last->next && last->next != end)
@@ -73,6 +71,7 @@ t_tok*		find_last_operator(t_tok* start, t_tok* end)
 
 int db2 = 0;
 
+// just a litle problem to fix: skips the last at the end of tokens
 t_bst*		build_job(t_tok* tokens, t_tok* delim)
 {
     t_tok* 	tk1;
@@ -95,8 +94,7 @@ t_bst*		build_job(t_tok* tokens, t_tok* delim)
 		// call itself and check for more redirections
 		node->a = build_job(tokens, tk1);
 		// put the filename on current b node
-		node->b = malloc(sizeof(t_bst));
-		if (node->b)
+		if (node->b = malloc(sizeof(t_bst)))
 			*(t_bst*)node->b = (t_bst){.a=tk1->data, .b=NULL, .type=FILENAME};
 	}
 
@@ -106,15 +104,13 @@ t_bst*		build_job(t_tok* tokens, t_tok* delim)
 		// current node a takes the first token (cmd name)
 		if (tokens->type & CMD)
 		{
-			node->a = malloc(sizeof(t_bst));
-			if (node->a)
+			if (node->a = malloc(sizeof(t_bst)))
 				*(t_bst*)node->a = (t_bst){.a=tokens->data, .b=NULL, .type=CMD};
 		}
 		// current node b takes the next token (filename)
 		if (tk1->type & (REDIR_GR | REDIR_LE | REDIR_DG))
 		{
-			node->b = malloc(sizeof(t_bst));
-			if (node->b)
+			if (node->b = malloc(sizeof(t_bst)))
 				*(t_bst*)node->b = (t_bst){.a=tk1->data, .b=NULL,.type=FILENAME};
 		}
 	}
@@ -142,7 +138,7 @@ t_bst*		get_bst_root(t_tok* tokens)
 	if (!(last_node = is_pipe_cmd(tokens)))
 		return (build_bst(tokens));
 	else if (tokens->next)
-		return (build_job(tokens, last_node));
+		return (build_job(tokens, last_node->next));
 	return (build_job(tokens, NULL));
 }
 
@@ -181,8 +177,17 @@ t_bst*		build_bst(t_tok* tokens)
         node->b = build_bst(tk1->next);
 
 	// If there's a redirection further, build redirection in node a starting in current b node
-	else if ((tk3 = find_next_operator(tk1->next, REDIR_GR | REDIR_LE | REDIR_DG))->type & (REDIR_GR | REDIR_LE | REDIR_DG))
-		node->b = build_job(tk3, tk2);
+	else if ((tk3 = find_next_operator(tk1, REDIR_GR | REDIR_LE | REDIR_DG))->type & (REDIR_GR | REDIR_LE | REDIR_DG))
+	{
+		dprintf(2, "---------------------------> TK3 type is: [%d]\n", tk3->type);
+		if (node->b = malloc(sizeof(t_bst)))
+		{
+			*(t_bst*)node->b = (t_bst){.a=build_job(tk3->next, NULL), .type=tk3->type};
+			if (((t_bst*)node->b)->b = malloc(sizeof(t_bst)))
+				*(t_bst*)((t_bst*)node->b)->b = (t_bst){.a=NULL, .b=tk3->data, .type=FILENAME};
+		}
+			
+	}
 	
 	// If there's no pipe or redirection further, build cmd in current node b
 	else
@@ -211,12 +216,14 @@ char* get_token_name(int code)
 
 void free_bst(t_bst* root)
 {
+	if (!root)
+		return ;
 	printf("FREED NODE [%p]'s TYPE IS: code[%d][%s]\n", root, root->type, get_token_name(root->type));
-	if (!(root->type & (CMD | FILENAME)))
-	{
+	//if (!(root->type & (CMD | FILENAME)))
+	//{
 		free_bst(root->a);
 		free_bst(root->b);
-	}
+	//}
 	free(root);
 }
 
