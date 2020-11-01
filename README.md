@@ -104,7 +104,7 @@ Then, just have to overwrite the "fds" values and execute. Let's continue with t
 		[ | ]      // overwrite stdout with pipe read and store pipe write, now fds = {pipe_read, 1, pipe_write}
 	       /     \
 	     /	       \
-     [echo -n           [ | ]    // overwrite sdtin with fds[2] (pipe write), fds = {0, pipe_write, pipe_write}
+     [echo -n           [ | ]    // overwrite sdtin with fds[2] (pipe write), fds = {pipe_read, pipe_write, pipe_write}
     "This is an	       /     \
       example"]      /         \
 		   [ > ]        [ < ] // for the cat -e branch overwrite sdtout, fds = {file1, pipe_write, pipe_write}
