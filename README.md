@@ -30,7 +30,7 @@ This is the struct of a token node:
 typedef struct      s_tok
 {
 	t_tok_t         type; // could be OP or CMD
-	char*           data; // could be command name with args or filename
+	char*           data; // could be command name with its args or a filename
 	struct s_tok*   next; 
 }                   t_tok;
 ```
