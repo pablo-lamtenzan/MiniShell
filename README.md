@@ -82,7 +82,7 @@ minish> $ echo -n "This is an example" | cat -e > file1 | cat < file1 > file2
 
 who's tokens will be:
 ```
-[type:CMD, data:(echo -n "This is an example)][type:OP:PIPE, data:NULL][type:CMD, data:(cat -e)][type:OP:REDIR_GR, data:(file1)][type:OP:PIPE, data:NULL][type:CMD, data:(cat)][type:OP:REDIR_LE, data:(file1)][type:OP:REDIR_GR, data:(file2)]
+[type:CMD, data:(echo -n "This is an example")][type:OP:PIPE, data:NULL][type:CMD, data:(cat -e)][type:OP:REDIR_GR, data:(file1)][type:OP:PIPE, data:NULL][type:CMD, data:(cat)][type:OP:REDIR_LE, data:(file1)][type:OP:REDIR_GR, data:(file2)]
 ```
 
 All the right childs (starting in the root of the BST) are operators type PIPE except the last right node, this can be a redirection or a simple command. The left nodes (starting of the root and in each right node) are the commands and/or redirections between the pipes. So for the given command line the BST must be:
