@@ -16,6 +16,39 @@
 to do
 explain the concept of separators: ; && ||
 explain the concept of cmd_line, job, and cmd
+First of all, lets talk about the separators. The separators are:
+```
+";", "&&", "||"
+```
+A separator can always is the end of the execution. So, that means if a have an input command with n separator i can split it (n times in shoter commands).
+Lets call this splits a "command line". A command line can be splited too, we can use the pipe as separator. Lets call this commands lines splits a job. And finally, job can be splited too in simple commands.
+```
+INPUT CMD -> can be composed by n CMD LINE(s) (separeted by ";", "&&", "||")
+CMD LINE -> can be composed by n JOB(s) (separeted by "|")
+JOB -> contains allways a command and n redirections ("<", "<<", ">", ">>")
+```
+The cmd lines and jobs will be handled in the BST (see in next part). The lexer-parser will return a linked-list of tokens that will be used to build a BST later. 
+This is the struct of a token node:
+```
+typedef struct      s_tok
+{
+	t_tok_t         type; // could be OP or CMD
+	char*           data; // could be command name with args or filename
+	struct s_tok*   next; 
+}                   t_tok;
+```
+Lets show with a simpe example how to tokenize a command line:
+```
+minish> $ ls | cat -e | rev
+
+tokens: [type:CMD, data:(ls)][type:OP:PIPE, data:NULL][type:CMD, data:(cat -e)][type:OP:PIPE, data:(rev)]
+```
+As we can see the tokens have two types or the token is an operator or a cmd. The operator used to split a job (the pipes) have no data, however, the redirections have the filename in data like:
+```
+minish> $ ls > file
+
+tokens: [type:CMD, data:(ls)][type:OP:REDIR_GR, data;(file)]
+```
 
 ## III) BST
 
