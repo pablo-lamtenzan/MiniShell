@@ -61,7 +61,11 @@ All the right childs (starting in the root of the BST) are operators type PIPE e
 			 [ cat ]  [file2]
 			 
 ```
-Build a bst for a command line without pipe but having at least a redirection is like the last right node and its left node. For the given command line ```minish >$ cat < file1 > file2``` the result BST will be:
+Build a bst for a command line without pipe but having at least a redirection is like the last right node and its left node. For the given command line 
+```
+minish >$ cat < file1 > file2
+```
+the result BST will be:
 ```
              [ < ]
              /   \
