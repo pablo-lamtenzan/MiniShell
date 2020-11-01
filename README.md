@@ -1,5 +1,5 @@
 # miniShell
-### An implementation of Shell-Bach from scratch by Clemax & pablo-lamtenzan
+### An implementation of a Shell-Bach from scratch by Clemax & pablo-lamtenzan
 
 ### Index
 #### I) Use
