@@ -29,7 +29,7 @@ typedef struct      	s_bst
 ```
 There are 3 possible cases to handle:
 - Command line has at least a pipe
-- Command line hasn't a pipe but at least one redirection
+- Command line hasn't a pipe but has at least one redirection
 - Command line hasn't pipe or redirection
 
 To handle the last case a BST ins't needed, is enought with a single node. But to handle the other cases a BST is going to be built.
