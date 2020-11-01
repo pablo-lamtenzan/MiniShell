@@ -17,7 +17,7 @@ First of all, lets talk about the separators. The separators are:
 ```
 ";", "&&", "||"
 ```
-A separator is always the end of the execution. So, that means if there's input command with n separators it can be splited n times in shoter commands.
+A separator is always the end of the execution. So, that means if there's input command with n separators it can be splited n times in shorter commands.
 Lets call this splits result a: "command line". A command line can be splited too, we can use the pipe as separator. Lets call this commands lines splits result a: "job". And finally, a job can be splited too, into simple commands.
 ```
 INPUT CMD -> can be composed by n CMD LINE(s) (separeted by ";", "&&", "||")
