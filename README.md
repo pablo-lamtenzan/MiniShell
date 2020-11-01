@@ -2,20 +2,17 @@
 ### An implementation of a Shell-Bach from scratch by Clemax & pablo-lamtenzan
 
 ### Index
-#### I) Use
+#### I) Usage
 #### II) Lexer-Parser
 #### III) BST
 #### IV) Execution
 #### V) Termcaps (?)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## I) Use
+## I) Usage
  to do
  
 ## II) Lexer-Parser
-to do
-explain the concept of separators: ; && ||
-explain the concept of cmd_line, job, and cmd
 First of all, lets talk about the separators. The separators are:
 ```
 ";", "&&", "||"
