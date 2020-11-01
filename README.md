@@ -17,8 +17,8 @@ First of all, lets talk about the separators. The separators are:
 ```
 ";", "&&", "||"
 ```
-A separator is always the end of the execution. So, that means if a have an input command with n separator i can split it (n times in shoter commands).
-Lets call this splits a "command line". A command line can be splited too, we can use the pipe as separator. Lets call this commands lines splits a job. And finally, job can be splited too in simple commands.
+A separator is always the end of the execution. So, that means if there's input command with n separators it can be splited n times in shoter commands.
+Lets call this splits result a: "command line". A command line can be splited too, we can use the pipe as separator. Lets call this commands lines splits result a: "job". And finally, a job can be splited too, into simple commands.
 ```
 INPUT CMD -> can be composed by n CMD LINE(s) (separeted by ";", "&&", "||")
 CMD LINE -> can be composed by n JOB(s) (separeted by "|")
@@ -34,13 +34,13 @@ typedef struct      s_tok
 	struct s_tok*   next; 
 }                   t_tok;
 ```
-Lets show with a simpe example how to tokenize a command line:
+Lets show with a simple example how to tokenize a command line:
 ```
 minish> $ ls | cat -e | rev
 
 tokens: [type:CMD, data:(ls)][type:OP:PIPE, data:NULL][type:CMD, data:(cat -e)][type:OP:PIPE, data:(rev)]
 ```
-As we can see the tokens have two types or the token is an operator or a cmd. The operator used to split a job (the pipes) have no data, however, the redirections have the filename in data like:
+As we can see the tokens has two types: operator or cmd. The operator used to split a job (the pipes) have no data, however, the redirections have the filename in data like:
 ```
 minish> $ ls > file
 
