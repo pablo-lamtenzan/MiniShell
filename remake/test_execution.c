@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/30 00:52:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/10/30 23:41:46 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/01 20:00:04 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,23 @@
 #include <libft.h>
 #include <builtins.h>
 
-# define NONE       0
-# define PIPE       1
-# define REDIR_GR   2
-# define REDIR_LE   4
-# define REDIR_DG   8
-# define SEMICOLON  16
-# define CMD		32
+# define TOK_NONE       0
+# define OP_REDIR_RD    1
+# define OP_REDIR_WR    2
+# define OP_REDIR_WA    4
+# define OP_PIPE        8
+# define TOK_CMD        16
+
+# define NONE       TOK_NONE
+# define REDIR_GR   OP_REDIR_WR
+# define REDIR_LE   OP_REDIR_WA
+# define REDIR_DG   OP_REDIR_RD
+# define PIPE       OP_PIPE
+# define CMD		TOK_CMD
+# define FILENAME	32
+# define CONST_GR	64 // if set it wont dup2 anymore the > or >>
+# define CONST_LE	128 // if set if wont dup2 naymore the <
+# define HANDLE_CONST 256
 
 #define STDIN	0
 #define STDOUT	1
@@ -36,8 +46,6 @@
 #define READ	1
 #define WRITE	0
 
-#define CONST_GR	1 // if set it wont dup2 anymore the > or >>
-#define CONST_LE	2 // if set if wont dup2 naymore the <
 
 typedef char    t_tok_t;
 
@@ -72,7 +80,7 @@ typedef struct s_term
 typedef struct  s_exec
 {
 	int				fds[3];
-	char			fidex_fds; // flags used for multiple redirection
+	char			handle_dup;
 	t_executable	exec;
 	const char*		execution_path;
 	int				ac;
@@ -85,7 +93,7 @@ typedef struct  s_exec
 // - root is REDIR: 1 bst (n nodes) -> CMD
 // - root is CDM: 1 node -> CMD
 void execute_cmd(t_bst* cmd, t_exec* info, t_term* term);
-void open_pipe_fds(t_exec** info, t_tok_t next_type, char* filename);
+void open_pipe_fds(t_exec** info, t_tok_t next_type);
 int redirections_handler(t_exec** info, t_tok_t type, void* filename);
 void get_exec(t_exec** info, t_term* term);
 bool close_pipe_fds(int* fds);
@@ -106,25 +114,19 @@ void		execute_bst(t_bst* root, t_term* term)
 // this function is called on a pipe and iterates pipe to pipe until the (pipe/redir) end operator in root's b branch
 void        execute_job(t_bst* job, t_exec* info, t_term* term)
 {
-	/* IMPORTANT:
-		last b must be a cmd, ALWAYS!
-	*/
-
     // update the executions fds, if last b node after pipe(s) is redir must open the fd and dup here
-    open_pipe_fds(&info, job->b ? ((t_bst*)job->b)->type : -1, job->b && ((t_bst*)job->b)->type & (REDIR_GR | REDIR_DG | REDIR_LE) ? ((t_bst*)job->b)->b : NULL);
+	open_pipe_fds(&info, job->b ? ((t_bst*)job->b)->type : -1);
 
     // execution of left branch using the updated fds
 	if (!(job->type & CMD))
-    	execute_cmd(job->a, info, term);
+    execute_cmd(job->a, info, term);
 
     // recursion loop
     if (job->b && job->type & PIPE)
         execute_job(job->b, info, term);
 
-	// exit conditions
-    else if (job->b && job->type & (REDIR_GR | REDIR_DG | REDIR_LE)) // n pipe(s) ending by a redirection (redirection alreaddy executed in prev node)
-		return ;
-	else if (job->type & CMD) // n pipe(s) ending by a cmd
+	// exit condition
+	else if (job->type & (REDIR_GR | REDIR_LE | REDIR_DG | CMD) && (info->handle_dup |= HANDLE_CONST))
 		execute_cmd(job, info, term);
 }
 
@@ -161,16 +163,12 @@ void        execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
 	}
 }
 
-void        open_pipe_fds(t_exec** info, t_tok_t next_type, char* filename)
+void        open_pipe_fds(t_exec** info, t_tok_t next_type)
 {
 	bool	update;
 	int		pipe_fds[2];
 
 	update = false;
-	
-    // no more fds to open
-    if (next_type < 0)
-        return ;
 
 	// pipe part 2,4,6,... 
 	if ((*info)->fds[STDOUT] != STDOUT && (update = true))
@@ -181,14 +179,8 @@ void        open_pipe_fds(t_exec** info, t_tok_t next_type, char* filename)
 		(*info)->fds[STDIN] = (*info)->fds[AUX];
 
 		// If inter pipe must redirect stdout to pipe write
-		if (next_type & PIPE)
+		if (next_type > 0 && next_type & PIPE | REDIR_GR | REDIR_DG)
 			update = false;
-		
-		// If next b is redir must execute the redir one node before
-		else if (next_type & (REDIR_GR | REDIR_DG | REDIR_LE) && filename \
-				&& (redirections_handler(info, next_type, filename) < 0 \
-				|| !dup_stdio((*info)->fds, (*info)->fidex_fds)))
-			return ;
 	}
 	// pipe part 1,3,5,...
 	if (!update)
@@ -254,11 +246,11 @@ bool	dup_stdio(int* fds, char* flags)
 
 	i = -1;
 	while (++i < 3)
-		if ((*flags & CONST_GR && i == STDOUT) || (*flags & CONST_LE && i == STDIN))
+		if (*flags & HANDLE_CONST && (*flags & CONST_GR && i == STDOUT) || (*flags & CONST_LE && i == STDIN))
 			continue ;
 		if (fds[i] != i && (dup2(fds[i], i) < 0 || close(fds[i]) < 0))
 			return (false);
-		else if (fds[i] != i) // need this cause we need to only dup2 to the fist file if there are multiple "< or > or >>"
+		else if (*flags & HANDLE_CONST && fds[i] != i) // need this cause we need to only dup2 to the fist file if there are multiple "< or > or >>"
 		{
 			if (i == 0)
 				*flags |= CONST_LE;
@@ -274,7 +266,7 @@ int execute_child(t_exec* info, t_term* term)
 
 	if (!(term->pid = fork()))
 	{
-		if (dup_stdio(info->fds, &info->fidex_fds))
+		if (dup_stdio(info->fds, &info->handle_dup))
 		{
 			wstatus = execve(info->execution_path, info->av, info->ep);
 			ft_dprintf(2, "%s: %s: execve returned '%d'!\n", term->name, info->av[0], wstatus);
