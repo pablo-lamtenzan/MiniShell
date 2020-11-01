@@ -44,7 +44,7 @@ As we can see the tokens has two types: operator or cmd. The operator used to sp
 ```
 minish> $ ls > file
 
-tokens: [type:CMD, data:(ls)][type:OP:REDIR_GR, data;(file)]
+tokens: [type:CMD, data:(ls)][type:OP:REDIR_GR, data:(file)]
 ```
 Besides, the separtors of the command lines will be used for conditional calculation (if separators are "&&" or "||"). For example, imagine an input command with some separators, for each separator a new BST will be created and exectuted. The conditional return (true or false) of the command(s) executed on the bst will be stored during the bst execution. And then, after the execution is easy to do conditional calculation. The parentheses are only used for conditional calculation, they haven't effect on anything else:
 ```
