@@ -87,7 +87,7 @@ who's tokens will be:
 
 All the right childs (starting in the root of the BST) are operators type PIPE except the last right node, this can be a redirection or a simple command. The left nodes (starting of the root and in each right node) are the commands and/or redirections between the pipes. So for the given command line the BST must be:
 ```
-		[ | ]
+	root-->	[ | ]
 	       /     \
 	     /	       \
      [echo -n           [ | ]
@@ -108,7 +108,7 @@ minish >$ cat < file1 > file2
 ```
 the result BST will be:
 ```
-             [ < ]
+     root--> [ < ]
              /   \
 	    /     \
 	   [ > ]  [file1]
@@ -142,7 +142,7 @@ t_exec *info;
 Then, just have to overwrite the "fds" values and execute. Let's continue with the previous example:
 ```
                            // fds = {0, 1, 2}
-		[ | ]      // overwrite stdout with pipe read and store pipe write, now fds = {pipe_read, 1, pipe_write}
+	root-->	[ | ]      // overwrite stdout with pipe read and store pipe write, now fds = {pipe_read, 1, pipe_write}
 	       /     \
 	     /	       \
      [echo -n           [ | ]    // overwrite sdtin with fds[2] (pipe write), fds = {pipe_read, pipe_write, pipe_write}
