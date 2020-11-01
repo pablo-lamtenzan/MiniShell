@@ -145,8 +145,8 @@ Then, just have to overwrite the "fds" values and execute. Let's continue with t
 	root-->	[ | ]      // overwrite stdout with pipe read and store pipe write, now fds = {pipe_read, 1, pipe_write}
 	       /     \
 	     /	       \
-     [echo -n           [ | ]    // overwrite sdtin with fds[2] (pipe write), fds = {pipe_read, pipe_write, pipe_write}
-    "This is an	       /     \
+     [echo -n           [ | ]    // for the left branch execute echo -n "This is an example", in fds = {pipe_read, 1, pipe_write}
+    "This is an	       /     \   // for the right brach, overwrite sdtin with fds[2] (pipe write), fds = {pipe_read, pipe_write, pipe_write}
       example"]      /         \
 		   [ > ]        [ < ] // for the cat -e branch overwrite sdtout, fds = {file1, pipe_write, pipe_write}
 		  /    \        /   \ // for the last right branch, fds = {0, file1, pipe_write}
@@ -155,5 +155,6 @@ Then, just have to overwrite the "fds" values and execute. Let's continue with t
 	     	              /   \               // for the last right branch overwrite stdout, fds = {file2, file1, pipe_write}
 			     /     \
 			 [ cat ]  [file2] // execute cat in fds = {file2, file1, pipe_write}
-			 
+
+// Don't forget that fds[2] is only for pipes write! Its value doesn't affect the exectution. 
 ```
