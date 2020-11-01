@@ -87,8 +87,8 @@ typedef struct		s_exec
 	t_executable	exec; // pointer to the builting or execve (with its arguments) function
 	const char*	execution_path; // execve argument
 	int		ac; // number of command arguments
-    char*const*		av; // pointer to command arguments
-    char*const*		ep; // pointer to environment
+    	char*const*	av; // pointer to command arguments
+    	char*const*	ep; // pointer to environment
 }			t_exec; 
 ```
 
