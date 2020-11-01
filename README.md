@@ -38,7 +38,7 @@ Lets show with a simple example how to tokenize a command line:
 ```
 minish> $ ls | cat -e | rev
 
-tokens: [type:CMD, data:(ls)][type:OP:PIPE, data:NULL][type:CMD, data:(cat -e)][type:OP:PIPE, data:(rev)]
+tokens: [type:CMD, data:(ls)][type:OP:PIPE, data:NULL][type:CMD, data:(cat -e)][type:OP:PIPE, data:NULL][type:CMD, data:(rev)]
 ```
 As we can see the tokens has two types: operator or cmd. The operator used to split a job (the pipes) have no data, however, the redirections have the filename in data like:
 ```
