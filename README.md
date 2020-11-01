@@ -1,5 +1,5 @@
 # miniShell
-## An implementation of Shell-Bach from scratch by pablo-lamtenzan and ClemaX
+### An implementation of Shell-Bach from scratch by Clemax & pablo-lamtenzan
 
 ### Index
 #### I) Use
@@ -8,3 +8,12 @@
 #### IV) Execution
 #### V) Termcaps (?)
 
+## I) Use
+ to do
+ 
+## II) Lexer-Parser
+to do
+
+## III) BST
+
+## IV) Execution
