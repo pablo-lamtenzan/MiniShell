@@ -78,7 +78,7 @@ the result BST will be:
 
 ## IV) Execution
 
-The execution is very easy having a BST built, the following struct is used to handle the execution:
+The execution is very easy with a BST built, the following struct is used to handle the execution:
 ```
 typedef struct		s_exec
 {
