@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/30 23:16:52 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/01 01:23:16 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/01 01:33:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ t_bst*		build_job(t_tok* tokens, t_tok* delim)
 	dprintf(2, "[JOB]Loops [%d] times!\n", db2++);
 
 	if (!(node = malloc(sizeof(t_bst))))
-		return (NULL);
+		return (NULL); // Fatal error exit here
 
 	// get the last operator
 	tk1 = find_last_operator(tokens, delim);
@@ -186,7 +186,6 @@ t_bst*		build_bst(t_tok* tokens)
 			if (((t_bst*)node->b)->b = malloc(sizeof(t_bst)))
 				*(t_bst*)((t_bst*)node->b)->b = (t_bst){.a=NULL, .b=tk3->data, .type=FILENAME};
 		}
-			
 	}
 	
 	// If there's no pipe or redirection further, build cmd in current node b
