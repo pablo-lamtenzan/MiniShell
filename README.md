@@ -53,7 +53,7 @@ minish> $ CMD_LINE && CMD_LINE || (CMD_LINE || CMD_LINE) || CMD_LINE ; CMD_LINE
 	     |           |             |          |             |         |
 	 1 BST         1 BST         1 BST        1 BST        1 BST    always exec
      always exec      exec if       exec if       exec if     exec if
-                      prev=true     prev=false    prev=false   parentheses=true
+                      prev=true     prev=false    prev=false   parentheses=false
 ```
 
 ## III) BST
