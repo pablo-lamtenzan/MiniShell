@@ -135,10 +135,10 @@ typedef struct		s_exec
 
 Using "fds" to store the fd of stdin and stdout execute is pretty easy. Just have to init fds and set it values to the standard values:
 ```
-if (t_exec *info = malloc(sizeof(t_exec))
-{
-	*info = (t_exec){.fds[0]=0, .fds[1]=1, .fds[2]=2};
-}
+t_exec	info;
+
+info = (t_exec){.fds[0]=0, .fds[1]=1, .fds[2]=2};
+
 ```
 Then, just have to overwrite the "fds" values and execute. Let's continue with the previous example:
 ```
