@@ -83,7 +83,7 @@ The execution is very easy having a BST built, the following struct is used to h
 typedef struct		s_exec
 {
 	int		fds[3]; // executions fds (fds[0] = STDIN, fds[1] = STDOUT, fds[2] is used to store pipe fds
-	char		fidex_fds; // used only for handle the case where there's at least one pipe and then at least one redirection
+	char		handle_dup; // used only for handle the case where there's at least one pipe and then at least one redirection
 	t_executable	exec; // pointer to the builting or execve (with its arguments) function
 	const char*	execution_path; // execve argument
 	int		ac; // number of command arguments
