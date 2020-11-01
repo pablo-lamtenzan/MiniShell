@@ -40,7 +40,7 @@ minish> $ ls | cat -e | rev
 
 tokens: [type:CMD, data:(ls)][type:OP:PIPE, data:NULL][type:CMD, data:(cat -e)][type:OP:PIPE, data:NULL][type:CMD, data:(rev)]
 ```
-As we can see the tokens has two types: operator or cmd. The operator used to split a job (the pipes) have no data, however, the redirections have the filename in data like:
+As we can see the tokens has two types: operator or cmd. The operator used to split a job (the pipes) have no data, however, the redirections has the filename in data like:
 ```
 minish> $ ls > file
 
