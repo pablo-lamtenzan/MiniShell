@@ -56,6 +56,14 @@ All the right childs starting in the root of the BST are operators type PIPE exc
 			 [ NULL ]  [file2]
 			 
 ```
-
+Build a bst for a command line without pipe but having at least a redirection is like the last right node and it's left node. For the given command line ```miniSH >$ cat < file1 > file2``` the result BST will be:
+```          [ < ]
+             /   \
+	    /     \
+	   [ > ]  [file1]
+	   /   \
+	  /     \
+     [ NULL ]   [file2]
+```
 
 ## IV) Execution
