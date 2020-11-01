@@ -34,7 +34,8 @@ There are 3 possible cases to handle:
 
 To handle the last case a BST ins't needed, is enought with a single node. But to handle the other cases a BST is going to be built.
 To get started, lets explain how to build a bst with a at least a pipe with an example:
-For execute the following command line ```minish> $ echo -n "This is an example" | cat -e > file1 | cat < file1 > file2```
+For execute the following command line ```
+minish> $ echo -n "This is an example" | cat -e > file1 | cat < file1 > file2```
 
 who's tokens will be:
 ```[type:CMD, data:(echo -n "This is an example)][type:OP:PIPE, data:NULL][type:CMD, data:(cat -e)][type:OP:REDIR_GR, data:(file1)][type:OP:PIPE, data:NULL][type:CMD, data:(cat)][type:OP:REDIR_LE, data:(file1)][type:OP:REDIR_GR, data:(file2)]```
