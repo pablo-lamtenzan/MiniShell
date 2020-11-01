@@ -14,6 +14,8 @@
  
 ## II) Lexer-Parser
 to do
+explain the concept of separators: ; && ||
+explain the concept of cmd_line, job, and cmd
 
 ## III) BST
 
