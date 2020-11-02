@@ -30,7 +30,7 @@ This is the struct of a token node:
 typedef struct      s_tok
 {
 	t_tok_t         type; // could be OP or CMD
-	char*           data; // could be command name with args or filename
+	char*           data; // could be command name with its args or a filename
 	struct s_tok*   next; 
 }                   t_tok;
 ```
@@ -44,7 +44,7 @@ As we can see the tokens has two types: operator or cmd. The operator used to sp
 ```
 minish> $ ls > file
 
-tokens: [type:CMD, data:(ls)][type:OP:REDIR_GR, data;(file)]
+tokens: [type:CMD, data:(ls)][type:OP:REDIR_GR, data:(file)]
 ```
 Besides, the separtors of the command lines will be used for conditional calculation (if separators are "&&" or "||"). For example, imagine an input command with some separators, for each separator a new BST will be created and exectuted. The conditional return (true or false) of the command(s) executed on the bst will be stored during the bst execution. And then, after the execution is easy to do conditional calculation. The parentheses are only used for conditional calculation, they haven't effect on anything else:
 ```
@@ -82,12 +82,12 @@ minish> $ echo -n "This is an example" | cat -e > file1 | cat < file1 > file2
 
 who's tokens will be:
 ```
-[type:CMD, data:(echo -n "This is an example)][type:OP:PIPE, data:NULL][type:CMD, data:(cat -e)][type:OP:REDIR_GR, data:(file1)][type:OP:PIPE, data:NULL][type:CMD, data:(cat)][type:OP:REDIR_LE, data:(file1)][type:OP:REDIR_GR, data:(file2)]
+[type:CMD, data:(echo -n "This is an example")][type:OP:PIPE, data:NULL][type:CMD, data:(cat -e)][type:OP:REDIR_GR, data:(file1)][type:OP:PIPE, data:NULL][type:CMD, data:(cat)][type:OP:REDIR_LE, data:(file1)][type:OP:REDIR_GR, data:(file2)]
 ```
 
 All the right childs (starting in the root of the BST) are operators type PIPE except the last right node, this can be a redirection or a simple command. The left nodes (starting of the root and in each right node) are the commands and/or redirections between the pipes. So for the given command line the BST must be:
 ```
-		[ | ]
+	root-->	[ | ]
 	       /     \
 	     /	       \
      [echo -n           [ | ]
@@ -108,7 +108,7 @@ minish >$ cat < file1 > file2
 ```
 the result BST will be:
 ```
-             [ < ]
+     root--> [ < ]
              /   \
 	    /     \
 	   [ > ]  [file1]
@@ -135,25 +135,27 @@ typedef struct		s_exec
 
 Using "fds" to store the fd of stdin and stdout execute is pretty easy. Just have to init fds and set it values to the standard values:
 ```
-t_exec *info;
+t_exec	info;
 
-*info = (t_exec){.fds[0]=0, .fds[1]=1, .fds[2]=2};
+info = (t_exec){.fds[0]=0, .fds[1]=1, .fds[2]=2};
+
 ```
 Then, just have to overwrite the "fds" values and execute. Let's continue with the previous example:
 ```
-                           // fds = {0, 1, 2}
-		[ | ]      // overwrite stdout with pipe read and store pipe write, now fds = {pipe_read, 1, pipe_write}
+                               // fds = {0, 1, 2}
+	root-->	[ | ]          // overwrite stdout with pipe read and store pipe write, now fds = {pipe_read, 1, pipe_write}
 	       /     \
 	     /	       \
-     [echo -n           [ | ]    // overwrite sdtin with fds[2] (pipe write), fds = {pipe_read, pipe_write, pipe_write}
-    "This is an	       /     \
+     [echo -n           [ | ]          // for the left branch execute echo -n "This is an example", in fds = {pipe_read, 1, pipe_write}
+    "This is an	       /     \          // for the right brach, overwrite sdtin with fds[2] (pipe's write fd), fds = {pipe_read, pipe_write, pipe_write}
       example"]      /         \
-		   [ > ]        [ < ] // for the cat -e branch overwrite sdtout, fds = {file1, pipe_write, pipe_write}
-		  /    \        /   \ // for the last right branch, fds = {0, file1, pipe_write}
+		   [ > ]        [ < ]          // for the cat -e branch overwrite sdtout, fds = {file1, pipe_write, pipe_write}
+		  /    \        /   \          // for the last right branch, fds = {0, file1, pipe_write}
 		 /      \      /     \
-	     [cat -e] [file1] [ > ]   [file1]    // for the cat-e branch the fds = {file1, pipe_write, pipe_write}, execute "cat -e" to the fds
-	     	              /   \               // for the last right branch overwrite stdout, fds = {file2, file1, pipe_write}
+	     [cat -e] [file1] [ > ]   [file1]          // for the cat-e branch the fds = {file1, pipe_write, pipe_write}, execute "cat -e" to the fds
+	     	              /   \                    // for the last right branch overwrite stdout, fds = {file2, file1, pipe_write}
 			     /     \
-			 [ cat ]  [file2] // execute cat in fds = {file2, file1, pipe_write}
-			 
+			 [ cat ]  [file2]          // execute cat in fds = {file2, file1, pipe_write}
+
+// Don't forget that fds[2] is only for pipe's write fd! Its value doesn't affect a cmd exectution. 
 ```
