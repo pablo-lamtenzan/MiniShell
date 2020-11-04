@@ -6,11 +6,11 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 16:44:01 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/01 20:02:21 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/04 01:14:22 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "bst.h" // to change
+#include <bst.h>
 
 t_tok*		find_next_operator(t_tok* start, t_tok_t type)
 {
@@ -23,7 +23,7 @@ t_tok*		find_last_operator(t_tok* start, t_tok* end)
 {
 	t_tok*	last;
 
-	if (start != end)
+	if (start->next != end)
 	{
 		last = start;
 		while (last->next && last->next != end)

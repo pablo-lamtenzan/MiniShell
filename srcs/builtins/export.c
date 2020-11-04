@@ -1,4 +1,4 @@
-#include <minishell.h>
+#include <execution.h>
 
 int	print_env(int fd, t_map *env)
 {
@@ -13,14 +13,14 @@ int	print_env(int fd, t_map *env)
 	return (0);
 }
 
-int	ft_export(t_args *args, t_term *t)
+int	ft_export(t_exec *args, t_term *t)
 {
 	t_map	*var;
 
 	if (args->ac == 1)
 	{
 		map_sort(&t->env, &map_cmp);
-		print_env(1, t->env);
+		print_env(args->fds[1], t->env);
 	}
 	else
 	{

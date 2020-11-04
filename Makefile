@@ -19,33 +19,35 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 						pwd.c\
 						unset.c\
 					)\
-					bst.c\
-					cmd.c\
-					execution.c\
-					execution_fill.c\
-					free.c\
-					lexer.c\
-					main.c\
-					operator.c\
-					path.c\
-					token.c\
+					$(addprefix bst/,\
+						bst_fill.c\
+						bst.c\
+					)\
+					$(addprefix execution/,\
+						execution_fd.c\
+						execution_fill.c\
+						execution.c\
+					)\
+					$(addprefix main/,\
+						main.c\
+					)\
+					$(addprefix tests/,\
+						tests_execution_bst.c\
+					)\
+					$(addprefix utils/,\
+						path.c\
+					)\
 				)
 
-OBJDS	=		$(addprefix $(OBJDIR)/, builtins)
+OBJDS	=		$(addprefix $(OBJDIR)/, builtins bst execution main tests utils)
 
 OBJS	=		$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 
 HDRS	=		$(addprefix $(INCDIR)/,\
 					bst.h\
 					builtins.h\
-					cmd.h\
-					executable.h\
 					execution.h\
-					lexer.h\
-					minishell.h\
-					operator.h\
 					path.h\
-					token.h\
 				)
 
 all:			libft $(NAME)

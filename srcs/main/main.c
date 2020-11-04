@@ -1,19 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test_all.c                                         :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 23:28:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/02 22:27:39 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/03 21:17:55 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
 
 // put this in a header
-# define NONE			0
 # define SKIPED_AND		1
 # define SKIPED_OR		2
 # define PST_OR			4 // change
@@ -107,7 +106,7 @@ static t_tok*		handle_separators(t_tok** tokens, int* status)
 	// handling close parentheses
 	if (saved & CLOSE_PAR)
 	{
-		// handle close par followed by close pars
+		// handle close par followed by n close pars
 		if (tk4->next && tk4->next->type & CLOSE_PAR) // can remove this if
 			while (tk4->next && tk4->next->type & CLOSE_PAR)
 				tk4 = tk4->next;
@@ -154,25 +153,32 @@ static int	exec(t_tok* tokens, t_term* term)
 	conditionals = NONE;
 	while ((exec_tokens = handle_separators(&tokens, &status)))
 	{
-		if (handle_conditionals(term->st, status, &conditionals))
+		if (handle_conditionals(&term, status, &conditionals))
 		{
-			execute_bst((root = bst(exec_tokens)), term);
+			execute_bst(root = bst(exec_tokens), term);
 			free_bst(root);
 		}
 		free(exec_tokens);
 		exec_tokens = NULL;
 	}
-	free_all(term); // TODO, input to be freed ?
+	//free_all(term); // TODO, input to be freed ?
 	if (status == -1) // change to ERROR define
 		return (false);
 	return (true);
 }
 
+
 int			main(int ac, const char** av, const char** envp)
 {
-    int		status;
-
-    status = term_prompt(ac, av, envp, &exec);
+    int		status = 0;
+	(void)ac;
+	(void)av;
+	(void)envp;
+	
+	tests();
+	if (0)
+		exec(NULL, NULL);
+    //status = term_prompt(ac, av, envp, &exec);
     // TODO: free everything
     return (status);
 }

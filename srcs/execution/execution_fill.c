@@ -6,11 +6,12 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:05:45 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/01 20:20:37 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/03 21:13:52 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "execution.h" // to change
+#include <execution.h> // to change
+#include <path.h>
 
 int     	handle_wstatus(int wstatus)
 {
@@ -51,7 +52,7 @@ bool		build_execve_args(t_exec** info, t_term* term)
 		return (!(term->st = 127));
 	if (!((*info)->ep = map_export(term->env)))
 	{
-		free((*info)->execution_path);
+		free((void*)(*info)->execution_path);
 		return (false);
 	}
 	return (true);
@@ -67,5 +68,35 @@ void		destroy_execve_args(t_exec* info)
 	while (aux && aux[i++])
 		free(aux);
 	free(aux);
-	free(info->execution_path);
+	free((void*)info->execution_path);
+}
+
+int			matrix_height(char*const* matrix)
+{
+	const char** it;
+
+	it = (const char**)matrix;
+	while (*it)
+		it++;
+	return ((char*const*)it - matrix);
+}
+
+char**		handle_return_status(char** av, t_term* term)
+{
+	int		i;
+	static char** to_free = NULL;
+
+	if (to_free)
+	{
+		free(to_free);
+		to_free = NULL;
+	}
+	i = -1;
+	while (av[++i])
+		if (!ft_strncmp("$?", av[i], 2))
+		{
+			av[i] = ft_itoa(term->st);
+			to_free = &av[i]; // this stuff in a struct and free it
+		}
+	return (av);
 }

@@ -1,4 +1,4 @@
-#include <minishell.h>
+#include <execution.h>
 
 void	env_print(int fd, t_map *env)
 {
@@ -9,9 +9,9 @@ void	env_print(int fd, t_map *env)
 	}
 }
 
-int		ft_env(t_args *args, t_term *t)
+int		ft_env(t_exec *args, t_term *t)
 {
 	(void) args;
-	env_print(1, t->env);
+	env_print(args->fds[1], t->env);
 	return (0);
 }

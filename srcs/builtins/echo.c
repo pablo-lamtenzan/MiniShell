@@ -1,6 +1,6 @@
-#include <minishell.h>
+#include <execution.h>
 
-int	ft_echo(t_args *args, t_term *t)
+int	ft_echo(t_exec *args, t_term *t)
 {
 	char	opt;
 	short	arg;

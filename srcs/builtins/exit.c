@@ -1,7 +1,6 @@
-#include <minishell.h>
-#include <stdlib.h>
+#include <execution.h>
 
-int		ft_exit(t_args *args, t_term *t) // TODO: Callbacks in ft_term.h
+int		ft_exit(t_exec *args, t_term *t) // TODO: Callbacks in ft_term.h
 {
 	(void) args;
 	term_destroy(t);

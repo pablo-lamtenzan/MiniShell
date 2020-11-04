@@ -1,6 +1,6 @@
-#include <minishell.h>
+#include <execution.h>
 
-int	ft_unset(t_args *args, t_term *t)
+int	ft_unset(t_exec *args, t_term *t)
 {
 	// TODO: glob env
 	while (args->ac-- > 1)

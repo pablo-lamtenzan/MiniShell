@@ -6,11 +6,12 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/01 20:21:36 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/04 04:58:18 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "execution.h" // to change
+# include <execution.h>
+# include <builtins.h>
 
 static void		get_exec(t_exec** info, t_term* term)
 {
@@ -26,33 +27,34 @@ static void		get_exec(t_exec** info, t_term* term)
 		i++;
 	if (i < 7)
 		(*info)->exec = builtins[i];
-	else if (build_execve_args(&info, term))
+	else if (build_execve_args(info, term))
 		(*info)->exec = &execute_child;
 }
 
 static void		execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
 {
 	// ovewrite info fds and returns true if node is a redirection
-	if (redirections_handler(&info, cmd->type, cmd->b) < 0)
+	if (redirections_handler(&info, cmd->type, (const char*)cmd->b) < 0)
 		return ;
+	ft_dprintf(2, "Redirections override! fds = {%d, %d, %d}\n", info->fds[0], info->fds[1], info->fds[2]);
 
 	// goes further on a until find the cmd
-	if (!(cmd->type & CMD))
+	if (!(cmd->type & CMD) || (cmd->type & PIPE && !(((t_bst*)cmd->a)->type & CMD)))
     	execute_cmd(cmd->a, info, term);
 
 	// executes the cmd in the given executions fds
 	else
 	{
 		// init 
-		info->ac = 0; // to calc somewhere
-		info->av = cmd->a;
+		info->av = (char*const*)handle_return_status((char**)cmd->a, term);
+		info->ac = matrix_height(info->av);
 
 		// get fct pointer to execution
 		get_exec(&info, term);
 
 		// execute
 		if (info->exec)
-			info->exec(info, term);
+			term->st = info->exec(info, term);
 		else
 			destroy_execve_args(info);
 
@@ -65,21 +67,25 @@ static void		execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
 // this function is called on a pipe and iterates pipe to pipe until the (pipe/redir) end operator in root's b branch
 static void		execute_job(t_bst* job, t_exec* info, t_term* term)
 {
+	info->handle_dup = NONE;
     // update the executions fds, if last b node after pipe(s) is redir must open the fd and dup here
-	open_pipe_fds(&info, job->b ? ((t_bst*)job->b)->type : -1);
+	open_pipe_fds(&info, job->b ? job->type : -1);
+	ft_dprintf(2, "New pipes executed! fds = {%d, %d, %d}\n", info->fds[0], info->fds[1], info->fds[2]);
 
     // execution of left branch using the updated fds
 	if (!(job->type & CMD))
-    execute_cmd(job->a, info, term);
+    	execute_cmd(job->a, info, term);
 
     // recursion loop
     if (job->b && job->type & PIPE)
         execute_job(job->b, info, term);
 
 	// exit condition
-	else if (job->type & (REDIR_GR | REDIR_LE | REDIR_DG | CMD) \
-			&& (info->handle_dup |= HANDLE_CONST))
+	else
+	{
+		//info->handle_dup |= HANDLE_CONST; // add this for builtins // now have to do it for no builtins xD
 		execute_cmd(job, info, term);
+	}
 }
 
 void			execute_bst(t_bst* root, t_term* term)

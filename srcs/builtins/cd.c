@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 21:57:11 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/10/10 15:32:27 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/03 00:38:44 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+#include <execution.h>
 
 // TODO: Check allocation errors on map_set
 
-int		ft_cd(t_args *args, t_term *t)
+int		ft_cd(t_exec *args, t_term *t)
 {
 	char	path[PATH_MAX];
 	char	cwd[PATH_MAX];
