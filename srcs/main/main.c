@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 23:28:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/04 20:37:56 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/04 21:34:42 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,5 +181,5 @@ int			main(int ac, const char** av, const char** envp)
 		exec(NULL, NULL);
     //status = term_prompt(ac, av, envp, &exec);
     // TODO: free everything
-    return (false && term_prompt(ac, av, envp, &exec);
+    return (false && term_prompt(ac, av, envp, &exec));
 }

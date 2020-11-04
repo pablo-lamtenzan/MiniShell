@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/04 04:58:18 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/04 22:01:46 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static void		execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
 			term->st = info->exec(info, term);
 		else
 			destroy_execve_args(info);
-
+		info->exec = NULL;
 		// close the updated fds in execute_job
 		if (!close_pipe_fds(info->fds))
 			return ;
@@ -73,7 +73,7 @@ static void		execute_job(t_bst* job, t_exec* info, t_term* term)
 	ft_dprintf(2, "New pipes executed! fds = {%d, %d, %d}\n", info->fds[0], info->fds[1], info->fds[2]);
 
     // execution of left branch using the updated fds
-	if (!(job->type & CMD))
+	if (!(job->type & (CMD | REDIR_DG | REDIR_GR | REDIR_LE)))
     	execute_cmd(job->a, info, term);
 
     // recursion loop
@@ -82,10 +82,7 @@ static void		execute_job(t_bst* job, t_exec* info, t_term* term)
 
 	// exit condition
 	else
-	{
-		//info->handle_dup |= HANDLE_CONST; // add this for builtins // now have to do it for no builtins xD
 		execute_cmd(job, info, term);
-	}
 }
 
 void			execute_bst(t_bst* root, t_term* term)

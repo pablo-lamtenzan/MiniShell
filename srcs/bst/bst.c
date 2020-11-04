@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 16:23:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/04 04:50:25 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/04 21:48:12 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,15 +28,16 @@ static t_bst*	build_job(t_tok* tokens, t_tok* delim)
 		node->a = build_job(tokens, tk1);
 		dprintf(2, "BST: filename is: [%s]\n", tk1->data);
         node->b = tk1->data;
-		
-		
 	}
 	else
 	{
 		if (tokens->type & CMD)
             node->a = /*new_node(tokens->data, NULL, CMD)*/ tokens->data;
 		if (tk1->type & (REDIR_GR | REDIR_LE | REDIR_DG))
+		{
             node->b = /*new_node(tk1->data, NULL, FILENAME)*/ tk1->data;
+			dprintf(2, "BST: filename is: [%s]\n", tk1->data);
+		}
 		node->type |= CMD;
 	}
 	return (node);
