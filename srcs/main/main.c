@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 23:28:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/03 21:17:55 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/04 20:37:56 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,8 @@ static t_tok*		handle_separators(t_tok** tokens, int* status)
 
 static int	exec(t_tok* tokens, t_term* term)
 {
+	tokens_print(tokens);
+	return (true);
     int		status;
 	t_tok*	exec_tokens;
 	t_bst*	root;
@@ -170,7 +172,6 @@ static int	exec(t_tok* tokens, t_term* term)
 
 int			main(int ac, const char** av, const char** envp)
 {
-    int		status = 0;
 	(void)ac;
 	(void)av;
 	(void)envp;
@@ -180,5 +181,5 @@ int			main(int ac, const char** av, const char** envp)
 		exec(NULL, NULL);
     //status = term_prompt(ac, av, envp, &exec);
     // TODO: free everything
-    return (status);
+    return (false && term_prompt(ac, av, envp, &exec);
 }

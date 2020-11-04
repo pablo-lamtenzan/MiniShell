@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:51:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/04 04:36:02 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/04 20:06:12 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,14 @@
 # include <libft.h>
 # include <term/term.h>
 //# include <builtins.h>
-# include "bst.h" // to change
+# include <bst.h>
 
-# define TOK_NONE       0
-# define OP_REDIR_RD    1
-# define OP_REDIR_WR    2
-# define OP_REDIR_WA    4
-# define OP_PIPE        8
-# define TOK_CMD        16
+//# define TOK_NONE       0
+//# define OP_REDIR_RD    1
+//# define OP_REDIR_WR    2
+//# define OP_REDIR_WA    4
+//# define OP_PIPE        8
+//# define TOK_CMD        16
 
 # define NONE			TOK_NONE
 # define REDIR_GR		OP_REDIR_WR

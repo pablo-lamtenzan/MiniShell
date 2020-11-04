@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:05:45 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/03 21:13:52 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/04 20:32:42 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,10 @@ int			execute_child(t_exec* info, t_term* term)
 
 bool		build_execve_args(t_exec** info, t_term* term)
 {
-	t_map*	path;
 
-	if (!(path = map_get(term->env, "PATH")) \
-			|| !path->value \
-			|| !((*info)->execution_path = path_get((*info)->av[0], path->value)))
+	if (!((*info)->execution_path = path_get((*info)->av[0], env_get(term->env, "PATH"))))
 		return (!(term->st = 127));
-	if (!((*info)->ep = map_export(term->env)))
+	if (!((*info)->ep = (char*const*)env_export(term->env)))
 	{
 		free((void*)(*info)->execution_path);
 		return (false);

@@ -17,7 +17,7 @@ static char	*path_cat(const char *a, const char *b)
 	return (cat);
 }
 
-char	*path_get(const char *name, char *path)
+char	*path_get(const char *name, const char *path)
 {
 	char		**paths;
 	char		*join;

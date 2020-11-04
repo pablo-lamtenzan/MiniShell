@@ -16,11 +16,14 @@ int	print_env(int fd, t_map *env)
 int	ft_export(t_exec *args, t_term *t)
 {
 	t_map	*var;
+	(void)var;
+	(void)t;
 
 	if (args->ac == 1)
 	{
-		map_sort(&t->env, &map_cmp);
-		print_env(args->fds[1], t->env);
+		//map_sort(&t->env, &map_cmp);
+		//print_env(args->fds[1], t->env);
+		;
 	}
 	else
 	{
@@ -32,6 +35,7 @@ int	ft_export(t_exec *args, t_term *t)
 					t->name, av[0], av[ac]);
 				return (1);
 			} */
+			/*
 			if ((var = map_get(t->env, args->av[args->ac])))
 			{
 				if (!map_set(&t->env, var->key, var->value))
@@ -39,6 +43,8 @@ int	ft_export(t_exec *args, t_term *t)
 			}
 			else if (!map_set(&t->env, args->av[args->ac], ""))
 				return (1);
+			*/
+		;
 		}
 	}
 	return (0);

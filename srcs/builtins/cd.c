@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 21:57:11 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/11/03 00:38:44 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/04 20:17:57 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ int		ft_cd(t_exec *args, t_term *t)
 
 	if (args->ac == 1)
 	{
-		chdir(map_get(t->env, "HOME")->value);
-		map_set(&t->env, "PWD", map_get(t->env, "HOME")->value);
+		chdir(env_get(t->env, "HOME"));
+		env_set(&t->env, "PWD", env_get(t->env, "HOME"), true);
 		return (0);
 	}
 	else
@@ -31,7 +31,7 @@ int		ft_cd(t_exec *args, t_term *t)
 		ft_memcpy(path, args->av[1], ft_strlen(args->av[1]));
 		if (path[0] == '/' && chdir(path) == 0)
 		{
-			map_set(&t->env, "PWD", path);
+			env_set(&t->env, "PWD", path, true);
 			return (0);
 		}
 		else
@@ -43,7 +43,7 @@ int		ft_cd(t_exec *args, t_term *t)
 			if (chdir(cwd) == 0)
 			{
 				getcwd(cwd, sizeof(cwd));
-				map_set(&t->env, "PWD", cwd);
+				env_set(&t->env, "PWD", cwd, true);
 				return (0);
 			}
 		}
