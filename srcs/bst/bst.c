@@ -6,13 +6,11 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 16:23:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/04 21:48:12 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/04 23:37:00 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <bst.h>
-
-#include <stdio.h> // debug
 
 static t_bst*	build_job(t_tok* tokens, t_tok* delim)
 {
@@ -26,18 +24,14 @@ static t_bst*	build_job(t_tok* tokens, t_tok* delim)
 	if (tk1 != tk2 && tk2 != delim)
 	{
 		node->a = build_job(tokens, tk1);
-		dprintf(2, "BST: filename is: [%s]\n", tk1->data);
         node->b = tk1->data;
 	}
 	else
 	{
 		if (tokens->type & CMD)
-            node->a = /*new_node(tokens->data, NULL, CMD)*/ tokens->data;
+            node->a = tokens->data;
 		if (tk1->type & (REDIR_GR | REDIR_LE | REDIR_DG))
-		{
-            node->b = /*new_node(tk1->data, NULL, FILENAME)*/ tk1->data;
-			dprintf(2, "BST: filename is: [%s]\n", tk1->data);
-		}
+            node->b = tk1->data;
 		node->type |= CMD;
 	}
 	return (node);
@@ -79,11 +73,28 @@ t_bst*			bst(t_tok* tokens)
 	return (build_job(tokens, NULL)); // and this seems the same in all the cases
 }
 
+void			print_bst(t_bst* root, int type)
+{
+	if (!root)
+		return ;
+	if (type == 0)
+		ft_dprintf(2, "[PRINT BST: LEFT BRANCH:  addr[%p],type:[%d]\n", root, root->type);
+	if (type == 1)
+		ft_dprintf(2, "[PRINT BST: RIGHT BRANCH: addr[%p],type:[%d]\n", root, root->type);
+	if (!(root->type & CMD))
+		print_bst(root->a, 0);
+	if (root->type & PIPE)
+		print_bst(root->b, 1);
+}
+
 void			free_bst(t_bst* root)
 {
 	if (!root)
 		return ;
-	free_bst(root->a);
-	free_bst(root->b);
+	ft_dprintf(2, "[FREE BST: addr[%p],type:[%d]\n", root, root->type);
+	if (!(root->type & CMD))
+		free_bst(root->a);
+	if (root->type & PIPE)
+		free_bst(root->b);
 	free(root);
 }

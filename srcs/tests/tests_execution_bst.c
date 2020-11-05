@@ -6,11 +6,12 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/03 00:34:56 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/04 22:03:11 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/05 04:22:07 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
+#include <separators.h>
 #include <stdio.h>
 
 char* get_token_name(int code)
@@ -27,13 +28,12 @@ char* get_token_name(int code)
 	{
         return "CMD";
 	}
-	if (code == FILENAME)
-		return "FILENAME";
 	else
 		return (NULL);
 }
 
 
+/*
 void		print_bst(t_bst* root)
 {
 	//printf("BST NODE [%p]'s TYPE IS: code:[%d] type:[%s]\n", root, root->type, get_token_name(root->type));
@@ -55,6 +55,7 @@ void		print_bst(t_bst* root)
 		root = root->b;
 	}
 }
+*/
 
 void		tests()
 {
@@ -89,9 +90,19 @@ void		tests()
 	//char*	data16[3] = {"echo", "This is a test", NULL};
 
 	// test8
-	char*	data17[2] = {"pwd", NULL};
-	char*	data18[3] = {"echo", "This is another test", NULL};
-	char*	data19[3] = {"echo", "This is a test", NULL};
+	//char*	data17[2] = {"pwd", NULL};
+	//char*	data18[3] = {"echo", "This is another test", NULL};
+	//char*	data19[3] = {"echo", "This is a test", NULL};
+
+	// test 9, 10, 11
+	char* data20[3] = {"echo", "true", NULL}; // 20 first
+	char* data21[2] = {"pwd", NULL}; // 21 second
+	(void)data20;
+	(void)data21;
+
+	// other tests
+	char* _true[3] = {"echo", "true", NULL};
+	char* _false[2] = {"pwd", NULL};
 
 	// works: test1
 
@@ -152,25 +163,146 @@ void		tests()
 	//t_tok t7test2 = (t_tok){.data="out1", 					.type=REDIR_GR, .next=&t7test3};
 	//t_tok test7 = (t_tok){.data=data16, 					.type=CMD, 		.next=&t7test2};
 
-	// test8 : random bullshit
-	t_tok t8test11 = (t_tok){.data="88test88", 			.type=REDIR_GR, .next=NULL};
-	t_tok t8test10 = (t_tok){.data="test8", 			.type=REDIR_GR, .next=&t8test11};
-	t_tok t8test9 = (t_tok){.data=data17,				.type=CMD, 		.next=&t8test10};
-	t_tok t8test8 = (t_tok){.data=NULL, 				.type=PIPE, 	.next=&t8test9};
-	t_tok t8test7 = (t_tok){.data="22out22", 			.type=REDIR_GR, .next=&t8test8};
-	t_tok t8test6 = (t_tok){.data="out2", 				.type=REDIR_GR, .next=&t8test7};
-	t_tok t8test5 = (t_tok){.data=data18,				.type=CMD, 		.next=&t8test6};
-	t_tok t8test4 = (t_tok){.data=NULL, 				.type=PIPE, 	.next=&t8test5};
-	t_tok t8test3 = (t_tok){.data="11out11", 			.type=REDIR_GR, .next=&t8test4};
-	t_tok t8test2 = (t_tok){.data="out1", 				.type=REDIR_GR, .next=&t8test3};
-	t_tok test8 = (t_tok){.data=data19, 				.type=CMD, 		.next=&t8test2};
+	// works: test8
 
+	// test8 : random bullshit
+	//t_tok t8test11 = (t_tok){.data="88test88", 			.type=REDIR_GR, .next=NULL};
+	//t_tok t8test10 = (t_tok){.data="test8", 			.type=REDIR_GR, .next=&t8test11};
+	//t_tok t8test9 = (t_tok){.data=data17,				.type=CMD, 		.next=&t8test10};
+	//t_tok t8test8 = (t_tok){.data=NULL, 				.type=PIPE, 	.next=&t8test9};
+	//t_tok t8test7 = (t_tok){.data="22out22", 			.type=REDIR_GR, .next=&t8test8};
+	//t_tok t8test6 = (t_tok){.data="out2", 				.type=REDIR_GR, .next=&t8test7};
+	//t_tok t8test5 = (t_tok){.data=data18,				.type=CMD, 		.next=&t8test6};
+	//t_tok t8test4 = (t_tok){.data=NULL, 				.type=PIPE, 	.next=&t8test5};
+	//t_tok t8test3 = (t_tok){.data="11out11", 			.type=REDIR_GR, .next=&t8test4};
+	//t_tok t8test2 = (t_tok){.data="out1", 				.type=REDIR_GR, .next=&t8test3};
+	//t_tok test8 = (t_tok){.data=data19, 				.type=CMD, 		.next=&t8test2};
+
+	// works: test9
+
+	// test9: SEMICOLON
+	//t_tok	t9test3 = (t_tok){.data=data21,					.type=CMD,			.next=NULL};
+	//t_tok	t9test2 = (t_tok){.data=NULL,					.type=SEMICOLON,	.next=&t9test3};
+	//t_tok	test9 = (t_tok){.data=data20,					.type=CMD,			.next=&t9test2};
+
+	// works: test10: true && flase AND flase and true
+
+	// test10: AND
+	//t_tok	t10test3 = (t_tok){.data=data21,				.type=CMD,			.next=NULL};
+	//t_tok	t10test2 = (t_tok){.data=NULL,					.type=AND,			.next=&t10test3};
+	//t_tok	test10 = (t_tok){.data=data20,					.type=CMD,			.next=&t10test2};
+
+	// works: test11: flase || true AND true and true || false
+
+	// test11: OR
+	//t_tok	t11test3 = (t_tok){.data=data21,				.type=CMD,			.next=NULL};
+	//t_tok	t11test2 = (t_tok){.data=NULL,					.type=OR,			.next=&t11test3};
+	//t_tok	test11 = (t_tok){.data=data20,					.type=CMD,			.next=&t11test2};
+
+	// works: test12 false && false ; false AND true && false ; false
+
+	// test12: AND-SEMICOLON
+	//t_tok	t12test5 = (t_tok){.data=_false,				.type=CMD,			.next=NULL};
+	//t_tok	t12test4 = (t_tok){.data=NULL,					.type=SEMICOLON,	.next=&t12test5};
+	//t_tok	t12test3 = (t_tok){.data=_false,					.type=CMD,			.next=&t12test4};
+	//t_tok	t12test2 = (t_tok){.data=NULL,					.type=AND,			.next=&t12test3};
+	//t_tok	test12 = (t_tok){.data=_true,					.type=CMD,			.next=&t12test2};
+
+	// works: test13 true || true ; false AND flase || true ; false
+
+	// test13: OR-SEMICOLON
+	//t_tok	t13test5 = (t_tok){.data=_false,					.type=CMD,			.next=NULL};
+	//t_tok	t13test4 = (t_tok){.data=NULL,					.type=SEMICOLON,	.next=&t13test5};
+	//t_tok	t13test3 = (t_tok){.data=_true,				.type=CMD,			.next=&t13test4};
+	//t_tok	t13test2 = (t_tok){.data=NULL,					.type=OR,			.next=&t13test3};
+	//t_tok	test13 = (t_tok){.data=_true,					.type=CMD,			.next=&t13test2};
+
+	// works: cmd ; cmd ; AND cmd ; cmd  ; cmd
+
+	// test14: SEMICOLON-SEMICOLON
+	//t_tok	t14test5 = (t_tok){.data=_false,				.type=CMD,			.next=NULL};
+	//t_tok	t14test4 = (t_tok){.data=NULL,					.type=SEMICOLON,	.next=&t14test5};
+	//t_tok	t14test3 = (t_tok){.data=_false,				.type=CMD,			.next=&t14test4};
+	//t_tok	t14test2 = (t_tok){.data=NULL,					.type=SEMICOLON,	.next=&t14test3};
+	//t_tok	test14 = (t_tok){.data=_true,					.type=CMD,			.next=&t14test2};
+
+	// works: true && (flase && true && true) && true AND false && () && flase AND true && (true && true) && true
+
+	// test15: AND-PARENTHESES + AND IN PARENTHESES
+	//t_tok	t15test11 = (t_tok){.data=_true,				.type=CMD,			.next=NULL};
+	//t_tok	t15test10 = (t_tok){.data=NULL,					.type=AND,			.next=&t15test11};
+	//t_tok	t15test9 = (t_tok){.data=NULL,					.type=CLOSE_PAR, 	.next=&t15test10};
+	//t_tok	t15test8 = (t_tok){.data=_false,				.type=CMD,			.next=&t15test9};
+	//t_tok	t15test7 = (t_tok){.data=NULL,					.type=AND,			.next=&t15test8};
+	//t_tok	t15test6 = (t_tok){.data=_true,					.type=CMD,			.next=&t15test7};
+	//t_tok	t15test5 = (t_tok){.data=NULL,					.type=AND,			.next=&t15test6};
+	//t_tok	t15test4 = (t_tok){.data=_true,					.type=CMD,			.next=&t15test5};
+	//t_tok	t15test3 = (t_tok){.data=NULL,					.type=OPEN_PAR,		.next=&t15test4};
+	//t_tok	t15test2 = (t_tok){.data=NULL,					.type=AND,			.next=&t15test3};
+	//t_tok	test15 = (t_tok){.data=_true,					.type=CMD,			.next=&t15test2};
+
+	// works: false || (true || flase || false) || false AND true || () || false AND false || (flase || false) || false
+
+	// test16: OR-PARENTHESES + OR IN PARENTHESES
+	//t_tok	t16test11 = (t_tok){.data=_true,					.type=CMD,		.next=NULL};
+	//t_tok	t16test10 = (t_tok){.data=NULL,					.type=OR,			.next=&t16test11};
+	//t_tok	t16test9 = (t_tok){.data=NULL,					.type=CLOSE_PAR, 	.next=&t16test10};
+	//t_tok	t16test8 = (t_tok){.data=_true,					.type=CMD,		.next=&t16test9};
+	//t_tok	t16test7 = (t_tok){.data=NULL,					.type=OR,			.next=&t16test8};
+	//t_tok	t16test6 = (t_tok){.data=_false,					.type=CMD,		.next=&t16test7};
+	//t_tok	t16test5 = (t_tok){.data=NULL,					.type=OR,			.next=&t16test6};
+	//t_tok	t16test4 = (t_tok){.data=_false,					.type=CMD,		.next=&t16test5};
+	//t_tok	t16test3 = (t_tok){.data=NULL,					.type=OPEN_PAR,		.next=&t16test4};
+	//t_tok	t16test2 = (t_tok){.data=NULL,					.type=OR,			.next=&t16test3};
+	//t_tok	test16 = (t_tok){.data=_false,					.type=CMD,			.next=&t16test2};
+
+	// test17: AND-PARENTHESES + OR AND IN PARENTHESES
+
+	// works: test17
+	
+	//t_tok	t17test11 = (t_tok){.data=_true,				.type=CMD,		.next=NULL};
+	//t_tok	t17test10 = (t_tok){.data=NULL,					.type=OR,			.next=&t17test11};
+	//t_tok	t17test9 = (t_tok){.data=NULL,					.type=CLOSE_PAR, 	.next=&t17test10};
+	//t_tok	t17test8 = (t_tok){.data=_false,				.type=CMD,			.next=&t17test9};
+	//t_tok	t17test7 = (t_tok){.data=NULL,					.type=OR,			.next=&t17test8};
+	//t_tok	t17test6 = (t_tok){.data=_false,				.type=CMD,			.next=&t17test7};
+	//t_tok	t17test5 = (t_tok){.data=NULL,					.type=OR,			.next=&t17test6};
+	//t_tok	t17test4 = (t_tok){.data=_false,				.type=CMD,			.next=&t17test5};
+	//t_tok	t17test3 = (t_tok){.data=NULL,					.type=OPEN_PAR,		.next=&t17test4};
+	//t_tok	t17test2 = (t_tok){.data=NULL,					.type=AND,			.next=&t17test3};
+	//t_tok	test17 = (t_tok){.data=_true,					.type=CMD,			.next=&t17test2};
+
+	// test18: MULTIPLE PARENTHESES: test cmd && (((cmd && cmd) && cmd && cmd) && cmd && cmd) && cmd #2
+								// and cmd && (cmd && cmd && (cmd && cmd ...)) #1 [done!]
+								// check starting par without cond #3
+								// end par #4 [done!]
+	
+	t_tok	t18test21 = (t_tok){.data=_false,				.type=CMD,			.next=NULL};
+	t_tok	t18test20 = (t_tok){.data=NULL,					.type=AND,			.next=&t18test21};
+	t_tok	t18test19 = (t_tok){.data=NULL,					.type=CLOSE_PAR, 	.next=&t18test20};
+	t_tok	t18test18 = (t_tok){.data=_false,				.type=CMD,			.next=&t18test19};
+	t_tok	t18test17 = (t_tok){.data=NULL,					.type=AND,			.next=&t18test18};
+	t_tok	t18test16 = (t_tok){.data=NULL,					.type=CLOSE_PAR, 	.next=&t18test17};
+	t_tok	t18test15 = (t_tok){.data=_true,				.type=CMD,			.next=&t18test16};
+	t_tok	t18test14 = (t_tok){.data=NULL,					.type=AND,			.next=&t18test15};
+	t_tok	t18test13 = (t_tok){.data=NULL,					.type=CLOSE_PAR, 	.next=&t18test14};
+	t_tok	t18test12 = (t_tok){.data=_true,				.type=CMD,			.next=&t18test13};
+	t_tok	t18test11 = (t_tok){.data=NULL,					.type=AND,			.next=&t18test12};
+	t_tok	t18test10 = (t_tok){.data=_true,				.type=CMD,			.next=&t18test11};
+	t_tok	t18test9 = (t_tok){.data=NULL,					.type=OPEN_PAR,		.next=&t18test10};
+	t_tok	t18test8 = (t_tok){.data=NULL,					.type=AND,			.next=&t18test9};
+	t_tok	t18test7 = (t_tok){.data=_true,					.type=CMD,			.next=&t18test8};
+	t_tok	t18test6 = (t_tok){.data=NULL,					.type=OPEN_PAR,		.next=&t18test7};
+	t_tok	t18test5 = (t_tok){.data=NULL,					.type=AND,			.next=&t18test6};
+	t_tok	t18test4 = (t_tok){.data=_true,					.type=CMD,			.next=&t18test5};
+	t_tok	t18test3 = (t_tok){.data=NULL,					.type=OPEN_PAR,		.next=&t18test4};
+	t_tok	t18test2 = (t_tok){.data=NULL,					.type=AND,			.next=&t18test3};
+	t_tok	test18 = (t_tok){.data=_true,					.type=CMD,			.next=&t18test2};
+	(void)test18;
+
+	// at the end search how a semicolon inter parentheses affects the parentheses return value #5
+	
 	t_term	term;
 	ft_bzero(&term, sizeof(term));
-
-	t_bst* root = bst(&test8);
-	//print_bst(root);
-	execute_bst(root, &term);
-	//if (root)
-	//	free_bst(root);
+	exec(&test18, &term);
 }

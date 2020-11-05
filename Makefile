@@ -28,6 +28,10 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 						execution_fill.c\
 						execution.c\
 					)\
+					$(addprefix separators/,\
+						conditionals.c\
+						separators.c\
+					)\
 					$(addprefix main/,\
 						main.c\
 					)\
@@ -39,7 +43,7 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 					)\
 				)
 
-OBJDS	=		$(addprefix $(OBJDIR)/, builtins bst execution main tests utils)
+OBJDS	=		$(addprefix $(OBJDIR)/, builtins bst execution main tests utils separators)
 
 OBJS	=		$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 
@@ -47,6 +51,7 @@ HDRS	=		$(addprefix $(INCDIR)/,\
 					bst.h\
 					builtins.h\
 					execution.h\
+					separators.h\
 					path.h\
 				)
 

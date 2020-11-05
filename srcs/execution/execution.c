@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/04 22:01:46 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/04 23:38:43 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ static void		execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
 	}
 }
 
-// this function is called on a pipe and iterates pipe to pipe until the (pipe/redir) end operator in root's b branch
+// this function is called on a pipe and iterates pipe to pipe until the (pipe/redir/cmd) end operator in root's b branch
 static void		execute_job(t_bst* job, t_exec* info, t_term* term)
 {
 	info->handle_dup = NONE;

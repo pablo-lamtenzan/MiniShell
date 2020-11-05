@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:51:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/04 20:06:12 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/05 03:47:43 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,32 +19,21 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <limits.h>
-
 # include <errno.h>
 
 # include <libft.h>
 # include <term/term.h>
-//# include <builtins.h>
 # include <bst.h>
 
-//# define TOK_NONE       0
-//# define OP_REDIR_RD    1
-//# define OP_REDIR_WR    2
-//# define OP_REDIR_WA    4
-//# define OP_PIPE        8
-//# define TOK_CMD        16
+/*
+** multiple redirections handler
+*/
+# define CONST_GR		1
+# define CONST_LE		2
 
-# define NONE			TOK_NONE
-# define REDIR_GR		OP_REDIR_WR
-# define REDIR_LE		OP_REDIR_WA
-# define REDIR_DG		OP_REDIR_RD
-# define PIPE			OP_PIPE
-# define CMD			TOK_CMD
-# define FILENAME		32
-# define CONST_GR		64 // if set it wont dup2 anymore the > or >>
-# define CONST_LE		128 // if set if wont dup2 naymore the <
-# define HANDLE_CONST	256
-
+/*
+** file descriptors manager
+*/
 # define STDIN			0
 # define STDOUT			1
 # define AUX			2
@@ -66,22 +55,44 @@ typedef struct			s_exec
     char*const*			ep;
 }						t_exec;
 
+/*
+** Utils
+*/
 int						matrix_height(char*const* matrix);
 char**					handle_return_status(char** av, t_term* term);
 
+/*
+** Exectution fill
+*/
 int						handle_wstatus(int wstatus);
 int						execute_child(t_exec* info, t_term* term);
 bool					build_execve_args(t_exec** info, t_term* term);
 void					destroy_execve_args(t_exec* info);
 
+/*
+** Execution fd
+*/
 bool					dup_stdio(int* fds, char* flags);
 void					open_pipe_fds(t_exec** info, t_tok_t next_type);
 bool					close_pipe_fds(int* fds);
 int						redirections_handler(t_exec** info, t_tok_t type, const char* filename);
 
+/*
+** Execution
+*/
 void					execute_bst(t_bst* root, t_term* term);
 
+/*
+** Debug
+*/
+void					print_bst(t_bst* root, int type);
+void					tests();
+int		exec(t_tok* tokens, t_term* term);
 
-void		tests();
+/*
+** Separators
+*/
+t_tok*					handle_separators(t_tok** tokens, int* status, int* parentheses_nb);
+int						handle_conditionals(t_term ** term, int parser_st, int* flags, int* parentheses_nb);
 
 #endif
