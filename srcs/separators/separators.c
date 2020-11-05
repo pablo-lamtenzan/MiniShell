@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/05 00:01:43 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/05 04:15:46 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/05 04:51:22 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,12 +73,27 @@ t_tok*		handle_separators(t_tok** tokens, int* status, int* parentheses_nb)
 	while (tk2->next && tk2->next != tk1)
 		tk2 = tk2->next;
 
+	/* HAVE TO TEST THIS BUT I M LAZY RIGHT NOW */
+	// frees all the sepators execpt the last one (cuase last will be used)
+	/*
+	t_tok* tmp_test_free;
+	while (tk1 != tk4 && tk1)
+	{
+		tmp_test_free = tk1;
+		tk1 = tk1->next;
+		free(tmp_test_free->data);
+		free(tmp_test_free);
+	}*/
+
 	// put its next to NULL
 	tk2->next = NULL;
 
 	// update the tokens list to the next of the next separator
 	tk3 = *tokens;
 	*tokens = tk4->next;
+	/* ANOTHER TEST I HAVE TO DO... */
+	// frees the last/only separator
+	/*free(tk4);*/
 
 	// return the list starting in the last tokens value (ended by NULL now)
 	return (tk3);
