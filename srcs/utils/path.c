@@ -45,7 +45,7 @@ static char	*path_cat(const char *a, const char *b)
 
 // TODO: IDK why there is a new version
 
-char	*path_get(const char *name, char *path)
+char	*path_get(const char *name, const char *path)
 {
 	char		**paths;
 	char		*absolute;
