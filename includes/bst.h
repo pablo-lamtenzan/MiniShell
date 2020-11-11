@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bst.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 16:45:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/05 00:14:46 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/11 21:49:52 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include <stdlib.h>
 # include <stdbool.h>
-# include <term/term.h>
+# include <term/token.h>
 
 # define NONE			TOK_NONE
 # define REDIR_GR		OP_REDIR_WR

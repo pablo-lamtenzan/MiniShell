@@ -17,7 +17,7 @@ static char	*path_cat(const char *a, const char *b)
 	return (cat);
 }
 
-char	*path_get(const char *name, const char *path)
+/* char	*path_get(const char *name, const char *path)
 {
 	char		**paths;
 	char		*join;
@@ -40,4 +40,37 @@ char	*path_get(const char *name, const char *path)
 	}
 	strs_unload(paths);
 	return (NULL);
+}
+ */
+
+// TODO: IDK why there is a new version
+
+char	*path_get(const char *name, char *path)
+{
+	char		**paths;
+	char		*absolute;
+	struct stat	s;
+	int			i;
+
+	absolute = NULL;
+	if (name && *name)
+	{
+		if (*name == '/' && stat(name, &s) == 0 && s.st_mode & S_IXUSR)
+			absolute = ft_strdup(name);
+		else if ((paths = ft_split(path, ':')))
+		{
+			i = 0;
+			while (paths[i]
+			&& (absolute = path_cat(paths[i++], name))
+			&& !(stat(absolute, &s) == 0 && s.st_mode & S_IXUSR))
+				free(absolute);
+			if (!paths[i])
+			{
+				free(absolute);
+				absolute = NULL;
+			}
+			strs_unload(paths);
+		}
+	}
+	return (absolute);
 }
