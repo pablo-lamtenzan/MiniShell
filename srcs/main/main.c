@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 23:28:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/05 04:37:18 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/11 21:36:55 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,5 @@ int		exec(t_tok* tokens, t_term* term) // not static for debug
 
 int			main(int ac, const char** av, const char** envp)
 {	
-    return (false && term_prompt(ac, av, envp, &exec));
+    return (term_prompt(ac, av, envp, &exec));
 }
