@@ -3,14 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 23:28:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/11 21:36:55 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/11 22:03:51 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
+
+void	token_print(t_tok *tokens, const char *prefix)
+{
+	t_tok *curr;
+
+	curr = tokens;
+	while (curr)
+	{
+			if (curr->type & TOK_CMD)
+					token_print(curr->data, "CMD");
+			else
+					ft_dprintf(2, "[%s][%5d] '%s'\n", prefix, curr->type, curr->data);
+			curr = curr->next;
+	}
+}
 
 int		exec(t_tok* tokens, t_term* term) // not static for debug
 {
@@ -20,6 +35,7 @@ int		exec(t_tok* tokens, t_term* term) // not static for debug
 	int		conditionals; // to norme
 	int		parentheses_nb; // to norme
 
+	token_print(tokens, "TOK");
 	conditionals = NONE;
 	status = NONE;
 	parentheses_nb = NONE; // join those 3 in a int var_name[3] and bzero sizeof(var_name)
