@@ -33,7 +33,7 @@ TESTS=(${TEST_SIMPLE_CMD1} ${TEST_SIMPLE_CMD2} ${TEST_SIMPLE_CMD_OUT1} ${TEST_SI
 ${TEST_SIMPLE_CMD_OUT_v2_1} ${TEST_SIMPLE_CMD_OUT_v2_2} ${TEST_SIMPLE_CMD_OUT_v3_1} ${TEST_SIMPLE_CMD_OUT_v3_2} \
 ${TEST_SEMICOLON1} ${TEST_SEMICOLON2})
 
-if [ ! -f "minshell" ]; then
+if [ -f "minshell" ]; then
     mkdir -p "${TEST_DIR}"
     for TEST in ${TESTS[@]}; do
         echo ${TEST} >> "${TEST_DIR}/${TEST_LOG}"
