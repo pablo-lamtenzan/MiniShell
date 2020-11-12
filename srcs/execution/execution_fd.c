@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:10:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/12 01:51:36 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/12 02:04:48 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void		open_pipe_fds(t_exec** info, t_tok_t type)
 		(*info)->fds[STDIN] = (*info)->fds[AUX];
 
 		// If inter pipe must redirect stdout to pipe write
-		if (!type && type & PIPE)
+		if (type & PIPE)
 			update = false;
 	}
 	// pipe part 1,3,5,...
