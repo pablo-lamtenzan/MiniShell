@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:10:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/12 02:07:04 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/12 03:31:56 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,22 @@ bool		dup_stdio(int* fds, char* flags)
 	int		i;
 
 	i = -1;
+	ft_dprintf(2, "DUP_STDIO FLAGS:[%d]\n", *flags);
 	while (++i < 2)
 	{
-		if ((*flags & CONST_GR && i == STDOUT) || (*flags & CONST_LE && i == STDIN))
+		if ((*flags & CONST_GR_EXC && i == STDOUT) || (*flags & CONST_LE_EXC && i == STDIN))
+		{
+			ft_dprintf(2, "DUP_STDIO SKIPS fds:[%d]\n", i);
 			continue ;
+		}
 		if (fds[i] != i && (dup2(fds[i], i) < 0 || close(fds[i]) < 0))
 			return (false);
 		else if (fds[i] != i) // need this cause we need to only dup2 to the fist file if there are multiple "< or > or >>"
 		{
 			if (i == 0)
-				*flags |= CONST_LE;
+				*flags |= CONST_LE_EXC;
 			else if (i == 1)
-				*flags |= CONST_GR;
+				*flags |= CONST_GR_EXC;
 		}
 	}
 	return (true);

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:51:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/11 23:26:42 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/12 03:31:26 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 */
 # define CONST_GR		1
 # define CONST_LE		2
+# define CONST_GR_EXC	4
+# define CONST_LE_EXC	8
 
 /*
 ** file descriptors manager
