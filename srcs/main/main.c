@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 23:28:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/12 00:09:18 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/12 03:05:12 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int		exec(t_tok* tokens, t_term* term) // not static for debug
 			execute_bst(root = bst(exec_tokens), term);
 			free_bst(root);
 		}
-		token_clr(&exec_tokens);
+		//token_clr(&exec_tokens);
 		exec_tokens = NULL;
 	}
 	return (true);
