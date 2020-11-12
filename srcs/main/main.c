@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/01 23:28:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/12 06:22:38 by pablo            ###   ########.fr       */
+/*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
+/*   Updated: 2020/11/12 07:46:41 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@ void	token_print(t_tok *tokens, const char *prefix)
 	curr = tokens;
 	while (curr)
 	{
-			if (curr->type & TOK_CMD)
-					token_print(curr->data, "CMD");
-			else
-					ft_dprintf(2, "[%s][%5d] '%s'\n", prefix, curr->type, curr->data);
-			curr = curr->next;
+		if (curr->type & TOK_CMD)
+			token_print(curr->data, "CMD");
+		else
+			ft_dprintf(2, "[%s][%5d] '%s'\n", prefix, curr->type, curr->data);
+		curr = curr->next;
 	}
 }
 
@@ -45,11 +45,11 @@ static int exec(t_tok* tokens, t_term* term)
 		}
 		exec_tokens = NULL;
 	}
-	return (true);
+	return (0);
 }
 
 
-int			main(int ac, const char** av, const char** envp)
+int		main(int ac, const char** av, const char** envp)
 {	
     return (term_prompt(ac, av, envp, &exec));
 }
