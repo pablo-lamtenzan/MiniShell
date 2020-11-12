@@ -18,6 +18,7 @@ int		ft_env(t_exec *args, t_term *t)
 	while (curr)
 	{
 		ft_putstr_fd(curr->key, args->fds[1]);
+		write(args->fds[1], "\n", 1);
 		curr = curr->next;
 	}
 	//env_print(args->fds[1], t->env);
