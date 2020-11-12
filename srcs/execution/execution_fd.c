@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:10:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/12 02:04:48 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/12 02:07:04 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ bool		dup_stdio(int* fds, char* flags)
 	int		i;
 
 	i = -1;
-	while (++i < 3)
+	while (++i < 2)
 	{
 		if ((*flags & CONST_GR && i == STDOUT) || (*flags & CONST_LE && i == STDIN))
 			continue ;
