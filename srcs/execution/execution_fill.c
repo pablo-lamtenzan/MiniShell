@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_fill.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:05:45 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/12 00:56:44 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/12 01:12:44 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ bool		temporally_expansion(t_tok* args, char*** av, t_term* term)
 	(void)term;
 
 	i = 0;
-	if (!(*av = malloc(sizeof(char*) * (size = tkt_size(args)))))
+	if (!(*av = malloc(sizeof(char*) * ((size = tkt_size(args)) + 1))))
 		return (false);
 	(*av)[size] = 0;
 	while (args)
