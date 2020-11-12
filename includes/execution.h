@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:51:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/12 03:31:26 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/12 06:30:37 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@
 */
 # define CONST_GR		1
 # define CONST_LE		2
-# define CONST_GR_EXC	4
-# define CONST_LE_EXC	8
 
 /*
 ** file descriptors manager
@@ -78,7 +76,7 @@ void					destroy_execve_args(t_exec* info);
 /*
 ** Execution fd
 */
-bool					dup_stdio(int* fds, char* flags);
+bool					dup_stdio(int* fds);
 void					open_pipe_fds(t_exec** info, t_tok_t next_type);
 bool					close_pipe_fds(int* fds);
 int						redirections_handler(t_exec** info, t_tok_t type, const char* filename);
@@ -92,13 +90,11 @@ void					execute_bst(t_bst* root, t_term* term);
 ** Debug
 */
 void					print_bst(t_bst* root, int type);
-void					tests();
-int		exec(t_tok* tokens, t_term* term);
 
 /*
 ** Separators
 */
 t_tok*					handle_separators(t_tok** tokens, int* status, int* parentheses_nb);
-int						handle_conditionals(t_term ** term, int parser_st, int* flags, int* parentheses_nb);
+int						handle_conditionals(t_term ** term, int parser_st, int* flags, int parentheses_nb);
 
 #endif

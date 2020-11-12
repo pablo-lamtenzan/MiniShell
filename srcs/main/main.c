@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 23:28:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/12 03:05:12 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/12 06:22:38 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
+#include <separators.h>
 
 void	token_print(t_tok *tokens, const char *prefix)
 {
@@ -27,26 +28,21 @@ void	token_print(t_tok *tokens, const char *prefix)
 	}
 }
 
-int		exec(t_tok* tokens, t_term* term) // not static for debug
+static int exec(t_tok* tokens, t_term* term)
 {
-    int		status; // to norme
+	int		flags[3];
 	t_tok*	exec_tokens;
 	t_bst*	root;
-	int		conditionals; // to norme
-	int		parentheses_nb; // to norme
 
 	token_print(tokens, "TOK");
-	conditionals = NONE;
-	status = NONE;
-	parentheses_nb = NONE; // join those 3 in a int var_name[3] and bzero sizeof(var_name)
-	while ((exec_tokens = handle_separators(&tokens, &status, &parentheses_nb)))
+	ft_bzero(flags, sizeof(flags));
+	while ((exec_tokens = handle_separators(&tokens, &flags[STATUS], &flags[PARETHESES_NB])))
 	{
-		if (handle_conditionals(&term, status, &conditionals, &parentheses_nb))
+		if (handle_conditionals(&term, flags[STATUS], &flags[CODITIONALS], flags[PARETHESES_NB]))
 		{
 			execute_bst(root = bst(exec_tokens), term);
 			free_bst(root);
 		}
-		//token_clr(&exec_tokens);
 		exec_tokens = NULL;
 	}
 	return (true);

@@ -35,15 +35,12 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 					$(addprefix main/,\
 						main.c\
 					)\
-					$(addprefix tests/,\
-						tests_execution_bst.c\
-					)\
 					$(addprefix utils/,\
 						path.c\
 					)\
 				)
 
-OBJDS	=		$(addprefix $(OBJDIR)/, builtins bst execution main tests utils separators)
+OBJDS	=		$(addprefix $(OBJDIR)/, builtins bst execution main utils separators)
 
 OBJS	=		$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 

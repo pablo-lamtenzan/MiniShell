@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/05 00:01:43 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/12 00:15:32 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/12 05:09:01 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ t_tok*		handle_separators(t_tok** tokens, int* status, int* parentheses_nb)
 		saved = 0;
 	}
 
+	
 	// get next separator type and store it for use it next iteration
 	// get tk1: the address of the next separator
 	saved |= (tk1 = find_next_operator(*tokens, AND | OR | OPEN_PAR | CLOSE_PAR | SEMICOLON))->type;

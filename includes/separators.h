@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   separators.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/04 23:46:13 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/11 21:53:33 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/12 05:22:13 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,5 +23,9 @@
 # define SKIP           4096
 # define SKIPED_AND     8192
 # define NOT_SKIPED_OR  16384
+
+# define CODITIONALS    0
+# define STATUS         1
+# define PARETHESES_NB  2
 
 #endif

@@ -6,21 +6,21 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/05 00:01:31 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/05 03:54:21 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/12 05:27:07 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <separators.h>
 #include <execution.h>
 
-int	handle_conditionals(t_term** term, int parser_st, int* flags, int* p)
+int	handle_conditionals(t_term** term, int parser_st, int* flags, int parentheses_nb)
 {
 	static unsigned int nb_parentheses = 0;
 
 	// handling a closing parentheses
 	if (parser_st & CLOSE_PAR)
 	{
-		nb_parentheses = *p;
+		nb_parentheses = parentheses_nb;
 		// skip + and in end parentheses = false parentheses
 		// !skip + or in end parentheses = false parentheses
 		if ((*flags & SKIP && *flags & SKIPED_AND) || (!(*flags & SKIP) && !(*flags & NOT_SKIPED_OR)))
@@ -29,7 +29,7 @@ int	handle_conditionals(t_term** term, int parser_st, int* flags, int* p)
 	}
 	// handling an opening parentheses
 	if (parser_st & OPEN_PAR)
-		nb_parentheses = *p;
+		nb_parentheses = parentheses_nb;
 
 	// if semicolon reset flags
 	if (parser_st & SEMICOLON)

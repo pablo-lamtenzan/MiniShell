@@ -1,0 +1,6 @@
+
+Error log: < index >) < cmd > : < description >
+
+1) ls > file1 > file11 | ls > file2 > file22 | ls > file3 > file33 : file11 and file33 have ${usr/bin/ls} but file22 is empty ("echo a > a | echo b > b | echo c > c" works nicelly)
+2) echo a > aa ; echo b > bb ; echo c > cc ; cat < aa < cc > a | cat < bb < bb > b | cat < cc < aa > c : in the last cmd line "a" is empty (99% is same error than 1)
+3) (echo a) : tokens argument in exec has the parentheses trimed

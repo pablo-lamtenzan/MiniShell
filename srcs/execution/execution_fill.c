@@ -6,13 +6,34 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:05:45 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/12 02:13:08 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/12 07:33:23 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h> // to change
 #include <path.h>
 
+#include <string.h>
+#include <stdio.h>
+
+int	handle_wstatus(int wstatus)
+{
+	if (WIFEXITED(wstatus))
+	{
+		wstatus = WEXITSTATUS(wstatus);
+		dprintf(2, "[exec][status] child exited with status '%d'!\n", wstatus);
+		return (wstatus);
+	}
+	if (WIFSIGNALED(wstatus))
+	{
+		wstatus = WTERMSIG(wstatus);
+		dprintf(2, "[exec][status] %s\n", strsignal(wstatus));
+		return (wstatus);
+	}
+	dprintf(2, "[exec][status] cannot retrieve child status!\n");
+	return (wstatus);
+}
+/*
 int     	handle_wstatus(int wstatus)
 {
 	if (WIFEXITED(wstatus))
@@ -21,6 +42,7 @@ int     	handle_wstatus(int wstatus)
 		return (WTERMSIG(wstatus));
 	return (wstatus);
 }
+*/
 
 int			execute_child(t_exec* info, t_term* term)
 {
@@ -28,8 +50,13 @@ int			execute_child(t_exec* info, t_term* term)
 
 	if (!(term->pid = fork()))
 	{
-		if (dup_stdio(info->fds, &info->handle_dup))
+		if (dup_stdio(info->fds))
 		{
+			ft_dprintf(2, "[EXEC CHILD][ENV: addr:[%p], dereference:[%p]]\n", info->ep, *info->ep);
+			//char** cp = (char**)info->ep;
+			//int i = -1;
+			//while (cp[++i])
+			//	ft_dprintf(2, "[ENV]:[ %s ]\n", info->ep[i]);
 			wstatus = execve(info->execution_path, info->av, info->ep);
 			ft_dprintf(2, "%s: %s: execve returned '%d'!\n", term->name, info->av[0], wstatus);
 		}
@@ -49,9 +76,11 @@ bool		build_execve_args(t_exec** info, t_term* term)
 		return (!(term->st = 127));
 	if (!((*info)->ep = (char*const*)env_export(term->env)))
 	{
+		ft_dprintf(2, "[BUILD EXECVE ARGS][ENP IS NULL]\n");
 		free((void*)(*info)->execution_path);
 		return (false);
 	}
+	ft_dprintf(2, "[BUILD EXECVE ARGS][ENV: addr:[%p], dereference:[%p]]\n", (*info)->ep, *(*info)->ep);
 	return (true);
 }
 
