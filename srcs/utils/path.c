@@ -65,12 +65,10 @@ char	*path_get(const char *name, const char *path)
 			&& !(stat(absolute, &s) == 0 && s.st_mode & S_IXUSR))
 				free(absolute);
 			if (!paths[i])
-			{
-				free(absolute);
 				absolute = NULL;
-			}
 			strs_unload(paths);
 		}
 	}
+	ft_dprintf(2, "[PATH][ABSOLUTE] '%s'\n", absolute);
 	return (absolute);
 }
