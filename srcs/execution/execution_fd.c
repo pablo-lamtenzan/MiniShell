@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:10:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/12 00:46:19 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/12 01:28:30 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ bool		close_pipe_fds(int* fds)
 
 	i = -1;
 	while (++i < 3)
-		if (fds[i] == i && close(fds[i] < 0))
+		if (fds[i] != i && close(fds[i]) < 0)
 			return (false);
 	return (true);
 }
