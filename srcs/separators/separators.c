@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/05 00:01:43 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/12 05:09:01 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/12 08:08:40 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,12 @@ t_tok*		handle_separators(t_tok** tokens, int* status, int* parentheses_nb)
 	// end 
 	if (!*tokens)
 		return (NULL);
+	while ((*tokens)->type & OPEN_PAR)
+	{
+		// to do: free skiped parenthesdes
+		*tokens = (*tokens)->next;
+		(*parentheses_nb)++;
+	}
 
 	// use last operator
 	if (saved)
