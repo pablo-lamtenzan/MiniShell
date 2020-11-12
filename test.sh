@@ -35,7 +35,7 @@ ${TEST_SEMICOLON1} ${TEST_SEMICOLON2})
 
 if [ ! -f "minshell" ]; then
     mkdir -p "${TEST_DIR}"
-    for TEST in TESTS[@]; do
+    for TEST in ${TESTS[@]}; do
         echo ${TEST} >> "${TEST_DIR}/${TEST_LOG}"
     done
     cp ./minshell "${TEST_DIR}"
