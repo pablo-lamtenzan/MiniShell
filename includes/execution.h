@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:51:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/05 03:47:43 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/11 23:26:42 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,10 @@ typedef struct			s_exec
 */
 int						matrix_height(char*const* matrix);
 char**					handle_return_status(char** av, t_term* term);
+
+
+
+bool					temporally_expansion(t_tok* args, char*** av, t_term* term);
 
 /*
 ** Exectution fill

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:05:45 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/04 20:32:42 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/12 00:56:44 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,4 +96,44 @@ char**		handle_return_status(char** av, t_term* term)
 			to_free = &av[i]; // this stuff in a struct and free it
 		}
 	return (av);
+}
+
+int	tkt_size(t_tok *lst)
+{
+	int		size;
+
+	if (!lst)
+		return (0);
+	size = 1;
+	while ((lst = lst->next))
+		size++;
+	return (size);
+}
+
+void		ft_strpcy(char* dest, char* src)
+{
+	int i;
+
+	i = -1;
+	while (src[++i])
+		dest[i] = src[i];
+}
+
+bool		temporally_expansion(t_tok* args, char*** av, t_term* term)
+{
+	int		i;
+	size_t	size;
+	(void)term;
+
+	i = 0;
+	if (!(*av = malloc(sizeof(char*) * (size = tkt_size(args)))))
+		return (false);
+	(*av)[size] = 0;
+	while (args)
+	{
+		(*av)[i] = ft_strdup(args->data);
+		i++;
+		args = args->next;
+	}
+	return (true);
 }

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/05 00:01:43 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/05 04:51:22 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/12 00:15:32 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,8 @@ t_tok*		handle_separators(t_tok** tokens, int* status, int* parentheses_nb)
 	}*/
 
 	// put its next to NULL
-	tk2->next = NULL;
+	if (saved & (AND | OR | OPEN_PAR | CLOSE_PAR | SEMICOLON))
+		tk2->next = NULL;
 
 	// update the tokens list to the next of the next separator
 	tk3 = *tokens;
