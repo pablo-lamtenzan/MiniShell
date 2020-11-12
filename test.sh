@@ -37,6 +37,7 @@ if [ ! -f "minshell" ]; then
     mkdir -p "${TEST_DIR}"
     for TEST in TESTS[@]; do
         echo ${TEST} >> "${TEST_DIR}/${TEST_LOG}"
+    done
     cp ./minshell "${TEST_DIR}"
     cd "${TEST_DIR}"
     ./minshell < log 2 > /dev/null
