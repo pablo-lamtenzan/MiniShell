@@ -1,8 +1,0 @@
-
-- Parse
-- Env variables
-- Global struct
-- Import libs
-- catch the error signals while executing (segmentation fault per example)
-- Test and correct all the execution
-- Read another time (tomorrow) the pipe code

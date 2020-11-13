@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/12 07:46:41 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/12 08:28:06 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static int exec(t_tok* tokens, t_term* term)
 	ft_bzero(flags, sizeof(flags));
 	while ((exec_tokens = handle_separators(&tokens, &flags[STATUS], &flags[PARETHESES_NB])))
 	{
-		if (handle_conditionals(&term, flags[STATUS], &flags[CODITIONALS], flags[PARETHESES_NB]))
+		if (handle_conditionals(&term, flags[STATUS], &flags[CONDITIONALS], flags[PARETHESES_NB]))
 		{
 			execute_bst(root = bst(exec_tokens), term);
 			free_bst(root);
