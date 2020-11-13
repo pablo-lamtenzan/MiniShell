@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:10:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/12 07:21:30 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/13 05:05:39 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,43 +76,31 @@ int			redirections_handler(t_exec** info, t_tok_t type, const char* filename)
 	static const int	umask = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 
 	int tmp;
-	if (!filename) // don't know if is necesary
+	if (!filename)
 		return (0);
 
 	if (type & REDIR_GR)
 	{
 		tmp = open(filename, O_WRONLY | O_CREAT | O_TRUNC, umask);
-		if (!((*info)->handle_dup & CONST_GR)) // testing this
-		{
-			ft_dprintf(2, "STDOUT IS FIXED!\n");
+		if (!((*info)->handle_dup & CONST_GR))
 			(*info)->fds[1] = tmp;
-		}
 		(*info)->handle_dup |= CONST_GR;
-		dprintf(2, "Opened: [%s]. Greather redirecion overrides fds[1]!, Now fds[1] = [ %d ]\n", filename, (*info)->fds[1]);
 	}
 	else if (type & REDIR_DG)
 	{
 		tmp = open(filename, O_WRONLY | O_CREAT | O_APPEND, umask);
 		if (!((*info)->handle_dup & CONST_GR))
-		{
-			ft_dprintf(2, "STDOUT IS FIXED!\n");
 			(*info)->fds[1] = tmp;
-		}
 		(*info)->handle_dup |= CONST_GR;
-		ft_dprintf(2, "Opened: [%s]. Double greather redirecion overrides fds[1]!, Now fds[1] = [ %d ]\n", filename, (*info)->fds[1]);
 	}
 	else if (type & REDIR_LE)
 	{
 		tmp = open(filename, O_RDONLY);
 		if (!((*info)->handle_dup & CONST_LE))
-		{
-			ft_dprintf(2, "STDIN IS FIXED!\n");
 			(*info)->fds[0] = tmp;
-		}
 		(*info)->handle_dup |= CONST_LE;
-		ft_dprintf(2, "Opened: [%s]. Leasser redirecion overrides fds[0]!, Now fds[0] = [ %d ]\n", filename, (*info)->fds[0]);
 	}
 	else
-		return (0); // Type is not redir
+		return (0);
 	return (((*info)->fds[0] | (*info)->fds[1]) >= 0 ? 1 : -1); // -1 fatal error
 }

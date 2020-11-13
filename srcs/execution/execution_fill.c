@@ -6,43 +6,21 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:05:45 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/12 07:33:23 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/13 05:03:32 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <execution.h> // to change
+#include <execution.h>
 #include <path.h>
 
-#include <string.h>
-#include <stdio.h>
-
-int	handle_wstatus(int wstatus)
-{
-	if (WIFEXITED(wstatus))
-	{
-		wstatus = WEXITSTATUS(wstatus);
-		dprintf(2, "[exec][status] child exited with status '%d'!\n", wstatus);
-		return (wstatus);
-	}
-	if (WIFSIGNALED(wstatus))
-	{
-		wstatus = WTERMSIG(wstatus);
-		dprintf(2, "[exec][status] %s\n", strsignal(wstatus));
-		return (wstatus);
-	}
-	dprintf(2, "[exec][status] cannot retrieve child status!\n");
-	return (wstatus);
-}
-/*
 int     	handle_wstatus(int wstatus)
 {
 	if (WIFEXITED(wstatus))
 		return (WEXITSTATUS(wstatus));
-	if (WIFSIGNALED(wstatus))
-		return (WTERMSIG(wstatus));
+	if (WIFSIGNALED(wstatus) && (wstatus = WTERMSIG(wstatus)))
+		ft_dprintf(2, "%s\n", strsignal(wstatus));
 	return (wstatus);
 }
-*/
 
 int			execute_child(t_exec* info, t_term* term)
 {
@@ -51,15 +29,7 @@ int			execute_child(t_exec* info, t_term* term)
 	if (!(term->pid = fork()))
 	{
 		if (dup_stdio(info->fds))
-		{
-			ft_dprintf(2, "[EXEC CHILD][ENV: addr:[%p], dereference:[%p]]\n", info->ep, *info->ep);
-			//char** cp = (char**)info->ep;
-			//int i = -1;
-			//while (cp[++i])
-			//	ft_dprintf(2, "[ENV]:[ %s ]\n", info->ep[i]);
 			wstatus = execve(info->execution_path, info->av, info->ep);
-			ft_dprintf(2, "%s: %s: execve returned '%d'!\n", term->name, info->av[0], wstatus);
-		}
 		exit(EXIT_FAILURE);
 	}
 	else if (term->pid < 0)
@@ -105,47 +75,6 @@ int			matrix_height(char*const* matrix)
 	while (*it)
 		it++;
 	return ((char*const*)it - matrix);
-}
-
-char**		handle_return_status(char** av, t_term* term)
-{
-	int		i;
-	static char** to_free = NULL;
-
-	if (to_free)
-	{
-		free(to_free);
-		to_free = NULL;
-	}
-	i = -1;
-	while (av[++i])
-		if (!ft_strncmp("$?", av[i], 2))
-		{
-			av[i] = ft_itoa(term->st);
-			to_free = &av[i]; // this stuff in a struct and free it
-		}
-	return (av);
-}
-
-int	tkt_size(t_tok *lst)
-{
-	int		size;
-
-	if (!lst)
-		return (0);
-	size = 1;
-	while ((lst = lst->next))
-		size++;
-	return (size);
-}
-
-void		ft_strpcy(char* dest, char* src)
-{
-	int i;
-
-	i = -1;
-	while (src[++i])
-		dest[i] = src[i];
 }
 
 bool		temporally_expansion(t_tok* args, char*** av, t_term* term)

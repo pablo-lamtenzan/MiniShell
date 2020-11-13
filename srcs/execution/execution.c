@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/12 00:46:03 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/13 04:57:51 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,54 +33,34 @@ static void		get_exec(t_exec** info, t_term* term)
 
 static void		execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
 {
-	// ovewrite info fds and returns true if node is a redirection
 	if (redirections_handler(&info, cmd->type, (const char*)cmd->b) < 0)
 		return ;
-	ft_dprintf(2, "Redirections override! fds = {%d, %d, %d}\n", info->fds[0], info->fds[1], info->fds[2]);
-
-	// goes further on a until find the cmd
-	if (!(cmd->type & CMD) || (cmd->type & PIPE && !(((t_bst*)cmd->a)->type & CMD)))
+	if (!(cmd->type & CMD) || (cmd->type & PIPE \
+			&& !(((t_bst*)cmd->a)->type & CMD)))
     	execute_cmd(cmd->a, info, term);
-
-	// executes the cmd in the given executions fds
 	else
 	{
-		// init 
 		temporally_expansion(cmd->a, (char***)&info->av, term);
 		info->ac = matrix_height(info->av);
-
-		// get fct pointer to execution
 		get_exec(&info, term);
-
-		// execute
 		if (info->exec)
 			term->st = info->exec(info, term);
 		else
 			destroy_execve_args(info);
 		info->exec = NULL;
-		// close the updated fds in execute_job
 		if (!close_pipe_fds(info->fds))
 			return ;
 	}
 }
 
-// this function is called on a pipe and iterates pipe to pipe until the (pipe/redir/cmd) end operator in root's b branch
 static void		execute_job(t_bst* job, t_exec* info, t_term* term)
 {
 	info->handle_dup = NONE;
-    // update the executions fds, if last b node after pipe(s) is redir must open the fd and dup here
 	open_pipe_fds(&info, job->b ? job->type : 0);
-	ft_dprintf(2, "New pipes executed! fds = {%d, %d, %d}\n", info->fds[0], info->fds[1], info->fds[2]);
-
-    // execution of left branch using the updated fds
-	if (!(job->type & (CMD | REDIR_DG | REDIR_GR | REDIR_LE)) /* || (job->type & PIPE && job->type & CMD)*/)
+	if (!(job->type & (CMD | REDIR_DG | REDIR_GR | REDIR_LE)))
     	execute_cmd(job->a, info, term);
-
-    // recursion loop
     if (job->b && job->type & PIPE)
         execute_job(job->b, info, term);
-
-	// exit condition
 	else
 		execute_cmd(job, info, term);
 }
