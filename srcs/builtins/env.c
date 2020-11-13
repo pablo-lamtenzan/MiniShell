@@ -21,6 +21,5 @@ int		ft_env(t_exec *args, t_term *t)
 		write(args->fds[1], "\n", 1);
 		curr = curr->next;
 	}
-	//env_print(args->fds[1], t->env);
 	return (0);
 }
