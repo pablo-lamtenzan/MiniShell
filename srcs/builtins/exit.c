@@ -22,7 +22,7 @@ int		ft_exit(t_exec *args, t_term *t) // TODO: Callbacks in ft_term.h
 		i = ft_atoi(args->av[1]);
 	}
 	term_destroy(t);
-	write(1, "exit\n", 5);
+	write(2, "exit\n", 5);
 	if (st == false)
 		ft_dprintf(2, "minish: exit: %s%s\n", args->av[1],": numeric argument required");
 	tputs(t->caps.insert_end, 0, &ft_putchar);
