@@ -6,13 +6,15 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/12 08:28:06 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/13 05:34:10 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <separators.h>
+#include <builtins.h>
 
+/*
 void	token_print(t_tok *tokens, const char *prefix)
 {
 	t_tok *curr;
@@ -27,6 +29,7 @@ void	token_print(t_tok *tokens, const char *prefix)
 		curr = curr->next;
 	}
 }
+*/
 
 static int exec(t_tok* tokens, t_term* term)
 {
@@ -34,16 +37,18 @@ static int exec(t_tok* tokens, t_term* term)
 	t_tok*	exec_tokens;
 	t_bst*	root;
 
-	token_print(tokens, "TOK");
 	ft_bzero(flags, sizeof(flags));
 	while ((exec_tokens = handle_separators(&tokens, &flags[STATUS], &flags[PARETHESES_NB])))
 	{
 		if (handle_conditionals(&term, flags[STATUS], &flags[CONDITIONALS], flags[PARETHESES_NB]))
 		{
-			execute_bst(root = bst(exec_tokens), term);
+			if (!execute_bst(root = bst(exec_tokens), term))
+			{
+				free_bst(root);
+				ft_exit(NULL, term);
+			}
 			free_bst(root);
 		}
-		exec_tokens = NULL;
 	}
 	return (0);
 }

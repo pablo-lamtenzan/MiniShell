@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bst.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 16:23:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/12 20:52:18 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/13 05:35:54 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,22 +41,21 @@ static t_bst*	build_bst(t_tok* tokens)
 {
 	t_tok*	tk1;
 	t_tok*	tk2;
-	t_tok*	tk3;
 	t_bst*	node;
 
 	if ((tk1 = find_next_operator(tokens, PIPE))->type & PIPE)
 		node = new_node(NULL, NULL, tk1->type);
-	else if ((tk3 = find_next_operator(tokens, REDIR_GR | REDIR_LE \
+	else if ((tk2 = find_next_operator(tokens, REDIR_GR | REDIR_LE \
 			 | REDIR_DG))->type & (REDIR_GR | REDIR_LE | REDIR_DG))
-		node = new_node(NULL, NULL, tk3->type);
+		node = new_node(NULL, NULL, tk2->type);
 	else
 		node = new_node(NULL, NULL, CMD);
 	node->a = build_job(tokens, tk1);
-	if ((tk2 = find_next_operator(tk1->next, PIPE))->type & PIPE)
-		node->b = build_bst(tk1->next); // TODO: dead assignment tk2 (unused)
-	else if ((tk3 = find_next_operator(tk1, REDIR_GR | REDIR_LE \
-			 | REDIR_DG))->type & (REDIR_GR | REDIR_LE | REDIR_DG))
-			node->b = build_job(tk1->next, NULL); // TODO: dead assignment tk3 (unused)
+	if (find_next_operator(tk1->next, PIPE)->type & PIPE)
+		node->b = build_bst(tk1->next);
+	else if (find_next_operator(tk1, REDIR_GR | REDIR_LE \
+			 | REDIR_DG)->type & (REDIR_GR | REDIR_LE | REDIR_DG))
+			node->b = build_job(tk1->next, NULL);
 	else
 		node->b = build_job(tk1->next, NULL);
 	return (node);
@@ -68,30 +67,15 @@ t_bst*			bst(t_tok* tokens)
 
 	if (!(last_node = is_pipe_cmd(tokens)))
 		return (build_bst(tokens));
-	else if (tokens->next) // this 
+	else if (tokens->next)
 		return (build_job(tokens, last_node->next));
-	return (build_job(tokens, NULL)); // and this seems the same in all the cases
-}
-
-void			print_bst(t_bst* root, int type)
-{
-	if (!root)
-		return ;
-	if (type == 0)
-		ft_dprintf(2, "[PRINT BST: LEFT BRANCH:  addr[%p],type:[%d]\n", root, root->type);
-	if (type == 1)
-		ft_dprintf(2, "[PRINT BST: RIGHT BRANCH: addr[%p],type:[%d]\n", root, root->type);
-	if (!(root->type & CMD))
-		print_bst(root->a, 0);
-	if (root->type & PIPE)
-		print_bst(root->b, 1);
+	return (build_job(tokens, NULL));
 }
 
 void			free_bst(t_bst* root)
 {
 	if (!root)
 		return ;
-	ft_dprintf(2, "[FREE BST: addr[%p],type:[%d]\n", root, root->type);
 	if (!(root->type & CMD))
 		free_bst(root->a);
 	if (root->type & PIPE)

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:51:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/12 06:30:37 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/13 05:44:50 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,8 @@ typedef struct			s_exec
 ** Utils
 */
 int						matrix_height(char*const* matrix);
-char**					handle_return_status(char** av, t_term* term);
 
-
-
+/* to remove */
 bool					temporally_expansion(t_tok* args, char*** av, t_term* term);
 
 /*
@@ -77,19 +75,14 @@ void					destroy_execve_args(t_exec* info);
 ** Execution fd
 */
 bool					dup_stdio(int* fds);
-void					open_pipe_fds(t_exec** info, t_tok_t next_type);
+bool					open_pipe_fds(t_exec** info, t_tok_t type);
 bool					close_pipe_fds(int* fds);
 int						redirections_handler(t_exec** info, t_tok_t type, const char* filename);
 
 /*
 ** Execution
 */
-void					execute_bst(t_bst* root, t_term* term);
-
-/*
-** Debug
-*/
-void					print_bst(t_bst* root, int type);
+bool					execute_bst(t_bst* root, t_term* term);
 
 /*
 ** Separators
