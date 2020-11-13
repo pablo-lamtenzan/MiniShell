@@ -7,7 +7,7 @@ int		ft_exit(t_exec *args, t_term *t) // TODO: Callbacks in ft_term.h
 
 	i = t->st;
 	st = true;
-	if (args->ac > 1)
+	if (args && args->ac > 1)
 	{
 		i = -1;
 		while (args->av[1][++i])
