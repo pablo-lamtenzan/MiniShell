@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test_execution.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/30 00:52:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/01 20:00:04 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/12 11:11:24 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -325,13 +325,15 @@ bool	close_pipe_fds(int* fds)
 
 void	destroy_execve_args(t_exec* info)
 {
-	char**	aux;
+	/* char**	aux;
 	int		i;
 
 	aux = (char**)info->ep;
 	i = 0;
 	while (aux && aux[i++])
-		free(aux);
-	free(aux);
+		free(aux); ep's content shouldn't be freed!*/
+	free(info->ep);
 	free(info->execution_path);
+	info->ep = NULL;
+	info->execution_path = NULL;
 }
