@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:10:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/13 05:45:07 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/13 07:23:23 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ bool		close_pipe_fds(int* fds)
 	return (true);
 }
 
+// to norme
 int			redirections_handler(t_exec** info, t_tok_t type, const char* filename)
 {
 	static const int	umask = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
@@ -67,23 +68,26 @@ int			redirections_handler(t_exec** info, t_tok_t type, const char* filename)
 
 	if (!filename)
 		return (0);
-	if (type & REDIR_GR && ((*info)->handle_dup |= CONST_GR))
+	if (type & REDIR_GR)
 	{
 		tmp = open(filename, O_WRONLY | O_CREAT | O_TRUNC, umask);
 		if (!((*info)->handle_dup & CONST_GR))
 			(*info)->fds[1] = tmp;
+		(*info)->handle_dup |= CONST_GR;
 	}
-	else if (type & REDIR_DG && ((*info)->handle_dup |= CONST_GR))
+	else if (type & REDIR_DG)
 	{
 		tmp = open(filename, O_WRONLY | O_CREAT | O_APPEND, umask);
 		if (!((*info)->handle_dup & CONST_GR))
 			(*info)->fds[1] = tmp;
+		(*info)->handle_dup |= CONST_GR;
 	}
-	else if (type & REDIR_LE && ((*info)->handle_dup |= CONST_LE))
+	else if (type & REDIR_LE)
 	{
 		tmp = open(filename, O_RDONLY);
 		if (!((*info)->handle_dup & CONST_LE))
 			(*info)->fds[0] = tmp;
+		(*info)->handle_dup |= CONST_LE;
 	}
 	else
 		return (0);

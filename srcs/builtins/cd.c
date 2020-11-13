@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 21:57:11 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/11/04 20:17:57 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/13 07:18:42 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ int		ft_cd(t_exec *args, t_term *t)
 				env_set(&t->env, "PWD", cwd, true);
 				return (0);
 			}
+			else
+				ft_dprintf(2, "cd: no such file or directory: %s\n", args->av[1]);
 		}
 	}
 	return (1);
