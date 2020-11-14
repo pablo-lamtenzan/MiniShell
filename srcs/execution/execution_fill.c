@@ -6,16 +6,15 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 02:45:43 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 03:34:55 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <path.h>
-#include <string.h>
-#include <sys/types.h>
+#include <signals.h>
 
-int     	handle_wstatus(int wstatus, pid_t pid, char*const* av)
+int     	handle_wstatus(int wstatus, char*const* av)
 {
 	int		i;
 
@@ -23,17 +22,7 @@ int     	handle_wstatus(int wstatus, pid_t pid, char*const* av)
 	if (WIFEXITED(wstatus))
 		return (WEXITSTATUS(wstatus));
 	if (WIFSIGNALED(wstatus) && (wstatus = WTERMSIG(wstatus)))
-	{
-		if (wstatus == SIGSEGV)
-		{
-			ft_dprintf(2, "[%d]    %d %s  ", 1, pid, "segmentation fault (core dumped)");
-			while (av[++i])
-				ft_dprintf(2, "%s%c", av[i], av[i + 1] ? ' ' : 0);
-			write(2, "\n", 1);
-		}
-		else
-			ft_dprintf(2, "%s %d\n", strsignal(wstatus), wstatus);
-	}
+			print_signals(wstatus, av);
 	return (wstatus);
 }
 
@@ -55,18 +44,13 @@ int			execute_child(t_exec* info, t_term* term)
 		return (errno);
 	while (waitpid(term->pid, &wstatus, 0) <= 0)
 		;
-	return (handle_wstatus(wstatus, term->pid, info->av));
+	return (handle_wstatus(wstatus, info->av));
 }
 
 bool		build_execve_args(t_exec** info, t_term* term)
 {
-<<<<<<< HEAD
 	ft_dprintf(2, "Goes into build_execve_args\n");
 	if (!((*info)->execution_path = path_get((*info)->av[0], env_get(term->env, "PATH"))))
-=======
-
-	if (!((*info)->execution_path = path_get((*info)->av[0], env_get(term->env, "PATH", 4))))
->>>>>>> 708b446f09d84b7d6d62a255af6c61c80140722b
 		return (!(term->st = 127));
 	ft_dprintf(2, "[EXECUTION PATH][%s]\n", (*info)->execution_path);
 	if (!((*info)->ep = (char*const*)env_export(term->env)))

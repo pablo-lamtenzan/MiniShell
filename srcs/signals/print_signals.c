@@ -1,19 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test.c                                             :+:      :+:    :+:   */
+/*   print_signals.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 02:38:55 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 03:30:41 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <signal.h>
-#include <unistd.h>
-#include <stdbool.h>
+#include <signals.h>
 
 // to do buffer overflow
 // do returns
@@ -57,18 +54,9 @@
 // SIGRTMAX Real-time signal 30
 
 
-typedef struct      s_signal_print
-{
-    bool            printed;
-    const char*     endline;
-    unsigned int    process_nb;
-    const char*     plus;
-    const char*     message;
-    const char*     message_aux;
-    const char**    args;
-}                   t_signal_print;
 
-#define SIGNALS_NB	64
+
+#define SIGNALS_NB	65
 
 const t_signal_print	get_signal_print(size_t index)
 {
@@ -91,10 +79,10 @@ const t_signal_print	get_signal_print(size_t index)
 		{.printed=true, .message="Stack fault"},
 		{},
 		{},
-		{.printed=true, .process_nb=1, .plus="+", .message="Stopped", .args="true"},
-		{.printed=true, .endline="\n", .process_nb=1, .plus="+", .message="Stopped", .args="true"},
-		{.printed=true, .endline="\n", .process_nb=1, .plus="+", .message="Stopped", .args="true"},
-		{.printed=true, .endline="\n", .process_nb=1, .plus="+", .message="Stopped", .args="true"},
+		{.printed=true, .process_nb=1, .plus="+", .message="Stopped", .has_args=true},
+		{.printed=true, .endline="\n", .process_nb=1, .plus="+", .message="Stopped", .has_args=true},
+		{.printed=true, .endline="\n", .process_nb=1, .plus="+", .message="Stopped", .has_args=true},
+		{.printed=true, .endline="\n", .process_nb=1, .plus="+", .message="Stopped", .has_args=true},
 		{},
 		{.printed=true, .message="CPU time limit exceeded", .message_aux="(core dumped)"},
 		{.printed=true, .message="File size limit exceeded", .message_aux="(core dumped)"},
@@ -144,26 +132,18 @@ const t_signal_print	get_signal_print(size_t index)
 
 // [end line] [process_nb] [token '+'] [message] [aux_msg] [args]
 
-void	print_signals(t_signal_print signal)
+void	print_signals(int wsignal_index, const char** args)
 {
-	dprintf(2, "%s%s%s%s%s");
-	if (signal.args[0])
-	{
-		
-	}
-}
+	int	i;
+	const t_signal_print signal = get_signal_print(wsignal_index);
 
-int main()
-{
-    dprintf(2, "WILL SEGFAULT\n");
-    
-    //int* a = 0;
-    //a[3] = 0;
-
-    //int     a[3];
-    //a[3] = 0;
-
-    kill(getpid(), SIGRTMAX);
-    
-    return (0);
+	i = -1;
+	dprintf(2, "%s%s%s%s%s%s%s%s%s", signal.endline ? signal.endline : "", signal.process_nb ? "[" : "", \
+			signal.process_nb ? "1" : "", signal.process_nb ? "]" : "", signal.plus ? "+  " : "", \
+			signal.message , signal.message_aux ? " " : "", \
+			signal.message_aux ? signal.message_aux : "", signal.has_args ? "                 " : "");
+	if (signal.has_args);
+		while (args && args[++i])
+			dprintf(2, "%s%s", args[i], args[i + 1] ? " " : "");
+	write(2, "\n", 1);
 }

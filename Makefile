@@ -35,6 +35,9 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 						conditionals.c\
 						separators.c\
 					)\
+					$(addprefix signals/,\
+						print_signals.c\
+					)\
 					$(addprefix main/,\
 						main.c\
 					)\
@@ -51,6 +54,7 @@ OBJDS	=		$(addprefix $(OBJDIR)/,\
 					main\
 					path\
 					separators\
+					signals\
 				)
 
 OBJS	=		$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
@@ -61,6 +65,7 @@ HDRS	=		$(addprefix $(INCDIR)/,\
 					execution.h\
 					separators.h\
 					path.h\
+					signals.h\
 				)
 
 all:			libft $(NAME)
