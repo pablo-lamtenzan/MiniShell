@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:10:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 04:52:20 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 04:56:26 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,8 @@ int			redirections_handler(t_exec** info, t_bst* cmd, t_term* term, char*** file
 	if (!cmd->b)
 		return (0);
 	*filename = (char**)token_expand(cmd->b, &term->env, &(*info)->ac);
+	if (!*filename || matrix_height(*filename) > 1)
+		return (-2);
 	if (cmd->type & REDIR_GR)
 	{
 		tmp = open((*filename)[0], O_WRONLY | O_CREAT | O_TRUNC, umask);
