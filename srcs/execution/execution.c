@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 04:56:10 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 05:03:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,11 @@ static bool		execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
 	char**		filename;
 	int			redir_st;
 
-	if ((redir_st = redirections_handler(&info, cmd, term, &filename)) < 0)
+	if ((redir_st = redirections_handler(&info, cmd, term, &filename)) == -1)
 		return (ft_dprintf(2, "minish: %s: No such file or directory\n", filename[0]));
-	else if (redir_st < -1)
+	else if (redir_st == -2)
+		return (ft_dprintf(2, "minish: %s: ambigous redirect\n", filename[0]));
+	else if (redir_st < -2)
 		return (false);
 	if (!(cmd->type & CMD) || (cmd->type & PIPE \
 			&& !(((t_bst*)cmd->a)->type & CMD)))
