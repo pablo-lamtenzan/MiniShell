@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:10:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 05:02:44 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 05:18:56 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,11 +69,11 @@ int			redirections_handler(t_exec** info, t_bst* cmd, t_term* term, char*** file
 		return (0);
 	*filename = (char**)token_expand(cmd->b, &term->env, &(*info)->ac);
 	if (!*filename)
-		return (-3);
+		return (FATAL_ERROR);
 	if (matrix_height(*filename) > 1)
 	{
 		(*filename)[0] = ((t_tok*)cmd->b)->data;
-		return (-2);
+		return (AMB_REDIRECT);
 	}
 	if (cmd->type & REDIR_GR)
 	{
@@ -98,5 +98,5 @@ int			redirections_handler(t_exec** info, t_bst* cmd, t_term* term, char*** file
 	}
 	else
 		return (0);
-	return (((*info)->fds[0] | (*info)->fds[1]) >= 0 ? 1 : -1);
+	return (((*info)->fds[0] | (*info)->fds[1]) >= 0 ? 1 : FILENOTFOUND);
 }
