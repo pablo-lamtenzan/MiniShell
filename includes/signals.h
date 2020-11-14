@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 03:28:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 06:11:49 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 10:28:51 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define SIGNALS_H
 
 # define CORE   "(core dumped)"
+
+#include <process.h>
 
 #include <stdbool.h>
 #include <unistd.h>
@@ -30,6 +32,6 @@ typedef struct      s_signal_print
     bool    		has_args;
 }                   t_signal_print;
 
-void	print_signals(int wsignal_index, const char** args);
+void	print_signals(int wsignal_index, const char** args, t_process* suspended);
 
 #endif

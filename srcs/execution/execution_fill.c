@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 08:09:46 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 08:30:26 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ int			execute_child(t_exec* info, t_term* term)
 
 	if (!(term->processes[term->processes[MANAGE].pid].pid = fork()))
 	{
-		term->processes[MANAGE].pid++;
+		// overwrite last process if execed max for the moment
+		term->processes[MANAGE].pid += term->processes[MANAGE].pid > PROCESSES_MAX ? 0 : 1;
 		term->processes[term->processes[MANAGE].pid].data = info->av;
 		if (dup_stdio(info->fds))
 		{

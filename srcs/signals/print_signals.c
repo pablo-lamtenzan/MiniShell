@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 06:36:13 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 10:26:39 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ t_signal_print	get_signal_print(size_t index)
 
 // [end line] [process_nb] [token '+'] [message] [aux_msg] [args]
 
-void	print_signals(int wsignal_index, const char** args)
+void	print_signals(int wsignal_index, const char** args, t_process* suspended)
 {
 	int	i;
 	const t_signal_print signal = get_signal_print(wsignal_index);
@@ -159,7 +159,7 @@ void	print_signals(int wsignal_index, const char** args)
 	ft_dprintf(STDERR_FILENO, "%s%s%s%s%s%s%s%s%s", \
 			signal.endline ? signal.endline : "", \
 			signal.process_nb ? "[" : "", \
-			signal.process_nb ? "1" : "", \
+			signal.process_nb ? ft_itoa(suspended_process_nb(suspended)) : "", \
 			signal.process_nb ? "]" : "", \
 			signal.plus ? "+  " : "", \
 			signal.message , \

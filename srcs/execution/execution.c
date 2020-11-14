@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 08:19:43 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 10:16:56 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,5 +96,5 @@ bool			execute_bst(t_bst* root, t_term* term)
 		sucess &= execute_job(root, &info, term);
 	else
 		sucess &= execute_cmd(root, &info, term);
-	return (sucess & wait_processes(term->processes, &term->st));
+	return (sucess & wait_processes(term));
 }

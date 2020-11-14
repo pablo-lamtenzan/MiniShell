@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 08:09:18 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 10:28:39 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,19 @@
 # define PROCESS_H
 
 #include <unistd.h>
+#include <stdbool.h>
 
-#define PROCESSES_MAX     4096
+#define PROCESSES_MAX   4096
 #define MANAGE          0
 
 typedef struct 			s_process
 {
 	pid_t				pid;
     unsigned char       wstatus;
-	char*const*			data;
+	void*				data;
 }						t_process;
 
-bool                    wait_processes(t_process* processes, int* term_st);
+bool        			wait_processes(t_term* term);
+size_t					suspended_process_nb(t_process* suspended);;
 
 #endif
