@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_signals.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 03:49:05 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/14 03:55:51 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@
 
 #define SIGNALS_NB	65
 
-const t_signal_print	*get_signal_print(size_t index)
+t_signal_print	get_signal_print(size_t index)
 {
 	static const t_signal_print	signals_print[SIGNALS_NB] = {
 		{.printed=true, .message="Hangup"},
@@ -127,23 +127,25 @@ const t_signal_print	*get_signal_print(size_t index)
 		{.printed=true, .message="Real-time signal 29"},
 		{.printed=true, .message="Real-time signal 30"},
 	};
-	return (&signals_print[index - 1]);
+	return (signals_print[index - 1]);
 }
 
 // [end line] [process_nb] [token '+'] [message] [aux_msg] [args]
 
-void	print_signals(int wsignal_index, char *const* args)
+void	print_signals(int wsignal_index, const char** args)
 {
 	int	i;
-	const t_signal_print *s = get_signal_print(wsignal_index);
+	const t_signal_print signal = get_signal_print(wsignal_index);
 
 	i = -1;
-	dprintf(2, "%s%s%s%s%s%s%s%s%s", s->endline ? s->endline : "", s->process_nb ? "[" : "", \
-			s->process_nb ? "1" : "", s->process_nb ? "]" : "", s->plus ? "+  " : "", \
-			s->message , s->message_aux ? " " : "", \
-			s->message_aux ? s->message_aux : "", s->has_args ? "                 " : "");
-	if (s->has_args)
+	if (!signal.printed)
+		return ;
+	ft_dprintf(2, "%s%s%s%s%s%s%s%s%s", signal.endline ? signal.endline : "", signal.process_nb ? "[" : "", \
+			signal.process_nb ? "1" : "", signal.process_nb ? "]" : "", signal.plus ? "+  " : "", \
+			signal.message , signal.message_aux ? " " : "", \
+			signal.message_aux ? signal.message_aux : "", signal.has_args ? "                 " : "");
+	if (signal.has_args)
 		while (args && args[++i])
-			dprintf(2, "%s%s", args[i], args[i + 1] ? " " : "");
+			ft_dprintf(2, "%s%s", args[i], args[i + 1] ? " " : "");
 	write(2, "\n", 1);
 }
