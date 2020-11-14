@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   execution_fill.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
 /*   Updated: 2020/11/14 05:38:01 by pablo            ###   ########.fr       */
@@ -50,31 +50,24 @@ int			execute_child(t_exec* info, t_term* term)
 	return (handle_wstatus(wstatus, info->av));
 }
 
-bool		build_execve_args(t_exec** info, t_term* term)
+bool		build_execve_args(t_exec* info, t_term* term)
 {
 	ft_dprintf(2, "Goes into build_execve_args\n");
-	if (!((*info)->execution_path = path_get((*info)->av[0], env_get(term->env, "PATH", 4))))
+	if (!(info->execution_path = path_get(info->av[0], env_get(term->env, "PATH", 4))))
 		return (!(term->st = 127));
-	ft_dprintf(2, "[EXECUTION PATH][%s]\n", (*info)->execution_path);
-	if (!((*info)->ep = (char*const*)env_export(term->env)))
+	ft_dprintf(2, "[EXECUTION PATH][%s]\n", info->execution_path);
+	if (!(info->ep = (char*const*)env_export(term->env)))
 	{
-		free((void*)(*info)->execution_path);
+		free(info->execution_path);
 		return (false);
 	}
-	ft_dprintf(2, "[ENV][%s]\n", *(*info)->ep);
+//	ft_dprintf(2, "[ENV][%p]\n", info->ep);
 	return (true);
 }
 
-void		destroy_execve_args(t_exec* info)
+void		destroy_execve_args(t_exec *info)
 {
-	char**	aux;
-	int		i;
-
-	aux = (char**)info->ep;
-	i = 0;
-	while (aux && aux[i++])
-		free(aux);
-	free(aux);
+	free((char **)info->ep);
 	free((void*)info->execution_path);
 }
 

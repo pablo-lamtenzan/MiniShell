@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   execution.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:51:14 by pablo             #+#    #+#             */
 /*   Updated: 2020/11/14 05:18:13 by pablo            ###   ########.fr       */
@@ -52,7 +52,7 @@ typedef struct			s_exec
 	int					fds[3];
 	char				handle_dup;
 	t_executable		exec;
-	const char*			execution_path;
+	char*				execution_path;
 	int					ac;
     char*const*			av;
     char*const*			ep;
@@ -71,7 +71,7 @@ bool					temporally_expansion(t_tok* args, char*** av, t_term* term);
 */
 int     				handle_wstatus(int wstatus, char*const* av);
 int						execute_child(t_exec* info, t_term* term);
-bool					build_execve_args(t_exec** info, t_term* term);
+bool					build_execve_args(t_exec* info, t_term* term);
 void					destroy_execve_args(t_exec* info);
 
 /*
