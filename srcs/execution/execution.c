@@ -14,7 +14,7 @@
 #include <builtins.h>
 #include <expansion.h>
 
-static void		get_exec(t_exec** info, t_term* term)
+static void		get_exec(t_exec* info, t_term* term)
 {
 	const char	*names[] = {"echo", "cd", "pwd", "export", "unset", "env", \
 			"exit"};
@@ -24,12 +24,12 @@ static void		get_exec(t_exec** info, t_term* term)
 	int			i;
 
 	i = 0;
-	while (i < 7 && ft_strncmp((*info)->av[0], names[i], lengths[i]))
+	while (i < 7 && ft_strncmp(info->av[0], names[i], lengths[i]))
 		i++;
 	if (i < 7)
-		(*info)->exec = builtins[i];
+		info->exec = builtins[i];
 	else if (build_execve_args(info, term))
-		(*info)->exec = &execute_child;
+		info->exec = &execute_child;
 }
 
 static bool		execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
@@ -42,7 +42,7 @@ static bool		execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
 	else
 	{
 		info->av = token_expand(cmd->a, &term->env, &info->ac);
-		get_exec(&info, term);
+		get_exec(info, term);
 		if (info->exec)
 			term->st = info->exec(info, term);
 		else
