@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:51:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 07:28:44 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 07:59:56 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,6 @@ typedef struct			s_exec
     char*const*			ep;
 }						t_exec;
 
-typedef struct 			s_process
-{
-	pid_t				pid;
-	char*const*			data;
-}						t_process;
-
 /*
 ** Utils
 */
@@ -75,7 +69,6 @@ bool					temporally_expansion(t_tok* args, char*** av, t_term* term);
 /*
 ** Exectution fill
 */
-int     				handle_wstatus(int wstatus, char*const* av);
 int						execute_child(t_exec* info, t_term* term);
 bool					build_execve_args(t_exec* info, t_term* term);
 void					destroy_execve_args(t_exec* info);

@@ -3,39 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   execution_fill.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 05:38:01 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 08:09:46 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <path.h>
-#include <signals.h>
-
-int     	handle_wstatus(int wstatus, char*const* av)
-{
-	int		i;
-
-	i = -1;
-	if (WIFEXITED(wstatus))
-		return (WEXITSTATUS(wstatus));
-	if (WIFSIGNALED(wstatus) && (wstatus = WTERMSIG(wstatus)))
-	{
-			print_signals(wstatus, (const char**)av);
-			wstatus += 128;
-	}
-	return (wstatus);
-}
-
 
 int			execute_child(t_exec* info, t_term* term)
 {
 	int		wstatus;
 
-	if (!(term->pid = fork()))
+	if (!(term->processes[term->processes[MANAGE].pid].pid = fork()))
 	{
+		term->processes[MANAGE].pid++;
+		term->processes[term->processes[MANAGE].pid].data = info->av;
 		if (dup_stdio(info->fds))
 		{
 			wstatus = execve(info->execution_path, info->av, info->ep);
@@ -43,11 +28,12 @@ int			execute_child(t_exec* info, t_term* term)
 		}
 		exit(EXIT_FAILURE);
 	}
-	else if (term->pid < 0)
+	else if (term->processes[term->processes[MANAGE].pid].pid < 0)
 		return (errno);
-	while (waitpid(term->pid, &wstatus, 0) <= 0)
-		;
-	return (handle_wstatus(wstatus, info->av));
+	//while (waitpid(term->pid, &wstatus, 0) <= 0)
+	//	;
+	//return (handle_wstatus(wstatus, info->av));
+	return (term->processes[term->processes[MANAGE].pid].wstatus = wstatus);
 }
 
 bool		build_execve_args(t_exec* info, t_term* term)

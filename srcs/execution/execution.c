@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 05:19:25 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 08:12:54 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <builtins.h>
 #include <expansion.h>
+#include <process.h>
 
 static void		get_exec(t_exec* info, t_term* term)
 {
@@ -86,9 +87,14 @@ bool			execute_bst(t_bst* root, t_term* term)
 {
 	t_exec		info;
 
+	bool		sucess;
+
+	sucess = true;
 	ft_bzero(&info, sizeof(t_exec));
 	info = (t_exec){.fds[STDOUT]=STDOUT, .fds[AUX]=AUX};
 	if (root->type & PIPE)
-		return (execute_job(root, &info, term));
-	return (execute_cmd(root, &info, term));
+		sucess *= execute_job(root, &info, term);
+	else
+		sucess *= execute_cmd(root, &info, term);
+	return (sucess * wait_processes(term->processes, &term->st));
 }
