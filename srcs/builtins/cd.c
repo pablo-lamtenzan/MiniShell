@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 21:57:11 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/11/04 20:17:57 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/13 20:27:58 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ int		ft_cd(t_exec *args, t_term *t)
 
 	if (args->ac == 1)
 	{
-		chdir(env_get(t->env, "HOME"));
-		env_set(&t->env, "PWD", env_get(t->env, "HOME"), true);
+		chdir(env_get(t->env, "HOME", 4));
+		env_set(&t->env, "PWD", env_get(t->env, "HOME", 4), true);
 		return (0);
 	}
 	else

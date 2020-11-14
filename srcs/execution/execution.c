@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/13 04:57:51 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/13 07:52:46 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <execution.h>
-# include <builtins.h>
+#include <execution.h>
+#include <builtins.h>
+#include <expansion.h>
 
 static void		get_exec(t_exec** info, t_term* term)
 {
@@ -31,7 +32,7 @@ static void		get_exec(t_exec** info, t_term* term)
 		(*info)->exec = &execute_child;
 }
 
-static void		execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
+static void		execute_cmd(t_bst *cmd, t_exec *info, t_term *term)
 {
 	if (redirections_handler(&info, cmd->type, (const char*)cmd->b) < 0)
 		return ;
@@ -40,8 +41,7 @@ static void		execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
     	execute_cmd(cmd->a, info, term);
 	else
 	{
-		temporally_expansion(cmd->a, (char***)&info->av, term);
-		info->ac = matrix_height(info->av);
+		info->av = token_expand(cmd->a, &term->env, &info->ac);
 		get_exec(&info, term);
 		if (info->exec)
 			term->st = info->exec(info, term);

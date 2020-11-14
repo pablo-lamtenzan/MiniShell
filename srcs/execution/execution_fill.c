@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   execution_fill.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:05:45 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/13 05:03:32 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/13 20:28:11 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <path.h>
+#include <string.h>
 
 int     	handle_wstatus(int wstatus)
 {
@@ -42,7 +43,7 @@ int			execute_child(t_exec* info, t_term* term)
 bool		build_execve_args(t_exec** info, t_term* term)
 {
 
-	if (!((*info)->execution_path = path_get((*info)->av[0], env_get(term->env, "PATH"))))
+	if (!((*info)->execution_path = path_get((*info)->av[0], env_get(term->env, "PATH", 4))))
 		return (!(term->st = 127));
 	if (!((*info)->ep = (char*const*)env_export(term->env)))
 	{
@@ -75,23 +76,4 @@ int			matrix_height(char*const* matrix)
 	while (*it)
 		it++;
 	return ((char*const*)it - matrix);
-}
-
-bool		temporally_expansion(t_tok* args, char*** av, t_term* term)
-{
-	int		i;
-	size_t	size;
-	(void)term;
-
-	i = 0;
-	if (!(*av = malloc(sizeof(char*) * ((size = tkt_size(args)) + 1))))
-		return (false);
-	(*av)[size] = 0;
-	while (args)
-	{
-		(*av)[i] = ft_strdup(args->data);
-		i++;
-		args = args->next;
-	}
-	return (true);
 }
