@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 08:12:54 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 08:19:43 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,11 @@ static bool		execute_job(t_bst* job, t_exec* info, t_term* term)
 	if (!open_pipe_fds(&info, job->b ? job->type : 0))
 		return (false);
 	if (!(job->type & (CMD | REDIR_DG | REDIR_GR | REDIR_LE)))
-    	success *= execute_cmd(job->a, info, term);
+    	success &= execute_cmd(job->a, info, term);
     if (job->b && job->type & PIPE)
-        success *= execute_job(job->b, info, term);
+        success &= execute_job(job->b, info, term);
 	else
-		success *= execute_cmd(job, info, term);
+		success &= execute_cmd(job, info, term);
 	return (success);
 }
 
@@ -93,8 +93,8 @@ bool			execute_bst(t_bst* root, t_term* term)
 	ft_bzero(&info, sizeof(t_exec));
 	info = (t_exec){.fds[STDOUT]=STDOUT, .fds[AUX]=AUX};
 	if (root->type & PIPE)
-		sucess *= execute_job(root, &info, term);
+		sucess &= execute_job(root, &info, term);
 	else
-		sucess *= execute_cmd(root, &info, term);
-	return (sucess * wait_processes(term->processes, &term->st));
+		sucess &= execute_cmd(root, &info, term);
+	return (sucess & wait_processes(term->processes, &term->st));
 }
