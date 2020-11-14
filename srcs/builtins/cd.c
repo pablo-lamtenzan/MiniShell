@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 21:57:11 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/11/13 20:27:58 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/14 01:33:48 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ int		ft_cd(t_exec *args, t_term *t)
 				env_set(&t->env, "PWD", cwd, true);
 				return (0);
 			}
+			else
+				ft_dprintf(2, "cd: no such file or directory: %s\n", args->av[1]);
 		}
 	}
 	return (1);

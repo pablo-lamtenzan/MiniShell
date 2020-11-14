@@ -6,16 +6,18 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/13 22:24:24 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/14 01:35:58 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <separators.h>
+#include <builtins.h>
 
 // TODO: child with signal returns t->st = 128 + sig_n
 // TODO: Local path_get (start with '/' or '.')
 
+/*
 void	token_print(t_tok *tokens, const char *prefix)
 {
 	ft_dprintf(2, "[%s]\n", prefix);
@@ -30,6 +32,7 @@ void	token_print(t_tok *tokens, const char *prefix)
 		tokens = tokens->next;
 	}
 }
+*/
 
 static int exec(t_tok* tokens, t_term* term)
 {
@@ -37,17 +40,19 @@ static int exec(t_tok* tokens, t_term* term)
 	t_tok*	exec_tokens;
 	t_bst*	root;
 
-	token_print(tokens, "TOK");
 	ft_bzero(flags, sizeof(flags));
 	while ((exec_tokens = handle_separators(&tokens, &flags[STATUS], &flags[PARETHESES_NB])))
 	{
-		token_print(exec_tokens, "EXE");
+//		token_print(exec_tokens, "EXE");
 		if (handle_conditionals(&term, flags[STATUS], &flags[CONDITIONALS], flags[PARETHESES_NB]))
 		{
-			execute_bst(root = bst(exec_tokens), term);
+			if (!execute_bst(root = bst(exec_tokens), term))
+			{
+				free_bst(root);
+				ft_exit(NULL, term);
+			}
 			free_bst(root);
 		}
-		exec_tokens = NULL;
 	}
 	return (0);
 }

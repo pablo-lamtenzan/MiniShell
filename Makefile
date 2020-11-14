@@ -38,7 +38,7 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 					$(addprefix main/,\
 						main.c\
 					)\
-					$(addprefix utils/,\
+					$(addprefix path/,\
 						path.c\
 					)\
 				)
@@ -49,7 +49,7 @@ OBJDS	=		$(addprefix $(OBJDIR)/,\
 					execution\
 					expansion\
 					main\
-					utils\
+					path\
 					separators\
 				)
 

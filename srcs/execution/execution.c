@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/13 07:52:46 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/14 01:35:19 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ static void		get_exec(t_exec** info, t_term* term)
 		(*info)->exec = &execute_child;
 }
 
-static void		execute_cmd(t_bst *cmd, t_exec *info, t_term *term)
+static bool		execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
 {
 	if (redirections_handler(&info, cmd->type, (const char*)cmd->b) < 0)
-		return ;
+		return (false);
 	if (!(cmd->type & CMD) || (cmd->type & PIPE \
 			&& !(((t_bst*)cmd->a)->type & CMD)))
     	execute_cmd(cmd->a, info, term);
@@ -49,30 +49,35 @@ static void		execute_cmd(t_bst *cmd, t_exec *info, t_term *term)
 			destroy_execve_args(info);
 		info->exec = NULL;
 		if (!close_pipe_fds(info->fds))
-			return ;
+			return (false);
 	}
+	return (true);
 }
 
-static void		execute_job(t_bst* job, t_exec* info, t_term* term)
+static bool		execute_job(t_bst* job, t_exec* info, t_term* term)
 {
+	bool		success;
+
+	success = true;
 	info->handle_dup = NONE;
-	open_pipe_fds(&info, job->b ? job->type : 0);
+	if (!open_pipe_fds(&info, job->b ? job->type : 0))
+		return (false);
 	if (!(job->type & (CMD | REDIR_DG | REDIR_GR | REDIR_LE)))
-    	execute_cmd(job->a, info, term);
+    	success *= execute_cmd(job->a, info, term);
     if (job->b && job->type & PIPE)
-        execute_job(job->b, info, term);
+        success *= execute_job(job->b, info, term);
 	else
-		execute_cmd(job, info, term);
+		success *= execute_cmd(job, info, term);
+	return (success);
 }
 
-void			execute_bst(t_bst* root, t_term* term)
+bool			execute_bst(t_bst* root, t_term* term)
 {
-	t_exec	info;
+	t_exec		info;
 
 	ft_bzero(&info, sizeof(t_exec));
 	info = (t_exec){.fds[STDOUT]=STDOUT, .fds[AUX]=AUX};
 	if (root->type & PIPE)
-		execute_job(root, &info, term);
-	else
-		execute_cmd(root, &info, term);
+		return (execute_job(root, &info, term));
+	return (execute_cmd(root, &info, term));
 }
