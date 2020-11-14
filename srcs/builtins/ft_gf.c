@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 11:57:38 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 12:34:01 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,13 @@
 
 #include <execution.h>
 #include <errors.h>
+
+static bool find_pid(t_process* suspended, char* pid)
+{
+    (void)suspended;
+    (void)pid;
+    return (false);
+}
 
 int         ft_fg(t_exec* args, t_term* term)
 {

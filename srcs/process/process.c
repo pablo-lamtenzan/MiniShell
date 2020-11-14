@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 11:41:54 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 12:18:10 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,5 +83,6 @@ bool        	wait_processes(t_term* term)
 		}
         term->st = handle_wstatus(&term->processes[i].wstatus, (char*const*)term->processes[i].data, term->suspended_processes);
     }
+	ft_bzero(term->processes, sizeof(term->processes));
 	return (true);
 }

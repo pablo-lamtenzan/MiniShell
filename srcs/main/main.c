@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 09:51:54 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 13:02:38 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 // TODO: child with signal returns t->st = 128 + sig_n DONE 
 // TODO: Local path_get (start with '/' or '.')
 // TODO: Nb process printed in print_signals (for inperrumpt signals) into pipe
-// TODO: Change builtins and child error codes by defines
+// TODO: ERROR codes: execution and builtins
 
 /*
 void	token_print(t_tok *tokens, const char *prefix)
