@@ -6,12 +6,14 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 03:28:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 03:57:53 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 06:11:49 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SIGNALS_H
 # define SIGNALS_H
+
+# define CORE   "(core dumped)"
 
 #include <stdbool.h>
 #include <unistd.h>

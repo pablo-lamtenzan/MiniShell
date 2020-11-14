@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:51:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 05:18:13 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 07:28:44 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,12 @@ typedef struct			s_exec
     char*const*			av;
     char*const*			ep;
 }						t_exec;
+
+typedef struct 			s_process
+{
+	pid_t				pid;
+	char*const*			data;
+}						t_process;
 
 /*
 ** Utils

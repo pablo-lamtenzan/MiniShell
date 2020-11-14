@@ -6,15 +6,16 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 06:03:47 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 06:36:13 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <signals.h>
 
-// to do buffer overflow
-// do returns
-// check more signals like time out
+// TO DO: buffer overflow
+// TO DO: check more signals like time out
+
+
 
 // SIGHUP Hangup // index 1
 // SIGINT == \n <--- clems does it
@@ -81,7 +82,6 @@ static t_signal_print	get_40_to_60(size_t index)
 		{.printed=true, .message="Real-time signal 14"},
 		{.printed=true, .message="Real-time signal 15"},
 		{.printed=true, .message="Real-time signal 16"},
-		{.printed=true, .message="Real-time signal 16"},
 		{.printed=true, .message="Real-time signal 17"},
 		{.printed=true, .message="Real-time signal 18"},
 		{.printed=true, .message="Real-time signal 19"},
@@ -98,19 +98,17 @@ static t_signal_print	get_40_to_60(size_t index)
 static t_signal_print	get_20_to_40(size_t index)
 {
 	static const t_signal_print	signals_print[20] = {
-		{.printed=true, .endline="\n", .process_nb=1, .plus="+", .message="Stopped", .has_args=true},
-		{.printed=true, .endline="\n", .process_nb=1, .plus="+", .message="Stopped", .has_args=true},
-		{},
-		{.printed=true, .message="CPU time limit exceeded", .message_aux="(core dumped)"},
-		{.printed=true, .message="File size limit exceeded", .message_aux="(core dumped)"},
+		{.printed=true, .endline="\n", .process_nb=1, .plus="+", \
+				.message="Stopped", .has_args=true},
+		{.printed=true, .endline="\n", .process_nb=1, .plus="+", \
+				.message="Stopped", .has_args=true}, {},
+		{.printed=true, .message="CPU time limit exceeded", .message_aux=CORE},
+		{.printed=true, .message="File size limit exceeded", .message_aux=CORE},
 		{.printed=true, .message="Virtual timer expired"},
-		{.printed=true, .message="Profiling timer expired"},
-		{},
+		{.printed=true, .message="Profiling timer expired"}, {},
 		{.printed=true, .message="I/O possible"},
 		{.printed=true, .message="Power failure"},
-		{.printed=true, .message="Bad system call", .message_aux="(core dumped)"},
-		{},
-		{},
+		{.printed=true, .message="Bad system call", .message_aux=CORE}, {}, {},
 		{.printed=true, .message="Real-time signal 0"},
 		{.printed=true, .message="Real-time signal 1"},
 		{.printed=true, .message="Real-time signal 2"},
@@ -127,24 +125,23 @@ t_signal_print	get_signal_print(size_t index)
 	static const t_signal_print	signals_print[20] = {
 		{.printed=true, .message="Hangup"},
 		{}, // if clems handls the \n it
-		{.printed=true, .message="Quit", .message_aux="(core dumped)"},
-		{.printed=true, .message="Illegal instruction", .message_aux="(core dumped)"},
-		{.printed=true, .message="Trace/breakpoint trap", .message_aux="(core dumped)"},
-		{.printed=true, .message="Aborted", .message_aux="(core dumped)"},
-		{.printed=true, .message="Bus error", .message_aux="(core dumped)"},
-		{.printed=true, .message="Floating point exception", .message_aux="(core dumped)"},
+		{.printed=true, .message="Quit", .message_aux=CORE},
+		{.printed=true, .message="Illegal instruction", .message_aux=CORE},
+		{.printed=true, .message="Trace/breakpoint trap", .message_aux=CORE},
+		{.printed=true, .message="Aborted", .message_aux=CORE},
+		{.printed=true, .message="Bus error", .message_aux=CORE},
+		{.printed=true, .message="Floating point exception", .message_aux=CORE},
 		{.printed=true, .message="Killed"},
 		{.printed=true, .message="User defined signal 1"},
-		{.printed=true, .message="Segmentation fault", .message_aux="(core dumped)"},
-		{.printed=true, .message="User defined signal 2"},
-		{},
+		{.printed=true, .message="Segmentation fault", .message_aux=CORE},
+		{.printed=true, .message="User defined signal 2"}, {},
 		{.printed=true, .message="Alarm clock"},
 		{.printed=true, .message="Terminated"},
-		{.printed=true, .message="Stack fault"},
-		{},
-		{},
-		{.printed=true, .process_nb=1, .plus="+", .message="Stopped", .has_args=true},
-		{.printed=true, .endline="\n", .process_nb=1, .plus="+", .message="Stopped", .has_args=true}
+		{.printed=true, .message="Stack fault"}, {}, {},
+		{.printed=true, .process_nb=1, .plus="+", .message="Stopped", \
+				.has_args=true},
+		{.printed=true, .endline="\n", .process_nb=1, .plus="+", \
+				.message="Stopped", .has_args=true}
 	};
 	return (index <= 20 ? signals_print[index - 1] : get_20_to_40(index - 20));
 }
@@ -159,10 +156,17 @@ void	print_signals(int wsignal_index, const char** args)
 	i = -1;
 	if (!signal.printed)
 		return ;
-	ft_dprintf(STDERR_FILENO, "%s%s%s%s%s%s%s%s%s", signal.endline ? signal.endline : "", signal.process_nb ? "[" : "", \
-			signal.process_nb ? "1" : "", signal.process_nb ? "]" : "", signal.plus ? "+  " : "", \
-			signal.message , signal.message_aux ? " " : "", \
-			signal.message_aux ? signal.message_aux : "", signal.has_args ? "                 " : "");
+	ft_dprintf(STDERR_FILENO, "%s%s%s%s%s%s%s%s%s", \
+			signal.endline ? signal.endline : "", \
+			signal.process_nb ? "[" : "", \
+			signal.process_nb ? "1" : "", \
+			signal.process_nb ? "]" : "", \
+			signal.plus ? "+  " : "", \
+			signal.message , \
+			signal.message_aux ? " " : "", \
+			signal.message_aux ? signal.message_aux : "", \
+			signal.has_args ? "                 " : ""\
+			);
 	if (signal.has_args)
 		while (args && args[++i])
 			ft_dprintf(STDERR_FILENO, "%s%s", args[i], args[i + 1] ? " " : "");
