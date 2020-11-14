@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/01 20:05:45 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 00:00:40 by pablo            ###   ########.fr       */
+/*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
+/*   Updated: 2020/11/14 02:45:43 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,13 @@ int			execute_child(t_exec* info, t_term* term)
 
 bool		build_execve_args(t_exec** info, t_term* term)
 {
+<<<<<<< HEAD
 	ft_dprintf(2, "Goes into build_execve_args\n");
 	if (!((*info)->execution_path = path_get((*info)->av[0], env_get(term->env, "PATH"))))
+=======
+
+	if (!((*info)->execution_path = path_get((*info)->av[0], env_get(term->env, "PATH", 4))))
+>>>>>>> 708b446f09d84b7d6d62a255af6c61c80140722b
 		return (!(term->st = 127));
 	ft_dprintf(2, "[EXECUTION PATH][%s]\n", (*info)->execution_path);
 	if (!((*info)->ep = (char*const*)env_export(term->env)))
@@ -94,35 +99,4 @@ int			matrix_height(char*const* matrix)
 	while (*it)
 		it++;
 	return ((char*const*)it - matrix);
-}
-
-int	tkt_size(t_tok *lst)
-{
-	int		size;
-
-	if (!lst)
-		return (0);
-	size = 1;
-	while ((lst = lst->next))
-		size++;
-	return (size);
-}
-
-bool		temporally_expansion(t_tok* args, char*** av, t_term* term)
-{
-	int		i;
-	size_t	size;
-	(void)term;
-
-	i = 0;
-	if (!(*av = malloc(sizeof(char*) * ((size = tkt_size(args)) + 1))))
-		return (false);
-	(*av)[size] = 0;
-	while (args)
-	{
-		(*av)[i] = ft_strdup(args->data);
-		i++;
-		args = args->next;
-	}
-	return (true);
 }

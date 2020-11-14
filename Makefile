@@ -5,7 +5,7 @@ INCDIR	=		includes
 OBJDIR	=		objs
 CC		=		/usr/bin/clang
 RM		=		/bin/rm
-CFLAGS	=		-Wall -Wextra -Werror -g3 #-fsanitize=address
+CFLAGS	=		-Wall -Wextra -Werror -g3 -fsanitize=address
 IFLAGS	=		-I$(INCDIR) -I$(LIBFT)/includes
 LFLAGS	=		-L$(LIBFT) -lft -lcurses -ltermcap
 
@@ -28,6 +28,9 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 						execution_fill.c\
 						execution.c\
 					)\
+					$(addprefix expansion/,\
+						expansion.c\
+					)\
 					$(addprefix separators/,\
 						conditionals.c\
 						separators.c\
@@ -40,7 +43,15 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 					)\
 				)
 
-OBJDS	=		$(addprefix $(OBJDIR)/, builtins bst execution main path separators)
+OBJDS	=		$(addprefix $(OBJDIR)/,\
+					builtins\
+					bst\
+					execution\
+					expansion\
+					main\
+					path\
+					separators\
+				)
 
 OBJS	=		$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 

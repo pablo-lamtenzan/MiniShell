@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/13 05:40:39 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 01:35:19 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <execution.h>
-# include <builtins.h>
+#include <execution.h>
+#include <builtins.h>
+#include <expansion.h>
 
 static void		get_exec(t_exec** info, t_term* term)
 {
@@ -40,9 +41,7 @@ static bool		execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
     	execute_cmd(cmd->a, info, term);
 	else
 	{
-		if (!temporally_expansion(cmd->a, (char***)&info->av, term))
-			return (false);
-		info->ac = matrix_height(info->av);
+		info->av = token_expand(cmd->a, &term->env, &info->ac);
 		get_exec(&info, term);
 		if (info->exec)
 			term->st = info->exec(info, term);
