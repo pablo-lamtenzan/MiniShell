@@ -6,20 +6,34 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:05:45 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/13 05:18:50 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 00:00:40 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <path.h>
 #include <string.h>
+#include <sys/types.h>
 
-int     	handle_wstatus(int wstatus)
+int     	handle_wstatus(int wstatus, pid_t pid, char*const* av)
 {
+	int		i;
+
+	i = -1;
 	if (WIFEXITED(wstatus))
 		return (WEXITSTATUS(wstatus));
 	if (WIFSIGNALED(wstatus) && (wstatus = WTERMSIG(wstatus)))
-		ft_dprintf(2, "%s\n", strsignal(wstatus));
+	{
+		if (wstatus == SIGSEGV)
+		{
+			ft_dprintf(2, "[%d]    %d %s  ", 1, pid, "segmentation fault (core dumped)");
+			while (av[++i])
+				ft_dprintf(2, "%s%c", av[i], av[i + 1] ? ' ' : 0);
+			write(2, "\n", 1);
+		}
+		else
+			ft_dprintf(2, "%s %d\n", strsignal(wstatus), wstatus);
+	}
 	return (wstatus);
 }
 
@@ -41,19 +55,21 @@ int			execute_child(t_exec* info, t_term* term)
 		return (errno);
 	while (waitpid(term->pid, &wstatus, 0) <= 0)
 		;
-	return (handle_wstatus(wstatus));
+	return (handle_wstatus(wstatus, term->pid, info->av));
 }
 
 bool		build_execve_args(t_exec** info, t_term* term)
 {
-
+	ft_dprintf(2, "Goes into build_execve_args\n");
 	if (!((*info)->execution_path = path_get((*info)->av[0], env_get(term->env, "PATH"))))
 		return (!(term->st = 127));
+	ft_dprintf(2, "[EXECUTION PATH][%s]\n", (*info)->execution_path);
 	if (!((*info)->ep = (char*const*)env_export(term->env)))
 	{
 		free((void*)(*info)->execution_path);
 		return (false);
 	}
+	ft_dprintf(2, "[ENV][%s]\n", *(*info)->ep);
 	return (true);
 }
 
