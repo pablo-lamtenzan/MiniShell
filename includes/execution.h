@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:51:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 03:35:23 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 04:41:36 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void					destroy_execve_args(t_exec* info);
 bool					dup_stdio(int* fds);
 bool					open_pipe_fds(t_exec** info, t_tok_t type);
 bool					close_pipe_fds(int* fds);
-int						redirections_handler(t_exec** info, t_tok_t type, const char* filename);
+int						redirections_handler(t_exec** info, t_tok_t type, t_tok* data, t_term* term);
 
 /*
 ** Execution

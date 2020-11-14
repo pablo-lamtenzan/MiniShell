@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 01:35:19 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/14 04:42:00 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ static void		get_exec(t_exec** info, t_term* term)
 
 static bool		execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
 {
-	if (redirections_handler(&info, cmd->type, (const char*)cmd->b) < 0)
-		return (false);
+	if (redirections_handler(&info, cmd->type, cmd->b, term) < 0)
+		return (ft_dprintf(2, "minish: %s: No such file or directory\n", (char*)cmd->b));
 	if (!(cmd->type & CMD) || (cmd->type & PIPE \
 			&& !(((t_bst*)cmd->a)->type & CMD)))
     	execute_cmd(cmd->a, info, term);

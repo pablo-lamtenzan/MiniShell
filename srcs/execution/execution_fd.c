@@ -6,13 +6,12 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:10:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/13 07:26:11 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 04:41:19 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
-
-#include <stdio.h>
+#include <expansion.h>
 
 bool		dup_stdio(int* fds)
 {
@@ -61,30 +60,32 @@ bool		close_pipe_fds(int* fds)
 }
 
 // to norme
-int			redirections_handler(t_exec** info, t_tok_t type, const char* filename)
+int			redirections_handler(t_exec** info, t_tok_t type, t_tok* data, t_term* term)
 {
 	static const int	umask = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 	int		tmp;
+	char*const*	expand;
 
-	if (!filename)
+	if (!data)
 		return (0);
+	expand = token_expand(data, &term->env, &(*info)->ac);
 	if (type & REDIR_GR)
 	{
-		tmp = open(filename, O_WRONLY | O_CREAT | O_TRUNC, umask);
+		tmp = open(expand[0], O_WRONLY | O_CREAT | O_TRUNC, umask);
 		if (!((*info)->handle_dup & CONST_GR))
 			(*info)->fds[1] = tmp;
 		(*info)->handle_dup |= CONST_GR;
 	}
 	else if (type & REDIR_DG)
 	{
-		tmp = open(filename, O_WRONLY | O_CREAT | O_APPEND, umask);
+		tmp = open(expand[0], O_WRONLY | O_CREAT | O_APPEND, umask);
 		if (!((*info)->handle_dup & CONST_GR))
 			(*info)->fds[1] = tmp;
 		(*info)->handle_dup |= CONST_GR;
 	}
 	else if (type & REDIR_LE)
 	{
-		tmp = open(filename, O_RDONLY);
+		tmp = open(expand[0], O_RDONLY);
 		if (!((*info)->handle_dup & CONST_LE))
 			(*info)->fds[0] = tmp;
 		(*info)->handle_dup |= CONST_LE;
