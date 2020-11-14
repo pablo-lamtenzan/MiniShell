@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 01:35:19 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/14 04:32:57 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,10 @@ static bool		execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
 	else
 	{
 		info->av = token_expand(cmd->a, &term->env, &info->ac);
+		if (!info->av)
+			return (false);
+		if (!info->av[0])
+			return (true);
 		get_exec(info, term);
 		if (info->exec)
 			term->st = info->exec(info, term);
