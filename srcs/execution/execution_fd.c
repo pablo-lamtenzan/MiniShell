@@ -6,13 +6,12 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:10:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/13 07:26:11 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 04:52:20 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
-
-#include <stdio.h>
+#include <expansion.h>
 
 bool		dup_stdio(int* fds)
 {
@@ -61,30 +60,31 @@ bool		close_pipe_fds(int* fds)
 }
 
 // to norme
-int			redirections_handler(t_exec** info, t_tok_t type, const char* filename)
+int			redirections_handler(t_exec** info, t_bst* cmd, t_term* term, char*** filename)
 {
 	static const int	umask = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 	int		tmp;
 
-	if (!filename)
+	if (!cmd->b)
 		return (0);
-	if (type & REDIR_GR)
+	*filename = (char**)token_expand(cmd->b, &term->env, &(*info)->ac);
+	if (cmd->type & REDIR_GR)
 	{
-		tmp = open(filename, O_WRONLY | O_CREAT | O_TRUNC, umask);
+		tmp = open((*filename)[0], O_WRONLY | O_CREAT | O_TRUNC, umask);
 		if (!((*info)->handle_dup & CONST_GR))
 			(*info)->fds[1] = tmp;
 		(*info)->handle_dup |= CONST_GR;
 	}
-	else if (type & REDIR_DG)
+	else if (cmd->type & REDIR_DG)
 	{
-		tmp = open(filename, O_WRONLY | O_CREAT | O_APPEND, umask);
+		tmp = open((*filename)[0], O_WRONLY | O_CREAT | O_APPEND, umask);
 		if (!((*info)->handle_dup & CONST_GR))
 			(*info)->fds[1] = tmp;
 		(*info)->handle_dup |= CONST_GR;
 	}
-	else if (type & REDIR_LE)
+	else if (cmd->type & REDIR_LE)
 	{
-		tmp = open(filename, O_RDONLY);
+		tmp = open((*filename)[0], O_RDONLY);
 		if (!((*info)->handle_dup & CONST_LE))
 			(*info)->fds[0] = tmp;
 		(*info)->handle_dup |= CONST_LE;

@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:51:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 04:32:27 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/14 04:56:00 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void					destroy_execve_args(t_exec* info);
 bool					dup_stdio(int* fds);
 bool					open_pipe_fds(t_exec** info, t_tok_t type);
 bool					close_pipe_fds(int* fds);
-int						redirections_handler(t_exec** info, t_tok_t type, const char* filename);
+int						redirections_handler(t_exec** info, t_bst* cmd, t_term* term, char*** filename);
 
 /*
 ** Execution
