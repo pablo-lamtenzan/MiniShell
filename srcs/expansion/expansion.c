@@ -1,7 +1,7 @@
 #include <expansion.h>
 
 
-char		*param_export(t_tok *param)
+char			*param_export(t_tok *param)
 {
 	t_tok		*tokens;
 	char		*result;
@@ -29,7 +29,7 @@ char		*param_export(t_tok *param)
 	return (result);
 }
 
-char *const	*token_export(t_tok *tokens, int *ac)
+char *const		*token_export(t_tok *tokens, int *ac)
 {
 	char		**av;
 	t_tok		*next;
