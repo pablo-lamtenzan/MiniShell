@@ -27,8 +27,11 @@ char	*path_get(const char *name, const char *path)
 	absolute = NULL;
 	if (name && *name)
 	{
-		if (*name == '/' && stat(name, &s) == 0 && s.st_mode & S_IXUSR)
-			absolute = ft_strdup(name);
+		if (*name == '/' || *name == '.')
+		{
+			if ((stat(name, &s) == 0 && s.st_mode & S_IXUSR))
+				absolute = ft_strdup(name);
+		}
 		else if ((paths = ft_split(path, ':')))
 		{
 			i = 0;
