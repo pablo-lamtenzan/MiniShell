@@ -1,4 +1,5 @@
 #include <execution.h>
+#include <errors.h>
 
 int	ft_unset(t_exec *args, t_term *t)
 {
@@ -15,6 +16,5 @@ int	ft_unset(t_exec *args, t_term *t)
 		//t->env = map_del(t->env, args->av[args->ac]); // this line only was the 04/11/2020
 		//glob_env = map_del(cmd->glob_env, cmd->av[cmd->ac]);
 	}
-	return (0);
-
+	return (SUCCESS);
 }

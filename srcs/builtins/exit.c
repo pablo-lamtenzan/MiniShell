@@ -6,11 +6,12 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:46 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 05:20:23 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 11:52:51 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
+#include <errors.h>
 
 int	ft_atoi_exit(const char *str, bool *st)
 {
@@ -48,13 +49,14 @@ int		ft_exit(t_exec *args, t_term *t) // TODO: Callbacks in ft_term.h
 		{
 			write(STDERR_FILENO, "exit\n", 5);
 			ft_dprintf(STDERR_FILENO, "%s\n", "minish: exit: too many arguments");
-			return (EXIT_FAILURE);
+			return (STD_ERROR);
 		}
 		i = ft_atoi_exit(args->av[1], &st);
 	}
 	term_destroy(t);
 	write(STDERR_FILENO, "exit\n", 5);
-	if (st == false && (i = 255))
+	// check if is 255
+	if (st == false && (i = INV_EXIT_ARG))
 		ft_dprintf(STDERR_FILENO, "minish: exit: %s%s\n", args->av[1],": numeric argument required");
 	tputs(t->caps.insert_end, 0, &ft_putchar);
 	// debug

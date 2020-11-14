@@ -71,6 +71,7 @@ HDRS	=		$(addprefix $(INCDIR)/,\
 					path.h\
 					signals.h\
 					process.h\
+					errors.h
 				)
 
 all:			libft $(NAME)

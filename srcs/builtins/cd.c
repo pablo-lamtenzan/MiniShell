@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 21:57:11 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/11/14 01:33:48 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/14 11:48:41 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
+#include <errors.h>
 
 // TODO: Check allocation errors on map_set
 
@@ -23,7 +24,7 @@ int		ft_cd(t_exec *args, t_term *t)
 	{
 		chdir(env_get(t->env, "HOME", 4));
 		env_set(&t->env, "PWD", env_get(t->env, "HOME", 4), true);
-		return (0);
+		return (SUCCESS);
 	}
 	else
 	{
@@ -32,7 +33,7 @@ int		ft_cd(t_exec *args, t_term *t)
 		if (path[0] == '/' && chdir(path) == 0)
 		{
 			env_set(&t->env, "PWD", path, true);
-			return (0);
+			return (SUCCESS);
 		}
 		else
 		{
@@ -44,11 +45,11 @@ int		ft_cd(t_exec *args, t_term *t)
 			{
 				getcwd(cwd, sizeof(cwd));
 				env_set(&t->env, "PWD", cwd, true);
-				return (0);
+				return (SUCCESS);
 			}
 			else
 				ft_dprintf(2, "cd: no such file or directory: %s\n", args->av[1]);
 		}
 	}
-	return (1);
+	return (STD_ERROR);
 }

@@ -6,11 +6,12 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:52 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/13 08:19:53 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 11:53:53 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
+#include <errors.h>
 
 int	print_env(int fd, t_map *env)
 {
@@ -22,7 +23,7 @@ int	print_env(int fd, t_map *env)
 			ft_printf("declare -x %s\n", env->key);
 		print_env(fd, env->next);
 	}
-	return (0);
+	return (SUCCESS);
 }
 
 int	ft_export(t_exec *args, t_term *t)
@@ -59,5 +60,5 @@ int	ft_export(t_exec *args, t_term *t)
 		;
 		}
 	}
-	return (0);
+	return (SUCCESS);
 }

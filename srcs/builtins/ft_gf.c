@@ -6,13 +6,15 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 10:01:49 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 11:57:38 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <execution.h>
 #include <unistd.h>
 #include <signal.h>
+
+#include <execution.h>
+#include <errors.h>
 
 int         ft_fg(t_exec* args, t_term* term)
 {
@@ -28,7 +30,7 @@ int         ft_fg(t_exec* args, t_term* term)
         if (!(pid = find_pid(term->suspended_processes, args->av[1])))
         {
             ft_dprintf(STDERR_FILENO, "minish: fg: %s: no such job", args->av[1]);
-            return (127);
+            return (CMD_NOT_FOUND);
         }
     }
     else
@@ -38,5 +40,5 @@ int         ft_fg(t_exec* args, t_term* term)
         free(addr);
     }
     kill(pid, SIGCONT);
-    return (0);
+    return (SUCCESS);
 }

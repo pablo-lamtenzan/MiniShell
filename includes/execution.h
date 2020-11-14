@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:51:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 07:59:56 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 11:44:25 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,6 @@
 # define AUX			2
 # define READ			1
 # define WRITE			0
-# define FILENOTFOUND	-1
-# define AMB_REDIRECT	-2
-# define FATAL_ERROR	-3
 
 typedef struct s_exec	t_exec;
 

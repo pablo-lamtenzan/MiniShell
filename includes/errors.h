@@ -1,31 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   errors.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/13 08:19:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 11:59:05 by pablo            ###   ########.fr       */
+/*   Created: 2020/11/14 11:35:08 by pablo             #+#    #+#             */
+/*   Updated: 2020/11/14 11:47:12 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <execution.h>
-#include <errors.h>
+#ifndef ERRORS_H
+# define ERRORS_H
 
-int		ft_pwd(t_exec *args, t_term *t)
-{
-	char	cwd[PATH_MAX];
+/*
+** Process return
+*/
+# define SUCCESS		0
+# define STD_ERROR		1
+# define CMD_BAD_USE	2
+# define CMD_CANT_EXEC	126
+# define CMD_NOT_FOUND  127
+# define INV_EXIT_ARG	128
+# define SIGNAL_BASE	INV_EXIT_ARG
 
-	(void) t;
+/*
+** Error redirection
+*/
+# define FILENOTFOUND	-1
+# define AMB_REDIRECT	-2
+# define FATAL_ERROR	-3
 
-	if (args->ac > 1)
-		ft_dprintf(STDERR_FILENO, "%s\n", "pwd: too many arguments");
-	else
-	{
-		if (!(getcwd(cwd, sizeof(cwd))))
-			return (STD_ERROR);
-		ft_dprintf(args->fds[1], "%s\n", cwd);
-	}
-	return (SUCCESS);
-}
+#endif

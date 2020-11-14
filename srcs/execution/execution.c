@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 10:16:56 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 11:44:12 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <builtins.h>
 #include <expansion.h>
 #include <process.h>
+#include <errors.h>
 
 static void		get_exec(t_exec* info, t_term* term)
 {

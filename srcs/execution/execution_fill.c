@@ -6,12 +6,13 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 08:30:26 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 11:43:33 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <path.h>
+#include <errors.h>
 
 int			execute_child(t_exec* info, t_term* term)
 {
@@ -39,16 +40,13 @@ int			execute_child(t_exec* info, t_term* term)
 
 bool		build_execve_args(t_exec* info, t_term* term)
 {
-	ft_dprintf(2, "Goes into build_execve_args\n");
 	if (!(info->execution_path = path_get(info->av[0], env_get(term->env, "PATH", 4))))
-		return (!(term->st = 127));
-	ft_dprintf(2, "[EXECUTION PATH][%s]\n", info->execution_path);
+		return (!(term->st = CMD_NOT_FOUND));
 	if (!(info->ep = (char*const*)env_export(term->env)))
 	{
 		free(info->execution_path);
 		return (false);
 	}
-//	ft_dprintf(2, "[ENV][%p]\n", info->ep);
 	return (true);
 }
 

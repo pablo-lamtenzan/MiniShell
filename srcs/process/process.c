@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 11:27:33 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 11:41:54 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <execution.h>
 #include <signals.h>
+#include <errors.h>
 
 static int	handle_wstatus(int wstatus, char*const* av, t_process* suspended)
 {
@@ -26,7 +27,7 @@ static int	handle_wstatus(int wstatus, char*const* av, t_process* suspended)
 	if (WIFSIGNALED(wstatus) && (wstatus = WTERMSIG(wstatus)))
 	{
 			print_signals(wstatus, (const char**)av, suspended);
-			wstatus += 128;
+			wstatus += SIGNAL_BASE;
 	}
 	return (wstatus);
 }

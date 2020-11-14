@@ -6,11 +6,12 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:20:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/13 08:20:11 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 11:49:07 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
+#include <errors.h>
 
 int	ft_echo(t_exec *args, t_term *t)
 {
@@ -32,5 +33,5 @@ int	ft_echo(t_exec *args, t_term *t)
 			: ft_dprintf(args->fds[1], "%s", args->av[arg++]);
 	}
 	!opt ? ft_dprintf(args->fds[1], "\n") : 0;
-	return (0);
+	return (SUCCESS);
 }

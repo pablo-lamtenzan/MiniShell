@@ -6,12 +6,13 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:10:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 05:18:56 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 11:44:01 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <expansion.h>
+#include <errors.h>
 
 bool		dup_stdio(int* fds)
 {
