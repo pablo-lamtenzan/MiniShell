@@ -52,10 +52,8 @@ int			execute_child(t_exec* info, t_term* term)
 
 bool		build_execve_args(t_exec* info, t_term* term)
 {
-	ft_dprintf(2, "Goes into build_execve_args\n");
 	if (!(info->execution_path = path_get(info->av[0], env_get(term->env, "PATH", 4))))
 		return (!(term->st = 127));
-	ft_dprintf(2, "[EXECUTION PATH][%s]\n", info->execution_path);
 	if (!(info->ep = (char*const*)env_export(term->env)))
 	{
 		free(info->execution_path);

@@ -25,7 +25,7 @@ char			*param_export(t_tok *param)
 		free(tokens->data);
 		free(tokens);
 	}
-	ft_dprintf(2, "[EXP][EXPORT] result: '%s'\n", result);
+//	ft_dprintf(2, "[EXP][EXPORT] result: '%s'\n", result);
 	return (result);
 }
 
@@ -58,14 +58,14 @@ static bool		var_assign(t_tok **param, t_env **env)
 	char	status;
 	t_tok	*curr;
 
-	ft_dprintf(2, "[EXP][VAR][ASSIGN] Input: '%s'\n", (*param)->data);
+//	ft_dprintf(2, "[EXP][VAR][ASSIGN] Input: '%s'\n", (*param)->data);
 	status = 1;
 	while (status == 1 && (curr = *param))
 	{
 		if ((status = env_assign(env, curr->data, false)) == 1)
 		{
 			(*param) = (*param)->next;
-			ft_dprintf(2, "[EXP][VAR][ASSIGN] assigned '%s'!\n", curr->data);
+//			ft_dprintf(2, "[EXP][VAR][ASSIGN] assigned '%s'!\n", curr->data);
 			free(curr->data);
 			free(curr);
 		}
@@ -102,40 +102,43 @@ static t_tok	*param_expand(t_tok *param, t_env *env)
 		token_clr(&expanded);
 		return (NULL);
 	}
-	ft_dprintf(2, "[NEW] for: '%s'\n", param->data);
+//	ft_dprintf(2, "[NEW] for: '%s'\n", param->data);
 	token_add_back(&expanded, token);
 	while (param)
 	{
 		data = param->data;
 		while (*(key = data))
 		{
-			while (*key && *key != ENV_OP_VAR)
+			key_len = 0;
+			while (*key
+			&& (*key != ENV_OP_VAR || !(key_len = env_key_len(key + 1))))
 				key++;
 			if (key != data)
 			{
-				ft_dprintf(2, "[EXP][PRM] simple: '%.*s'\n", (int)(key - data), data);
+//				ft_dprintf(2, "[EXP][PRM] simple: '%.*s'\n", (int)(key - data), data);
 				if (!(token = token_strndup(data, key - data, param->type)))
 				{
 					token_clr(&expanded);
 					return (NULL);
 				}
-				ft_dprintf(2, "[ADD]: '%s'\n", token->data);
+//				ft_dprintf(2, "[ADD]: '%s'\n", token->data);
 				token_add_back((t_tok**)&expanded->data, token);
 				data = key;
 			}
-			if (*key == ENV_OP_VAR && (key_len = env_key_len(++key)))
+			if (key_len)
 			{
+				key++;
 				val = env_get(env, key, key_len);
-				ft_dprintf(2, "[EXP][PRM] var: '%.*s', val: '%s'\n", (int)key_len, key, val);
-				if (!(token = token_strndup(val, ft_strlen(val), TOK_PARAM | TOK_SQUOTED)))
+//				ft_dprintf(2, "[EXP][PRM] var: '%.*s', val: '%s'\n", (int)key_len, key, val);
+				if (!(token = token_strndup(val, ft_strlen(val), TOK_PARAM)))
 				{
 					token_clr(&expanded);
 					return (NULL);
 				}
-				ft_dprintf(2, "[ADD]: '%s'\n", token->data);
+//				ft_dprintf(2, "[ADD]: '%s'\n", token->data);
 				token_add_back((t_tok**)&expanded->data, token);
 				data = key + key_len;
-				ft_dprintf(2, "[EXP][PRM] key is at: '%s'\n", key);
+//				ft_dprintf(2, "[EXP][PRM] key is at: '%s'\n", key);
 			}
 		}
 		param = param->next;
@@ -155,10 +158,10 @@ char *const		*token_expand(t_tok *cmd, t_env **env, int *ac)
 
 	*ac = 0;
 	expanded = NULL;
-	ft_dprintf(2, "[EXP] Start, cmd: %p\n", cmd);
+//	ft_dprintf(2, "[EXP] Start, cmd: %p\n", cmd);
 	while (cmd)
 	{
-		ft_dprintf(2, "[EXP][CMD] type: %hu, data: %p\n", cmd->type, cmd->data);
+//		ft_dprintf(2, "[EXP][CMD] type: %hu, data: %p\n", cmd->type, cmd->data);
 		if (cmd->type & TOK_PARAM && !(token = param_expand(cmd->data, *env)))
 		{
 			token_clr(&expanded);
