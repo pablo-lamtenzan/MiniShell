@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_fill.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 02:45:43 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 02:50:41 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,13 +60,8 @@ int			execute_child(t_exec* info, t_term* term)
 
 bool		build_execve_args(t_exec** info, t_term* term)
 {
-<<<<<<< HEAD
 	ft_dprintf(2, "Goes into build_execve_args\n");
-	if (!((*info)->execution_path = path_get((*info)->av[0], env_get(term->env, "PATH"))))
-=======
-
 	if (!((*info)->execution_path = path_get((*info)->av[0], env_get(term->env, "PATH", 4))))
->>>>>>> 708b446f09d84b7d6d62a255af6c61c80140722b
 		return (!(term->st = 127));
 	ft_dprintf(2, "[EXECUTION PATH][%s]\n", (*info)->execution_path);
 	if (!((*info)->ep = (char*const*)env_export(term->env)))
