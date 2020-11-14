@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 10:33:17 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 11:27:33 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,13 @@ size_t			suspended_process_nb(t_process* suspended)
 	return (nb - 1);
 }
 
+static			is_suspended(int wstatus)
+{
+	return (WIFSIGNALED(wstatus) && (wstatus = WTERMSIG(wstatus)) \
+			&& (wstatus == SIGSTOP || wstatus == SIGTSTP \
+			|| wstatus == SIGTTIN || wstatus == SIGTTOU));
+}
+
 bool        	wait_processes(t_term* term)
 {
     int     	i;
@@ -64,16 +71,16 @@ bool        	wait_processes(t_term* term)
     {
         while (waitpid(term->processes[i].pid, &term->processes[i].wstatus, 0) <= 0)
             ;
-		if (term->processes[i].wstatus == SIGSTOP || term->processes[i].wstatus == SIGTSTP \
-				|| term->processes[i].wstatus == SIGTTIN || term->processes[i].wstatus == SIGTTOU)
+		if (is_suspended(term->processes[i].wstatus))
 		{
 			if (!(suspended = malloc(sizeof(t_process))))
 				return (false);
-			*suspended = (t_process){.pid=term->processes[i].pid, .wstatus=term->st - 128, .data=NULL};
+			*suspended = term->processes[i];
+			suspended->data = NULL;
 			if (term->suspended_processes)
 				process_push_back(&term->suspended_processes, suspended);
 		}
-        term->st = handle_wstatus(&term->processes[i].wstatus, (char*const*)&term->processes[i].data, term->suspended_processes);
+        term->st = handle_wstatus(&term->processes[i].wstatus, (char*const*)term->processes[i].data, term->suspended_processes);
     }
 	return (true);
-rt
+}

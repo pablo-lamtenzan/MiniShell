@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 10:26:39 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 11:18:26 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,9 +98,9 @@ static t_signal_print	get_40_to_60(size_t index)
 static t_signal_print	get_20_to_40(size_t index)
 {
 	static const t_signal_print	signals_print[20] = {
-		{.printed=true, .endline="\n", .process_nb=1, .plus="+", \
+		{.printed=true, .endline="\n", .process_nb=1, .plus=true, \
 				.message="Stopped", .has_args=true},
-		{.printed=true, .endline="\n", .process_nb=1, .plus="+", \
+		{.printed=true, .endline="\n", .process_nb=1, .plus=true, \
 				.message="Stopped", .has_args=true}, {},
 		{.printed=true, .message="CPU time limit exceeded", .message_aux=CORE},
 		{.printed=true, .message="File size limit exceeded", .message_aux=CORE},
@@ -138,9 +138,9 @@ t_signal_print	get_signal_print(size_t index)
 		{.printed=true, .message="Alarm clock"},
 		{.printed=true, .message="Terminated"},
 		{.printed=true, .message="Stack fault"}, {}, {},
-		{.printed=true, .process_nb=1, .plus="+", .message="Stopped", \
+		{.printed=true, .process_nb=1, .plus=true, .message="Stopped", \
 				.has_args=true},
-		{.printed=true, .endline="\n", .process_nb=1, .plus="+", \
+		{.printed=true, .endline="\n", .process_nb=1, .plus=true, \
 				.message="Stopped", .has_args=true}
 	};
 	return (index <= 20 ? signals_print[index - 1] : get_20_to_40(index - 20));
@@ -152,14 +152,16 @@ void	print_signals(int wsignal_index, const char** args, t_process* suspended)
 {
 	int	i;
 	const t_signal_print signal = get_signal_print(wsignal_index);
+	void*	addr;
 
 	i = -1;
+	addr = NULL;
 	if (!signal.printed)
 		return ;
 	ft_dprintf(STDERR_FILENO, "%s%s%s%s%s%s%s%s%s", \
 			signal.endline ? signal.endline : "", \
 			signal.process_nb ? "[" : "", \
-			signal.process_nb ? ft_itoa(suspended_process_nb(suspended)) : "", \
+			signal.process_nb ? (addr = ft_itoa(suspended_process_nb(suspended))) : "", \
 			signal.process_nb ? "]" : "", \
 			signal.plus ? "+  " : "", \
 			signal.message , \
@@ -171,4 +173,5 @@ void	print_signals(int wsignal_index, const char** args, t_process* suspended)
 		while (args && args[++i])
 			ft_dprintf(STDERR_FILENO, "%s%s", args[i], args[i + 1] ? " " : "");
 	write(STDERR_FILENO, "\n", 1);
+	free(addr);
 }

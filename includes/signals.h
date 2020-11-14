@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 03:28:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 10:28:51 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 11:17:49 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ typedef struct      s_signal_print
     bool            printed;
     const char*     endline;
     unsigned int    process_nb;
-    const char*     plus;
+    bool            plus;
     const char*     message;
     const char*     message_aux;
     bool    		has_args;
