@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:46 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/13 21:17:00 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 05:20:23 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,19 +46,19 @@ int		ft_exit(t_exec *args, t_term *t) // TODO: Callbacks in ft_term.h
 				st = false;
 		if (st == true && args->ac > 2)
 		{
-			write(2, "exit\n", 5);
-			ft_dprintf(2, "%s\n", "minish: exit: too many arguments");
+			write(STDERR_FILENO, "exit\n", 5);
+			ft_dprintf(STDERR_FILENO, "%s\n", "minish: exit: too many arguments");
 			return (EXIT_FAILURE);
 		}
 		i = ft_atoi_exit(args->av[1], &st);
 	}
 	term_destroy(t);
-	write(2, "exit\n", 5);
+	write(STDERR_FILENO, "exit\n", 5);
 	if (st == false && (i = 255))
-		ft_dprintf(2, "minish: exit: %s%s\n", args->av[1],": numeric argument required");
+		ft_dprintf(STDERR_FILENO, "minish: exit: %s%s\n", args->av[1],": numeric argument required");
 	tputs(t->caps.insert_end, 0, &ft_putchar);
 	// debug
-	ft_dprintf(2, "exiting with status code %d", (unsigned char)i);
+	ft_dprintf(STDERR_FILENO, "exiting with status code %d", (unsigned char)i);
 	exit((unsigned char)i);
 	return ((unsigned char)i);
 }

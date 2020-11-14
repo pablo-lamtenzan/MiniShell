@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/13 08:19:56 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 05:21:56 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int		ft_pwd(t_exec *args, t_term *t)
 	(void) t;
 
 	if (args->ac > 1)
-		ft_dprintf(2, "%s\n", "pwd: too many arguments");
+		ft_dprintf(STDERR_FILENO, "%s\n", "pwd: too many arguments");
 	else
 	{
 		if (!(getcwd(cwd, sizeof(cwd))))

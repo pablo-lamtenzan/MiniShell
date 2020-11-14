@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 03:59:12 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 05:38:01 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,10 @@ int     	handle_wstatus(int wstatus, char*const* av)
 	if (WIFEXITED(wstatus))
 		return (WEXITSTATUS(wstatus));
 	if (WIFSIGNALED(wstatus) && (wstatus = WTERMSIG(wstatus)))
+	{
 			print_signals(wstatus, (const char**)av);
+			wstatus += 128;
+	}
 	return (wstatus);
 }
 
@@ -36,7 +39,7 @@ int			execute_child(t_exec* info, t_term* term)
 		if (dup_stdio(info->fds))
 		{
 			wstatus = execve(info->execution_path, info->av, info->ep);
-			ft_dprintf(2, "%s: %s: execve returned '%d'!\n", term->name, info->av[0], wstatus);
+			ft_dprintf(STDERR_FILENO, "%s: %s: execve returned '%d'!\n", term->name, info->av[0], wstatus);
 		}
 		exit(EXIT_FAILURE);
 	}
