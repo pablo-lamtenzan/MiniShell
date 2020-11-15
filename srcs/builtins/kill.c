@@ -127,7 +127,8 @@ int     	ft_kill(t_exec* args, t_term* term)
 			;
 		if (WIFEXITED(signal))
 			remove_suspended_process(get_process(pid, term->suspended_processes));
-		update_used_pids(pid, &term->used_pids);
+		else
+			update_used_pids(pid, &term->used_pids);
 	}
 	ft_dprintf(STDERR_FILENO, "%s\n", "bash: kill: COT: invalid signal specification");
 	return (STD_ERROR);

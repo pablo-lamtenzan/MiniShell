@@ -6,10 +6,11 @@
 
 int main()
 {
-    int ret = close(-1);
-    /*int pid = getpid();
+    int pid = getpid();
     dprintf(2, "%d\n", pid);
     kill(pid, SIGSTOP);
-    dprintf(2, "TEST\n");*/
+    dprintf(2, "TEST\n");
+    kill(pid, SIGSTOP);
+    dprintf(2, "TEST2\n");
     return (0);
 }

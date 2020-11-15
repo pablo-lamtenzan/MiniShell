@@ -42,6 +42,9 @@
 // SIGHUP dans le term -> pour chaque process (actif ou stoppe) SIGHUP -> ensuite pour chauqe process stoppe SIGCONT -> ensuite exit
 // Cat ; ctrl + z -> SIGSTPT -> if (signal stoped and read or writes) -> all group process recives SIGTTIN
 	// to handle groups create a node each new bst of all the process
+// Change suspended_processes by active_processes ??
+
+// NEW IDEA: process.h: t_systhem
 
 */
 
