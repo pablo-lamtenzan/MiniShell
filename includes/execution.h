@@ -43,7 +43,7 @@
 
 typedef struct s_exec	t_exec;
 
-typedef t_exec_status	(*t_executable)(t_exec *args, t_term *term);
+typedef int	(*t_executable)(t_exec *args, t_term *term);
 
 typedef struct			s_exec
 {
@@ -67,7 +67,7 @@ bool					temporally_expansion(t_tok* args, char*** av, t_term* term);
 /*
 ** Exectution fill
 */
-t_exec_status			execute_child(t_exec* info, t_term* term);
+int						execute_child(t_exec* info, t_term* term);
 t_exec_status			build_execve_args(t_exec* info, t_term* term);
 void					destroy_execve_args(t_exec* info);
 

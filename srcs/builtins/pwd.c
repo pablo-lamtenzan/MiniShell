@@ -12,7 +12,7 @@
 
 #include <execution.h>
 
-t_exec_status		ft_pwd(t_exec *args, t_term *t)
+int		ft_pwd(t_exec *args, t_term *t)
 {
 	char			cwd[PATH_MAX];
 

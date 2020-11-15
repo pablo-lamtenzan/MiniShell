@@ -24,7 +24,7 @@ static bool			find_pid(t_process* suspended, char* pid)
     return (false);
 }
 
-t_exec_status		ft_fg(t_exec* args, t_term* term)
+int		ft_fg(t_exec* args, t_term* term)
 {
     pid_t			pid;
     void*			addr;

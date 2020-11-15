@@ -14,7 +14,7 @@
 
 // TODO: Check allocation errors on map_set
 
-t_exec_status	ft_cd(t_exec *args, t_term *t)
+int	ft_cd(t_exec *args, t_term *t)
 {
 	char		path[PATH_MAX];
 	char		cwd[PATH_MAX];

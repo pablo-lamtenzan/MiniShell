@@ -21,7 +21,7 @@ void			env_print(int fd, t_map *env)
 	}
 }
 
-t_exec_status	ft_env(t_exec *args, t_term *t)
+int	ft_env(t_exec *args, t_term *t)
 {
 	t_env* 		curr;
 

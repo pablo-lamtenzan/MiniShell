@@ -25,7 +25,7 @@ int				print_env(int fd, t_map *env)
 	return (SUCCESS);
 }
 
-t_exec_status	ft_export(t_exec *args, t_term *t)
+int	ft_export(t_exec *args, t_term *t)
 {
 	t_map	*var;
 	(void)var;

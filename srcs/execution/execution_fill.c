@@ -15,7 +15,7 @@
 #include <errors.h>
 #include <errno.h>
 
-t_exec_status		execute_child(t_exec* info, t_term* term)
+int		execute_child(t_exec* info, t_term* term)
 {
 	int				wstatus;
 	t_exec_status	st;
@@ -32,15 +32,12 @@ t_exec_status		execute_child(t_exec* info, t_term* term)
 		exit(EXIT_FAILURE);
 	}
 	else if (term->processes[term->processes[MANAGE].pid].pid < 0)
-	{
-		perror("fork:");
-		return (BAD_FORK);
-	}
+		return (errno);
 	//while (waitpid(term->pid, &wstatus, 0) <= 0)
 	//	;
 	//return (handle_wstatus(wstatus, info->av));
 	term->processes[term->processes[MANAGE].pid].wstatus = wstatus;
-	return (SUCCESS);
+	return (wstatus);
 }
 
 t_exec_status		build_execve_args(t_exec* info, t_term* term)

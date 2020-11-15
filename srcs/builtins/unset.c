@@ -1,6 +1,6 @@
 #include <execution.h>
 
-t_exec_status	ft_unset(t_exec *args, t_term *t)
+int	ft_unset(t_exec *args, t_term *t)
 {
 	// TODO: glob env
 	(void)t;

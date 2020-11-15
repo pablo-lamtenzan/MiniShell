@@ -13,15 +13,17 @@
 #ifndef ERRORS_H
 # define ERRORS_H
 
+# define STD_ERROR		1
+# define CMD_BAD_USE	2
+# define CMD_CANT_EXEC	126
+# define CMD_NOT_FOUND	127
+# define INV_EXIT_ARG	128
+# define SIGNAL_BASE	128
+
+
 typedef enum			e_exec_status
 {
 	SUCCESS				= 0,
-	STD_ERROR			= 1,
-	CMD_BAD_USE			= 2,
-	CMD_CANT_EXEC		= 126,
-	CMD_NOT_FOUND		= 127,
-	INV_EXIT_ARG		= 128,
-	SIGNAL_BASE			= 128,
 	BAD_ALLOC			= SIGNAL_BASE + SIGABRT,
 	BAD_CLOSE			= 222, // to define
 	BAD_PIPE			= 222, // to define
