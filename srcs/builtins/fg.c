@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_gf.c                                            :+:      :+:    :+:   */
+/*   fg.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 12:34:01 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/15 11:47:42 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,14 +55,10 @@ int		ft_fg(t_exec* args, t_term* term)
             return (STD_ERROR);
         }
     }
+    kill(pid, SIGCONT);
     while (waitpid(pid, &term->suspended_processes->wstatus, 0) <= 0)
         ;
     if (!is_suspended(term->suspended_processes->wstatus))
-    {
-        addr = term->suspended_processes;
-        term->suspended_processes = term->suspended_processes->data;
-        free(addr);
-    }
-    kill(pid, SIGCONT);
+        remove_suspended_process(&term->suspended_processes);
     return (SUCCESS);
 }

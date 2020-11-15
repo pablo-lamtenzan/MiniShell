@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 13:02:38 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/15 11:59:05 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@
 // add: in term t_process* suspended_processes and init to NULL
 // change: in the type of st by t_exec_status
 // perror for fork
+// add resume_suspended_resumes before all the exit calls
+
 
 */
 
@@ -71,6 +73,7 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 	};
 	ft_dprintf(STD_ERROR, error_msg[exec_st], exit_return[exec_st]);
 	free_bst(root);
+	resume_suspended_processes(&term->suspended_processes);
 	term_destroy(term);
 	tputs(term->caps.insert_end, 0, &ft_putchar);
 	write(STDERR_FILENO, "exit\n", 5);

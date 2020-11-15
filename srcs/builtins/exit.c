@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:46 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 11:52:51 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/15 11:57:36 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ int		ft_exit(t_exec *args, t_term *t) // TODO: Callbacks in ft_term.h
 		}
 		i = ft_atoi_exit(args->av[1], &st);
 	}
+	resume_suspended_processes(&t->suspended_processes);
 	term_destroy(t);
 	write(STDERR_FILENO, "exit\n", 5);
 	// check if is 255

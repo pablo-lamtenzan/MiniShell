@@ -40,6 +40,7 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 						print_signals.c\
 					)\
 					$(addprefix process/,\
+						resume_suspended_processes.c\
 						process.c\
 					)\
 					$(addprefix main/,\
