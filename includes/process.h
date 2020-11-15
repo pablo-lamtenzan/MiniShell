@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/15 11:56:54 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/15 13:29:36 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,9 @@ typedef struct 			s_process
 {
 	pid_t				pid;
     unsigned char       wstatus;
-	void*				data;
+	char*const*			data;
+	struct s_process*	next;
+	struct s_process*	prev;
 }						t_process;
 
 t_exec_status        	wait_processes(t_term* term, t_exec_status st);

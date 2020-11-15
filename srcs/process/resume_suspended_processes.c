@@ -6,22 +6,44 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 11:29:48 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/15 11:56:08 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/15 13:25:20 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <signal.h>
 
+size_t			suspended_process_nb(t_process* suspended)
+{
+	size_t		nb;
+
+	nb = 1;
+	while (suspended && (suspended++))
+		suspended = suspended->next;
+	return (nb - 1);
+}
+
+bool			is_suspended(int wstatus)
+{
+	return (WIFSIGNALED(wstatus) && (wstatus = WTERMSIG(wstatus)) \
+			&& (wstatus == SIGSTOP || wstatus == SIGTSTP \
+			|| wstatus == SIGTTIN || wstatus == SIGTTOU));
+}
+
 void            remove_suspended_process(t_process** suspended)
 {
     t_process*  cp;
+	t_process*	last;
 
     if (*suspended)
         return ;
     cp = *suspended;
-    *suspended = (t_process*)(*suspended)->data;
+	last = (*suspended)->prev;
+    *suspended = (*suspended)->next;
+	if (last)
+		last->next = *suspended;
     free(cp);
+	cp = NULL;
 }
 
 void                resume_suspended_processes(t_process** suspended)
@@ -37,7 +59,7 @@ void                resume_suspended_processes(t_process** suspended)
 		if (!is_suspended((*suspended)->wstatus))
 		{
 			remove_suspended_process(suspended);
-			*suspended = (t_process*)(*suspended)->data;
+			*suspended = (*suspended)->next;
 		}
     }
 }

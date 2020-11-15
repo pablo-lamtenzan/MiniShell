@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/15 11:59:05 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/15 13:31:06 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,9 @@
 - bash: $a: ambiguous redirect -> 1
 - bash:	filename: File name too long -> redirect to a long filename -> 1
 
-// add: in term t_process processes[MAX_PROCESSES + 1] and init processes[0] = 1
+// add: in term t_process processes[MAX_PROCESSES + 1] and init processes[0] = 1, next, prev = NULL
 // add: in term t_process* suspended_processes and init to NULL
-// change: in the type of st by t_exec_status
 // perror for fork
-// add resume_suspended_resumes before all the exit calls
-
 
 */
 

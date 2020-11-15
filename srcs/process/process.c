@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 13:26:48 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/15 13:03:49 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ static int	handle_wstatus(int wstatus, char*const* av, t_process* suspended)
 	return (wstatus + SIGNAL_BASE);
 }
 
-static void		process_push_back(t_process** root, t_process* n)
+/*
+static void		process_push_back(t_process** root, t_process* n) // unused
 {
 	t_process*	tmp;
 
@@ -38,6 +39,7 @@ static void		process_push_back(t_process** root, t_process* n)
 		tmp = (t_process*)tmp->data;
 	tmp->data = n;
 }
+*/
 
 static void		process_push_front(t_process** root, t_process* n)
 {
@@ -45,27 +47,9 @@ static void		process_push_front(t_process** root, t_process* n)
 
 	tmp = *root;
 	*root = n;
-	(*root)->data =  tmp;
-}
-
-// use for print signals
-size_t			suspended_process_nb(t_process* suspended)
-{
-	t_process*	tmp;
-	size_t		nb;
-
-	tmp = suspended;
-	nb = 1;
-	while (tmp && (nb++))
-		tmp = (t_process*)tmp->data;
-	return (nb - 1);
-}
-
-bool			is_suspended(int wstatus)
-{
-	return (WIFSIGNALED(wstatus) && (wstatus = WTERMSIG(wstatus)) \
-			&& (wstatus == SIGSTOP || wstatus == SIGTSTP \
-			|| wstatus == SIGTTIN || wstatus == SIGTTOU));
+	(*root)->next = tmp;
+	if (tmp)
+		tmp->prev = *root;
 }
 
 t_exec_status	wait_processes(t_term* term, t_exec_status st)
@@ -83,7 +67,6 @@ t_exec_status	wait_processes(t_term* term, t_exec_status st)
 			if (!(suspended = malloc(sizeof(t_process))))
 				return (BAD_ALLOC);
 			*suspended = term->processes[i];
-			suspended->data = NULL;
 			if (term->suspended_processes)
 				process_push_front(&term->suspended_processes, suspended);
 		}
