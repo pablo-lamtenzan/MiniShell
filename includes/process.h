@@ -26,7 +26,8 @@ typedef struct 			s_process
 	void*				data;
 }						t_process;
 
-bool        			wait_processes(t_term* term);
-size_t					suspended_process_nb(t_process* suspended);;
+t_exec_status        	wait_processes(t_term* term, t_exec_status st);
+size_t					suspended_process_nb(t_process* suspended);
+bool					is_suspended(int wstatus);
 
 #endif

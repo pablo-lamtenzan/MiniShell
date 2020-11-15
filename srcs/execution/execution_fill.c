@@ -13,41 +13,49 @@
 #include <execution.h>
 #include <path.h>
 #include <errors.h>
+#include <errno.h>
 
-int			execute_child(t_exec* info, t_term* term)
+t_exec_status		execute_child(t_exec* info, t_term* term)
 {
-	int		wstatus;
+	int				wstatus;
+	t_exec_status	st;
 
 	if (!(term->processes[term->processes[MANAGE].pid].pid = fork()))
 	{
 		// overwrite last process if execed max for the moment
 		term->processes[MANAGE].pid += term->processes[MANAGE].pid > PROCESSES_MAX ? 0 : 1;
 		term->processes[term->processes[MANAGE].pid].data = info->av;
-		if (dup_stdio(info->fds))
-		{
-			wstatus = execve(info->execution_path, info->av, info->ep);
-			ft_dprintf(STDERR_FILENO, "%s: %s: execve returned '%d'!\n", term->name, info->av[0], wstatus);
-		}
+		if ((st = dup_stdio(info->fds)) != SUCCESS)
+			return (st);
+		wstatus = execve(info->execution_path, info->av, info->ep);
+		ft_dprintf(STDERR_FILENO, "%s: %s: execve returned '%d'!\n", term->name, info->av[0], wstatus);
 		exit(EXIT_FAILURE);
 	}
 	else if (term->processes[term->processes[MANAGE].pid].pid < 0)
-		return (errno);
+	{
+		perror("fork:");
+		return (BAD_FORK);
+	}
 	//while (waitpid(term->pid, &wstatus, 0) <= 0)
 	//	;
 	//return (handle_wstatus(wstatus, info->av));
-	return (term->processes[term->processes[MANAGE].pid].wstatus = wstatus);
+	term->processes[term->processes[MANAGE].pid].wstatus = wstatus;
+	return (SUCCESS);
 }
 
-bool		build_execve_args(t_exec* info, t_term* term)
+t_exec_status		build_execve_args(t_exec* info, t_term* term)
 {
 	if (!(info->execution_path = path_get(info->av[0], env_get(term->env, "PATH", 4))))
-		return (!(term->st = CMD_NOT_FOUND));
+	{
+		term->st = CMD_NOT_FOUND;
+		return (SUCCESS);
+	}
 	if (!(info->ep = (char*const*)env_export(term->env)))
 	{
 		free(info->execution_path);
-		return (false);
+		return (BAD_ALLOC);
 	}
-	return (true);
+	return (SUCCESS);
 }
 
 void		destroy_execve_args(t_exec *info)

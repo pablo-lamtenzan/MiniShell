@@ -14,18 +14,23 @@
 #include <expansion.h>
 #include <errors.h>
 
-bool		dup_stdio(int* fds)
+t_exec_status		dup_stdio(int* fds)
 {
 	int		i;
 
 	i = -1;
 	while (++i < 2)
-		if (fds[i] != i && (dup2(fds[i], i) < 0 || close(fds[i]) < 0))
-			return (false);
-	return (true);
+		if (fds[i] != i)
+		{
+			if (dup2(fds[i], i) < 0)
+				return (BAD_DUP2);
+			if (close(fds[i]) < 0)
+				return (BAD_CLOSE);
+		}
+	return (SUCCESS);
 }
 
-bool		open_pipe_fds(t_exec** info, t_tok_t type)
+t_exec_status		open_pipe_fds(t_exec** info, t_tok_t type)
 {
 	bool	update;
 	int		pipe_fds[2];
@@ -42,62 +47,20 @@ bool		open_pipe_fds(t_exec** info, t_tok_t type)
 	if (!update)
 	{
 		if (pipe(pipe_fds) < 0)
-			return (false);
+			return (BAD_PIPE);
 		(*info)->fds[STDOUT] = pipe_fds[READ];
 		(*info)->fds[AUX] = pipe_fds[WRITE];
 	}
-	return (true);
+	return (SUCCESS);
 }
 
-bool		close_pipe_fds(int* fds)
+t_exec_status		close_pipe_fds(int* fds)
 {
 	int		i;
 
 	i = -1;
 	while (++i < 2)
 		if (fds[i] != i && close(fds[i]) < 0)
-			return (false);
-	return (true);
-}
-
-// to norme
-int			redirections_handler(t_exec** info, t_bst* cmd, t_term* term, char*** filename)
-{
-	static const int	umask = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
-	int		tmp;
-
-	if (!cmd->b)
-		return (0);
-	*filename = (char**)token_expand(cmd->b, &term->env, &(*info)->ac);
-	if (!*filename)
-		return (FATAL_ERROR);
-	if (matrix_height(*filename) > 1)
-	{
-		(*filename)[0] = ((t_tok*)cmd->b)->data;
-		return (AMB_REDIRECT);
-	}
-	if (cmd->type & REDIR_GR)
-	{
-		tmp = open((*filename)[0], O_WRONLY | O_CREAT | O_TRUNC, umask);
-		if (!((*info)->handle_dup & CONST_GR))
-			(*info)->fds[1] = tmp;
-		(*info)->handle_dup |= CONST_GR;
-	}
-	else if (cmd->type & REDIR_DG)
-	{
-		tmp = open((*filename)[0], O_WRONLY | O_CREAT | O_APPEND, umask);
-		if (!((*info)->handle_dup & CONST_GR))
-			(*info)->fds[1] = tmp;
-		(*info)->handle_dup |= CONST_GR;
-	}
-	else if (cmd->type & REDIR_LE)
-	{
-		tmp = open((*filename)[0], O_RDONLY);
-		if (!((*info)->handle_dup & CONST_LE))
-			(*info)->fds[0] = tmp;
-		(*info)->handle_dup |= CONST_LE;
-	}
-	else
-		return (0);
-	return (((*info)->fds[0] | (*info)->fds[1]) >= 0 ? 1 : FILENOTFOUND);
+			return (BAD_CLOSE);
+	return (SUCCESS);
 }

@@ -24,6 +24,7 @@
 # include <libft.h>
 # include <term/term.h>
 # include <bst.h>
+# include <errors.h>
 
 /*
 ** multiple redirections handler
@@ -42,7 +43,7 @@
 
 typedef struct s_exec	t_exec;
 
-typedef int				(*t_executable)(t_exec *args, t_term *term);
+typedef t_exec_status	(*t_executable)(t_exec *args, t_term *term);
 
 typedef struct			s_exec
 {
@@ -66,22 +67,27 @@ bool					temporally_expansion(t_tok* args, char*** av, t_term* term);
 /*
 ** Exectution fill
 */
-int						execute_child(t_exec* info, t_term* term);
-bool					build_execve_args(t_exec* info, t_term* term);
+t_exec_status			execute_child(t_exec* info, t_term* term);
+t_exec_status			build_execve_args(t_exec* info, t_term* term);
 void					destroy_execve_args(t_exec* info);
 
 /*
 ** Execution fd
 */
-bool					dup_stdio(int* fds);
-bool					open_pipe_fds(t_exec** info, t_tok_t type);
-bool					close_pipe_fds(int* fds);
-int						redirections_handler(t_exec** info, t_bst* cmd, t_term* term, char*** filename);
+t_exec_status			dup_stdio(int* fds);
+t_exec_status			open_pipe_fds(t_exec** info, t_tok_t type);
+t_exec_status			close_pipe_fds(int* fds);
+t_redir_status			redirections_handler(t_exec** info, t_bst* cmd, t_term* term, char*** filename);
+
+/*
+** Redirections
+*/
+t_exec_status			print_redirection_error(t_redir_status rstatus, char*const* filename, t_term* term);
 
 /*
 ** Execution
 */
-bool					execute_bst(t_bst* root, t_term* term);
+t_exec_status			execute_bst(t_bst* root, t_term* term);
 
 /*
 ** Separators

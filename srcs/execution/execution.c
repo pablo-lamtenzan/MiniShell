@@ -30,72 +30,64 @@ static void		get_exec(t_exec* info, t_term* term)
 		i++;
 	if (i < 7)
 		info->exec = builtins[i];
-	else if (build_execve_args(info, term))
+	else if (build_execve_args(info, term) == SUCCESS)
 		info->exec = &execute_child;
 }
 
-static bool		execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
+static t_exec_status	execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
 {
-	char**		filename;
-	int			redir_st;
+	char**				filename;
+	t_redir_status		redir_st;
 
-	if ((redir_st = redirections_handler(&info, cmd, term, &filename)) == FILENOTFOUND)
-		return (ft_dprintf(STDERR_FILENO, "minish: %s: No such file or directory\n", filename[0]));
-	else if (redir_st == AMB_REDIRECT)
-		return (ft_dprintf(STDERR_FILENO, "minish: %s: ambigous redirect\n", filename[0]));
-	else if (redir_st == FATAL_ERROR)
-		return (false);
+	if ((redir_st = redirections_handler(&info, cmd, term, &filename)) != CONTINUE)
+		return (print_redirection_error(redir_st, *filename, term));
 	if (!(cmd->type & CMD) || (cmd->type & PIPE \
 			&& !(((t_bst*)cmd->a)->type & CMD)))
     	execute_cmd(cmd->a, info, term);
 	else
 	{
-		info->av = token_expand(cmd->a, &term->env, &info->ac);
-		if (!info->av)
-			return (false);
+		if (!(info->av = token_expand(cmd->a, &term->env, &info->ac)));
+			return (BAD_ALLOC);
 		if (!info->av[0])
-			return (true);
+			return (SUCCESS);
 		get_exec(info, term);
 		if (info->exec)
 			term->st = info->exec(info, term);
 		else
 			destroy_execve_args(info);
 		info->exec = NULL;
-		if (!close_pipe_fds(info->fds))
-			return (false);
+		if (close_pipe_fds(info->fds) != SUCCESS)
+			return (BAD_CLOSE);// return error code (could not BAD_CLOSE to define later)
 	}
-	return (true);
+	return (SUCCESS);
 }
 
-static bool		execute_job(t_bst* job, t_exec* info, t_term* term)
+static t_exec_status	execute_job(t_bst* job, t_exec* info, t_term* term)
 {
-	bool		success;
+	t_exec_status		st;
 
-	success = true;
 	info->handle_dup = NONE;
-	if (!open_pipe_fds(&info, job->b ? job->type : 0))
-		return (false);
+	if (open_pipe_fds(&info, job->b ? job->type : 0) != SUCCESS)
+		return (BAD_PIPE);
 	if (!(job->type & (CMD | REDIR_DG | REDIR_GR | REDIR_LE)))
-    	success &= execute_cmd(job->a, info, term);
-    if (job->b && job->type & PIPE)
-        success &= execute_job(job->b, info, term);
-	else
-		success &= execute_cmd(job, info, term);
-	return (success);
+    	st = execute_cmd(job->a, info, term);
+    if (st == SUCCESS && job->b && job->type & PIPE)
+        st = execute_job(job->b, info, term);
+	else if (st == SUCCESS) // can i put this else in the second "if" as a ternary ?
+		st = execute_cmd(job, info, term);
+	return (st);
 }
 
-bool			execute_bst(t_bst* root, t_term* term)
+t_exec_status			execute_bst(t_bst* root, t_term* term)
 {
-	t_exec		info;
+	t_exec				info;
+	t_exec_status		st;
 
-	bool		sucess;
-
-	sucess = true;
 	ft_bzero(&info, sizeof(t_exec));
 	info = (t_exec){.fds[STDOUT]=STDOUT, .fds[AUX]=AUX};
 	if (root->type & PIPE)
-		sucess &= execute_job(root, &info, term);
+		st = execute_job(root, &info, term);
 	else
-		sucess &= execute_cmd(root, &info, term);
-	return (sucess & wait_processes(term));
+		st = execute_cmd(root, &info, term);
+	return (wait_processes(term, st));
 }

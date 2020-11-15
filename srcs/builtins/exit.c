@@ -11,9 +11,8 @@
 /* ************************************************************************** */
 
 #include <execution.h>
-#include <errors.h>
 
-int	ft_atoi_exit(const char *str, bool *st)
+int					ft_atoi_exit(const char *str, bool *st)
 {
 	char			factor;
 	unsigned long	max;
@@ -32,7 +31,7 @@ int	ft_atoi_exit(const char *str, bool *st)
 	return (!st ? 255 : i * factor);
 }
 
-int		ft_exit(t_exec *args, t_term *t) // TODO: Callbacks in ft_term.h
+t_exec_status		ft_exit(t_exec *args, t_term *t) // TODO: Callbacks in ft_term.h
 {
 	int i;
 	bool st;

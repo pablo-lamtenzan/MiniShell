@@ -11,12 +11,11 @@
 /* ************************************************************************** */
 
 #include <execution.h>
-#include <errors.h>
 
-int	ft_echo(t_exec *args, t_term *t)
+t_exec_status	ft_echo(t_exec *args, t_term *t)
 {
-	char	opt;
-	short	arg;
+	char		opt;
+	short		arg;
 
 	(void) t;
 	arg = 1;

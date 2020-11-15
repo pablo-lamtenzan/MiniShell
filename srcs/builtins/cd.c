@@ -11,14 +11,13 @@
 /* ************************************************************************** */
 
 #include <execution.h>
-#include <errors.h>
 
 // TODO: Check allocation errors on map_set
 
-int		ft_cd(t_exec *args, t_term *t)
+t_exec_status	ft_cd(t_exec *args, t_term *t)
 {
-	char	path[PATH_MAX];
-	char	cwd[PATH_MAX];
+	char		path[PATH_MAX];
+	char		cwd[PATH_MAX];
 
 	if (args->ac == 1)
 	{

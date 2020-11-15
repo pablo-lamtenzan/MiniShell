@@ -26,6 +26,7 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 					$(addprefix execution/,\
 						execution_fd.c\
 						execution_fill.c\
+						redirection.c\
 						execution.c\
 					)\
 					$(addprefix expansion/,\

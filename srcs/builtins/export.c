@@ -11,9 +11,8 @@
 /* ************************************************************************** */
 
 #include <execution.h>
-#include <errors.h>
 
-int	print_env(int fd, t_map *env)
+int				print_env(int fd, t_map *env)
 {
 	if (env)
 	{
@@ -26,7 +25,7 @@ int	print_env(int fd, t_map *env)
 	return (SUCCESS);
 }
 
-int	ft_export(t_exec *args, t_term *t)
+t_exec_status	ft_export(t_exec *args, t_term *t)
 {
 	t_map	*var;
 	(void)var;

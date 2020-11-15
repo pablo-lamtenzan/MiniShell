@@ -11,9 +11,8 @@
 /* ************************************************************************** */
 
 #include <execution.h>
-#include <errors.h>
 
-void	env_print(int fd, t_map *env)
+void			env_print(int fd, t_map *env)
 {
 	if (env)
 	{
@@ -22,9 +21,9 @@ void	env_print(int fd, t_map *env)
 	}
 }
 
-int		ft_env(t_exec *args, t_term *t)
+t_exec_status	ft_env(t_exec *args, t_term *t)
 {
-	t_env* curr;
+	t_env* 		curr;
 
 	curr = t->env;
 	(void) args;

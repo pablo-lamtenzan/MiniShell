@@ -11,11 +11,10 @@
 /* ************************************************************************** */
 
 #include <execution.h>
-#include <errors.h>
 
-int		ft_pwd(t_exec *args, t_term *t)
+t_exec_status		ft_pwd(t_exec *args, t_term *t)
 {
-	char	cwd[PATH_MAX];
+	char			cwd[PATH_MAX];
 
 	(void) t;
 

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 12:18:10 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 13:26:48 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,8 @@ static int	handle_wstatus(int wstatus, char*const* av, t_process* suspended)
 	if (WIFEXITED(wstatus))
 		return (WEXITSTATUS(wstatus));
 	if (WIFSIGNALED(wstatus) && (wstatus = WTERMSIG(wstatus)))
-	{
-			print_signals(wstatus, (const char**)av, suspended);
-			wstatus += SIGNAL_BASE;
-	}
-	return (wstatus);
+		print_signals(wstatus, (const char**)av, suspended);
+	return (wstatus + SIGNAL_BASE);
 }
 
 static void		process_push_back(t_process** root, t_process* n)
@@ -40,6 +37,15 @@ static void		process_push_back(t_process** root, t_process* n)
 	while (tmp->data)
 		tmp = (t_process*)tmp->data;
 	tmp->data = n;
+}
+
+static void		process_push_front(t_process** root, t_process* n)
+{
+	t_process*	tmp;
+
+	tmp = *root;
+	*root = n;
+	(*root)->data =  tmp;
 }
 
 // use for print signals
@@ -55,16 +61,16 @@ size_t			suspended_process_nb(t_process* suspended)
 	return (nb - 1);
 }
 
-static			is_suspended(int wstatus)
+bool			is_suspended(int wstatus)
 {
 	return (WIFSIGNALED(wstatus) && (wstatus = WTERMSIG(wstatus)) \
 			&& (wstatus == SIGSTOP || wstatus == SIGTSTP \
 			|| wstatus == SIGTTIN || wstatus == SIGTTOU));
 }
 
-bool        	wait_processes(t_term* term)
+t_exec_status	wait_processes(t_term* term, t_exec_status st)
 {
-    int     	i;
+    int			i;
 	t_process	*suspended;
 
     i = 0;
@@ -75,14 +81,14 @@ bool        	wait_processes(t_term* term)
 		if (is_suspended(term->processes[i].wstatus))
 		{
 			if (!(suspended = malloc(sizeof(t_process))))
-				return (false);
+				return (BAD_ALLOC);
 			*suspended = term->processes[i];
 			suspended->data = NULL;
 			if (term->suspended_processes)
-				process_push_back(&term->suspended_processes, suspended);
+				process_push_front(&term->suspended_processes, suspended);
 		}
         term->st = handle_wstatus(&term->processes[i].wstatus, (char*const*)term->processes[i].data, term->suspended_processes);
     }
 	ft_bzero(term->processes, sizeof(term->processes));
-	return (true);
+	return (st);
 }

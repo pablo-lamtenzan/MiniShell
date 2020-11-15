@@ -14,20 +14,21 @@
 #include <signal.h>
 
 #include <execution.h>
-#include <errors.h>
+#include <process.h>
 
-static bool find_pid(t_process* suspended, char* pid)
+
+static bool			find_pid(t_process* suspended, char* pid)
 {
     (void)suspended;
     (void)pid;
     return (false);
 }
 
-int         ft_fg(t_exec* args, t_term* term)
+t_exec_status		ft_fg(t_exec* args, t_term* term)
 {
-    pid_t   pid;
-    void*   addr;
-    int     i;
+    pid_t			pid;
+    void*			addr;
+    int				i;
 
     pid = term->suspended_processes->pid;
     // for the momment ignore other args
@@ -40,7 +41,9 @@ int         ft_fg(t_exec* args, t_term* term)
             return (CMD_NOT_FOUND);
         }
     }
-    else
+    while (waitpid(pid, &term->suspended_processes->wstatus, 0) <= 0)
+        ;
+    if (!is_suspended(term->suspended_processes->wstatus))
     {
         addr = term->suspended_processes;
         term->suspended_processes = term->suspended_processes->data;
