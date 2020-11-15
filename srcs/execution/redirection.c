@@ -17,7 +17,7 @@ t_exec_status			print_redirection_error(t_redir_status rstatus, char*const* file
 	const char*	error_msg[3] = {
 		"minish: %s: No such file or directory\n",
 		"minish: %s: ambigous redirect\n",
-		"minish: %s; File name too long\n"
+		"minish: %s: File name too long\n"
 	};
 	
 	if (rstatus == BAD_ALLOC)
@@ -32,9 +32,9 @@ static t_redir_status	try_catch_filename(const char*** filename, char* var_name)
     if (matrix_height(*filename) > 1)
 	{
 		(*filename)[0] = var_name;
-		return (AMDIG_REDIRECT);
+		return (AMBIG_REDIRECT);
 	}
-	if (ft_strlen((*filename)[0]) > PATH_MAX)
+	if (ft_strlen((*filename)[0]) >= PATH_MAX)
 		return (FLNAME_TO_LONG);
     return (CONTINUE);
 }

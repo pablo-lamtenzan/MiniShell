@@ -24,18 +24,18 @@
 typedef enum			e_exec_status
 {
 	SUCCESS				= 0,
-	BAD_ALLOC			= SIGNAL_BASE + SIGABRT,
-	BAD_CLOSE			= 222, // to define
-	BAD_PIPE			= 222, // to define
-	BAD_DUP2			= 222, // to define
-	BAD_FORK			= 222 // to define
+	BAD_ALLOC			= 1,
+	BAD_CLOSE			= 2,
+	BAD_PIPE			= 3,
+	BAD_DUP2			= 4,
+	BAD_FORK			= 5
 }						t_exec_status;
 
 typedef enum			e_redir_status
 {
 	CONTINUE			= 0,
 	FILE_NOT_FOUND		= -1,
-	AMDIG_REDIRECT		= -2,
+	AMBIG_REDIRECT		= -2,
 	FLNAME_TO_LONG		= -3,
 	BAD_ALLOC			= -4
 }						t_redir_status;
