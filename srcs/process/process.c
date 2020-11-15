@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/15 13:03:49 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/15 15:25:29 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,20 @@
 #include <execution.h>
 #include <signals.h>
 #include <errors.h>
+
+void		ft_swap(int* a, int* b)
+{
+	const int tmp = *a;
+
+	*a = *b;
+	*b = tmp;
+}
+
+void		update_used_pids(int new, pid_t** used_pids)
+{
+	ft_swap(used_pids[LAST], used_pids[PENULTIMATE]);
+	*used_pids[LAST] = new;
+}
 
 static int	handle_wstatus(int wstatus, char*const* av, t_process* suspended)
 {
@@ -52,6 +66,7 @@ static void		process_push_front(t_process** root, t_process* n)
 		tmp->prev = *root;
 }
 
+// it is better or equal to use is_suspended or not exit ???
 t_exec_status	wait_processes(t_term* term, t_exec_status st)
 {
     int			i;

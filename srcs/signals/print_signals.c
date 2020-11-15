@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 11:18:26 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/15 15:05:06 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,6 +147,9 @@ t_signal_print	get_signal_print(size_t index)
 }
 
 // [end line] [process_nb] [token '+'] [message] [aux_msg] [args]
+
+// token + to prev pid, token - to prev - 1 pid
+// need to remember to its pid and cmp
 
 void	print_signals(int wsignal_index, const char** args, t_process* suspended)
 {
