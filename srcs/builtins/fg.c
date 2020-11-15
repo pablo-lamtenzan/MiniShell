@@ -17,10 +17,24 @@
 #include <process.h>
 
 
-static bool			find_pid(t_process* suspended, char* pid)
+static pid_t		find_pid(t_process* suspended, char* str_pid)
 {
-    (void)suspended;
-    (void)pid;
+    pid_t           pid;
+    int             i;
+    t_process*      cp;
+
+    i = -1;
+    while (str_pid[++i])
+        if (!ft_isdigit(str_pid[i]))
+            return (false);
+    pid = ft_atoi(str_pid);
+    cp = suspended;
+    while (cp)
+    {
+        if (cp->pid == pid)
+            return (pid);
+        cp = (t_process*)cp->data;
+    }
     return (false);
 }
 
@@ -38,7 +52,7 @@ int		ft_fg(t_exec* args, t_term* term)
         if (!(pid = find_pid(term->suspended_processes, args->av[1])))
         {
             ft_dprintf(STDERR_FILENO, "minish: fg: %s: no such job", args->av[1]);
-            return (CMD_NOT_FOUND);
+            return (STD_ERROR);
         }
     }
     while (waitpid(pid, &term->suspended_processes->wstatus, 0) <= 0)
