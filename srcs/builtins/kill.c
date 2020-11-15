@@ -84,6 +84,15 @@ static pid_t	try_catch_pid(const char* str_pid, t_process* suspended)
 	return (0);
 }
 
+t_process**	get_process(pid_t pid, t_process* suspended)
+{
+	while (suspended)
+	{
+		if (suspended->pid == pid)
+			return (&suspended);
+	}
+}
+
 int     	ft_kill(t_exec* args, t_term* term)
 {
     int		signal;
@@ -113,6 +122,12 @@ int     	ft_kill(t_exec* args, t_term* term)
 		// handle if signal stop in read in or write out -> set ttin, ttou
 		// use something like lsof ?
 		kill(signal, pid);
+		// wait for it after and remove it if exited
+		while (waitpid(pid, &signal, 0) <= 0)
+			;
+		if (WIFEXITED(signal))
+			remove_suspended_process(get_process(pid, term->suspended_processes));
+		update_used_pids(pid, &term->used_pids);
 	}
 	ft_dprintf(STDERR_FILENO, "%s\n", "bash: kill: COT: invalid signal specification");
 	return (STD_ERROR);
