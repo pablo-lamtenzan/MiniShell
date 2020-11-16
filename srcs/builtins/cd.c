@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include <execution.h>
-
+#include <string.h>
 // TODO: Check allocation errors on map_set
 
 int	ft_cd(t_exec *args, t_term *t)

@@ -67,6 +67,8 @@ t_group			*new_group()
         return (NULL);
     if (!(group->nil = ft_calloc(1, sizeof(t_process))))
         return (NULL);
+	else
+		group->active_processes = group->nil;
     return (group);
 }
 
@@ -133,7 +135,7 @@ bool            update_session_history(t_session *session, t_process *update)
 
 static bool		not_in_background(t_process *process, t_group *group)
 {
-	return (background_find(process, "PID", group));
+	return (!background_find(process, "PID", group));
 }
 
 bool			update_background(t_session *session, t_process *process)
@@ -143,22 +145,25 @@ bool			update_background(t_session *session, t_process *process)
 	bool		allocated;
 	bool		exited;
 
-	allocated = false;
-	if ((allocated = not_in_background(process, session->groups)) \
-		&& !(cp = new_process(process->pid, process->wstatus, process->data)))
-			return (false);
+	allocated = not_in_background(process, session->groups);
+	if (!(cp = new_process(process->pid, process->wstatus, process->data)))
+		return (false);
 	to_use = allocated ? cp : process;
+	ft_dprintf(2, "[WAIING...][pid=\'%d\']\n", to_use->pid);
 	while (waitpid(to_use->pid, &to_use->wstatus, 0) <= 0)
 		;
-	exited = WIFEXITED(to_use->pid);
+	exited = WIFEXITED(to_use->wstatus);
 	if (!allocated && exited)
 		delete_process(to_use);
 	else if (!exited)
 	{
+		ft_dprintf(2, "Children [%d] doesn't exited", to_use->pid);
 		update_session_history(session, to_use);
 		if (allocated)
 			process_push_front(to_use, session->groups);
 	}
+	else
+		ft_dprintf(2, "Children [%d] exited\n", to_use->pid);
 	return (true);
 }
 

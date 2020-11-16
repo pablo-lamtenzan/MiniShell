@@ -80,12 +80,13 @@ t_exec_status	wait_processes(t_term* term, t_exec_status st)
 	t_group*	group;
 
     i = 0;
-    while (++i < term->session->processes[MANAGE].pid)
+	ft_dprintf(2, "Goes into wait_processes, nb processes = %d \n", term->session->processes[MANAGE].pid);
+    while (++i <= term->session->processes[MANAGE].pid)
     {
 		if (!(group = new_group()))
 			return (RDR_BAD_ALLOC);
 		group_push_front(term->session, group);
-        if (update_background(term->session, &term->session->processes[i]))
+        if (!update_background(term->session, &term->session->processes[i]))
 			return (RDR_BAD_ALLOC);
         term->st = handle_wstatus(term->session->processes[i].wstatus, (char*const*)term->session->processes[i].data, term->session->groups);
     }

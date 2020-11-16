@@ -20,6 +20,7 @@ static int	ft_fork(t_exec* info, t_term* term)
 	int		child_st;
 
 	child_st = fork();
+	ft_dprintf(2, "TEST1\n");
 	term->session->processes[term->session->processes[MANAGE].pid].pid = child_st;
 	if (child_st == 0)
 	{
@@ -47,7 +48,11 @@ int		execute_child(t_exec* info, t_term* term)
 		exit(EXIT_FAILURE);
 	}
 	else if (pid < 0)
+	{
+		ft_dprintf(2, "Fork returnd 0!\n");
 		return (errno);
+	}
+	ft_dprintf(2, "[NEW FORK][pid=\'%d\', name=\'%s\']\n", pid, info->av[0]);
 	//while (waitpid(term->pid, &wstatus, 0) <= 0)
 	//	;
 	//return (handle_wstatus(wstatus, info->av));
