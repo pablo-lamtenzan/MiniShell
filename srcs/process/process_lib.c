@@ -110,6 +110,7 @@ void            delete_group(t_group *target)
         target->active_processes = target->active_processes->next;
     }
     free(target->nil);
+	target->nil = NULL;
 }
 
 void            end_session(t_session *session)

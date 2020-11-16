@@ -48,7 +48,9 @@
 
 */
 
-// TO DO: init and delete
+/* COMMENTS BEFORE THIS HAS TO BE TRIMMED */
+// TO DO: && -> strange af
+// TO DO: false || echo a
 
 /*
 void	token_print(t_tok *tokens, const char *prefix)
@@ -101,12 +103,15 @@ static int 			exec(t_tok* tokens, t_term* term)
 
 	ft_bzero(flags, sizeof(flags));
 	while ((exec_tokens = handle_separators(&tokens, &flags[STATUS], &flags[PARETHESES_NB])))
+	{
 		if (handle_conditionals(&term, flags[STATUS], &flags[CONDITIONALS], flags[PARETHESES_NB]))
 		{
+			ft_dprintf(2, "Contitionals returned true!\n");
 			if ((exec_st = execute_bst(root = bst(exec_tokens), term)) != SUCCESS)
 				handle_exec_error(root, exec_st, term);
 			free_bst(root);
 		}
+	}
 	return (0);
 }
 
