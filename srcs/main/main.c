@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 05:38:11 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/15 16:58:49 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,40 @@
 #include <builtins.h>
 
 // TODO: child with signal returns t->st = 128 + sig_n DONE 
-// TODO: Local path_get (start with '/' or '.')
+// TODO: Local path_get (start with '/' or '.') DONE
 // TODO: Nb process printed in print_signals (for inperrumpt signals) into pipe
+// TODO: > file or < file without cmd DONE?
+
+// TODO: ERROR codes: execution and builtins [error msg] -> [optional help] -> [return]
+/* Errors List:
+- bash: a: command not found -> 127
+- bash: syntax error near unexpected token '||' -> not return (token type could be anything) -> 2
+- bash: syntax error near unexpected token `newline' -> input: "<" -> 2
+- bash: .: filename argument required"\n".: usage: . filename [arguments] -> input "." (called bash period) -> 2
+- bash: a: No such file or directory -> input: echo < a -> 1
+- bash: $a: ambiguous redirect -> 1
+- bash:	filename: File name too long -> redirect to a long filename -> 1
+
+// add: in term t_process processes[MAX_PROCESSES + 1] and init processes[0] = 1, next, prev = NULL
+// add: in term t_process* suspended_processes and init to NULL
+// perror for fork
+// SIGPIPE for pipes
+// SIGHUP job control (sent to a job when its term is closed 99% sure)
+// add: in term pid_t	used_pids[2], init it to 0
+// remember to update_used_pids every time a process is used but not exited
+// check if the ret of fg is the ret of the continued signal
+
+// have t collect the zombies process pid with wait
+// SIGHUP dans le term -> pour chaque process (actif ou stoppe) SIGHUP -> ensuite pour chauqe process stoppe SIGCONT -> ensuite exit
+// Cat ; ctrl + z -> SIGSTPT -> if (signal stoped and read or writes) -> all group process recives SIGTTIN
+	// to handle groups create a node each new bst of all the process
+// Change suspended_processes by active_processes ??
+
+// NEW IDEA: process.h: t_systhem
+
+*/
+
+// TO DO: init and delete
 
 /*
 void	token_print(t_tok *tokens, const char *prefix)
@@ -35,26 +67,46 @@ void	token_print(t_tok *tokens, const char *prefix)
 }
 */
 
-static int exec(t_tok* tokens, t_term* term)
+static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term)
 {
-	int		flags[3];
-	t_tok*	exec_tokens;
-	t_bst*	root;
+	const char*		error_msg[5] = {
+		"[%d] minish: Fatal error: Not enought memory room, can't allocate memory blocks\n"
+		"[%d] minish: Fatal error: Syscall: close: invalid return\n"
+		"[%d] minish: Fatal error: Syscall: pipe: invalid return\n"
+		"[%d] minish: Fatal error: Syscall: dup2: invalid return\n"
+		"[%d] minish: Fatal error: Syscall: fork: invalid return\n" // fork probally never used
+	};
+	const int		exit_return[5] = {
+		SIGNAL_BASE + SIGABRT, 
+		1,
+		1, // TO DEFINE
+		1,
+		1
+	};
+	ft_dprintf(STD_ERROR, error_msg[exec_st], exit_return[exec_st]);
+	free_bst(root);
+	// TODO: resume_suspended_processes(&term->suspended_processes);
+	term_destroy(term);
+	tputs(term->caps.insert_end, 0, &ft_putchar);
+	write(STDERR_FILENO, "exit\n", 5);
+	exit(exit_return[exec_st]);
+}
+
+static int 			exec(t_tok* tokens, t_term* term)
+{
+	t_exec_status	exec_st;
+	int				flags[3];
+	t_tok*			exec_tokens;
+	t_bst*			root;
 
 	ft_bzero(flags, sizeof(flags));
 	while ((exec_tokens = handle_separators(&tokens, &flags[STATUS], &flags[PARETHESES_NB])))
-	{
-//		token_print(exec_tokens, "EXE");
 		if (handle_conditionals(&term, flags[STATUS], &flags[CONDITIONALS], flags[PARETHESES_NB]))
 		{
-			if (!execute_bst(root = bst(exec_tokens), term))
-			{
-				free_bst(root);
-				ft_exit(NULL, term);
-			}
+			if ((exec_st = execute_bst(root = bst(exec_tokens), term)) != SUCCESS)
+				handle_exec_error(root, exec_st, term);
 			free_bst(root);
 		}
-	}
 	return (0);
 }
 

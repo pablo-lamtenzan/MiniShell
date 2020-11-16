@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:51:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 05:18:13 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 11:44:25 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@
 # include <libft.h>
 # include <term/term.h>
 # include <bst.h>
+# include <term/errors.h>
+# include <expansion.h>
 
 /*
 ** multiple redirections handler
@@ -40,13 +42,12 @@
 # define AUX			2
 # define READ			1
 # define WRITE			0
-# define FILENOTFOUND	-1
-# define AMB_REDIRECT	-2
-# define FATAL_ERROR	-3
+
+# define UMASK			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
 
 typedef struct s_exec	t_exec;
 
-typedef int				(*t_executable)(t_exec *args, t_term *term);
+typedef int	(*t_executable)(t_exec *args, t_term *term);
 
 typedef struct			s_exec
 {
@@ -62,7 +63,7 @@ typedef struct			s_exec
 /*
 ** Utils
 */
-int						matrix_height(char*const* matrix);
+int						matrix_height(char **matrix);
 
 /* to remove */
 bool					temporally_expansion(t_tok* args, char*** av, t_term* term);
@@ -70,23 +71,28 @@ bool					temporally_expansion(t_tok* args, char*** av, t_term* term);
 /*
 ** Exectution fill
 */
-int     				handle_wstatus(int wstatus, char*const* av);
 int						execute_child(t_exec* info, t_term* term);
-bool					build_execve_args(t_exec* info, t_term* term);
+t_exec_status			build_execve_args(t_exec* info, t_term* term);
 void					destroy_execve_args(t_exec* info);
 
 /*
 ** Execution fd
 */
-bool					dup_stdio(int* fds);
-bool					open_pipe_fds(t_exec** info, t_tok_t type);
-bool					close_pipe_fds(int* fds);
-int						redirections_handler(t_exec** info, t_bst* cmd, t_term* term, char*** filename);
+t_exec_status			dup_stdio(int* fds);
+t_exec_status			open_pipe_fds(t_exec** info, t_tok_t type);
+t_exec_status			close_pipe_fds(int* fds);
+t_redir_status			redirections_handler(t_exec** info, t_bst* cmd, t_term* term, char*** filename);
+
+/*
+** Redirections
+*/
+t_exec_status			print_redirection_error(t_redir_status rstatus, char** filename, t_term* term);
 
 /*
 ** Execution
 */
-bool					execute_bst(t_bst* root, t_term* term);
+t_exec_status			execute_bst(t_bst* root, t_term* term);
+t_exec_status        	wait_processes(t_term *term, t_exec_status st);
 
 /*
 ** Separators

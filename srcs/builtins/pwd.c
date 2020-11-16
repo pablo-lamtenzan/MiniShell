@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 05:21:56 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 11:59:05 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int		ft_pwd(t_exec *args, t_term *t)
 {
-	char	cwd[PATH_MAX];
+	char			cwd[PATH_MAX];
 
 	(void) t;
 
@@ -23,8 +23,8 @@ int		ft_pwd(t_exec *args, t_term *t)
 	else
 	{
 		if (!(getcwd(cwd, sizeof(cwd))))
-			return (1);
+			return (STD_ERROR);
 		ft_dprintf(args->fds[1], "%s\n", cwd);
 	}
-	return (0);
+	return (SUCCESS);
 }

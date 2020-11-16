@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 21:57:11 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/11/14 01:33:48 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/14 11:48:41 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 // TODO: Check allocation errors on map_set
 
-int		ft_cd(t_exec *args, t_term *t)
+int	ft_cd(t_exec *args, t_term *t)
 {
 	const char	*home_dir;
 	char		path[PATH_MAX];
@@ -25,15 +25,15 @@ int		ft_cd(t_exec *args, t_term *t)
 		if (!(home_dir = env_get(t->env, "HOME", 4)))
 		{
 			ft_dprintf(2, "%s: %s: HOME not set\n", t->name, args->av[0]);
-			return (1);
+			return (STD_ERROR);
 		}
 		if (chdir(home_dir))
 		{
 			ft_dprintf(2, "%s: %s: %s\n", t->name, args->av[0], strerror(errno));
-			return (1);
+			return (STD_ERROR);
 		}
 		env_set(&t->env, "PWD", home_dir, true);
-		return (0);
+		return (SUCCESS);
 	}
 	else
 	{
@@ -42,7 +42,7 @@ int		ft_cd(t_exec *args, t_term *t)
 		if (path[0] == '/' && chdir(path) == 0)
 		{
 			env_set(&t->env, "PWD", path, true);
-			return (0);
+			return (SUCCESS);
 		}
 		else
 		{
@@ -54,11 +54,11 @@ int		ft_cd(t_exec *args, t_term *t)
 			{
 				getcwd(cwd, sizeof(cwd));
 				env_set(&t->env, "PWD", cwd, true);
-				return (0);
+				return (SUCCESS);
 			}
 			else
 				ft_dprintf(2, "cd: no such file or directory: %s\n", args->av[1]);
 		}
 	}
-	return (1);
+	return (STD_ERROR);
 }

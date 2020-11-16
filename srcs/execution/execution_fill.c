@@ -3,64 +3,71 @@
 /*                                                        :::      ::::::::   */
 /*   execution_fill.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 05:38:01 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/15 13:29:11 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <path.h>
-#include <signals.h>
+#include <term/errors.h>
+#include <errno.h>
 
-int     	handle_wstatus(int wstatus, char*const* av)
+static int	ft_fork(t_exec* info, t_term* term) 
 {
-	int		i;
+	int		child_st;
 
-	i = -1;
-	if (WIFEXITED(wstatus))
-		return (WEXITSTATUS(wstatus));
-	if (WIFSIGNALED(wstatus) && (wstatus = WTERMSIG(wstatus)))
+	child_st = fork();
+	term->session->processes[term->session->processes[MANAGE].pid].pid = child_st;
+	if (child_st == 0)
 	{
-			print_signals(wstatus, (const char**)av);
-			wstatus += 128;
+		// for the moment overwrite the last
+		if (term->session->processes[MANAGE].pid < PROCESSES_MAX)
+			term->session->processes[MANAGE].pid++;
+		term->session->processes->data = info->av;
 	}
+	return (child_st);
+}
+
+int		execute_child(t_exec* info, t_term* term)
+{
+	int				wstatus;
+	pid_t			pid;
+	t_exec_status	st;
+
+	wstatus = -1; // TODO: Init
+	if (!(pid = ft_fork(info, term)))
+	{
+		if ((st = dup_stdio(info->fds)) != SUCCESS)
+			return (st);
+		wstatus = execve(info->execution_path, info->av, info->ep);
+		ft_dprintf(STDERR_FILENO, "%s: %s: execve returned '%d'!\n", term->name, info->av[0], wstatus);
+		exit(EXIT_FAILURE);
+	}
+	else if (pid < 0)
+		return (errno);
+	//while (waitpid(term->pid, &wstatus, 0) <= 0)
+	//	;
+	//return (handle_wstatus(wstatus, info->av));
+	term->session->processes[term->session->processes[MANAGE].pid].wstatus = wstatus;
 	return (wstatus);
 }
 
-
-int			execute_child(t_exec* info, t_term* term)
-{
-	int		wstatus;
-
-	if (!(term->pid = fork()))
-	{
-		if (dup_stdio(info->fds))
-		{
-			wstatus = execve(info->execution_path, info->av, info->ep);
-			ft_dprintf(STDERR_FILENO, "%s: %s: execve returned '%d'!\n", term->name, info->av[0], wstatus);
-		}
-		exit(EXIT_FAILURE);
-	}
-	else if (term->pid < 0)
-		return (errno);
-	while (waitpid(term->pid, &wstatus, 0) <= 0)
-		;
-	return (handle_wstatus(wstatus, info->av));
-}
-
-bool		build_execve_args(t_exec* info, t_term* term)
+t_exec_status		build_execve_args(t_exec* info, t_term* term)
 {
 	if (!(info->execution_path = path_get(info->av[0], env_get(term->env, "PATH", 4))))
-		return (!(term->st = 127));
+	{
+		term->st = CMD_NOT_FOUND;
+		return (SUCCESS);
+	}
 	if (!(info->ep = (char*const*)env_export(term->env)))
 	{
 		free(info->execution_path);
-		return (false);
+		return (RDR_BAD_ALLOC);
 	}
-//	ft_dprintf(2, "[ENV][%p]\n", info->ep);
-	return (true);
+	return (SUCCESS);
 }
 
 void		destroy_execve_args(t_exec *info)
@@ -69,12 +76,12 @@ void		destroy_execve_args(t_exec *info)
 	free((void*)info->execution_path);
 }
 
-int			matrix_height(char*const* matrix)
+int			matrix_height(char **matrix)
 {
-	const char** it;
+	char** it;
 
-	it = (const char**)matrix;
+	it = matrix;
 	while (*it)
 		it++;
-	return ((char*const*)it - matrix);
+	return (it - matrix);
 }

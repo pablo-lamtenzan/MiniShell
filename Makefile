@@ -26,6 +26,7 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 					$(addprefix execution/,\
 						execution_fd.c\
 						execution_fill.c\
+						redirection.c\
 						execution.c\
 					)\
 					$(addprefix expansion/,\
@@ -39,6 +40,11 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 					)\
 					$(addprefix signals/,\
 						print_signals.c\
+					)\
+					$(addprefix process/,\
+						process_lib.c\
+						resume_suspended_processes.c\
+						process.c\
 					)\
 					$(addprefix main/,\
 						main.c\
@@ -57,6 +63,7 @@ OBJDS	=		$(addprefix $(OBJDIR)/,\
 					path\
 					separators\
 					signals\
+					process\
 				)
 
 OBJS	=		$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
@@ -69,6 +76,9 @@ HDRS	=		$(addprefix $(INCDIR)/,\
 					path.h\
 					signals.h\
 				)
+
+#					process.h\
+#					errors.h\
 
 all:			libft $(NAME)
 

@@ -6,13 +6,13 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:20:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/13 08:20:04 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/14 11:49:53 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 
-void	env_print(int fd, t_map *env)
+void			env_print(int fd, t_map *env)
 {
 	if (env)
 	{
@@ -21,9 +21,9 @@ void	env_print(int fd, t_map *env)
 	}
 }
 
-int		ft_env(t_exec *args, t_term *t)
+int	ft_env(t_exec *args, t_term *t)
 {
-	t_env* curr;
+	t_env* 		curr;
 
 	curr = t->env;
 	(void) args;
@@ -33,5 +33,5 @@ int		ft_env(t_exec *args, t_term *t)
 		write(args->fds[1], "\n", 1);
 		curr = curr->next;
 	}
-	return (0);
+	return (SUCCESS);
 }
