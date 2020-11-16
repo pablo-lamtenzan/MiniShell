@@ -16,13 +16,23 @@
 
 int		ft_cd(t_exec *args, t_term *t)
 {
-	char	path[PATH_MAX];
-	char	cwd[PATH_MAX];
+	const char	*home_dir;
+	char		path[PATH_MAX];
+	char		cwd[PATH_MAX];
 
 	if (args->ac == 1)
 	{
-		chdir(env_get(t->env, "HOME", 4));
-		env_set(&t->env, "PWD", env_get(t->env, "HOME", 4), true);
+		if (!(home_dir = env_get(t->env, "HOME", 4)))
+		{
+			ft_dprintf(2, "%s: %s: HOME not set\n", t->name, args->av[0]);
+			return (1);
+		}
+		if (chdir(home_dir))
+		{
+			ft_dprintf(2, "%s: %s: %s\n", t->name, args->av[0], strerror(errno));
+			return (1);
+		}
+		env_set(&t->env, "PWD", home_dir, true);
 		return (0);
 	}
 	else

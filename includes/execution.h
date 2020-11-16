@@ -20,6 +20,7 @@
 # include <sys/wait.h>
 # include <limits.h>
 # include <errno.h>
+# include <strings.h>
 
 # include <libft.h>
 # include <term/term.h>
