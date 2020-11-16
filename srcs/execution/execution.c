@@ -13,8 +13,8 @@
 #include <execution.h>
 #include <builtins.h>
 #include <expansion.h>
-#include <term/process.h>
-#include <term/errors.h>
+#include <process.h>
+#include <errors.h>
 
 static void		get_exec(t_exec* info, t_term* term)
 {

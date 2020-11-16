@@ -25,7 +25,7 @@
 # include <libft.h>
 # include <term/term.h>
 # include <bst.h>
-# include <term/errors.h>
+# include <errors.h>
 # include <expansion.h>
 
 /*

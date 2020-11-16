@@ -12,7 +12,7 @@
 
 #include <execution.h>
 #include <path.h>
-#include <term/errors.h>
+#include <errors.h>
 #include <errno.h>
 
 static int	ft_fork(t_exec* info, t_term* term) 

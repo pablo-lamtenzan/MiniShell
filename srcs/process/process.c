@@ -15,7 +15,7 @@
 
 #include <execution.h>
 #include <signals.h>
-#include <term/errors.h>
+#include <errors.h>
 
 // old
 void		ft_swap(int* a, int* b)

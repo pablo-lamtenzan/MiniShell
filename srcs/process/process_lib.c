@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <term/process.h>
+# include <process.h>
 # include <stdlib.h>
 # include <libft.h>
 # include <unistd.h>

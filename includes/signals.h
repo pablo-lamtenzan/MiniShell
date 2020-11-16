@@ -15,7 +15,7 @@
 
 # define CORE   "(core dumped)"
 
-# include <term/process.h>
+# include <process.h>
 
 # include <stdlib.h>
 # include <stdbool.h>

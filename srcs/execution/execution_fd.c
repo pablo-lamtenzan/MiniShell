@@ -12,7 +12,7 @@
 
 #include <execution.h>
 #include <expansion.h>
-#include <term/errors.h>
+#include <errors.h>
 
 t_exec_status		dup_stdio(int* fds)
 {
