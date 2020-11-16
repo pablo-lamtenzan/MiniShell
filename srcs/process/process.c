@@ -83,6 +83,8 @@ t_exec_status	wait_processes(t_term* term, t_exec_status st)
 	ft_dprintf(2, "Goes into wait_processes, nb processes = %d \n", term->session->processes[MANAGE].pid);
     while (++i <= term->session->processes[MANAGE].pid)
     {
+		if (!term->session->processes[i].pid)
+			continue ;
 		if (!(group = new_group()))
 			return (RDR_BAD_ALLOC);
 		group_push_front(term->session, group);
