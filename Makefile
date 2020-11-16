@@ -29,7 +29,9 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 						execution.c\
 					)\
 					$(addprefix expansion/,\
+						expand_param.c\
 						expansion.c\
+						word_split.c\
 					)\
 					$(addprefix separators/,\
 						conditionals.c\

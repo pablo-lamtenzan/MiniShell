@@ -48,7 +48,7 @@ static bool		execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
     	execute_cmd(cmd->a, info, term);
 	else
 	{
-		info->av = token_expand(cmd->a, &term->env, &info->ac);
+		info->av = tokens_expand((t_tok**)&cmd->a, &term->env, &info->ac);
 		if (!info->av)
 			return (false);
 		if (!info->av[0])

@@ -67,7 +67,7 @@ int			redirections_handler(t_exec** info, t_bst* cmd, t_term* term, char*** file
 
 	if (!cmd->b)
 		return (0);
-	*filename = (char**)token_expand(cmd->b, &term->env, &(*info)->ac);
+	*filename = tokens_expand((t_tok**)&cmd->b, &term->env, &(*info)->ac);
 	if (!*filename)
 		return (FATAL_ERROR);
 	if (matrix_height(*filename) > 1)
