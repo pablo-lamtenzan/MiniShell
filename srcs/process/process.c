@@ -89,6 +89,8 @@ t_exec_status	wait_processes(t_term* term, t_exec_status st)
         if (!update_background(term->session, &term->session->processes[i]))
 			return (RDR_BAD_ALLOC);
         term->st = handle_wstatus(term->session->processes[i].wstatus, (char*const*)term->session->processes[i].data, term->session->groups);
+		if (term->session->groups->active_processes == term->session->groups->nil)
+			group_pop_front(term->session);
     }
 	ft_bzero(term->session->processes, sizeof(t_process) * term->session->processes[MANAGE].pid);
 	return (st);

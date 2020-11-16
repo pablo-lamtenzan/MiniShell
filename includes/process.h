@@ -52,6 +52,7 @@ void            		remove_process(t_process* target);
 void            		process_push_front(t_process* process, t_group* group);
 t_process*      		new_process(pid_t pid, int wstatus, char*const* data);
 void            		group_push_front(t_session* session, t_group* target);
+void					group_pop_front(t_session* session);
 t_group*        		new_group();
 t_session*      		start_session();
 void            		delete_process(t_process* target);

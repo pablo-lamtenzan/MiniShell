@@ -93,6 +93,15 @@ void            delete_process(t_process *target)
     free(target);
 }
 
+void			group_pop_front(t_session* session)
+{
+	t_group*	fill;
+
+	fill = session->groups;
+	delete_group(session->groups);
+	session->groups = fill;
+}
+
 void            delete_group(t_group *target)
 {
     while (target->active_processes != target->nil)

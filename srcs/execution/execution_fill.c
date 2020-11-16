@@ -20,7 +20,6 @@ static int	ft_fork(t_exec* info, t_term* term)
 	int		child_st;
 
 	child_st = fork();
-	ft_dprintf(2, "TEST1\n");
 	term->session->processes[term->session->processes[MANAGE].pid].pid = child_st;
 	if (child_st == 0)
 	{
