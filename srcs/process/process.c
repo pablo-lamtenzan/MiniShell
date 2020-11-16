@@ -95,5 +95,6 @@ t_exec_status	wait_processes(t_term* term, t_exec_status st)
 			group_pop_front(term->session);
     }
 	ft_bzero(term->session->processes, sizeof(t_process) * term->session->processes[MANAGE].pid);
+	term->session->processes[MANAGE].pid = 1;
 	return (st);
 }
