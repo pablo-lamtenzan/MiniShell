@@ -48,6 +48,8 @@
 
 */
 
+// TO DO: init and delete
+
 /*
 void	token_print(t_tok *tokens, const char *prefix)
 {

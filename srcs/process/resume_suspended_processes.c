@@ -13,6 +13,7 @@
 #include <execution.h>
 #include <signal.h>
 
+// old
 size_t			suspended_process_nb(t_process* suspended)
 {
 	size_t		nb;
@@ -23,6 +24,7 @@ size_t			suspended_process_nb(t_process* suspended)
 	return (nb - 1);
 }
 
+// old
 bool			is_suspended(int wstatus)
 {
 	return (WIFSIGNALED(wstatus) && (wstatus = WTERMSIG(wstatus)) \
@@ -30,6 +32,8 @@ bool			is_suspended(int wstatus)
 			|| wstatus == SIGTTIN || wstatus == SIGTTOU));
 }
 
+
+// old
 void            remove_suspended_process(t_process** suspended)
 {
     t_process*  cp;

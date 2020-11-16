@@ -151,7 +151,7 @@ t_signal_print	get_signal_print(size_t index)
 // token + to prev pid, token - to prev - 1 pid
 // need to remember to its pid and cmp
 
-void	print_signals(int wsignal_index, const char** args, t_process* suspended)
+void	print_signals(int wsignal_index, const char** args, t_group* g)
 {
 	int	i;
 	const t_signal_print signal = get_signal_print(wsignal_index);
@@ -164,7 +164,7 @@ void	print_signals(int wsignal_index, const char** args, t_process* suspended)
 	ft_dprintf(STDERR_FILENO, "%s%s%s%s%s%s%s%s%s", \
 			signal.endline ? signal.endline : "", \
 			signal.process_nb ? "[" : "", \
-			signal.process_nb ? (addr = ft_itoa(suspended_process_nb(suspended))) : "", \
+			signal.process_nb ? (addr = ft_itoa(background_size(g))) : "", \
 			signal.process_nb ? "]" : "", \
 			signal.plus ? "+  " : "", \
 			signal.message , \

@@ -15,28 +15,41 @@
 #include <errors.h>
 #include <errno.h>
 
+static int	ft_fork(t_exec* info, t_term* term) 
+{
+	int		child_st;
+	child_st = fork();
+	term->session->processes[term->session->processes[MANAGE].pid].pid;
+	if (child_st == 0)
+	{
+		// for the moment overwrite the last
+		if (term->session->processes[MANAGE].pid < PROCESSES_MAX)
+			term->session->processes[MANAGE].pid++;
+		term->session->processes->data = info->av;
+	}
+	return (child_st);
+}
+
 int		execute_child(t_exec* info, t_term* term)
 {
 	int				wstatus;
+	pid_t			pid;
 	t_exec_status	st;
 
-	if (!(term->processes[term->processes[MANAGE].pid].pid = fork()))
+	if (!(pid = ft_fork(info, term)))
 	{
-		// overwrite last process if execed max for the moment
-		term->processes[MANAGE].pid += term->processes[MANAGE].pid > PROCESSES_MAX ? 0 : 1;
-		term->processes[term->processes[MANAGE].pid].data = info->av;
 		if ((st = dup_stdio(info->fds)) != SUCCESS)
 			return (st);
 		wstatus = execve(info->execution_path, info->av, info->ep);
 		ft_dprintf(STDERR_FILENO, "%s: %s: execve returned '%d'!\n", term->name, info->av[0], wstatus);
 		exit(EXIT_FAILURE);
 	}
-	else if (term->processes[term->processes[MANAGE].pid].pid < 0)
+	else if (pid < 0)
 		return (errno);
 	//while (waitpid(term->pid, &wstatus, 0) <= 0)
 	//	;
 	//return (handle_wstatus(wstatus, info->av));
-	term->processes[term->processes[MANAGE].pid].wstatus = wstatus;
+	term->session->processes[term->session->processes[MANAGE].pid].wstatus = wstatus;
 	return (wstatus);
 }
 

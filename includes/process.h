@@ -21,7 +21,6 @@
 #define LAST			0
 #define PENULTIMATE		1
 
-/* for the momment usses only s_process */
 typedef struct 			s_process
 {
 	pid_t				pid;
@@ -31,29 +30,38 @@ typedef struct 			s_process
 	struct s_process*	prev;
 }						t_process;
 
-
-/* Not official yet */
 typedef struct			s_group
 {
-	t_process*			active_processes; // backgroud processes, first is leader process
+	t_process*			active_processes;
+	t_process*			nil;
 	struct s_group*		next;
-	pid_t				parent; // getpid() of minishell (inv fct but is bonus ...)
-	bool				is_orphan; // true if all active processes's parent has exited, if is orphan an some process STOP -> SEND HUP + CONT to all processes in group
 }						t_group;
 
-// this could contain term and send to prompt &systhem->term in main
-// this could be global too
-// read about sessions before implement!!!!!
-// ttin ctrl: openning /dev/tty and tcgetsid(fd)
-typedef struct			s_systhem
+typedef struct			s_session
 {
 	t_group*			groups; // all background processes by group
 	t_process			processes[PROCESSES_MAX + 1]; // exec processes
-	t_process			history[2]; // 2 last processes that still in bacground
-	t_process*			zombies; // in case of need
-}						t_systhem;
+	t_process			*history;
+}						t_session;
 
+// new stuff
+void            		add_process(t_process* target, t_process* prev, t_process* next);
+void            		remove_process(t_process* target);
+void            		process_push_front(t_process* process, t_group* group);
+t_process*      		new_process(__pid_t pid, int wstatus, char*const* data);
+void            		group_push_front(t_session* session, t_group* target);
+t_group*        		new_group();
+t_session*      		start_session();
+void            		delete_process(t_process* target);
+void            		delete_group(t_group* target);
+void            		end_session(t_session* session);
+bool            		update_session_history(t_session* session, t_process* update);
+bool					update_background(t_session* session, t_process* process);
+t_process*				background_find(t_process* target, const char* search_type, t_group* group);
+size_t					background_size(t_group* group);
+void					force_exit_background(t_session* session);
 
+// old stuff
 t_exec_status        	wait_processes(t_term* term, t_exec_status st);
 size_t					suspended_process_nb(t_process* suspended);
 bool					is_suspended(int wstatus);
