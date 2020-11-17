@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 13:05:09 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 14:50:59 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,16 @@ void		update_used_pids(int new, pid_t** used_pids)
 }
 
 // used
-static int	handle_wstatus(int wstatus, char*const* av, t_group* curr)
+static int	handle_wstatus(t_process* target, t_group* curr)
 {
 	int		i;
 
 	i = -1;
-	if (WIFEXITED(wstatus))
-		return (WEXITSTATUS(wstatus));
-	if (WIFSIGNALED(wstatus) && (wstatus = WTERMSIG(wstatus)))
-		print_signals(wstatus, (const char**)av, curr);
-	return (wstatus + SIGNAL_BASE);
+	if (WIFEXITED(target->wstatus))
+		return (WEXITSTATUS(target->wstatus));
+	if (WIFSIGNALED(target->wstatus) && (target->wstatus = WTERMSIG(target->wstatus)))
+		print_signals(target, curr); // change this
+	return (target->wstatus + SIGNAL_BASE);
 }
 
 /*
@@ -89,7 +89,7 @@ t_exec_status	wait_processes(t_term* term, t_exec_status st)
 		group_push_front(term->session, group);
         if (!update_background(term->session, &term->session->processes[i]))
 			return (RDR_BAD_ALLOC);
-        term->st = handle_wstatus(term->session->processes[i].wstatus, (char*const*)term->session->processes[i].data, term->session->groups);		
+        term->st = handle_wstatus(&term->session->processes[i], term->session->groups);		
 		if (term->session->groups->active_processes == term->session->groups->nil)
 			group_pop_front(term->session);
     }

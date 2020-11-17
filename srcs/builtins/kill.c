@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/15 16:59:58 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 14:37:21 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,23 +65,29 @@ static void		print_all_signals()
 	write(STDERR_FILENO, "\n", 1);
 }
 
-static pid_t	try_catch_pid(const char* str_pid, t_process* suspended)
+static t_process*	try_catch_pid(const char* str_pid, t_session* session)
 {
-	int		i;
-	pid_t	pid;
+	int				i;
+	t_process		tmp;
+	t_process*		ret;
+	t_group*		groups;
 
+	// sanitize numeric arg (pid)
 	i = -1;
 	while (str_pid[++i])
 		if (!ft_isdigit(str_pid[i]));
-			return (0);
-	pid = ft_atoi(str_pid);
-	while (suspended)
+			return (NULL);
+	tmp.pid = ft_atoi(str_pid);
+	groups = session->groups;
+	// for each group
+	while (groups)
 	{
-		if (pid == suspended->pid)
-			return (pid);
-		suspended = suspended->next;
+		// check if pid is in group background list
+		if ((ret = background_find(&tmp, "PID", groups)))
+			return (ret);
+		groups = groups->next;
 	}
-	return (0);
+	return (NULL);
 }
 
 t_process**	get_process(pid_t pid, t_process* suspended)
@@ -95,8 +101,8 @@ t_process**	get_process(pid_t pid, t_process* suspended)
 
 int     	ft_kill(t_exec* args, t_term* term)
 {
-    int		signal;
-	pid_t	pid;
+    int			signal;
+	t_process*	target;
 
     if (args->ac < 1)
     {
@@ -114,21 +120,17 @@ int     	ft_kill(t_exec* args, t_term* term)
     }
 	if (signal)
 	{
-		if (!(pid = try_catch_pid(args->av[2], term->suspended_processes)))
+		if (!(target = try_catch_pid(args->av[2], term->session)))
 		{
 			ft_dprintf(STDERR_FILENO, "%s\n", "bash: kill: xcwac: arguments must be process or job IDs");
 			return (STD_ERROR);
 		}
 		// handle if signal stop in read in or write out -> set ttin, ttou
 		// use something like lsof ?
-		kill(signal, pid);
+		kill(signal, target->pid);
 		// wait for it after and remove it if exited
-		while (waitpid(pid, &signal, 0) <= 0)
-			;
-		if (WIFEXITED(signal))
-			remove_suspended_process(get_process(pid, term->suspended_processes));
-		else
-			update_used_pids(pid, &term->used_pids);
+		update_background(term->session, target);
+		return (SUCCESS); // check this ret
 	}
 	ft_dprintf(STDERR_FILENO, "%s\n", "bash: kill: COT: invalid signal specification");
 	return (STD_ERROR);

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 08:18:13 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 13:06:46 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 14:11:03 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,7 @@ void            delete_group(t_group *target)
 
 void            end_session(t_session *session)
 {
+	//force_exit_background(session); // have to test
     while (session->groups)
     {
         delete_group(session->groups);
@@ -164,7 +165,7 @@ bool			update_background(t_session *session, t_process *process)
 		;
 	exited = WIFEXITED(to_use->wstatus);
 	if (!allocated && exited)
-		delete_process(to_use);
+		remove_process(to_use);
 	else if (!exited)
 	{
 		ft_dprintf(2, "Children [%d] doesn't exited", to_use->pid);
@@ -231,4 +232,19 @@ void			force_exit_background(t_session* session)
 			}
 		}
 	}
+}
+
+size_t			get_background_index(t_group* group, t_process* target)
+{
+	size_t		index;
+	t_process*	fill;
+
+	index = 1;
+	
+	if (!background_find(target, "PID", group))
+		return (index);
+	fill = group->nil->prev;
+	while (fill != group->nil && (index++))
+		fill = fill->prev;
+	return (index);
 }

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/15 15:25:54 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 13:56:38 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ bool            		update_session_history(t_session* session, t_process* update);
 bool					update_background(t_session* session, t_process* process);
 t_process*				background_find(t_process* target, const char* search_type, t_group* group);
 size_t					background_size(t_group* group);
+size_t					get_background_index(t_group* group, t_process* target);
 void					force_exit_background(t_session* session);
 
 // old stuff

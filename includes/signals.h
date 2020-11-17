@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 03:28:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 11:17:49 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 14:49:32 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,6 @@ typedef struct      s_signal_print
     bool    		has_args;
 }                   t_signal_print;
 
-void	print_signals(int wsignal_index, const char** args, t_group* group);
+void	            print_signals(t_process* target, t_group* group);
 
 #endif
