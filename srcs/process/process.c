@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 20:37:19 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 20:42:38 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,20 +77,20 @@ t_exec_status	wait_processes(t_term* term, t_exec_status st)
 	t_group*	group;
 
     i = 0;
+	if (!(group = new_group()))
+		return (RDR_BAD_ALLOC);
+	group_push_front(term->session, group);
     while (++i <= term->session->processes[MANAGE].pid)
     {
 		if (!term->session->processes[i].pid)
 			continue ;
-		if (!(group = new_group()))
-			return (RDR_BAD_ALLOC);
-		group_push_front(term->session, group);
 		t_process*	fixxxx = &term->session->processes[i];
         if (!update_background(term->session, &fixxxx))
 			return (RDR_BAD_ALLOC);
         term->st = handle_wstatus(&term->session->processes[i], term->session->nil);		
-		if (term->session->groups->active_processes == term->session->groups->nil)
-			group_pop_front(term->session);
     }
+	if (term->session->groups->active_processes == term->session->groups->nil)
+		group_pop_front(term->session);
 	ft_bzero(term->session->processes + 1, sizeof(t_process) * term->session->processes[MANAGE].pid);
 	term->session->processes[MANAGE].pid = 1;
 	return (st);

@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2020/11/17 17:55:37 by pablo            ###   ########.fr       */
-=======
-/*   Updated: 2020/11/17 11:34:46 by chamada          ###   ########.fr       */
->>>>>>> 57908b71e9a649074a64d1e32c91db90370fcf4c
+/*   Updated: 2020/11/17 20:40:57 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +25,7 @@ static t_exec_status	get_exec(t_exec* info, t_term* term)
 			&ft_unset, &ft_env, &ft_exit, &ft_fg};
 	size_t			i;
 
-	status = SUCCESS;
+	int status = SUCCESS;
 	i = 0;
 	while (i < sizeof(names) / sizeof(*names) && ft_strncmp(info->av[0], names[i], lengths[i]))
 		i++;
