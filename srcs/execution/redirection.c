@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 08:52:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/15 08:52:04 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 17:25:01 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ t_exec_status			print_redirection_error(t_redir_status rstatus, char** filename,
 	return (SUCCESS);
 }
 
-static t_redir_status	try_catch_filename(char*** filename, char* var_name)
+static t_redir_status	try_catch_filename(char*** filename, char* var_name, int height)
 {
-    if (matrix_height(*filename) > 1)
+    if (height != 1)
 	{
 		(*filename)[0] = var_name;
 		return (AMBIG_REDIRECT);
@@ -76,14 +76,15 @@ static t_redir_status	try_catch_out(t_exec** info, t_tok_t type, const char* fil
 t_redir_status			redirections_handler(t_exec** info, t_bst* cmd, t_term* term, char*** filename)
 {
 	int		            tmp;
+	int					height;
     t_redir_status      redir_st;
 
 	tmp = -1; // TODO: Init
 	if (!cmd->b)
 		return (CONTINUE);
-	if (!(*filename = tokens_expand((t_tok**)&cmd->b, &term->env, NULL))) // TODO
+	if (!(*filename = tokens_expand((t_tok**)&cmd->b, &term->env, &height))) // TODO
 		return (RDR_BAD_ALLOC);
-	if ((redir_st = try_catch_filename(filename, ((t_tok*)cmd->b)->data)) != CONTINUE)
+	if ((redir_st = try_catch_filename(filename, ((t_tok*)cmd->b)->data, height)) != CONTINUE)
         return (redir_st);
 	if (cmd->type & REDIR_GR || cmd->type & REDIR_DG)
 		redir_st = try_catch_out(info, cmd->type, (*filename)[0]);

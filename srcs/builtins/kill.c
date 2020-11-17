@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 16:02:30 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 20:35:53 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,10 @@ int     	ft_kill(t_exec* args, t_term* term)
 		// use something like lsof ?
 		kill(signal, target->pid);
 		// wait for it after and remove it if exited
-		update_background(term->session, target);
+		
+
+		// check upadte background param process
+		update_background(term->session, &target);
 		return (SUCCESS); // check this ret
 	}
 	ft_dprintf(STDERR_FILENO, "%s\n", "bash: kill: COT: invalid signal specification");

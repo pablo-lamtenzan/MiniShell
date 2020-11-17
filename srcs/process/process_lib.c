@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 08:18:13 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 16:09:22 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 20:32:44 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,23 @@ void			add_process(t_process* target, t_process* prev, t_process* next)
 	target->next = next;
 }
 
-void			remove_process(t_process* target)
+void			remove_process(t_process** target)
 {
-	target->next->prev = target->prev;
-	target->prev->next = target->next;
+	(*target)->next->prev = (*target)->prev;
+	(*target)->prev->next = (*target)->next;
 	delete_process(target);
 }
 
 void			process_push_front(t_process* process, t_group* group)
 {
-    add_process(process, group->nil, group->nil->next ? group->nil->next : group->nil);
+	t_process*	fill;
+
+	fill = process;
+	group->nil->next = process;
+	process->prev = group->nil;
+	process->next = fill;
+	fill->prev = process;
+	group->active_processes = process;
 }
 
 t_process	*new_process(pid_t pid, int wstatus, char*const* data)
@@ -57,7 +64,14 @@ void			add_group(t_group* target, t_group* prev, t_group* next)
 
 void            group_push_front(t_session* session, t_group* group)
 {
-    add_group(group, session->nil, session->nil->next ? session->nil->next : session->nil);
+	t_group*	fill;
+
+	fill = group;
+	session->nil->next = group;
+	group->prev = session->nil;
+	group->next = fill;
+	fill->prev = group;
+	session->groups = group;
 }
 
 t_group			*new_group()
@@ -82,20 +96,22 @@ t_session		*start_session()
     *session = (t_session){ .groups=NULL, .history=NULL, .processes[MANAGE].pid=1};
 	if (!(session->nil = ft_calloc(1, sizeof(t_group))))
 		return (NULL);
-	else
+	else	
 		session->groups = session->nil;
     return (session);
 }
 
-void            delete_process(t_process *target)
+void            delete_process(t_process **target)
 {
     int         i;
 
     i = -1;
-    while (target->data[++i])
-        free(target->data[i]);
-    free((char**)target->data);
-    free(target);
+    while ((*target)->data && (*target)->data[++i])
+        free((*target)->data[i]);
+    free((char**)(*target)->data);
+	ft_dprintf(2, "%p FREED IN DELETE PROCESS (form remove process)\n", target);
+    free(*target);
+	*target = NULL;
 }
 
 void			group_pop_front(t_session* session)
@@ -103,34 +119,36 @@ void			group_pop_front(t_session* session)
 	t_group*	fill;
 
 	fill = session->groups;
-	delete_group(session->nil->next);
+	delete_group(&session->nil->next);
 	session->groups = fill;
 }
 
-void            delete_group(t_group *target)
+void            delete_group(t_group **target)
 {
-    while (target->active_processes != target->nil)
+    while ((*target)->active_processes != (*target)->nil)
     {
-        delete_process(target->active_processes);
-        target->active_processes = target->active_processes->next;
+        delete_process(&(*target)->active_processes);
+        (*target)->active_processes = (*target)->active_processes->next;
     }
-    free(target->nil);
-	target->nil = NULL;
+    free((*target)->nil);
+	(*target)->nil = NULL;
+	(*target) = NULL;
 }
 
 void            end_session(t_session *session)
 {
-	//force_exit_background(session); // have to test
+	force_exit_background(session);
     while (session->groups != session->nil)
     {
-        delete_group(session->groups);
+        delete_group(&session->groups);
         session->groups = session->groups->next;
     }
     while (session->history)
     {
-        delete_process(session->history);
+        delete_process(&session->history);
         session->history = session->history->next;
     }
+	free(session->nil);
     free(session);
 }
 
@@ -154,26 +172,27 @@ static bool		not_in_background(t_process *process, t_group *group)
 	return (!background_find(process, "PID", group));
 }
 
-bool			update_background(t_session *session, t_process *process)
+bool			update_background(t_session *session, t_process **process)
 {
 	t_process	*cp;
 	t_process	*to_use;
 	bool		allocated;
 	bool		exited;
 
-	allocated = not_in_background(process, session->groups);
-	if (allocated && !(cp = new_process(process->pid, process->wstatus, process->data)))
+	cp = NULL;
+	allocated = not_in_background(*process, session->groups);
+	if (allocated && !(cp = new_process((*process)->pid, (*process)->wstatus, (*process)->data)))
 		return (false);
-	to_use = allocated ? cp : process;
+	to_use = allocated ? cp : *process;
 	ft_dprintf(2, "[WAIING...][pid=\'%d\']\n", to_use->pid);
-	while (waitpid(to_use->pid, &to_use->wstatus, 0) <= 0)
+	while (waitpid(to_use->pid, &to_use->wstatus, WUNTRACED) <= 0) // WCONTINUED for test
 		;
-	exited = WIFEXITED(to_use->wstatus);
+	exited = WIFEXITED(to_use->wstatus) || !WIFSTOPPED(to_use->wstatus);
 	if (!allocated && exited)
-		remove_process(to_use);
+		remove_process(process);
 	else if (!exited)
 	{
-		ft_dprintf(2, "Children [%d] doesn't exited", to_use->pid);
+		ft_dprintf(2, "Children [%d] doesn't exited\n", to_use->pid);
 		update_session_history(session, to_use);
 		if (allocated)
 			process_push_front(to_use, session->groups);
@@ -182,7 +201,7 @@ bool			update_background(t_session *session, t_process *process)
 		ft_dprintf(2, "Children [%d] exited\n", to_use->pid);
 	// just for set the right return value
 	if (allocated)
-		process->wstatus = cp->wstatus;
+		(*process)->wstatus = cp->wstatus;
 	return (true);
 }
 
@@ -239,9 +258,11 @@ void			force_exit_background(t_session* session)
 			{
 				fill = session->groups->active_processes;
 				session->groups->active_processes = session->groups->active_processes->next;
-				remove_process(fill);
+				remove_process(&fill);
 			}
+			session->groups->active_processes = session->groups->active_processes->next;
 		}
+		session->groups = session->groups->next;
 	}
 }
 

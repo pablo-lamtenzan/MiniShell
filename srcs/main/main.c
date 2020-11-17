@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 12:07:30 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 19:45:44 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,14 +39,6 @@
 	// to handle groups create a node each new bst of all the process
 // Change suspended_processes by active_processes ??
 
-
-*/
-
-/* COMMENTS BEFORE THIS HAS TO BE TRIMMED */
-// TO DO: && -> strange af
-// TO DO: false || echo a
-
-/*
 void	token_print(t_tok *tokens, const char *prefix)
 {
 	ft_dprintf(2, "[%s]\n", prefix);
@@ -100,7 +92,6 @@ static int 			exec(t_tok* tokens, t_term* term)
 	{
 		if (handle_conditionals(&term, flags[STATUS], &flags[CONDITIONALS], flags[PARETHESES_NB]))
 		{
-			ft_dprintf(2, "Contitionals returned true!\n");
 			if ((exec_st = execute_bst(root = bst(exec_tokens), term)) != SUCCESS)
 				handle_exec_error(root, exec_st, term);
 			free_bst(root);

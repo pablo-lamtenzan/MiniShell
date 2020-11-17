@@ -29,6 +29,7 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 						export.c\
 						pwd.c\
 						unset.c\
+						fg.c\
 					)\
 					$(addprefix bst/,\
 						bst_fill.c\

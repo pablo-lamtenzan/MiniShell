@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 12:27:50 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 17:55:37 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,16 @@
 static void		get_exec(t_exec* info, t_term* term)
 {
 	const char	*names[] = {"echo", "cd", "pwd", "export", "unset", "env", \
-			"exit"};
-	const int	lengths[] = {4, 3, 4, 7, 5, 4, 5};
+			"exit", "fg"};
+	const int	lengths[] = {4, 3, 4, 7, 5, 4, 5, 2};
 	const t_executable 	builtins[] = {&ft_echo, &ft_cd, &ft_pwd, &ft_export, \
-			&ft_unset, &ft_env, &ft_exit};
-	int			i;
+			&ft_unset, &ft_env, &ft_exit, &ft_fg};
+	size_t			i;
 
 	i = 0;
-	while (i < 7 && ft_strncmp(info->av[0], names[i], lengths[i]))
+	while (i < sizeof(names) / sizeof(*names) && ft_strncmp(info->av[0], names[i], lengths[i]))
 		i++;
-	if (i < 7)
+	if (i < sizeof(names) / sizeof(*names))
 		info->exec = builtins[i];
 	else if (build_execve_args(info, term) == SUCCESS)
 		info->exec = &execute_child;

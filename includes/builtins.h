@@ -14,4 +14,6 @@ int			ft_export(t_exec *args, t_term *t);
 int			ft_pwd(t_exec *args, t_term *t);
 int			ft_unset(t_exec *args, t_term *t);
 
+int		    ft_fg(t_exec* args, t_term* term);
+
 #endif

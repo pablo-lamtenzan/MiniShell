@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 15:35:57 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 20:22:21 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,18 +50,18 @@ typedef struct			s_session
 
 // new stuff
 void            		add_process(t_process* target, t_process* prev, t_process* next);
-void            		remove_process(t_process* target);
+void            		remove_process(t_process** target);
 void            		process_push_front(t_process* process, t_group* group);
 t_process*      		new_process(pid_t pid, int wstatus, char*const* data);
 void            		group_push_front(t_session* session, t_group* target);
 void					group_pop_front(t_session* session);
 t_group*        		new_group();
 t_session*      		start_session();
-void            		delete_process(t_process* target);
-void            		delete_group(t_group* target);
+void            		delete_process(t_process** target);
+void            		delete_group(t_group** target);
 void            		end_session(t_session* session);
 bool            		update_session_history(t_session* session, t_process* update);
-bool					update_background(t_session* session, t_process* process);
+bool					update_background(t_session* session, t_process** process);
 t_process*				background_find(t_process* target, const char* search_type, t_group* group);
 size_t					background_size(t_group* group);
 size_t					get_background_index(t_group* group, t_process* target);
