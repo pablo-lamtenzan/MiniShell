@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/15 15:25:29 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 11:51:14 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ t_exec_status	wait_processes(t_term* term, t_exec_status st)
 		if (term->session->groups->active_processes == term->session->groups->nil)
 			group_pop_front(term->session);
     }
-	ft_bzero(term->session->processes, sizeof(t_process) * term->session->processes[MANAGE].pid);
+	ft_bzero(term->session->processes + 1, sizeof(t_process) * term->session->processes[MANAGE].pid);
 	term->session->processes[MANAGE].pid = 1;
 	return (st);
 }
