@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2020/11/17 17:55:37 by pablo            ###   ########.fr       */
+=======
+/*   Updated: 2020/11/17 11:34:46 by chamada          ###   ########.fr       */
+>>>>>>> 57908b71e9a649074a64d1e32c91db90370fcf4c
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +20,7 @@
 #include <process.h>
 #include <errors.h>
 
-static void		get_exec(t_exec* info, t_term* term)
+static t_exec_status	get_exec(t_exec* info, t_term* term)
 {
 	const char	*names[] = {"echo", "cd", "pwd", "export", "unset", "env", \
 			"exit", "fg"};
@@ -25,41 +29,43 @@ static void		get_exec(t_exec* info, t_term* term)
 			&ft_unset, &ft_env, &ft_exit, &ft_fg};
 	size_t			i;
 
+	status = SUCCESS;
 	i = 0;
 	while (i < sizeof(names) / sizeof(*names) && ft_strncmp(info->av[0], names[i], lengths[i]))
 		i++;
 	if (i < sizeof(names) / sizeof(*names))
 		info->exec = builtins[i];
-	else if (build_execve_args(info, term) == SUCCESS)
+	else if ((status = build_execve_args(info, term)) == SUCCESS)
 		info->exec = &execute_child;
+	return (status);
 }
 
 static t_exec_status	execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
 {
 	char**				filename;
 	t_redir_status		redir_st;
+	t_exec_status		exec_st;
 
 	if ((redir_st = redirections_handler(&info, cmd, term, &filename)) != CONTINUE)
 		return (print_redirection_error(redir_st, filename, term));
 	if (!(cmd->type & CMD) || (cmd->type & PIPE \
 			&& !(((t_bst*)cmd->a)->type & CMD)))
-    	execute_cmd(cmd->a, info, term);
+    	exec_st = execute_cmd(cmd->a, info, term);
 	else
 	{
 		if (!(info->av = tokens_expand((t_tok**)&cmd->a, &term->env, &info->ac)))
 			return (RDR_BAD_ALLOC);
 		if (!info->av[0])
 			return (SUCCESS);
-		get_exec(info, term);
-		if (info->exec)
+		;
+		if ((exec_st = get_exec(info, term)) == SUCCESS)
 			term->st = info->exec(info, term);
 		else
 			destroy_execve_args(info);
-		info->exec = NULL;
 		if (close_pipe_fds(info->fds) != SUCCESS)
 			return (BAD_CLOSE);// return error code (could not BAD_CLOSE to define later)
 	}
-	return (SUCCESS);
+	return (exec_st == BAD_PATH ? SUCCESS : exec_st);
 }
 
 static t_exec_status	execute_job(t_bst* job, t_exec* info, t_term* term)

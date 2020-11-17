@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:10:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 11:44:01 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 10:13:43 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ t_exec_status		dup_stdio(int* fds)
 	return (SUCCESS);
 }
 
+// TODO: Rename READ to WRITE and WRITE to READ
 t_exec_status		open_pipe_fds(t_exec** info, t_tok_t type)
 {
 	bool	update;
@@ -48,6 +49,7 @@ t_exec_status		open_pipe_fds(t_exec** info, t_tok_t type)
 	{
 		if (pipe(pipe_fds) < 0)
 			return (BAD_PIPE);
+		ft_dprintf(2, "[PIPE] Using %d -> %d pipe for stdout!\n", pipe_fds[READ], pipe_fds[WRITE]);
 		(*info)->fds[STDOUT] = pipe_fds[READ];
 		(*info)->fds[AUX] = pipe_fds[WRITE];
 	}
@@ -60,7 +62,13 @@ t_exec_status		close_pipe_fds(int* fds)
 
 	i = -1;
 	while (++i < 2)
-		if (fds[i] != i && close(fds[i]) < 0)
-			return (BAD_CLOSE);
+	{
+		if (fds[i] != i)
+		{
+			if (close(fds[i]) < 0)
+				return (BAD_CLOSE);
+			ft_dprintf(2, "[PIPE] Closed fds[%d] = %d!\n", i, fds[i]);
+		}
+	}
 	return (SUCCESS);
 }

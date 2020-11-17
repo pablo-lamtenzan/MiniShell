@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 20:34:32 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 20:37:19 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,6 @@ void		update_used_pids(int new, pid_t** used_pids)
 // used
 static int	handle_wstatus(t_process* target, t_group* curr)
 {
-	int		i;
-
-	i = -1;
 	if (WIFEXITED(target->wstatus))
 		return (WEXITSTATUS(target->wstatus));
 	if (WIFSIGNALED(target->wstatus) && (target->wstatus = WTERMSIG(target->wstatus)))

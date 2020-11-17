@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 11:35:08 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 11:47:12 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 10:52:13 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ typedef enum			e_exec_status
 	BAD_CLOSE			= 2,
 	BAD_PIPE			= 3,
 	BAD_DUP2			= 4,
-	BAD_FORK			= 5
+	BAD_FORK			= 5,
+	BAD_PATH			= 6
 }						t_exec_status;
 
 typedef enum			e_redir_status

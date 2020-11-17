@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_fill.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 12:36:10 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 11:34:19 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int		execute_child(t_exec* info, t_term* term)
 	pid_t			pid;
 	t_exec_status	st;
 
-	ret = -1; // TODO: Init
+	ret = 0;
 	if (!(pid = ft_fork(info, term)))
 	{
 		if ((st = dup_stdio(info->fds)) != SUCCESS)
@@ -55,8 +55,8 @@ int		execute_child(t_exec* info, t_term* term)
 	//while (waitpid(term->pid, &wstatus, 0) <= 0)
 	//	;
 	//return (handle_wstatus(wstatus, info->av));
-	//term->session->processes[term->session->processes[MANAGE].pid].wstatus = wstatus;
-	return (SUCCESS);
+	//term->session->processes[term->session->processes[MANAGE].pid].wstatus = 0;
+	return (ret);
 }
 
 t_exec_status		build_execve_args(t_exec* info, t_term* term)
@@ -64,7 +64,7 @@ t_exec_status		build_execve_args(t_exec* info, t_term* term)
 	if (!(info->execution_path = path_get(info->av[0], env_get(term->env, "PATH", 4))))
 	{
 		term->st = CMD_NOT_FOUND;
-		return (SUCCESS);
+		return (BAD_PATH);
 	}
 	if (!(info->ep = (char*const*)env_export(term->env)))
 	{
@@ -78,6 +78,7 @@ void		destroy_execve_args(t_exec *info)
 {
 	free((char **)info->ep);
 	free((void*)info->execution_path);
+	info->exec = NULL;
 }
 
 int			matrix_height(char **matrix)
