@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_fill.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/15 13:29:11 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 11:26:03 by chamada          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,17 +33,17 @@ static int	ft_fork(t_exec* info, t_term* term)
 
 int		execute_child(t_exec* info, t_term* term)
 {
-	int				wstatus;
+	int				ret;
 	pid_t			pid;
 	t_exec_status	st;
 
-	wstatus = -1; // TODO: Init
+	ret = 0;
 	if (!(pid = ft_fork(info, term)))
 	{
 		if ((st = dup_stdio(info->fds)) != SUCCESS)
 			return (st);
-		wstatus = execve(info->execution_path, info->av, info->ep);
-		ft_dprintf(STDERR_FILENO, "%s: %s: execve returned '%d'!\n", term->name, info->av[0], wstatus);
+		ret = execve(info->execution_path, info->av, info->ep);
+		ft_dprintf(STDERR_FILENO, "%s: %s: execve returned '%d'!\n", term->name, info->av[0], ret);
 		exit(EXIT_FAILURE);
 	}
 	else if (pid < 0)
@@ -55,8 +55,8 @@ int		execute_child(t_exec* info, t_term* term)
 	//while (waitpid(term->pid, &wstatus, 0) <= 0)
 	//	;
 	//return (handle_wstatus(wstatus, info->av));
-	term->session->processes[term->session->processes[MANAGE].pid].wstatus = wstatus;
-	return (wstatus);
+	//term->session->processes[term->session->processes[MANAGE].pid].wstatus = 0;
+	return (ret);
 }
 
 t_exec_status		build_execve_args(t_exec* info, t_term* term)
@@ -78,6 +78,7 @@ void		destroy_execve_args(t_exec *info)
 {
 	free((char **)info->ep);
 	free((void*)info->execution_path);
+	info->exec = NULL;
 }
 
 int			matrix_height(char **matrix)
