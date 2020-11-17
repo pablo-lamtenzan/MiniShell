@@ -27,7 +27,7 @@ Syntax:
  -> '%%' and '%+' refers to current job (stopped while he was in the foreground or started in the background)
  -> '%' refers to current job too
  -> '%-' refers to the previous
- -> If there are 1 job '%+' and '%+' refers to the same output
+ -> If there are 1 job '%+' and '%-' refers to the same output
  -> Current job is allways flaged with '+' and the previous with '-'
  -> '%name' refers to a 'name' job in the background
  -> '?name' refers to a 'name' job containing string 'name' in its command line (name or args) if matches one than 1 time, repport error
