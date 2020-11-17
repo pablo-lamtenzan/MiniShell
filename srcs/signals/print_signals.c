@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/15 15:05:06 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 15:44:03 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,10 +151,10 @@ t_signal_print	get_signal_print(size_t index)
 // token + to prev pid, token - to prev - 1 pid
 // need to remember to its pid and cmp
 
-void	print_signals(int wsignal_index, const char** args, t_group* g)
+void	print_signals(t_process* target, t_group* nil)
 {
 	int	i;
-	const t_signal_print signal = get_signal_print(wsignal_index);
+	const t_signal_print signal = get_signal_print(target->wstatus);
 	void*	addr;
 
 	i = -1;
@@ -164,7 +164,7 @@ void	print_signals(int wsignal_index, const char** args, t_group* g)
 	ft_dprintf(STDERR_FILENO, "%s%s%s%s%s%s%s%s%s", \
 			signal.endline ? signal.endline : "", \
 			signal.process_nb ? "[" : "", \
-			signal.process_nb ? (addr = ft_itoa(background_size(g))) : "", \
+			signal.process_nb ? (addr = ft_itoa(get_background_index(nil, target))) : "", \
 			signal.process_nb ? "]" : "", \
 			signal.plus ? "+  " : "", \
 			signal.message , \
@@ -173,8 +173,8 @@ void	print_signals(int wsignal_index, const char** args, t_group* g)
 			signal.has_args ? "                 " : ""\
 			);
 	if (signal.has_args)
-		while (args && args[++i])
-			ft_dprintf(STDERR_FILENO, "%s%s", args[i], args[i + 1] ? " " : "");
+		while (target->data && target->data[++i])
+			ft_dprintf(STDERR_FILENO, "%s%s", target->data[i], target->data[i + 1] ? " " : "");
 	write(STDERR_FILENO, "\n", 1);
 	free(addr);
 }

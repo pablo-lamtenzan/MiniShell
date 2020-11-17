@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/15 15:46:01 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 16:01:12 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,50 +16,55 @@
 #include <execution.h>
 #include <process.h>
 
-static pid_t		find_pid(t_process* suspended, char* str_index)
+static t_process*	find_pid(t_session* session, char* str_index)
 {
     size_t          index;
     int             i;
     t_process*      cp;
+    t_group*        groups;
 
     i = -1;
     if (!str_index)
-        return (false);
+        return (NULL);
     while (str_index[++i])
         if (!ft_isdigit(str_index[i]))
-            return (false);
+            return (NULL);
     index = ft_atoi(str_index);
-    cp = suspended;
-    while (cp && (index--) && index)
-        cp = cp->next;
+    // dbg
+    ft_dprintf(2, "FG index= [%d]\n", index);
+    groups = session->groups;
+    // for each group
+    while (groups != session->nil)
+    {    
+        cp = groups->active_processes;
+        // for each background process in each group
+        while (cp != groups->nil && (index--) && index)
+            cp = cp->next;
+        groups = groups->next;
+    }
     if (index > 0)
-        return (false);
-    return (cp->pid);
+        return (NULL);
+    return (cp);
 }
 
 int		ft_fg(t_exec* args, t_term* term)
 {
-    pid_t			pid;
+    t_process*		target;
     void*			addr;
     int				i;
 
-    pid = term->suspended_processes->pid;
+    target = term->session->groups->active_processes->pid;
     if (args->ac > 1)
     {
-        if ((*args->av[1] && *(args->av[1] + 1) =! '%') \
-            || !(pid = find_pid(term->suspended_processes, args->av[1][0] ? &args->av[1][1] : NULL)))
+        if ((args->av[1][0] && args->av[1][1] != '%') \
+            || !(target = find_pid(term->session, args->av[1][0] ? &args->av[1][1] : NULL)))
         {
             ft_dprintf(STDERR_FILENO, "minish: fg: %s: no such job", args->av[1]);
             return (STD_ERROR);
         }
     }
-    kill(pid, SIGCONT);
-    while (waitpid(pid, &term->suspended_processes->wstatus, 0) <= 0)
-        ;
-    // probally better check if exited
-    if (!is_suspended(term->suspended_processes->wstatus))
-        remove_suspended_process(&term->suspended_processes);
-    else
-        update_used_pids(pid, &term->used_pids);
+    kill(target->pid, SIGCONT);
+    // if TTIN or TTOUT -> SIGHUB (i suposse)
+    update_background(term->session, target);
     return (SUCCESS);
 }
