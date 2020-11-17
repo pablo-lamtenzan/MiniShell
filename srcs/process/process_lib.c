@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 08:18:13 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 15:58:17 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 16:09:22 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ t_session		*start_session()
     if (!(session = ft_calloc(1, sizeof(t_session))))
         return (NULL);
     *session = (t_session){ .groups=NULL, .history=NULL, .processes[MANAGE].pid=1};
-	if (!(session->nil = malloc(sizeof(t_group))))
+	if (!(session->nil = ft_calloc(1, sizeof(t_group))))
 		return (NULL);
 	else
 		session->groups = session->nil;
