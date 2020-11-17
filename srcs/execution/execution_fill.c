@@ -64,7 +64,7 @@ t_exec_status		build_execve_args(t_exec* info, t_term* term)
 	if (!(info->execution_path = path_get(info->av[0], env_get(term->env, "PATH", 4))))
 	{
 		term->st = CMD_NOT_FOUND;
-		return (SUCCESS);
+		return (BAD_PATH);
 	}
 	if (!(info->ep = (char*const*)env_export(term->env)))
 	{
