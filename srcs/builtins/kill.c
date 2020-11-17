@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 14:37:21 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 16:02:30 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ static t_process*	try_catch_pid(const char* str_pid, t_session* session)
 	tmp.pid = ft_atoi(str_pid);
 	groups = session->groups;
 	// for each group
-	while (groups)
+	while (groups != session->nil)
 	{
 		// check if pid is in group background list
 		if ((ret = background_find(&tmp, "PID", groups)))

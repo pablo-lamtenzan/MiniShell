@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 13:56:38 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 15:35:57 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ typedef struct			s_group
 	t_process*			active_processes;
 	t_process*			nil;
 	struct s_group*		next;
+	struct s_group*		prev;
 }						t_group;
 
 typedef struct			s_session
@@ -44,6 +45,7 @@ typedef struct			s_session
 	t_group*			groups; // all background processes by group
 	t_process			processes[PROCESSES_MAX + 1]; // exec processes
 	t_process			*history;
+	t_group				*nil;
 }						t_session;
 
 // new stuff

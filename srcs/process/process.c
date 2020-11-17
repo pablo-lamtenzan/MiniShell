@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 14:50:59 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 15:45:00 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ t_exec_status	wait_processes(t_term* term, t_exec_status st)
 		group_push_front(term->session, group);
         if (!update_background(term->session, &term->session->processes[i]))
 			return (RDR_BAD_ALLOC);
-        term->st = handle_wstatus(&term->session->processes[i], term->session->groups);		
+        term->st = handle_wstatus(&term->session->processes[i], term->session->nil);		
 		if (term->session->groups->active_processes == term->session->groups->nil)
 			group_pop_front(term->session);
     }

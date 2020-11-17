@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 08:18:13 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 14:11:03 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 15:58:17 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,6 @@
 # include <unistd.h>
 # include <signal.h>
 # include <sys/wait.h>
-
-void			delete_process(t_process* target);
-t_process*		background_find(t_process* target, const char* search_type, t_group* group);
 
 void			add_process(t_process* target, t_process* prev, t_process* next)
 {
@@ -50,13 +47,17 @@ t_process	*new_process(pid_t pid, int wstatus, char*const* data)
     return (process);
 }
 
-void            group_push_front(t_session* session, t_group* target)
+void			add_group(t_group* target, t_group* prev, t_group* next)
 {
-    t_group*  fill;
+	prev->next = target;
+	target->prev = prev;
+	next->prev = target;
+	target->next = next;
+}
 
-    fill = session->groups;
-    session->groups = target;
-	target->next = fill;
+void            group_push_front(t_session* session, t_group* group)
+{
+    add_group(group, session->nil, session->nil->next ? session->nil->next : session->nil);
 }
 
 t_group			*new_group()
@@ -79,6 +80,10 @@ t_session		*start_session()
     if (!(session = ft_calloc(1, sizeof(t_session))))
         return (NULL);
     *session = (t_session){ .groups=NULL, .history=NULL, .processes[MANAGE].pid=1};
+	if (!(session->nil = malloc(sizeof(t_group))))
+		return (NULL);
+	else
+		session->groups = session->nil;
     return (session);
 }
 
@@ -98,7 +103,7 @@ void			group_pop_front(t_session* session)
 	t_group*	fill;
 
 	fill = session->groups;
-	delete_group(session->groups);
+	delete_group(session->nil->next);
 	session->groups = fill;
 }
 
@@ -116,7 +121,7 @@ void            delete_group(t_group *target)
 void            end_session(t_session *session)
 {
 	//force_exit_background(session); // have to test
-    while (session->groups)
+    while (session->groups != session->nil)
     {
         delete_group(session->groups);
         session->groups = session->groups->next;
@@ -199,15 +204,21 @@ t_process*		background_find(t_process* target, const char* search_type, t_group*
 	return (NULL);
 }
 
-size_t			background_size(t_group* group)
+size_t			background_size(t_group* nil)
 {
 	t_process*	fill;
+	t_group*	groups;
 	size_t		size;
 
-	fill = group->active_processes;
+	groups = nil->next;
+	fill = groups->active_processes;
 	size = 1;
-	while (fill && group->nil && (size++))
-		fill = fill->next;
+	while (groups != nil)
+	{
+		while (fill && groups->nil && (size++))
+			fill = fill->next;
+		groups = groups->next;
+	}
 	return (size - 1);
 }
 
@@ -215,7 +226,7 @@ void			force_exit_background(t_session* session)
 {
 	t_process*	fill;
 
-	while (session->groups)
+	while (session->groups != session->nil)
 	{
 		while (session->groups->active_processes != session->groups->nil)
 		{
@@ -234,17 +245,26 @@ void			force_exit_background(t_session* session)
 	}
 }
 
-size_t			get_background_index(t_group* group, t_process* target)
+// have to inverse the groups
+// have to create a gnil in session for manage the groups
+size_t			get_background_index(t_group* nil, t_process* target)
 {
 	size_t		index;
 	t_process*	fill;
+	t_group*	groups;
 
 	index = 1;
-	
-	if (!background_find(target, "PID", group))
-		return (index);
-	fill = group->nil->prev;
-	while (fill != group->nil && (index++))
-		fill = fill->prev;
+	groups = nil->prev;
+	while (groups != nil)
+	{
+		fill = groups->nil->prev;
+		while (fill != groups->nil && (index++))
+		{
+			if (fill == target)
+				return (index);
+			fill = fill->prev;
+		}
+		groups = groups->prev;
+	}
 	return (index);
 }

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 14:35:01 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 16:01:12 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static t_process*	find_pid(t_session* session, char* str_index)
     ft_dprintf(2, "FG index= [%d]\n", index);
     groups = session->groups;
     // for each group
-    while (groups)
+    while (groups != session->nil)
     {    
         cp = groups->active_processes;
         // for each background process in each group

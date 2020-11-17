@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 12:03:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 14:41:04 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 16:01:45 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int				ft_jobs(t_exec* args, t_term* term)
 	// + - -> "+" = last pid (ussed not added), "-" = last pid (ussed not added) -
 	// value into parentheses cound be more than the values alreaddy defined
 	groups = term->session->groups;
-	while (groups)
+	while (groups != term->session->nil)
 	{
 		cp = groups->nil->prev;
 		while (cp != term->session->groups->nil)
