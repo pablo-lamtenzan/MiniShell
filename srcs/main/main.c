@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/15 16:58:49 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 12:07:30 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 #include <separators.h>
 #include <builtins.h>
 
-// TODO: child with signal returns t->st = 128 + sig_n DONE 
-// TODO: Local path_get (start with '/' or '.') DONE
 // TODO: Nb process printed in print_signals (for inperrumpt signals) into pipe
 // TODO: > file or < file without cmd DONE?
 
@@ -29,13 +27,10 @@
 - bash: $a: ambiguous redirect -> 1
 - bash:	filename: File name too long -> redirect to a long filename -> 1
 
-// add: in term t_process processes[MAX_PROCESSES + 1] and init processes[0] = 1, next, prev = NULL
-// add: in term t_process* suspended_processes and init to NULL
 // perror for fork
 // SIGPIPE for pipes
 // SIGHUP job control (sent to a job when its term is closed 99% sure)
-// add: in term pid_t	used_pids[2], init it to 0
-// remember to update_used_pids every time a process is used but not exited
+
 // check if the ret of fg is the ret of the continued signal
 
 // have t collect the zombies process pid with wait
@@ -44,7 +39,6 @@
 	// to handle groups create a node each new bst of all the process
 // Change suspended_processes by active_processes ??
 
-// NEW IDEA: process.h: t_systhem
 
 */
 

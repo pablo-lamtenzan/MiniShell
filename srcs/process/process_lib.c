@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 08:18:13 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/16 08:18:14 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/17 13:06:46 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,7 +156,7 @@ bool			update_background(t_session *session, t_process *process)
 	bool		exited;
 
 	allocated = not_in_background(process, session->groups);
-	if (!(cp = new_process(process->pid, process->wstatus, process->data)))
+	if (allocated && !(cp = new_process(process->pid, process->wstatus, process->data)))
 		return (false);
 	to_use = allocated ? cp : process;
 	ft_dprintf(2, "[WAIING...][pid=\'%d\']\n", to_use->pid);
@@ -174,6 +174,9 @@ bool			update_background(t_session *session, t_process *process)
 	}
 	else
 		ft_dprintf(2, "Children [%d] exited\n", to_use->pid);
+	// just for set the right return value
+	if (allocated)
+		process->wstatus = cp->wstatus;
 	return (true);
 }
 
