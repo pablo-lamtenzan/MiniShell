@@ -22,7 +22,7 @@ Job control facilities:
  -> ^Z: Discards pendint output and typehead
  -> Job control builtins
 
-Systax:
+Syntax:
  -> '%' introdudes a job spectification 
  -> '%%' and '%+' refers to current job (stopped while he was in the foreground or started in the background)
  -> '%' refers to current job too
