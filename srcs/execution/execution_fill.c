@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_fill.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 11:34:19 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/18 14:51:34 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ void		destroy_execve_args(t_exec *info)
 	info->exec = NULL;
 }
 
+/*
 int			matrix_height(char **matrix)
 {
 	char** it;
@@ -90,3 +91,4 @@ int			matrix_height(char **matrix)
 		it++;
 	return (it - matrix);
 }
+*/

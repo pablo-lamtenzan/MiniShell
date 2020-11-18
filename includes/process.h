@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 20:22:21 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/18 16:28:58 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <unistd.h>
 # include <stdbool.h>
+# include <sys/types.h>
 
 # include <errors.h>
 
@@ -51,7 +52,7 @@ typedef struct			s_session
 // new stuff
 void            		add_process(t_process* target, t_process* prev, t_process* next);
 void            		remove_process(t_process** target);
-void            		process_push_front(t_process* process, t_group* group);
+void            		process_push_front(t_process* process, t_group** group);
 t_process*      		new_process(pid_t pid, int wstatus, char*const* data);
 void            		group_push_front(t_session* session, t_group* target);
 void					group_pop_front(t_session* session);
@@ -66,6 +67,8 @@ t_process*				background_find(t_process* target, const char* search_type, t_grou
 size_t					background_size(t_group* group);
 size_t					get_background_index(t_group* group, t_process* target);
 void					force_exit_background(t_session* session);
+
+t_process**				jobspec_parser(t_session* session, int ac, char*const* av, t_process** (*fill)(int ac, char*const* av));
 
 // old stuff
 size_t					suspended_process_nb(t_process* suspended);

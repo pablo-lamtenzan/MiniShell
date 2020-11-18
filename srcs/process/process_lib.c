@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 08:18:13 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 20:32:44 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/18 16:38:37 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,21 @@ void			remove_process(t_process** target)
 	delete_process(target);
 }
 
-void			process_push_front(t_process* process, t_group* group)
+void			process_push_front(t_process* process, t_group** group)
 {
 	t_process*	fill;
 
-	fill = process;
-	group->nil->next = process;
-	process->prev = group->nil;
+	/ft_dprintf(2, "GROUP NIL BEFORE: %p\n", (*group)->nil);
+	//ft_dprintf(2, "GROUP ACTIVE PROCESSES BEFORE: %p\n", (*group)->active_processes);
+	fill = (*group)->active_processes;
+	(*group)->nil->next = process;
+	process->prev = (*group)->nil;
 	process->next = fill;
 	fill->prev = process;
-	group->active_processes = process;
+	(*group)->active_processes = process;
+	//ft_dprintf(2, "GROUP NIL AFTER: %p\n", (*group)->nil);
+	//ft_dprintf(2, "GROUP ACTIVE PROCESSES AFTER: %p\n", (*group)->active_processes);
+	//ft_dprintf(2, "GROUP NIL NEXT IS NOW: %p\n", (*group)->nil->next);
 }
 
 t_process	*new_process(pid_t pid, int wstatus, char*const* data)
@@ -66,12 +71,18 @@ void            group_push_front(t_session* session, t_group* group)
 {
 	t_group*	fill;
 
-	fill = group;
+	//ft_dprintf(2, "SESSION GROUPS IS WAS: %p\n", session->groups);
+	//ft_dprintf(2, "[PUSH FRONT][NIL AT THE BEGINING: %p]\n", session->nil);
+	fill = session->groups;
 	session->nil->next = group;
 	group->prev = session->nil;
 	group->next = fill;
 	fill->prev = group;
 	session->groups = group;
+	//ft_dprintf(2, "[PUSH FRONT][GROUP: %p]\n", group);
+	//ft_dprintf(2, "SESSION GROUPS IS RIGHT NOW: %p\n", session->groups);
+	//ft_dprintf(2, "SESSION GROUPS->PREV IS RIGHT NOW: %p\n", session->groups->prev);
+	//ft_dprintf(2, "SESSION GROUPS NIL IS RIGHT NOW: %p\n", session->groups->prev);
 }
 
 t_group			*new_group()
@@ -84,6 +95,8 @@ t_group			*new_group()
         return (NULL);
 	else
 		group->active_processes = group->nil;
+	//ft_dprintf(2, "[NEW GROUP][ALLOCATE GROUP: %p]\n", group);
+	ft_dprintf(2, "[NEW GROUP][ALLOCATE PROCESSES (=nil): %p]\n", group->active_processes);
     return (group);
 }
 
@@ -109,8 +122,9 @@ void            delete_process(t_process **target)
     while ((*target)->data && (*target)->data[++i])
         free((*target)->data[i]);
     free((char**)(*target)->data);
-	ft_dprintf(2, "%p FREED IN DELETE PROCESS (form remove process)\n", target);
+	//ft_dprintf(2, "%p FREED IN DELETE PROCESS (form remove process)\n", target);
     free(*target);
+	
 	*target = NULL;
 }
 
@@ -118,7 +132,7 @@ void			group_pop_front(t_session* session)
 {
 	t_group*	fill;
 
-	fill = session->groups;
+	fill = session->groups->next;
 	delete_group(&session->nil->next);
 	session->groups = fill;
 }
@@ -132,6 +146,7 @@ void            delete_group(t_group **target)
     }
     free((*target)->nil);
 	(*target)->nil = NULL;
+	//ft_dprintf(2, "[DELETE GROUP FREE TARGET: %p]\n", *target);
 	(*target) = NULL;
 }
 
@@ -184,6 +199,7 @@ bool			update_background(t_session *session, t_process **process)
 	if (allocated && !(cp = new_process((*process)->pid, (*process)->wstatus, (*process)->data)))
 		return (false);
 	to_use = allocated ? cp : *process;
+	ft_dprintf(2, "[UPDATE BACKGROUND][to_use addr: %p]\n", to_use);
 	ft_dprintf(2, "[WAIING...][pid=\'%d\']\n", to_use->pid);
 	while (waitpid(to_use->pid, &to_use->wstatus, WUNTRACED) <= 0) // WCONTINUED for test
 		;
@@ -195,7 +211,7 @@ bool			update_background(t_session *session, t_process **process)
 		ft_dprintf(2, "Children [%d] doesn't exited\n", to_use->pid);
 		update_session_history(session, to_use);
 		if (allocated)
-			process_push_front(to_use, session->groups);
+			process_push_front(to_use, &session->groups);
 	}
 	else
 		ft_dprintf(2, "Children [%d] exited\n", to_use->pid);

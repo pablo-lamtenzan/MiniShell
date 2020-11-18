@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 20:42:38 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/18 15:11:38 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ t_exec_status	wait_processes(t_term* term, t_exec_status st)
 		t_process*	fixxxx = &term->session->processes[i];
         if (!update_background(term->session, &fixxxx))
 			return (RDR_BAD_ALLOC);
+		term->session->processes[i] = *fixxxx; // random bullshit test
         term->st = handle_wstatus(&term->session->processes[i], term->session->nil);		
     }
 	if (term->session->groups->active_processes == term->session->groups->nil)

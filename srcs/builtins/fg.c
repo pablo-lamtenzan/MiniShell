@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 20:24:54 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/18 14:53:54 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <process.h>
 
 // is is wrong (type)
-static t_process**	find_pid(t_session* session, char* str_index)
+t_process**	find_pid(t_session* session, char* str_index)
 {
     size_t          index;
     int             i;
@@ -62,11 +62,9 @@ int		ft_fg(t_exec* args, t_term* term)
     target = &term->session->groups->active_processes;
     if (args->ac > 1)
     {
-        // DO TO proces** find pid
-        if ((args->av[1][0] && args->av[1][1] != '%') \
-            || !(target = find_pid(term->session, args->av[1][0] ? &args->av[1][1] : NULL)))
-        {
-            ft_dprintf(STDERR_FILENO, "minish: fg: %s: no such job", args->av[1]);
+        if (!(target = jobspec_parser(term->session, args->ac, args->av, NULL)))
+		{
+            ft_dprintf(STDERR_FILENO, "minish: fg: %s: no such job\n", args->av[1]);
             return (STD_ERROR);
         }
     }

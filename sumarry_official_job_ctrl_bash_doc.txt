@@ -117,6 +117,11 @@ t_process**		jobspec_parser(t_session* session, int ac, const char** av, t_proce
  -> Returns the address of the process in session->groups->active_processes
  -> Parse jobspec syntax and executes a fill syntax-search function
 
+get_process_by_index();
+get_process_by_pid();
+get_process_by_name();
+get_proxess_by_history();
+
 Exit with suspended processes in background:
  -> Use a flag if the exit is possible
  -> Else print: "Exit\nThere are stopped jobs."
@@ -131,3 +136,15 @@ Test and check more about wait
 For print in jobs Jobs has diferent status: Sttoped, Running, Done ... (have to find all)
 
 SOME BUILTINS CAN TAKE CMD NAME WITOUT '%'
+
+// to do
+1) Syntax
+2) Exit new stuff
+3) Disown
+4) Wait
+5) bg
+6) fg
+7) kill
+8) jobs
+9) test SIGCHLD to solve "cat | cat -e | echo a" or "cat | cat -e | ls"
+10) Correct other litle details

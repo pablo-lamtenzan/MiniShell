@@ -56,6 +56,7 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 					$(addprefix process/,\
 						process_lib.c\
 						resume_suspended_processes.c\
+						jobspec_parser.c\
 						process.c\
 					)\
 					$(addprefix main/,\
