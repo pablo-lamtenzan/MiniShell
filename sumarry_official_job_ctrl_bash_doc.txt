@@ -138,13 +138,14 @@ For print in jobs Jobs has diferent status: Sttoped, Running, Done ... (have to 
 SOME BUILTINS CAN TAKE CMD NAME WITOUT '%'
 
 // to do
-1) Syntax
+1) Syntax DONE! (just little isues with %name)
 2) Exit new stuff
 3) Disown
-4) Wait
+4) Wait (Implemented, not ended, not tested)
 5) bg
-6) fg
-7) kill
-8) jobs
+-> Important if the suspended job in bg reads from stdin bash intercept it (tty input) (this process can read to stdin too!)
+6) fg DONE!
+7) kill DONE! (have to test better a fcking lot of kinds of error msg)
+8) jobs (Implemented, in old version)
 9) test SIGCHLD to solve "cat | cat -e | echo a" or "cat | cat -e | ls"
 10) Correct other litle details

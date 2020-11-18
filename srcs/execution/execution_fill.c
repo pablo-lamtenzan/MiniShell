@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/18 14:51:34 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/18 21:04:58 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,16 @@ static int	ft_fork(t_exec* info, t_term* term)
 
 	child_st = fork();
 	term->session->processes[term->session->processes[MANAGE].pid].pid = child_st;
+	term->session->processes[term->session->processes[MANAGE].pid].data = info->av;
+	if (!ft_strncmp((const char*)term->session->processes[term->session->processes[MANAGE].pid].data, "./", 2))
+		; // TO DO: trim ./
 	if (child_st == 0)
 	{
 		// for the moment overwrite the last
 		if (term->session->processes[MANAGE].pid < PROCESSES_MAX)
+		{
 			term->session->processes[MANAGE].pid++;
-		term->session->processes->data = info->av;
+		}
 	}
 	return (child_st);
 }

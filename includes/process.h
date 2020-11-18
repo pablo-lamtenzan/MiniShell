@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/18 16:28:58 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/18 22:48:17 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ size_t					get_background_index(t_group* group, t_process* target);
 void					force_exit_background(t_session* session);
 
 t_process**				jobspec_parser(t_session* session, int ac, char*const* av, t_process** (*fill)(int ac, char*const* av));
+bool					is_string_digit(const char* string);
 
 // old stuff
 size_t					suspended_process_nb(t_process* suspended);

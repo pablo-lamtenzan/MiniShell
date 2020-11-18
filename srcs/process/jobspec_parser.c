@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 12:40:22 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/18 16:42:08 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/18 21:07:36 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,8 @@ size_t			get_search_mode(const char* av)
 t_process**		get_process_by_index(t_session* session, t_group* groups, size_t index)
 {
 	// %index
+	if (!index)
+		return (NULL);
 	ft_dprintf(2, "[INDEX][index: %lu]\n", index);
 	while (groups != session->nil)
 	{
@@ -125,7 +127,8 @@ t_process**		get_process_by_name(t_session* session, t_group* groups, const char
 			count = -1;
 			if (search_mode == 1) // %name
 			{
-				if (!ft_strncmp(groups->active_processes->data[0], av, ft_strlen(av)) && (match++))
+				ft_dprintf(2, "TEST  %s \n", &groups->active_processes->data[0][2]);
+				if (!ft_strncmp(&groups->active_processes->data[0][2], av, ft_strlen(av)) && (match++)) // hange 1st arg to data[0] addr after trim ./ in execution fill
 					ret = &groups->active_processes;
 			}
 			else if (search_mode == 2) // %?name
@@ -192,5 +195,5 @@ t_process**		jobspec_parser(t_session* session, int ac, char*const* av, t_proces
 
 // %index WORKS
 // %pid WORKS
-// %hist TO DGB
+// %hist TO DGB (fg %, fg %- x2)
 // %name/%?name TO DBG

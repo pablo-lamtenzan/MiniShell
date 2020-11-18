@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 08:18:13 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/18 16:38:37 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/18 23:08:13 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void			remove_process(t_process** target)
 {
 	(*target)->next->prev = (*target)->prev;
 	(*target)->prev->next = (*target)->next;
+	ft_dprintf(2, "[REMOVE PROCESS][%p]\n", *target);
 	delete_process(target);
 }
 
@@ -36,7 +37,7 @@ void			process_push_front(t_process* process, t_group** group)
 {
 	t_process*	fill;
 
-	/ft_dprintf(2, "GROUP NIL BEFORE: %p\n", (*group)->nil);
+	//ft_dprintf(2, "GROUP NIL BEFORE: %p\n", (*group)->nil);
 	//ft_dprintf(2, "GROUP ACTIVE PROCESSES BEFORE: %p\n", (*group)->active_processes);
 	fill = (*group)->active_processes;
 	(*group)->nil->next = process;

@@ -30,6 +30,8 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 						pwd.c\
 						unset.c\
 						fg.c\
+						bg.c\
+						kill.c\
 					)\
 					$(addprefix bst/,\
 						bst_fill.c\
