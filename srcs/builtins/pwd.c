@@ -12,6 +12,8 @@
 
 #include <execution.h>
 
+// TODO: Redirections for STDERR_FILENO
+
 int		ft_pwd(t_exec *args, t_term *t)
 {
 	char			cwd[PATH_MAX];
@@ -24,7 +26,7 @@ int		ft_pwd(t_exec *args, t_term *t)
 	{
 		if (!(getcwd(cwd, sizeof(cwd))))
 			return (STD_ERROR);
-		ft_dprintf(args->fds[1], "%s\n", cwd);
+		ft_dprintf(args->fds[FDS_STDOUT], "%s\n", cwd);
 	}
 	return (SUCCESS);
 }

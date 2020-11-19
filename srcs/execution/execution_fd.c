@@ -38,10 +38,10 @@ t_exec_status		open_pipe_fds(t_exec** info, t_tok_t type)
 
 	update = false;
 
-	if ((*info)->fds[STDOUT] != STDOUT && (update = true))
+	if ((*info)->fds[FDS_STDOUT] != FDS_STDOUT && (update = true))
 	{
-		(*info)->fds[STDOUT] = STDOUT;
-		(*info)->fds[STDIN] = (*info)->fds[AUX];
+		(*info)->fds[FDS_STDOUT] = FDS_STDOUT;
+		(*info)->fds[FDS_STDIN] = (*info)->fds[FDS_AUX];
 		if (type & PIPE)
 			update = false;
 	}
@@ -49,9 +49,10 @@ t_exec_status		open_pipe_fds(t_exec** info, t_tok_t type)
 	{
 		if (pipe(pipe_fds) < 0)
 			return (BAD_PIPE);
-		ft_dprintf(2, "[PIPE] Using %d -> %d pipe for stdout!\n", pipe_fds[READ], pipe_fds[WRITE]);
-		(*info)->fds[STDOUT] = pipe_fds[READ];
-		(*info)->fds[AUX] = pipe_fds[WRITE];
+		ft_dprintf(2, "[PIPE] Using %d -> %d pipe for stdout!\n",
+			pipe_fds[PIPE_WRITE], pipe_fds[PIPE_READ]);
+		(*info)->fds[FDS_STDOUT] = pipe_fds[PIPE_WRITE];
+		(*info)->fds[FDS_AUX] = pipe_fds[PIPE_READ];
 	}
 	return (SUCCESS);
 }

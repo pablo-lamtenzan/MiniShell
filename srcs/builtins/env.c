@@ -29,8 +29,8 @@ int	ft_env(t_exec *args, t_term *t)
 	(void) args;
 	while (curr)
 	{
-		ft_putstr_fd(curr->key, args->fds[1]);
-		write(args->fds[1], "\n", 1);
+		ft_putstr_fd(curr->key, args->fds[FDS_STDOUT]);
+		write(args->fds[FDS_STDOUT], "\n", 1);
 		curr = curr->next;
 	}
 	return (SUCCESS);

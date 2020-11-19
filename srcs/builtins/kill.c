@@ -13,6 +13,16 @@
 #include <execution.h>
 #include <signal.h>
 
+// TODO: Cross platform compatibility for missing signals
+// TODO: Test on 42 XUbuntu VM
+#ifndef SIGSTKFLT
+# define SIGSTKFLT -1
+#endif
+
+#ifndef SIGPWR
+# define SIGPWR -1
+#endif
+
 const static char*	get_signal(const char* key, int* res)
 {
 	const char*	signals[32] = {
