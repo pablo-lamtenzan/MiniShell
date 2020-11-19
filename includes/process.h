@@ -21,13 +21,15 @@
 
 #define PROCESSES_MAX   4096
 #define MANAGE          0
-#define LAST			0
-#define PENULTIMATE		1
+
+#define RESTRICT_OP		1
+#define NO_HANGUP		2
 
 typedef struct 			s_process
 {
 	pid_t				pid;
     int					wstatus;
+	unsigned char		flags;
 	char*const*			data;
 	struct s_process*	next;
 	struct s_process*	prev;
@@ -63,9 +65,10 @@ void            		delete_group(t_group** target);
 void            		end_session(t_session* session);
 bool            		update_session_history(t_session* session, t_process* update);
 bool					update_background(t_session* session, t_process** process);
-t_process*				background_find(t_process* target, const char* search_type, t_group* group);
+t_process**				background_find(t_process* target, const char* search_type, t_group* group);
 size_t					background_size(t_group* group);
 size_t					get_background_index(t_group* group, t_process* target);
+pid_t					get_process_leader_pid(t_group* nil, t_process* target);
 void					force_exit_background(t_session* session);
 
 t_process**				jobspec_parser(t_session* session, int ac, char*const* av, t_process** (*fill)(int ac, char*const* av));

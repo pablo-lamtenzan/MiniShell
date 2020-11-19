@@ -19,10 +19,11 @@
 static t_exec_status	get_exec(t_exec* info, t_term* term)
 {
 	const char	*names[] = {"echo", "cd", "pwd", "export", "unset", "env", \
-			"exit", "fg", "kill", "bg", "jobs"};
-	const int	lengths[] = {4, 3, 4, 7, 5, 4, 5, 2, 4, 2, 4};
+			"exit", "fg", "kill", "bg", "jobs", "disown"};
+	const int	lengths[] = {4, 3, 4, 7, 5, 4, 5, 2, 4, 2, 4, 6};
 	const t_executable 	builtins[] = {&ft_echo, &ft_cd, &ft_pwd, &ft_export, \
-			&ft_unset, &ft_env, &ft_exit, &ft_fg, &ft_kill, &ft_bg, &ft_jobs};
+			&ft_unset, &ft_env, &ft_exit, &ft_fg, &ft_kill, &ft_bg, &ft_jobs, \
+			&ft_disown};
 	size_t			i;
 
 	int status = SUCCESS;

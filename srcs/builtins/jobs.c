@@ -36,7 +36,7 @@ bool			is_leader(t_session* session, t_process* target)
 	return (false);
 }
 
-int				parse_flags(int ac, const char* av)
+static int				parse_flags(int ac, const char* av)
 {
 	int			cont;
 	int			flags;
@@ -133,10 +133,7 @@ int				ft_jobs(t_exec* args, t_term* term)
 	 if (!term->session->groups || term->session->groups == term->session->nil \
 			|| !term->session->groups->active_processes \
 			/*|| term->session->groups->active_processes == term->session->groups->nil*/)
-		{
-		ft_dprintf(2, "[JOBS: returns at the begin: NO GROUP AND/OR PROCESSES]\n");
 		return (SUCCESS);
-		}
 	if (args->ac > 1)
 	{
 		// get flags
@@ -159,6 +156,7 @@ int				ft_jobs(t_exec* args, t_term* term)
 				// print it here and apply flags
 				print_process(term->session, *target, flags < 0 ? 0 : flags);
 			}
+			//return (SUCCESS);
 		}
 	}
 	// flags with no args or no args print all jobs in background

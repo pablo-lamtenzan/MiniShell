@@ -82,6 +82,7 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 
 // TO DO: Redirect fds in job control builtins
 // TO DO: If a stopped process is resume in the backgroud it will be removed from the history
+// TO DO: Other builtins in teractions with new flags RESTRICT_OP AND NO_HANGUP
 static int 			exec(t_tok* tokens, t_term* term)
 {
 	t_exec_status	exec_st;

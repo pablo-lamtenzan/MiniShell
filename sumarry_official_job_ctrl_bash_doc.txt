@@ -90,7 +90,7 @@ wait [-fn] [jobspec or pid]:
 
 disown [-ar] [-h] [josbpec... | pid...]:
  -> Without options remove each jobspec from the table of active jobs
- -> '-h' the job is not remove from the table, but i smarked so that is not sent to the job a SIGHUB if the shell recives a SIHUP 
+ -> '-h' the job is not remove from the table, but i smarked so that is not sent to the job a SIGHUB if the shell recives a SIGHUP 
  -> No jobspec but '-a' or '-r' the current job is used
  -> No jobspec, '-a' means to remove or mark all jobs
  -> No jobspec, '-r' restric operation to running jobs
@@ -146,6 +146,6 @@ SOME BUILTINS CAN TAKE CMD NAME WITOUT '%'
 -> Important if the suspended job in bg reads from stdin bash intercept it (tty input) (this process can read to stdin too!)
 6) fg DONE!
 7) kill DONE! (have to test better a fcking lot of kinds of error msg)
-8) jobs (Implemented, in old version)
+8) jobs DONE! (inf loop more than 1 in background)
 9) test SIGCHLD to solve "cat | cat -e | echo a" or "cat | cat -e | ls"
 10) Correct other litle details

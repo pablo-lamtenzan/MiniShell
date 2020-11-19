@@ -37,6 +37,7 @@ int		ft_fg(t_exec* args, t_term* term)
             return (STD_ERROR);
         }
     }
+	ft_dprintf(2, "[FG][TARGET IS %p]\n", *target);
     kill((*target)->pid, SIGCONT);
     update_background(term->session, target);
     return (SUCCESS);

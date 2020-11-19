@@ -123,12 +123,12 @@ void            delete_process(t_process **target)
     int         i;
 
     i = -1;
-    while ((*target)->data && (*target)->data[++i])
-        free((*target)->data[i]);
-    free((char**)(*target)->data);
+    //while ((*target)->data && (*target)->data[++i])
+   //     free((*target)->data[i]);
+    //free((char**)(*target)->data);
+	//(*target)->data = NULL;
 	//ft_dprintf(2, "%p FREED IN DELETE PROCESS (form remove process)\n", target);
     free(*target);
-	
 	*target = NULL;
 }
 
@@ -229,7 +229,7 @@ bool			update_background(t_session *session, t_process **process)
 	return (true);
 }
 
-t_process*		background_find(t_process* target, const char* search_type, t_group* group)
+t_process**		background_find(t_process* target, const char* search_type, t_group* group)
 {
 	const char*	modes[2] = { "PID", "STA" };
 	int 		i;
@@ -240,9 +240,10 @@ t_process*		background_find(t_process* target, const char* search_type, t_group*
 		while (i < 2 && ft_strncmp(modes[i], search_type, 3))
 			i++;
 		if (!i && target->pid == group->active_processes->pid)
-			return (group->active_processes);
+			return (&group->active_processes);
 		else if (i && target->wstatus == group->active_processes->wstatus)
-			return (group->active_processes);
+			return (&group->active_processes);
+		group->active_processes = group->active_processes->next;
 	}
 	return (NULL);
 }
@@ -312,4 +313,18 @@ size_t			get_background_index(t_group* nil, t_process* target)
 		groups = groups->prev;
 	}
 	return (index);
+}
+
+pid_t			get_process_leader_pid(t_group* nil, t_process* target)
+{
+	t_group*	groups;
+
+	groups = nil->next;
+	while (groups && groups != nil)
+	{
+		if (background_find(target, "PID", groups))
+			return (groups->nil->next->pid);
+		groups = groups->next;
+	}
+	return (0);
 }
