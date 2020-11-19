@@ -78,6 +78,6 @@ int		ft_bg(t_exec* args, t_term* term)
 					}
 				}
 		}
-	*\
+	*/
     return (SUCCESS);
 }

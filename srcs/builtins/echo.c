@@ -28,9 +28,10 @@ int	ft_echo(t_exec *args, t_term *t)
 			arg++;
 		}
 		while (--args->ac)
-			args->ac != 1 ? ft_dprintf(args->fds[1], "%s ", args->av[arg++])
-			: ft_dprintf(args->fds[1], "%s", args->av[arg++]);
+			ft_dprintf(args->fds[FDS_STDOUT], args->ac != 1 ? "%s " : "%s",
+				args->av[arg++]);
 	}
-	!opt ? ft_dprintf(args->fds[1], "\n") : 0;
+	if (!opt)
+		ft_dprintf(args->fds[FDS_STDOUT], "\n");
 	return (SUCCESS);
 }

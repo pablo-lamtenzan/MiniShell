@@ -87,7 +87,7 @@ t_exec_status			execute_bst(t_bst* root, t_term* term)
 	t_exec_status		st;
 
 	ft_bzero(&info, sizeof(t_exec));
-	info = (t_exec){.fds[STDOUT]=STDOUT, .fds[AUX]=AUX};
+	info = (t_exec){.fds[FDS_STDOUT]=FDS_STDOUT, .fds[FDS_AUX]=FDS_AUX};
 	if (root->type & PIPE)
 		st = execute_job(root, &info, term);
 	else

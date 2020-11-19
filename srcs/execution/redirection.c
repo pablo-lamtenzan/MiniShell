@@ -39,17 +39,20 @@ static t_redir_status	try_catch_filename(char*** filename, char* var_name, int h
     return (CONTINUE);
 }
 
+// TODO: Refactor
 static t_redir_status	try_catch_in(t_exec** info, t_tok_t type, const char* filename)
 {
 	int					tmp;
 	(void)type;
 
+	// This is also the same function
 	tmp = open(filename, O_RDONLY);
-	if (!((*info)->handle_dup & CONST_LE))
-		(*info)->fds[0] = tmp;
-	(*info)->handle_dup |= CONST_LE;
+	if (!((*info)->handle_dup & REDIR_IN))
+		(*info)->fds[FDS_STDIN] = tmp;
+	(*info)->handle_dup |= REDIR_IN;
 	return (tmp >= 0 ? CONTINUE : FILE_NOT_FOUND);
 }
+
 
 static t_redir_status	try_catch_out(t_exec** info, t_tok_t type, const char* filename)
 {
@@ -58,17 +61,19 @@ static t_redir_status	try_catch_out(t_exec** info, t_tok_t type, const char* fil
 	tmp = -1; // TODO: Init
 	if (type & REDIR_GR)
 	{
+		// This is literally the same
 		tmp = open(filename, O_WRONLY | O_CREAT | O_TRUNC, umask);
-		if (!((*info)->handle_dup & CONST_GR))
-			(*info)->fds[1] = tmp;
-		(*info)->handle_dup |= CONST_GR;
+		if (!((*info)->handle_dup & REDIR_OUT))
+			(*info)->fds[FDS_STDOUT] = tmp;
+		(*info)->handle_dup |= REDIR_OUT;
 	}
 	else if (type & REDIR_DG)
 	{
+		// As this but with different options
 		tmp = open(filename, O_WRONLY | O_CREAT | O_APPEND, umask);
-		if (!((*info)->handle_dup & CONST_GR))
-			(*info)->fds[1] = tmp;
-		(*info)->handle_dup |= CONST_GR;
+		if (!((*info)->handle_dup & REDIR_OUT))
+			(*info)->fds[FDS_STDOUT] = tmp;
+		(*info)->handle_dup |= REDIR_OUT;
 	}
 	return (tmp >= 0 ? CONTINUE : FILE_NOT_FOUND);
 }
