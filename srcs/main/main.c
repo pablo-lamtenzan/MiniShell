@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 19:45:44 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/19 14:44:07 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,8 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 	exit(exit_return[exec_st]);
 }
 
+// TO DO: Redirect fds in job control builtins
+// TO DO: If a stopped process is resume in the backgroud it will be removed from the history
 static int 			exec(t_tok* tokens, t_term* term)
 {
 	t_exec_status	exec_st;

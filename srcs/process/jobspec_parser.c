@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 12:40:22 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/18 21:07:36 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/19 18:36:43 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ t_process**		get_process_by_index(t_session* session, t_group* groups, size_t in
 			groups->active_processes = groups->active_processes->next;
 		groups = groups->next;
 	}
+	//ft_dprintf(2, "pid found: %d\n", groups->active_processes->pid);
 	return (index ? NULL : &groups->active_processes);
 }
 
@@ -187,6 +188,7 @@ t_process**		process_search(t_session* session, char*const* av)
 t_process**		jobspec_parser(t_session* session, int ac, char*const* av, t_process** (*fill)(int ac, char*const* av))
 {
 	// TO DEFINE: types in fill
+	ft_dprintf(2, "%s\n", av[1]);
 
 	if (fill && !fill(ac, av))
 		return (NULL);

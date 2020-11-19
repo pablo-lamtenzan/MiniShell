@@ -142,7 +142,7 @@ SOME BUILTINS CAN TAKE CMD NAME WITOUT '%'
 2) Exit new stuff
 3) Disown
 4) Wait (Implemented, not ended, not tested)
-5) bg
+5) bg DONE (need to catch zombies at the end)
 -> Important if the suspended job in bg reads from stdin bash intercept it (tty input) (this process can read to stdin too!)
 6) fg DONE!
 7) kill DONE! (have to test better a fcking lot of kinds of error msg)

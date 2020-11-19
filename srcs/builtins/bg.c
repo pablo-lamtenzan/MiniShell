@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 23:11:42 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/19 00:51:54 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/19 14:47:13 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,39 +45,6 @@ int		ft_bg(t_exec* args, t_term* term)
 	// https://stackoverflow.com/questions/7171722/how-can-i-handle-sigchld (doesn t respect the subject but very interesting)
 	// https://docs.oracle.com/cd/E19455-01/806-4750/signals-7/index.html (this follows the subject)
 
-	// can use command ps ax for get the pid table, then i can split it by ? and rm the i % 2 != 0 of the split
-	/*
-
-	signal(SIGCHLD, handle_zombies);
-
-	void		handle_zombies(int signal)
-		fork()
-		execve(ps ax > /dev/null)
-		read from /dev/nul
-		split(read)
-		int i = 0;
-		while (lenght)
-		{
-			if (i % 2 == 0)
-				check_pid();
-				if (pid == background_running_process)
-				{
-					while (42)
-					{
-						union wait wstat
-						int wstatus
-						waitpid(pid, &wstatus, WNOHANG)
-						or
-						wait3(&wstat, HNOHANG, (struct rusage*)NULL);
-						if (pid == 0)
-							return;
-						if pid == -1
-							error
-						if pid
-							wstat.retcode -------> error status
-					}
-				}
-		}
-	*\
+	// can use command ps ax for get the pid table, then i can split it and rm the i % 2 != 0 of the split
     return (SUCCESS);
 }
