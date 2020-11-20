@@ -1,6 +1,7 @@
 objs/
 minishell
 a.out
+*.dSYM/
 test.c
 a
 b
