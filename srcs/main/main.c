@@ -102,6 +102,6 @@ static int 			exec(t_tok* tokens, t_term* term)
 
 
 int		main(int ac, const char** av, const char** envp)
-{	
+{
     return (term_prompt(ac, av, envp, &exec));
 }

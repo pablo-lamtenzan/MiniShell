@@ -7,7 +7,7 @@ CC		=		/usr/bin/clang
 RM		=		/bin/rm
 CFLAGS	=		-Wall -Wextra -Werror -g3 -fsanitize=address
 IFLAGS	=		-I$(INCDIR) -I$(LIBFT)/includes
-LFLAGS	=		-L$(LIBFT) -lft -lcurses -ltermcap
+LFLAGS	=		-L$(LIBFT) -lft -ltermcap
 
 SRCS	=		$(addprefix $(SRCDIR)/,\
 					$(addprefix term/,												\
@@ -19,7 +19,8 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 								subshell.c tokens.c)								\
 								lexer.c token_utils.c token.c)						\
 						clip.c controls.c hist_cursor.c hist.c init.c				\
-						cursor.c line_edit.c line.c read_special.c read.c select.c	\
+						cursor.c line_edit.c line_put.c line.c read_special.c		\
+						read.c select.c												\
 						term.c write.c)												\
 					$(addprefix builtins/,\
 						cd.c\

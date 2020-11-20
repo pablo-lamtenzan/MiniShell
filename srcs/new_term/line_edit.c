@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <term/term.h>
+#include "line.h"
 
 bool	line_resize(t_line *line, size_t new_size)
 {
