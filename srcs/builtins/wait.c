@@ -108,7 +108,7 @@ int			ft_wait(t_exec* exec, t_term* term)
 				}
 				else if (WIFSTOPPED(groups->active_processes->wstatus)) // if istopped warning
 				{
-					ft_dprintf(STDERR_FILENO, "bash: wait: warning: job %d[%d] stopped", get_background_index(groups, groups->active_processes), background_find(groups->active_processes, "PID", groups)); // this arguments sre bad, need reference the session
+					ft_dprintf(STDERR_FILENO, "bash: wait: warning: job %d[%d] stopped", get_background_index(groups, groups->active_processes), 1/*background_find(groups->active_processes, "PID", groups)*/); // this arguments sre bad, need reference the session
 					return (last_return);
 				}
 				else if (WIFEXITED(groups->active_processes->wstatus)) // if process has end update return value and continue

@@ -23,5 +23,7 @@ int			ft_unset(t_exec *args, t_term *t);
 int		    ft_fg(t_exec* args, t_term* term);
 int			ft_bg(t_exec* args, t_term* term);
 int     	ft_kill(t_exec* args, t_term* term);
+int			ft_jobs(t_exec* args, t_term* term);
+int			ft_disown(t_exec* args, t_term* term);
 
 #endif

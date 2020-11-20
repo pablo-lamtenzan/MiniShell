@@ -16,7 +16,7 @@
 #include <execution.h>
 #include <signals.h>
 #include <errors.h>
-
+/*
 // old
 void		ft_swap(int* a, int* b)
 {
@@ -32,7 +32,7 @@ void		update_used_pids(int new, pid_t** used_pids)
 	ft_swap(used_pids[LAST], used_pids[PENULTIMATE]);
 	*used_pids[LAST] = new;
 }
-
+*/
 // used
 static int	handle_wstatus(t_process* target, t_group* curr)
 {
