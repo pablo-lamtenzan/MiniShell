@@ -48,10 +48,4 @@ void			line_clear(t_line **line);
 
 void			lines_clear(t_line **line_list);
 
-/*
-**				line_put.c
-*/
-bool			line_putstr(t_line *line, const char *str);
-bool			line_putc(t_line *line, char c);
-
 #endif

@@ -7,7 +7,7 @@ CC		=		/usr/bin/clang
 RM		=		/bin/rm
 CFLAGS	=		-Wall -Wextra -Werror -g3 -fsanitize=address
 IFLAGS	=		-I$(INCDIR) -I$(LIBFT)/includes
-LFLAGS	=		-L$(LIBFT) -lft -lcurses -ltermcap
+LFLAGS	=		-L$(LIBFT) -lft -lcurses -ltermcap 
 
 SRCS	=		$(addprefix $(SRCDIR)/,\
 					$(addprefix term/,												\
@@ -19,7 +19,8 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 								subshell.c tokens.c)								\
 								lexer.c token_utils.c token.c)						\
 						clip.c controls.c hist_cursor.c hist.c init.c				\
-						cursor.c line_edit.c line.c read_special.c read.c select.c	\
+						cursor.c line_edit.c line_put.c line.c read_special.c		\
+						read.c select.c												\
 						term.c write.c)												\
 					$(addprefix builtins/,\
 						cd.c\
@@ -113,6 +114,9 @@ $(NAME):		$(OBJDS) $(OBJS) $(LIBFT)/libft.a
 	@echo LINK $(NAME)
 	$(CC) $(OBJS) $(CFLAGS) $(LFLAGS) -o $(NAME)
 
+prompt:
+	clang -g3 -Wall -Wextra -Werror srcs/new_term/*.c srcs/env/*.c -I includes -Ilibft/includes -Llibft/ -lft -lcurses -o $@ -fsanitize=address -fsanitize=undefined 
+
 $(OBJDS):
 	mkdir -p $@
 
@@ -132,6 +136,6 @@ fclean:			clean
 
 re:				fclean all
 
-.PHONY:			libft clean fclean
+.PHONY:			libft clean fclean prompt
 
 $(VERBOSE).SILENT:

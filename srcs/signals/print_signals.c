@@ -153,9 +153,9 @@ t_signal_print	get_signal_print(size_t index)
 
 void	print_signals(t_process* target, t_group* nil)
 {
-	int	i;
-	const t_signal_print signal = get_signal_print(target->wstatus);
-	void*	addr;
+	int						i;
+	const t_signal_print	signal = get_signal_print(target->wstatus);
+	char					*addr;
 
 	i = -1;
 	addr = NULL;
