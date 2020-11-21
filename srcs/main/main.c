@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/21 21:46:22 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/21 21:58:28 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 // TO DO: Other builtins interactions with new flags RESTRICT_OP AND NO_HANGUP
 // TO DO: Kill update background issue (can t wait fix it with a flags but i have problems now) I CAN'T WAIT IT IN KILL BUT I CAN WAIT AFTER IN FG WHY?????????????????????
 // TO DO: Signals mesages in all the shell (in any user-signal interaction)
+// TO DO: Bg: Don't remove the process, but have to remove it at its end! Have to build a zombie catcher
 
 static int 			exec(t_tok* tokens, t_term* term)
 {

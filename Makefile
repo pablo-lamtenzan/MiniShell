@@ -31,6 +31,7 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 						pwd.c\
 						unset.c\
 						fg.c\
+						bg.c\
 						jobs.c\
 						kill.c\
 						builtins_utils.c\
