@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/21 23:14:53 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 00:45:13 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ t_process**		background_find(t_process* target, const char* search_type, t_group
 {
 	const char*	modes[2] = { "PID", "STA" };
 	int 		i;
+	t_process*	remember = group->active_processes;
 
 	i = 0;
 	while (group->active_processes != group->nil)
@@ -72,11 +73,18 @@ t_process**		background_find(t_process* target, const char* search_type, t_group
 		while (i < 2 && ft_strncmp(modes[i], search_type, 3))
 			i++;
 		if (!i && target->pid == group->active_processes->pid)
+		{
+			group->active_processes = remember;
 			return (&group->active_processes);
+		}
 		else if (i && target->wstatus == group->active_processes->wstatus)
+		{
+			group->active_processes = remember;
 			return (&group->active_processes);
+		}
 		group->active_processes = group->active_processes->next;
 	}
+	group->active_processes = remember;
 	return (NULL);
 }
 

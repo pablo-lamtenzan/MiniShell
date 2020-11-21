@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:48:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/21 23:34:45 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 00:46:20 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ void			disown_process(t_session* session, t_process** target, int flags)
 	while (++i < 2) // check 2 times: 1 for + and another for -
 		if (session->history && session->history->pid == (*target)->pid)
 			history_pop_front(session);
-
 	if (!WIFEXITED((*target)->wstatus) && WIFSTOPPED((*target)->wstatus))
 		ft_dprintf(STDERR_FILENO, "minish: warning: deleting stopped job %lu with process group %d\n", get_background_index(session->nil, *target), get_process_leader_pid(session->nil, *target));
 	remove_process(target);
@@ -114,6 +113,7 @@ void		disown_group(t_session* session, t_process* leader, int flags, t_group* it
 	{
 		if (session->groups->nil->next->pid == leader->pid)
 		{
+			ft_dprintf(2, "[DISOWN][LEADER: %p][PID: %d]\n[DISOWN][CURR GROUP: %p][CURR ACTIVE PROCESSES: %p]\n", leader, leader->pid, session->groups, session->groups->active_processes);
 			remember_leader = session->groups->active_processes;
 			while (session->groups->active_processes != session->groups->nil)
 			{
@@ -143,14 +143,17 @@ void		disown_group(t_session* session, t_process* leader, int flags, t_group* it
 void		disown_all_groups(t_session* session, int flags)
 {
 	t_group*	remember;
+	t_group*	prev;
 
 	remember = session->groups;
 
 	session->groups = session->nil->prev;
 	while (session->groups != session->nil->next)
 	{
+		prev = session->groups->prev;
+		ft_dprintf(2, "[DISOWN ALL GROUPS][CURR GROUP IS: %p][ACTIVE PROCESSES: %p]\n", session->groups, session->groups->active_processes);
 		disown_group(session, session->groups->nil->next, flags, remember);
-		session->groups = session->groups->prev;
+		session->groups = prev;
 	}
 	session->groups = remember;
 }
