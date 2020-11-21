@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 18:26:31 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/21 01:34:40 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/21 17:42:12 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,8 @@ void			group_remove(t_session** session, t_group** prev, t_group** next)
 	//t_group*	fill2;
 
 	//fill = (*prev)->next;
-	ft_dprintf(2, "NEXTtttttttttt: %p\n", *next);
-	ft_dprintf(2, "Prevvvvvvvvvvvvvv: %p\n", *prev);
+	//ft_dprintf(2, "NEXTtttttttttt: %p\n", *next);
+	//ft_dprintf(2, "Prevvvvvvvvvvvvvv: %p\n", *prev);
 	if (*prev == *next)
 	{
 		ft_dprintf(2, "[GROUP REMOVE][REMOVE:\'%p\']\n", (*prev)->next);
@@ -78,7 +78,7 @@ void			group_remove(t_session** session, t_group** prev, t_group** next)
 			ft_dprintf(2, "[GROUP REMOVE][REMOVE:\'%p\'] nil= %p prev= %p \n",(*prev)->next, (*prev)->next->nil, *prev);
 			free((*prev)->next->nil);
 			free((*prev)->next); // remove it process too
-			ft_dprintf(2, " %p ----- %p \n", (*prev), NULL/**next*/);
+			//ft_dprintf(2, " %p ----- %p \n", (*prev), NULL/**next*/);
 			(*prev)->next = NULL;
 		//}
 		//(*prev)->next = *next;

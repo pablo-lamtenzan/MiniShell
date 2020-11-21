@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/21 01:55:14 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/21 17:37:14 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int		ft_fg(t_exec* args, t_term* term)
 {
     t_process**		target;
 
-    if (session_empty(term->session))
+    if (session_empty(term->session) || term->session->groups->next == term->session->nil)
     {
         ft_dprintf(STD_ERROR, "minish: fg: current: no such job\n");
         return (STD_ERROR);
