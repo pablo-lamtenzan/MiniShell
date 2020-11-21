@@ -114,6 +114,9 @@ $(NAME):		$(OBJDS) $(OBJS) $(LIBFT)/libft.a
 	@echo LINK $(NAME)
 	$(CC) $(OBJS) $(CFLAGS) $(LFLAGS) -o $(NAME)
 
+prompt:
+	clang -g3 -fsanitize=address -fsanitize=undefined -Wall -Wextra -Werror srcs/new_term/*.c srcs/env/*.c -I includes -Ilibft/includes -Llibft/ -lft -ltermcap -o $@
+
 $(OBJDS):
 	mkdir -p $@
 
