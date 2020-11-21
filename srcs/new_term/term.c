@@ -28,7 +28,6 @@ void	term_destroy(t_term *term)
 /*
 **	Prompt the user of an interactive terminal.
 */
-
 t_term_err	term_prompt(t_term *term)
 {
 	if (term->is_interactive && term->msg

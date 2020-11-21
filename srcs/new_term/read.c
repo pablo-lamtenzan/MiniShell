@@ -38,20 +38,23 @@ t_term_err	term_read_cntrl(t_term *term, char c)
 int		term_read(t_term *term)
 {
 	t_term_err	status;
-	ssize_t		read_st;
-	char		c;
+	int			read_st;
 
 	status = TERM_EOK;
-	while (status == TERM_EOK)
+	free(term->line->data);
+	term->line->data = NULL;
+	term->line->len = 0;
+	term->line->size = 0;
+	if ((read_st = get_next_line(term->fds[0], &term->line->data)) == -1)
+		return (TERM_EREAD);
+	term->line->len = ft_strlen(term->line->data);
+	term->line->size = term->line->len + 1;
+	if (read_st == 1 || (read_st == 0 && term->line->len != 0))
 	{
-		if ((read_st = read(term->fds[0], &c, 1)) != 1)
-			status = (read_st == 0) ? TERM_EEOF : TERM_EREAD;
-		else if (c == TERM_NL)
-			status = TERM_ENL;
-		else if (!line_insert(term->line, term->line->len, &c, 1))
-			status = TERM_EALLOC;
+		ft_dprintf(2, "[PROMPT][GNL][%3lu] '%s'\n", term->line->len, term->line->data);
+		return (TERM_ENL);
 	}
-	return (status);
+	return (TERM_EEOF);
 }
 
 /*

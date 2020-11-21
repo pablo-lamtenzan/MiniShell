@@ -18,7 +18,7 @@ int main(int ac, const char **av, const char **ep)
 		return (1);
 	}
 	status = TERM_EOK;
-	while (status > 0 && (status = term_prompt(&term)) == TERM_ENL)
+	while ((status = term_prompt(&term)) == TERM_ENL)
 	{
 		;
 	}
