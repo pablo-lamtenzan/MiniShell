@@ -1,18 +1,51 @@
-# miniShell
-### An implementation of a Shell-Bach from scratch by Clemax & pablo-lamtenzan
+﻿<p align="center">
+	<h2 align="center">minishell</h2>
+	<p align="center">An implementation of a Shell from scratch by ClemaX & pablo-lamtenzan</p>
+</p>
 
-### Index
-#### I) Usage
-#### II) Lexer-Parser
-#### III) BST
-#### IV) Execution
-#### V) Termcaps + env + idk what more (?)
---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---
+# Table of Contents
+0. [TODO](#todo)
+1. [Usage](#usage)
+	- TODO
+2. [How it works](#how-it-works)
+	- [Tokenization](#tokenization)
+	- [Parsing](#parsing)
+	- [Expansion](#expansion)
+	- [Execution](#execution)
+3. [Specifications](#specifications)
+	- [Key Bindings](#key-bindings)
+	- [Token Types](#token-types)
+	- [Expansion Types](#expansion-types)
+	- [Builtin Commands](#built-in-commands)
+	- [Job Control](#job-control)
 
-## I) Usage
- to do
- 
-## II) Lexer-Parser
+# TODO
+- Readme
+	- [ ] Document terminal capabilities
+	- [ ] Document execution environment
+	- [ ] Document shell expansion
+	- [ ] Document job control
+
+# Usage
+### Dependencies
+- GNU `make`
+- a recent version of `clang`
+- the `libtermcap` library, including it's development headers
+
+### Compiling minishell
+```sh
+make
+```
+### Running minishell
+```sh
+./minishell
+```
+
+# How it works
+
+## Tokenization
+
 First of all, lets talk about the separators. The separators are:
 ```
 ";", "&&", "||"
@@ -56,7 +89,7 @@ minish> $ CMD_LINE && CMD_LINE || (CMD_LINE || CMD_LINE) || CMD_LINE ; CMD_LINE
                       prev=true     prev=false    prev=false   parentheses=false
 ```
 
-## III) BST
+## Parsing
 
 As explained above, the return of the lexer-parser are a linked-list of tokens. This tokens represent a command line and this tokens can be of two types: CMD for commands and OP for operators. Using this tokens, a binary search tree (BST) can be built to ensure a smooth execution.
 This is the struct of a bst node:
@@ -117,7 +150,10 @@ the result BST will be:
      [ cat ]   [file2]
 ```
 
-## IV) Execution
+## Expansion
+TODO
+
+## Execution
 
 The execution is very easy with a BST built, the following struct is used to handle the execution:
 ```
@@ -159,3 +195,40 @@ Then, just have to overwrite the "fds" values and execute. Let's continue with t
 
 // Don't forget that fds[2] is only for pipe's write fd! Its value doesn't affect a cmd exectution. 
 ```
+
+# Specifications
+
+## Key Bindings
+TODO
+
+## Token Types
+| Type 				| Regular Expression 											| Comment 															|
+|------				|--------------------											|---------															|
+| TOKENS 			| ( IFS TOKEN IFS SEP )* 										| TOKENs separated by IFS and other separators 						|
+| TOKEN 			| CMD IFS OPERATION* 											| Command followed by multiple operations 							|
+| CMD 				| SUBSHELL \| CMD_SIMPLE 										| Subshell or command  												|
+| SUBSHELL 			| '(' TOKENS ')' 												| Tokens wrapped in parenthesis 									|
+| OPERATION 		| OPERATOR IFS CMD 												| Operator followed by command										|
+| OPERATOR 			| "\|" \| "\|\|" \| "&&" 										| PIPE, OR or AND operator 											|
+| CMD_SIMPLE 		| ( IFS ( PARAM \| INLINE ) )* 									| Multiple params or inline operations separated by IFS 			|
+| PARAM 			| ( PARAM_QUOTED \| PARAM_SIMPLE )* 							| Mutliple quoted or simple params 									|
+| PARAM_QUOTED 		| PARAM_ESCAPED \| PARAM_SQUOTED \| PARAM_DQUOTED 				| Escaped or quoted params 											|
+| PARAM_ESCAPED 	| ( '\\\\' char )* 												| Multiple chars preceded by backslash 								|
+| PARAM_SQUOTED 	| '\\'' ( char - \\' )* '\\'' 									| Multiple chars wrapped in single quotes, escaped by backslash 	|
+| PARAM_DQUOTED 	| '"' ( ( char - ["\\"\\\\"] ) \| ( '\\' ["\\"\\\\"] ) )* '"' 	| Multiple chars wrapped in double quotes, escaped by backslash 	|
+| PARAM_SIMPLE 		| ( char - [" \\t\\n\|&;()<>'\\"\\\\"] )* 						| Multiple chars that aren't special 								|
+| INLINE 			| REDIR \| HEREDOC 												| Redirection or here-document 										|
+| REDIR 			| REDIR_OPERATOR PARAM 											| Redirection operator followed by parameter 						|
+| REDIR_OPERATOR 	| ">" \| ">>" \| "<" 											| Single and double redirections 									|
+| HEREDOC 			| HEREDOC_OPERATOR PARAM 										| Here-document operator followed by parameter 						|
+| HEREDOC_OPERATOR 	| "<<"															| Here-document operator 											|
+| IFS 				| ( ' ' \| [\\t .. \\r] )*										| Multiple $IFS or white-spaces if unset 							|
+
+## Expansion Types
+TODO
+
+## Built-in Commands
+TODO
+
+## Job Control
+TODO
