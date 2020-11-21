@@ -71,7 +71,7 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 		1,
 		1
 	};
-	ft_dprintf(STD_ERROR, error_msg[exec_st], exit_return[exec_st]);
+	ft_dprintf(STDERR_FILENO, error_msg[exec_st], exit_return[exec_st]);
 	free_bst(root);
 	// TODO: resume_suspended_processes(&term->suspended_processes);
 	term_destroy(term);
