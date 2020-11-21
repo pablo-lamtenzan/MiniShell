@@ -38,8 +38,8 @@ void	term_destroy(t_term *term)
 */
 t_term_err	term_prompt(t_term *term)
 {
-	if (term->is_interactive && term->msg
-	&& write(term->fds[2], term->msg, ft_strlen(term->msg)) == -1)
+	if (term->is_interactive && term->msg && (term->origin = ft_strlen(term->msg))
+	&& write(term->fds[2], term->msg, term->origin) == -1)
 		return (TERM_EWRITE);
 	if (term->has_caps)
 		return (term_read_caps(term));
