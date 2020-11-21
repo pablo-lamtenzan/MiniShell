@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/21 17:37:14 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/21 18:44:16 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,19 +71,24 @@ int		ft_fg(t_exec* args, t_term* term)
         return (STD_ERROR);
     }
 
-    //target = &term->session->groups->active_processes;
+    target = term->session->groups->active_processes == term->session->groups->nil ? &term->session->groups->next->active_processes : &term->session->groups->active_processes;
     if (args->ac > 1)
     {
-		// TO DO: continue all the group not only the leader
+		// TO DO: if jobspec is pid has to resume is grou p or just the process ?
         if (!(target = jobspec_parser(term->session, args->ac, args->av, NULL)))
 		{
             ft_dprintf(STDERR_FILENO, "minish: fg: %s: no such job\n", args->av[1]);
             return (STD_ERROR);
         }
     }
+	//ft_dprintf(2, "target = %p\n", target);
+	//ft_dprintf(2, "*target = %p\n", *target);
+	//ft_dprintf(2, "active processes = %p\n", term->session->groups->active_processes == term->session->groups->nil ? term->session->groups->next->active_processes : term->session->groups->active_processes);
+
+	
 	ft_dprintf(2, "[FG] [session->groups before resume][%p]\n", term->session->groups);
 	// termary for skip itself, leader must be next->active_processes
-	resume_group(term->session, term->session->groups->active_processes == term->session->groups->nil ? term->session->groups->next->active_processes : term->session->groups->active_processes);
+	resume_group(term->session, *target);
 	ft_dprintf(2, "[FG] [session->groups after resume][%p]\n", term->session->groups);
 	ft_dprintf(2, "[FG]ACTIVE PROCESSES AT THE END: \'%p\'\n", term->session->groups->active_processes == term->session->groups->nil ? term->session->groups->next->active_processes : term->session->groups->active_processes);
     return (SUCCESS);

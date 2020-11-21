@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/20 21:52:45 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/21 18:05:29 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,11 @@ pid_t					get_process_leader_pid(t_group* nil, t_process* target);
 size_t					get_background_index(t_group* nil, t_process* target);
 void					force_exit_background(t_session* session);
 bool					is_leader(t_session* session, t_process* target);
+
+/*
+** Utils
+*/
+int						parse_flags(int ac, const char* av, const char* pattern);
 
 // old
 /*

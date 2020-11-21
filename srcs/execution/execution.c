@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/21 00:48:55 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/21 18:18:34 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@
 static t_exec_status	get_exec(t_exec* info, t_term* term)
 {
 	const char	*names[] = {"echo", "cd", "pwd", "export", "unset", "env", \
-			"exit", "fg" /*,"kill", "bg", "jobs", "disown"*/};
-	const int	lengths[] = {4, 3, 4, 7, 5, 4, 5, 2 /*, 4, 2, 4, 6*/};
+			"exit", "fg", "jobs" /*,"kill", "bg", "jobs", "disown"*/};
+	const int	lengths[] = {4, 3, 4, 7, 5, 4, 5, 2, 4 /*, 4, 2, 4, 6*/};
 	const t_executable 	builtins[] = {&ft_echo, &ft_cd, &ft_pwd, &ft_export, \
-			&ft_unset, &ft_env, &ft_exit, &ft_fg, /* &ft_kill, &ft_bg, &ft_jobs, &ft_disown */};
+			&ft_unset, &ft_env, &ft_exit, &ft_fg, &ft_jobs/* &ft_kill, &ft_bg, &ft_jobs, &ft_disown */};
 	size_t			i;
 
 	int status = SUCCESS;
