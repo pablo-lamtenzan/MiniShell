@@ -26,6 +26,10 @@ bool	term_init(t_term *term, t_env **env)
 void	term_destroy(t_term *term)
 {
 	hist_clear(&term->hist);
+	if (term->hist.next != term->line)
+		line_clear(&term->hist.next);
+	line_clear(&term->line);
+	clip_clear(term);
 	tcsetattr(term->fds[0], TCSANOW, &term->caps.s_ios_orig);
 }
 
