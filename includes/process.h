@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/21 18:05:29 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/21 21:33:43 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void					process_pop_back(t_group** group);
 /*
 ** Job Control
 */
-void					update_background(t_session* session, t_process **target);
+void					update_background(t_session* session, t_process **target, bool wait);
 bool            		update_session_history(t_session *session, t_process *update);
 t_process**				background_find(t_process* target, const char* search_type, t_group* group);
 bool					is_active_group(t_group* target);

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/21 00:55:34 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/21 21:36:13 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ t_exec_status	wait_processes_v2(t_term* term, t_exec_status st)
 	while (group->active_processes != group->nil)
 	{
 		// put flags
-		update_background(term->session, &group->active_processes);
+		update_background(term->session, &group->active_processes, true);
 		// get return value + print signals if there are
 		term->st = handle_wstatus(group->active_processes, term->session->groups);
 		ft_dprintf(2, "[WAIT PROCESSES V2][PID=\'%d\'][FLAGS=\'%d\']\n", group->active_processes->pid, group->active_processes->flags);

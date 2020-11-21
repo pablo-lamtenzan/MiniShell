@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/20 23:58:06 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/21 21:39:36 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,15 @@
 
 // for the momment keep them
 
-void		update_background(t_session* session, t_process **target)
+void		update_background(t_session* session, t_process **target, bool wait)
 {
 	//ft_dprintf(2, "[UPDATE V2--1]ACTIVE PROCESSES: %p\n", (*target));
-	ft_dprintf(2, "[WAIING...][pid=\'%d\']\n", (*target)->pid);
-	while (waitpid((*target)->pid, &(*target)->wstatus, WUNTRACED) <= 0)
-		;
+	if (wait) // need for kill
+	{
+		while (waitpid((*target)->pid, &(*target)->wstatus, WUNTRACED) <= 0)
+			;
+		ft_dprintf(2, "[WAIING...][pid=\'%d\'][wstatus=\'%d\']\n", (*target)->pid, (*target)->wstatus);
+	}
 	// exited and not stopped
 	// HERE CAN REMOVE FLAGS IN ALL CASES AND ADD IT IF NECESARRY
 	if (WIFEXITED((*target)->wstatus) || !WIFSTOPPED((*target)->wstatus))
