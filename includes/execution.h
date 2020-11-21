@@ -94,6 +94,7 @@ t_exec_status			print_redirection_error(t_redir_status rstatus, char** filename,
 */
 t_exec_status			execute_bst(t_bst* root, t_term* term);
 t_exec_status        	wait_processes(t_term *term, t_exec_status st);
+t_exec_status			wait_processes_v2(t_term* term, t_exec_status st);
 
 /*
 ** Separators

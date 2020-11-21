@@ -70,23 +70,23 @@ size_t			get_search_mode(const char* av)
 
 // Remember to check for background spec &
 
-// Returns addr in active_processes
+// Returns group learder
 t_process**		get_process_by_index(t_session* session, t_group* groups, size_t index)
 {
 	// %index
 	if (!index)
 		return (NULL);
 	ft_dprintf(2, "[INDEX][index: %lu]\n", index);
-	while (groups != session->nil)
+	while (groups != session->nil && (--index))
 	{
-		if (!--index)
-			break ;
-		while (groups->active_processes != groups->nil)
-			groups->active_processes = groups->active_processes->next;
+		//if (!--index)
+		//	break ;
+		//while (groups->active_processes != groups->nil)
+		//	groups->active_processes = groups->active_processes->next;
 		groups = groups->next;
 	}
 	//ft_dprintf(2, "pid found: %d\n", groups->active_processes->pid);
-	return (index ? NULL : &groups->active_processes);
+	return (index ? NULL : &groups->nil->next);
 }
 
 // Returns addr in active_processes
@@ -147,7 +147,7 @@ t_process**		get_process_by_name(t_session* session, t_group* groups, const char
 	return (ret);
 }
 
-// Returns addr in active processes
+// Returns group leader (IN HISTORY I ONLY HAVE THE LEADERS)
 t_process**		get_process_by_history(t_session* session, t_group* groups, size_t index)
 {
 	// %

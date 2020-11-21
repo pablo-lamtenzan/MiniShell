@@ -30,10 +30,6 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 						pwd.c\
 						unset.c\
 						fg.c\
-						bg.c\
-						kill.c\
-						jobs.c\
-						disown.c\
 					)\
 					$(addprefix bst/,\
 						bst_fill.c\
@@ -62,6 +58,10 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 						resume_suspended_processes.c\
 						jobspec_parser.c\
 						process.c\
+						job_control.c\
+						session.c\
+						group.c\
+						process_____.c\
 					)\
 					$(addprefix main/,\
 						main.c\

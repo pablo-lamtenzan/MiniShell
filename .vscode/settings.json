@@ -1,10 +1,11 @@
 {
     "files.associations": {
-        "__config": "cpp",
-        "minishell.h": "c",
-        "array": "c",
-        "string": "c",
-        "string_view": "c",
-        "ranges": "c"
-    }
+		"__config": "cpp",
+		"minishell.h": "c",
+		"array": "c",
+		"string": "c",
+		"string_view": "c",
+		"ranges": "c",
+		"functional": "c"
+	}
 }
