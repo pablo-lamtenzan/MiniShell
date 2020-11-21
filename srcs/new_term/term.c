@@ -1,5 +1,8 @@
 #include "term.h"
 
+#include <string.h>
+#include <errno.h>
+
 bool	term_init(t_term *term, t_env **env)
 {
 	ft_bzero(term, sizeof(*term));
@@ -15,7 +18,8 @@ bool	term_init(t_term *term, t_env **env)
 	term->line->len = 0;
 	term->hist.curr = term->line;
 	term->hist.next = term->line;
-	term_init_caps(term, env);
+	if (!term_init_caps(term, env))
+		ft_dprintf(2, "Failed to retrieve terminfo: %s\n", strerror(errno));
 	return (true);
 }
 
