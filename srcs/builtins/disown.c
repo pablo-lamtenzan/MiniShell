@@ -148,6 +148,7 @@ int		ft_disown(t_exec* args, t_term* term)
 	}
 	if (term->session->history)
 	{
+		// TO DO: disown all the group not only the leader
 		target = background_find(term->session->history, "PID", term->session->groups);
 		disown_process(term->session, target, flags > 0 ? 1 : 0);
 	}

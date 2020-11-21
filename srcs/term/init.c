@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/18 18:57:02 by chamada           #+#    #+#             */
-/*   Updated: 2020/11/13 08:12:48 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/20 20:12:19 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int			term_init(t_term *t, const char **envp,
 	t->exec = exec;
 	if (!(t->line = line_new(10))
 	|| !(t->env = env_import(envp))
-	|| !(t->session = start_session()))
+	|| !(t->session = session_start()))
 		return (0);
 	t->line->prev = t->hist.last;
 	*t->line->data = '\0';
@@ -93,7 +93,7 @@ int			term_init(t_term *t, const char **envp,
 
 int			term_destroy(t_term *t)
 {
-	end_session(t->session);
+	session_end(t->session);
 	token_clr(&t->lex_st.tokens);
 	hist_clear(&t->hist);
 	env_clr(&t->env);

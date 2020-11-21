@@ -32,6 +32,7 @@ bool			is_leader(t_session* session, t_process* target)
 	{
 		if (groups->nil->next && groups->nil->next->pid == target->pid)
 			return (true);
+		groups = groups->next;
 	}
 	return (false);
 }

@@ -83,7 +83,7 @@ wait [-fn] [jobspec or pid]:
  -> Wait until the child process (jobspec or pid) exits
  -> Returns the exit status of the last command waited for
  -> If a jobspec is given, all the processes in the job are waited for
- -> No options, all currently active childs are waited, returns 0
+ -> No options, all currently active childs are waited (in the job), returns 0
  -> '-n' wait for a single job and return its exit status
  -> '-f' forces to wait for each job to terminate before returning its status intead of returning when it changes status
  -> Job not found return 127
@@ -140,7 +140,7 @@ SOME BUILTINS CAN TAKE CMD NAME WITOUT '%'
 // to do
 1) Syntax DONE! (just little isues with %name)
 2) Exit new stuff
-3) Disown
+3) Disown DONE!
 4) Wait (Implemented, not ended, not tested)
 5) bg DONE (need to catch zombies at the end)
 -> Important if the suspended job in bg reads from stdin bash intercept it (tty input) (this process can read to stdin too!)

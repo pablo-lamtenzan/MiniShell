@@ -55,6 +55,7 @@ int			ft_wait(t_exec* exec, t_term* term)
 
 	if (exec->ac > 1)
 	{
+		// TO DO: can have both flags
 		if ((flags = parse_flags(exec->ac, exec->av) < 0)) // lexer error flags
 		{
 			ft_dprintf(2, "bash: wait: `%s\': not a pid or valid job spec\n", exec->av[1]);
@@ -78,6 +79,7 @@ int			ft_wait(t_exec* exec, t_term* term)
 				// TO DO
 			}			
 		}
+		// TO DO: print wrong jobspec or invalid flags
 		else if (!flags)
 		{
 			// invalid jobspec (not found)
@@ -96,6 +98,8 @@ int			ft_wait(t_exec* exec, t_term* term)
 		// no args
 		// wait for all
 		groups = term->session->groups;
+		// TO DO: no args wait for all in the group
+		// TO DO: use background find to get the right addr
 		while (groups != term->session->nil)
 		{
 			while (groups->active_processes != groups->nil)

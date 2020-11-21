@@ -31,6 +31,7 @@ int		ft_bg(t_exec* args, t_term* term)
     target = &term->session->groups->active_processes;
     if (args->ac > 1)
     {
+		// DO TO: continue all the group not only the leader
         if (!(target = jobspec_parser(term->session, args->ac, args->av, NULL)))
 		{
             ft_dprintf(STDERR_FILENO, "minish: bg: %s: no such job\n", args->av[1]);
