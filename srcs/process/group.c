@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 18:26:31 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/21 17:42:12 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/21 23:40:32 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void			group_insert(t_group* prev, t_group* next, t_group* target)
 	prev->next = target;
 	next->prev = target;
 	target->next = next;
-	target->prev = target;
+	target->prev = prev;
 }
 
 /*
@@ -102,6 +102,7 @@ void			group_push_front(t_session** session, t_group* target)
 	}
 	(*session)->groups = (*session)->nil->next;
 	ft_dprintf(2, "[GROUP PUSH FRONT][CURR GROUP NOW IS: \'%p\']\n", (*session)->groups);
+	ft_dprintf(2, "[GROUP PUSH FRONT][PREV=\'%p\'][NEXT=\'%p\']\n", (*session)->groups->prev, (*session)->groups->next);
 }
 
 /*

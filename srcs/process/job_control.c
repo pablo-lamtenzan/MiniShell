@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/21 21:39:36 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/21 23:14:53 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,10 +80,36 @@ t_process**		background_find(t_process* target, const char* search_type, t_group
 	return (NULL);
 }
 
+/*
+t_process**		background_find_leader(t_process* target, const char* search_type, t_group* group)
+{
+	const char*	modes[2] = { "PID", "STA" };
+	int 		i;
+	t_process** leader;
+
+	i = 0;
+	leader = &group->nil->next;
+	while (group->active_processes != group->nil)
+	{
+		while (i < 2 && ft_strncmp(modes[i], search_type, 3))
+			i++;
+		if (!i && target->pid == group->active_processes->pid)
+			return (leader);
+		else if (i && target->wstatus == group->active_processes->wstatus)
+			return (leader);
+		group->active_processes = group->active_processes->next;
+	}
+	return (NULL);
+}
+}
+*/
+
 bool		is_active_group(t_group* target)
 {
 	t_process*	process;
 
+	if (group_empty(target))
+		return (false);
 	process = target->nil->next;
 	ft_dprintf(2, "[IS ACTIVE GROUP (leader): %p]\n", process);
 	while (process != target->nil)

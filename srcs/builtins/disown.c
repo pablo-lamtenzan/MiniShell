@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:48:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/19 18:53:43 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/21 23:34:45 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,26 @@ void			history_pop_front(t_session* session)
 	{
 		fill = session->history->next;
 		ft_dprintf(2, "[DISOWN][REMOVE FROM HISTORY: %p]\n", session->history);
-		delete_process(&session->history);
+		//delete_process(&session->history);
+		free(session->history);
 		session->history = fill;
 	}
+}
+
+void			remove_process(t_process** target)
+{
+	t_process**	next;
+	t_process**	prev;
+
+	next = &(*target)->next;
+	prev = &(*target)->prev;
+	ft_dprintf(2, "[REMOVE PROCESS][NEXT = \'%p\']\n", (*next));
+	ft_dprintf(2, "[REMOVE PROCESS][PREV = \'%p\']\n", (*prev));
+	(*next)->prev = *prev;
+	(*prev)->next = *next;
+	ft_dprintf(2, "[REMOVE: \'%p\']\n", *target);
+	free(*target); // not only free
+	*target = NULL;
 }
 
 void			disown_process(t_session* session, t_process** target, int flags)
@@ -63,6 +80,7 @@ void			disown_process(t_session* session, t_process** target, int flags)
 	remove_process(target);
 }
 
+/*
 void		disown_all_processes(t_session* session)
 {
 	while (session->groups != session->nil)
@@ -78,7 +96,66 @@ void		disown_all_processes(t_session* session)
 		session->groups = session->groups->next;
 	}
 }
+*/
 
+void		disown_group(t_session* session, t_process* leader, int flags, t_group* itself)
+{
+	t_group*	remember;
+	t_process*	remember_leader;
+	t_process*	next;
+
+	remember = session->groups;
+
+	// skip itself
+	if (session->groups == itself)
+		session->groups = session->groups->next;
+
+	while (session->groups != session->nil)
+	{
+		if (session->groups->nil->next->pid == leader->pid)
+		{
+			remember_leader = session->groups->active_processes;
+			while (session->groups->active_processes != session->groups->nil)
+			{
+				ft_dprintf(2, "[DISOWN][PROCESS: %d][\'%p\']\n", session->groups->active_processes->pid, session->groups->active_processes);
+				next = session->groups->active_processes->next;
+				disown_process(session, &session->groups->active_processes, flags);
+				session->groups->active_processes = next;
+			}
+			if (!is_active_group(session->groups))
+			{
+				t_group*	fill = session->groups;
+				session->groups->prev->next = session->groups->next;
+				session->groups->next->prev = session->groups->prev;
+				free(fill);
+				fill = NULL;
+			}
+			else
+				session->groups->active_processes = remember_leader;
+			session->groups = remember;
+			return ;
+		}
+		session->groups = session->groups->next;
+	}
+	session->groups = remember;
+}
+
+void		disown_all_groups(t_session* session, int flags)
+{
+	t_group*	remember;
+
+	remember = session->groups;
+
+	session->groups = session->nil->prev;
+	while (session->groups != session->nil->next)
+	{
+		disown_group(session, session->groups->nil->next, flags, remember);
+		session->groups = session->groups->prev;
+	}
+	session->groups = remember;
+}
+
+/*
 // put str pos arg as parse_flags arg for the norme and use this for jobs and disown
 static int				parse_flags(int ac, const char* av)
 {
@@ -106,6 +183,7 @@ static int				parse_flags(int ac, const char* av)
 	}
 	return (flags);
 }
+*/
 
 int		ft_disown(t_exec* args, t_term* term)
 {
@@ -116,14 +194,11 @@ int		ft_disown(t_exec* args, t_term* term)
 	flags = 0;
 	i = -1;
 	target = NULL;
-	ft_dprintf(2, "[DISOWN]\n");
-	if (!term->session->groups || term->session->groups == term->session->nil \
-			|| !term->session->groups->active_processes \
-			/*|| term->session->groups->active_processes == term->session->groups->nil*/)
+	if (session_empty(term->session) || term->session->groups->next == term->session->nil)
 		return (SUCCESS);
 	if (args->ac > 1)
 	{
-		if ((flags = parse_flags(args->ac, args->av[1])) < 0 && ft_dprintf(2, "[Flags are: %d]\n", flags) &&args->av[1][0] == '-')
+		if ((flags = parse_flags(args->ac, args->av[1], "rah")) < 0 && ft_dprintf(2, "[DISWON][Flags are: %d]\n", flags) &&args->av[1][0] == '-')
 		{
 			ft_dprintf(STDERR_FILENO, "%s", "minish: usage: disown: [-h] [-ar] [jobspec ... | pid ...]\n");
 			return (CMD_BAD_USE);
@@ -140,17 +215,16 @@ int		ft_disown(t_exec* args, t_term* term)
 					ft_dprintf(STDERR_FILENO, "minish: disown: %s: no such job\n", args->av[2]);
 					return (STD_ERROR);
 				}
-				disown_process(term->session, target, flags > 0 ? 1 : 0);
+				disown_group(term->session, *target, flags > 0 ? 1 : 0, term->session->groups);
 			}
 		}
 		else
-			disown_all_processes(term->session);
+			disown_all_groups(term->session, 0);
 	}
 	if (term->session->history)
 	{
-		// TO DO: disown all the group not only the leader
-		target = background_find(term->session->history, "PID", term->session->groups);
-		disown_process(term->session, target, flags > 0 ? 1 : 0);
+		//target = background_find(term->session->history, "PID", term->session->groups);
+		disown_group(term->session, term->session->history, flags > 0 ? 1 : 0, term->session->groups);
 	}
 	// disown curr
 	return (SUCCESS);

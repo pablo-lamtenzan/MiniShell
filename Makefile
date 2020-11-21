@@ -34,6 +34,7 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 						bg.c\
 						jobs.c\
 						kill.c\
+						disown.c\
 						builtins_utils.c\
 					)\
 					$(addprefix bst/,\
