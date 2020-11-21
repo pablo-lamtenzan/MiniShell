@@ -6,9 +6,10 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 08:18:13 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 20:32:44 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/20 20:39:11 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 # include <process.h>
 # include <stdlib.h>
@@ -16,7 +17,7 @@
 # include <unistd.h>
 # include <signal.h>
 # include <sys/wait.h>
-
+/*
 void			add_process(t_process* target, t_process* prev, t_process* next)
 {
 	prev->next = target;
@@ -29,19 +30,57 @@ void			remove_process(t_process** target)
 {
 	(*target)->next->prev = (*target)->prev;
 	(*target)->prev->next = (*target)->next;
+	//ft_dprintf(2, "[REMOVE PROCESS][%p]\n", *target);
 	delete_process(target);
 }
 
-void			process_push_front(t_process* process, t_group* group)
+void			process_push_front(t_process* process, t_group** group)
 {
 	t_process*	fill;
 
-	fill = process;
-	group->nil->next = process;
-	process->prev = group->nil;
+	//ft_dprintf(2, "GROUP NIL BEFORE: %p\n", (*group)->nil);
+	//ft_dprintf(2, "GROUP ACTIVE PROCESSES BEFORE: %p\n", (*group)->active_processes);
+	fill = (*group)->active_processes;
+	(*group)->nil->next = process;
+	process->prev = (*group)->nil;
 	process->next = fill;
 	fill->prev = process;
-	group->active_processes = process;
+	(*group)->active_processes = process;
+	//ft_dprintf(2, "PROCESS PUSH FRONT groups->active_processes = %p\n", (*group)->active_processes);
+	//ft_dprintf(2, "GROUP NIL AFTER: %p\n", (*group)->nil);
+	//ft_dprintf(2, "GROUP ACTIVE PROCESSES AFTER: %p\n", (*group)->active_processes);
+	//ft_dprintf(2, "GROUP NIL NEXT IS NOW: %p\n", (*group)->nil->next);
+}
+
+void		process_push_back(t_group** group, t_process* target)
+{
+	t_process*	 fill;
+
+	ft_dprintf(2, "[NEW PROCESS PUSH BACK :%p]\n", target);
+	ft_dprintf(2, "[PROCESS PUSH BACK ACTIVE PROCESSES prev group add: %p\n", (*group)->active_processes);
+	fill = (*group)->nil->prev;
+	ft_dprintf(2, "-----------------> %p\n", fill);
+	(*group)->nil->prev = target;
+	target->next = (*group)->nil;
+	target->prev = fill;
+	if (fill)
+	{
+		ft_dprintf(2, "FILL BACK: %p\n", fill->prev);
+		//ft_dprintf(2, "ACTIVE PROCESSES: %p\n", (*group)->active_processes);
+		if (!fill->prev)
+		{
+			fill->prev = (*group)->nil;
+			(*group)->nil->next = fill;
+		}
+		fill->next = target;
+	}
+	else
+	{
+		(*group)->nil->next = target;
+		(*group)->active_processes = target;
+	}
+	(*group)->nil->prev = target;
+	ft_dprintf(2, "ACTIVE PROCESSES: %p\n", (*group)->active_processes);
 }
 
 t_process	*new_process(pid_t pid, int wstatus, char*const* data)
@@ -66,12 +105,20 @@ void            group_push_front(t_session* session, t_group* group)
 {
 	t_group*	fill;
 
-	fill = group;
+	//ft_dprintf(2, "SESSION GROUPS IS WAS: %p\n", session->groups);
+	//ft_dprintf(2, "[PUSH FRONT][NIL AT THE BEGINING: %p]\n", session->nil);
+	fill = session->groups;
 	session->nil->next = group;
 	group->prev = session->nil;
 	group->next = fill;
 	fill->prev = group;
 	session->groups = group;
+	//ft_dprintf(2, "GROUP PUSH FRONT: session->groups = %p\n", session->groups);
+	//ft_dprintf(2, "GROUP PUSH FRONT: session->groups->next = %p\n", session->groups->next);
+	//ft_dprintf(2, "[PUSH FRONT][GROUP: %p]\n", group);
+	//ft_dprintf(2, "SESSION GROUPS IS RIGHT NOW: %p\n", session->groups);
+	//ft_dprintf(2, "SESSION GROUPS->PREV IS RIGHT NOW: %p\n", session->groups->prev);
+	//ft_dprintf(2, "SESSION GROUPS NIL IS RIGHT NOW: %p\n", session->groups->prev);
 }
 
 t_group			*new_group()
@@ -84,6 +131,10 @@ t_group			*new_group()
         return (NULL);
 	else
 		group->active_processes = group->nil;
+	//group->nil->next = group->nil;
+	//group->nil->prev = group->nil;
+	ft_dprintf(2, "[NEW GROUP][ALLOCATE GROUP: %p]\n", group);
+	ft_dprintf(2, "[NEW GROUP][ALLOCATE PROCESSES (=nil): %p]\n", group->active_processes);
     return (group);
 }
 
@@ -106,10 +157,11 @@ void            delete_process(t_process **target)
     int         i;
 
     i = -1;
-    while ((*target)->data && (*target)->data[++i])
-        free((*target)->data[i]);
-    free((char**)(*target)->data);
-	ft_dprintf(2, "%p FREED IN DELETE PROCESS (form remove process)\n", target);
+    //while ((*target)->data && (*target)->data[++i])
+   //     free((*target)->data[i]);
+    //free((char**)(*target)->data);
+	//(*target)->data = NULL;
+	//ft_dprintf(2, "%p FREED IN DELETE PROCESS (form remove process)\n", target);
     free(*target);
 	*target = NULL;
 }
@@ -118,9 +170,13 @@ void			group_pop_front(t_session* session)
 {
 	t_group*	fill;
 
-	fill = session->groups;
-	delete_group(&session->nil->next);
+	fill = session->groups->next;
+	ft_dprintf(2, "[GROUP POP FRONT: %p]\n", session->groups);
+	delete_group(&session->groups);
+	fill->prev = session->nil;
+	session->nil->next = fill;
 	session->groups = fill;
+	//ft_dprintf(2, "[SESSION GROUP: %p]\n", session->groups);
 }
 
 void            delete_group(t_group **target)
@@ -132,11 +188,13 @@ void            delete_group(t_group **target)
     }
     free((*target)->nil);
 	(*target)->nil = NULL;
+	//ft_dprintf(2, "[DELETE GROUP FREE TARGET: %p]\n", *target);
 	(*target) = NULL;
 }
 
 void            end_session(t_session *session)
 {
+	t_process**	fill;
 	force_exit_background(session);
     while (session->groups != session->nil)
     {
@@ -145,8 +203,9 @@ void            end_session(t_session *session)
     }
     while (session->history)
     {
-        delete_process(&session->history);
-        session->history = session->history->next;
+		fill = &session->history;
+		session->history = session->history->next;
+        delete_process(fill);
     }
 	free(session->nil);
     free(session);
@@ -172,6 +231,32 @@ static bool		not_in_background(t_process *process, t_group *group)
 	return (!background_find(process, "PID", group));
 }
 
+bool			update_background_v2(t_session* session, t_process **target)
+{
+	ft_dprintf(2, "[UPDATE V2--1]ACTIVE PROCESSES: %p\n", (*target));
+	ft_dprintf(2, "[WAIING...][pid=\'%d\']\n", (*target)->pid);
+	while (waitpid((*target)->pid, &(*target)->wstatus, WUNTRACED) <= 0)
+		;
+	// exited and not stopped
+	if (WIFEXITED((*target)->wstatus) || !WIFSTOPPED((*target)->wstatus))
+	{
+		ft_dprintf(2, "[PROCESS EXITS]\n");
+		(*target)->flags &= ~STOPPED;
+	}
+	// stopped
+	else
+	{
+		ft_dprintf(2, "[PROCESS DOESN'T EXIT]\n");
+		(*target)->flags |= STOPPED;
+		// to change update history
+		if (is_leader(session, *target))
+			update_session_history(session, *target);
+	}
+	ft_dprintf(2, "[UPDATE V2--2]ACTIVE PROCESSES: %p\n", (*target));
+	ft_dprintf(2, "------> %d\n", (*target)->flags);
+	return (true);
+}
+
 bool			update_background(t_session *session, t_process **process)
 {
 	t_process	*cp;
@@ -184,6 +269,7 @@ bool			update_background(t_session *session, t_process **process)
 	if (allocated && !(cp = new_process((*process)->pid, (*process)->wstatus, (*process)->data)))
 		return (false);
 	to_use = allocated ? cp : *process;
+	ft_dprintf(2, "[UPDATE BACKGROUND][to_use addr: %p]\n", to_use);
 	ft_dprintf(2, "[WAIING...][pid=\'%d\']\n", to_use->pid);
 	while (waitpid(to_use->pid, &to_use->wstatus, WUNTRACED) <= 0) // WCONTINUED for test
 		;
@@ -195,7 +281,7 @@ bool			update_background(t_session *session, t_process **process)
 		ft_dprintf(2, "Children [%d] doesn't exited\n", to_use->pid);
 		update_session_history(session, to_use);
 		if (allocated)
-			process_push_front(to_use, session->groups);
+			process_push_front(to_use, &session->groups);
 	}
 	else
 		ft_dprintf(2, "Children [%d] exited\n", to_use->pid);
@@ -205,7 +291,7 @@ bool			update_background(t_session *session, t_process **process)
 	return (true);
 }
 
-t_process*		background_find(t_process* target, const char* search_type, t_group* group)
+t_process**		background_find(t_process* target, const char* search_type, t_group* group)
 {
 	const char*	modes[2] = { "PID", "STA" };
 	int 		i;
@@ -216,9 +302,10 @@ t_process*		background_find(t_process* target, const char* search_type, t_group*
 		while (i < 2 && ft_strncmp(modes[i], search_type, 3))
 			i++;
 		if (!i && target->pid == group->active_processes->pid)
-			return (group->active_processes);
+			return (&group->active_processes);
 		else if (i && target->wstatus == group->active_processes->wstatus)
-			return (group->active_processes);
+			return (&group->active_processes);
+		group->active_processes = group->active_processes->next;
 	}
 	return (NULL);
 }
@@ -243,7 +330,7 @@ size_t			background_size(t_group* nil)
 
 void			force_exit_background(t_session* session)
 {
-	t_process*	fill;
+	t_process**	fill;
 
 	while (session->groups != session->nil)
 	{
@@ -256,9 +343,9 @@ void			force_exit_background(t_session* session)
 				;
 			if (WIFEXITED(session->groups->active_processes->wstatus))
 			{
-				fill = session->groups->active_processes;
+				fill = &session->groups->active_processes;
 				session->groups->active_processes = session->groups->active_processes->next;
-				remove_process(&fill);
+				remove_process(fill);
 			}
 			session->groups->active_processes = session->groups->active_processes->next;
 		}
@@ -274,12 +361,12 @@ size_t			get_background_index(t_group* nil, t_process* target)
 	t_process*	fill;
 	t_group*	groups;
 
-	index = 1;
+	index = 0;
 	groups = nil->prev;
-	while (groups != nil)
+	while (groups != nil && (index++))
 	{
 		fill = groups->nil->prev;
-		while (fill != groups->nil && (index++))
+		while (fill != groups->nil)
 		{
 			if (fill == target)
 				return (index);
@@ -289,3 +376,78 @@ size_t			get_background_index(t_group* nil, t_process* target)
 	}
 	return (index);
 }
+
+pid_t			get_process_leader_pid(t_group* nil, t_process* target)
+{
+	t_group*	groups;
+
+	groups = nil->next;
+	while (groups && groups != nil)
+	{
+		if (background_find(target, "PID", groups))
+			return (groups->nil->next->pid);
+		groups = groups->next;
+	}
+	return (0);
+}
+
+bool		is_active_group(t_group* target)
+{
+	t_process*	process;
+
+	process = target->nil->next;
+	ft_dprintf(2, "[IS ACTIVE GROUP (leader): %p]\n", process);
+	while (process != target->nil)
+	{
+		if (process->flags & (BACKGROUD | STOPPED))
+			return (true);
+		process = process->next;
+	}
+	return (false);
+}
+
+t_group**		get_group(t_session* session, t_process* leader)
+{
+	t_group*	remember;
+	t_group**	ret;
+
+	remember = session->groups;
+	while (session->groups != session->nil)
+	{
+		if (session->groups->nil->next && session->groups->nil->next->pid == leader->pid)
+		{
+			ret = &session->groups;
+			session->groups = remember;
+			ft_dprintf(2, "[get group]SESSION GROUPS: %p\n", session->groups);
+			return (ret);
+		}
+		session->groups = session->groups->next;
+	}
+	ret = &session->groups;
+	session->groups = remember;
+	ft_dprintf(2, "[get group]SESSION GROUPS: %p\n", session->groups);
+	return (ret);
+}
+
+void		remove_group(t_group** target)
+{
+	t_group*	next;
+	t_group*	prev;
+
+	next = (*target)->next;
+	prev = (*target)->prev;
+	delete_group(target);
+	next->prev = prev;
+	prev->next = next;
+}
+
+*/
+
+/*
+void		update_groups(t_session* session, t_group** group)
+{
+	if (*group == session->nil || (*group)->nil->next == (*group)->nil || !is_active_group(*group))
+		remove_group(group);
+}
+*/
+

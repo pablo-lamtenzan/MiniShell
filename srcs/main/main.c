@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 19:45:44 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/19 14:44:07 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,17 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 	exit(exit_return[exec_st]);
 }
 
+// TO DO: Redirect fds in job control builtins
+// TO DO: If a stopped process is resume in the backgroud it will be removed from the history
+// TO DO: Other builtins interactions with new flags RESTRICT_OP AND NO_HANGUP
+// TO DO: Current job == current group not process
+	// so if jobspec exec for jobsec else exec curr group (only for process sttoped)
+	// so the history too points to the LEADER of each group
+	// jsut change it in all builtins and is nice
+	// in jobs have to print the cmd input line (session will be global so it will be easy to give its value)
+// TO DO: Jobspec %n is for groups not for processes (%+ %- %% too)
+// Change names to job <- group <- session and for execute_cmd to execute_process and active_processes to active_jobs
+// Leader is last not first!!!! i push font each process
 static int 			exec(t_tok* tokens, t_term* term)
 {
 	t_exec_status	exec_st;
@@ -102,6 +113,6 @@ static int 			exec(t_tok* tokens, t_term* term)
 
 
 int		main(int ac, const char** av, const char** envp)
-{	
+{
     return (term_prompt(ac, av, envp, &exec));
 }

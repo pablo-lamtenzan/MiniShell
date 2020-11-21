@@ -7,7 +7,7 @@ CC		=		/usr/bin/clang
 RM		=		/bin/rm
 CFLAGS	=		-Wall -Wextra -Werror -g3 -fsanitize=address
 IFLAGS	=		-I$(INCDIR) -I$(LIBFT)/includes
-LFLAGS	=		-L$(LIBFT) -lft -lcurses -ltermcap
+LFLAGS	=		-L$(LIBFT) -lft -ltermcap
 
 SRCS	=		$(addprefix $(SRCDIR)/,\
 					$(addprefix term/,												\
@@ -19,7 +19,8 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 								subshell.c tokens.c)								\
 								lexer.c token_utils.c token.c)						\
 						clip.c controls.c hist_cursor.c hist.c init.c				\
-						cursor.c line_edit.c line.c read_special.c read.c select.c	\
+						cursor.c line_edit.c line_put.c line.c read_special.c		\
+						read.c select.c												\
 						term.c write.c)												\
 					$(addprefix builtins/,\
 						cd.c\
@@ -56,7 +57,12 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 					$(addprefix process/,\
 						process_lib.c\
 						resume_suspended_processes.c\
+						jobspec_parser.c\
 						process.c\
+						job_control.c\
+						session.c\
+						group.c\
+						process_____.c\
 					)\
 					$(addprefix main/,\
 						main.c\
@@ -107,6 +113,9 @@ $(LIBFT)/libft.a: libft
 $(NAME):		$(OBJDS) $(OBJS) $(LIBFT)/libft.a
 	@echo LINK $(NAME)
 	$(CC) $(OBJS) $(CFLAGS) $(LFLAGS) -o $(NAME)
+
+prompt:
+	clang -g3 -fsanitize=address -fsanitize=undefined -Wall -Wextra -Werror srcs/new_term/*.c srcs/env/*.c -I includes -Ilibft/includes -Llibft/ -lft -ltermcap -o $@
 
 $(OBJDS):
 	mkdir -p $@

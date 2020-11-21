@@ -1,0 +1,151 @@
+Job control: 
+ -> Selectively stop (suspend) the execution of processes and continue (resume) their execution later point
+ -> How to do it ?: job control + syscalls
+
+1 job == 1 pipeline
+
+Foreground processes:
+ -> processes who has the terminal group pid
+ -> As ctrl + anyting or builtins
+ -> Allowed to read from the terminal
+ -> Allowd to write from the terminal if the user specifies it with 'stty' 'tostop'
+
+Background processes:
+ -> processes who has a diferent group pid from the terminal
+ -> Inmune to keyboard-generated signals
+ -> If reads from the terminal the kernel terminal driver sents a SIGTTIN (if not detected, suspends the process)
+ -> If writes from the terminal (with 'stty' 'tostop' specified) the kernel terminal driver sents a SIGTTOU (if not detected, suspend the process)
+
+Job control facilities:
+ -> ^Z: While a processes is running causes that process to be stopped and returns control to bash (minishell)
+ -> ^Y: While a process attemps to read input from the terminal causes that process to be sttoped and returns control to bash (minishell)
+ -> ^Z: Discards pendint output and typehead
+ -> Job control builtins
+
+Syntax:
+ -> '%' introdudes a job spectification 
+ -> '%%' and '%+' refers to current job (stopped while he was in the foreground or started in the background)
+ -> '%' refers to current job too
+ -> '%-' refers to the previous
+ -> If there are 1 job '%+' and '%-' refers to the same output
+ -> Current job is allways flaged with '+' and the previous with '-'
+ -> '%name' refers to a 'name' job in the background
+ -> '?name' refers to a 'name' job containing string 'name' in its command line (name or args) if matches one than 1 time, repport error
+ -> Naming a job can be used to bring it into the foreground: '%1' == 'fg %1'
+ -> '%1 &' resumes a job in the background: '%1 &' == 'bg %1'
+ -> '%index' starts to 1
+
+SIGCHILD is normally sent to a process to notify that one of its child processes ended, so the parent process can collect its exit code
+- Any trap on SIGCHLD is executed for each child process that exits. 
+
+Exit with suspended processes in background:
+ -> If theres sttoped jobs and bash (minishell tries to exit) a warning msg is sent
+ -> If theres a second exit attemp (without any intervening command) bash (minish) exits (terminatting the jobs)
+
+- Wait returns when the job change started
+- -f option cuases wait to wait until job or process terminles
+
+JOB CONTROL BUILTINS:
+
+bg [jobspec...]:
+ -> Resume each suspended job in the background as it had been started with '&'
+ -> If jobspec is missing uses current job
+ -> Returns 0 unless jobspec is not found
+
+fg [jobspec]
+ -> Resume the jobspec in the foreground and make it the current job
+ -> If jobspec is missing uses current job
+ -> Returns that of the command placed in the foreground
+ -> Returns non zero if jobspec not found
+
+jobs [-lnprs] [jobspec] or jobs -x command [arguments]:
+ -> List active jobs
+ -> '-l' list id in addition to the normal info
+ -> '-n' display changes in jobs changed status since their user was last notified of their status
+ -> 'p' list only process id of the process group leader
+ -> 'r' displays runnign jobs
+ -> '-s' displays stopped jobs
+ -> If jobspec in given output only about that job else suplly status about all jobs
+ -> -x option is execute stuff is complex but i can do it with organization
+
+kill [-s sigspec] [-n signum] [sigspec] jobspec or pid
+kill -l|-L [exit_status]:
+ -> Send a signal (sigspec or signum) to the process (job or pid)
+ -> SIG prefix is optional
+ -> If sigspec and signum are not present: SIGTERM is used
+ -> '-l' option lists the signal names
+ -> '-l' without option list all avalable options (returns 0)
+ -> '-L' is equivalent to -1?? (returns 0)
+ -> Returns 0 if at least 1 siganl was succefully sent
+ -> Returns !0 if an error occurs ir invalid option
+
+wait [-fn] [jobspec or pid]:
+ -> Wait until the child process (jobspec or pid) exits
+ -> Returns the exit status of the last command waited for
+ -> If a jobspec is given, all the processes in the job are waited for
+ -> No options, all currently active childs are waited (in the job), returns 0
+ -> '-n' wait for a single job and return its exit status
+ -> '-f' forces to wait for each job to terminate before returning its status intead of returning when it changes status
+ -> Job not found return 127
+
+disown [-ar] [-h] [josbpec... | pid...]:
+ -> Without options remove each jobspec from the table of active jobs
+ -> '-h' the job is not remove from the table, but i smarked so that is not sent to the job a SIGHUB if the shell recives a SIGHUP 
+ -> No jobspec but '-a' or '-r' the current job is used
+ -> No jobspec, '-a' means to remove or mark all jobs
+ -> No jobspec, '-r' restric operation to running jobs
+
+My test:
+> cat
+> ^Z
+> disown -r
+> jobs -l : jobs has no flag '+' that means is not the current now
+> fg : bash: fg: current: no such job
+> disown -a : bash: warning: deleting stopped job 1 with process group 1037576
+> jobs -l : empty
+
+Disowned -r jobs doesnt affect the exit warnig just remove it from the history
+
+
+
+
+DATA STRUCTURES AND CODE ARCHITECTURE
+
+Syntax Parser:
+
+t_process**		jobspec_parser(t_session* session, int ac, const char** av, t_process** (*fill)(t_session* session, int ac, const char* av));
+ -> Returns the address of the process in session->groups->active_processes
+ -> Parse jobspec syntax and executes a fill syntax-search function
+
+get_process_by_index();
+get_process_by_pid();
+get_process_by_name();
+get_proxess_by_history();
+
+Exit with suspended processes in background:
+ -> Use a flag if the exit is possible
+ -> Else print: "Exit\nThere are stopped jobs."
+ 
+Disown:
+- Have to put a flag in active_processes for -r
+
+Wait:
+- Flag if process is stopped for -f
+Test and check more about wait
+
+For print in jobs Jobs has diferent status: Sttoped, Running, Done ... (have to find all)
+
+SOME BUILTINS CAN TAKE CMD NAME WITOUT '%'
+
+// to do
+1) Syntax DONE! (just little isues with %name)
+2) Exit new stuff
+3) Disown DONE!
+4) Wait (Implemented, not ended, not tested)
+5) bg DONE (need to catch zombies at the end)
+-> Important if the suspended job in bg reads from stdin bash intercept it (tty input) (this process can read to stdin too!)
+6) fg DONE!
+7) kill DONE! (have to test better a fcking lot of kinds of error msg)
+8) jobs DONE! (inf loop more than 1 in background)
+9) test SIGCHLD to solve "cat | cat -e | echo a" or "cat | cat -e | ls"
+10) Correct other litle details

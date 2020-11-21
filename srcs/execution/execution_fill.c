@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_fill.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 11:34:19 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/20 20:59:51 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,33 @@ static int	ft_fork(t_exec* info, t_term* term)
 	int		child_st;
 
 	child_st = fork();
-	term->session->processes[term->session->processes[MANAGE].pid].pid = child_st;
+
+	// old stuff
+	//term->session->processes[term->session->processes[MANAGE].pid].pid = child_st;
+	//term->session->processes[term->session->processes[MANAGE].pid].data = info->av;
+
+	// necesarry
+	//if (!ft_strncmp((const char*)term->session->processes[term->session->processes[MANAGE].pid].data, "./", 2))
+		; // TO DO: trim ./
+	
+	// New Stuff
+	if (child_st > 0) {
+	t_process*		process;
+
+	if (!(process = process_new(child_st, 0, info->av)))
+		return (-1);
+	//ft_dprintf(2, "Before push back: %p\n", term->session->groups);
+	process_push_back(&term->session->groups, process);
+	//ft_dprintf(2, "[FT FORK][PUSH BACK: groups are now %p]\n", term->session->groups);
+	}
+	// old stufff
 	if (child_st == 0)
 	{
 		// for the moment overwrite the last
-		if (term->session->processes[MANAGE].pid < PROCESSES_MAX)
-			term->session->processes[MANAGE].pid++;
-		term->session->processes->data = info->av;
+		//if (term->session->processes[MANAGE].pid < PROCESSES_MAX)
+		//{
+		//	term->session->processes[MANAGE].pid++;
+		//}
 	}
 	return (child_st);
 }
@@ -81,6 +101,7 @@ void		destroy_execve_args(t_exec *info)
 	info->exec = NULL;
 }
 
+/*
 int			matrix_height(char **matrix)
 {
 	char** it;
@@ -90,3 +111,4 @@ int			matrix_height(char **matrix)
 		it++;
 	return (it - matrix);
 }
+*/

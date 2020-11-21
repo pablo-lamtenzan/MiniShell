@@ -31,17 +31,18 @@
 /*
 ** multiple redirections handler
 */
-# define CONST_GR		1
-# define CONST_LE		2
+# define REDIR_OUT		1
+# define REDIR_IN		2
 
 /*
 ** file descriptors manager
 */
-# define STDIN			0
-# define STDOUT			1
-# define AUX			2
-# define READ			1
-# define WRITE			0
+# define FDS_STDIN		0
+# define FDS_STDOUT		1
+# define FDS_AUX		2
+
+# define PIPE_WRITE		1
+# define PIPE_READ		0
 
 # define UMASK			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
 
@@ -93,6 +94,7 @@ t_exec_status			print_redirection_error(t_redir_status rstatus, char** filename,
 */
 t_exec_status			execute_bst(t_bst* root, t_term* term);
 t_exec_status        	wait_processes(t_term *term, t_exec_status st);
+t_exec_status			wait_processes_v2(t_term* term, t_exec_status st);
 
 /*
 ** Separators

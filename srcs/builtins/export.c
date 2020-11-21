@@ -34,7 +34,7 @@ int	ft_export(t_exec *args, t_term *t)
 	if (args->ac == 1)
 	{
 		//map_sort(&t->env, &map_cmp);
-		//print_env(args->fds[1], t->env);
+		//print_env(args->fds[FDS_STDOUT], t->env);
 		;
 	}
 	else
