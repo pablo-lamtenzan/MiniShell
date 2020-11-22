@@ -6,12 +6,14 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 03:11:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/22 03:42:39 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 06:56:22 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <libft.h>
+
+// do ./minishell, then ./a.out, then ctrl+D and its works
 
 void			zombies_catcher(int signal)
 {
@@ -32,6 +34,7 @@ void			zombies_catcher(int signal)
 			return ;
 		else
 		{
+			// STRANGE: returns 0 always (or it seems)
 			int exit_st = WEXITSTATUS(wstatus);
 			ft_dprintf(2, "CATCH ZOMBIE EXIT STATUS: %d\n", exit_st);
 			// DO TO: need session global

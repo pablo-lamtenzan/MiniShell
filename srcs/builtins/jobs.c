@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 12:03:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/22 01:18:35 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 04:35:08 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,13 +69,13 @@ static int				parse_flags(int ac, const char* av)
 const char*			is_in_history(t_session* session, t_process* target)
 {
 	if (!session->history) // for the momment
-		return ("");
+		return (" ");
 	if (target->pid == session->history->pid)
 		return ("+");
 	else if (session->history->next && target->pid == session->history->next->pid)
 		return ("-");
 	else
-		return ("");
+		return (" ");
 }
 
 const char*			get_status(int wstatus)

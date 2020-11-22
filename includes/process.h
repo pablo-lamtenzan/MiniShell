@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/22 03:14:01 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 04:26:37 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ void					suspend_process(int signal);
 ** Utils
 */
 int						parse_flags(int ac, const char* av, const char* pattern);
+const char*				is_in_history(t_session* session, t_process* target);
 
 
 // old

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/20 20:59:51 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 05:55:15 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,8 @@ int		execute_child(t_exec* info, t_term* term)
 	//	;
 	//return (handle_wstatus(wstatus, info->av));
 	//term->session->processes[term->session->processes[MANAGE].pid].wstatus = 0;
+	//term->session->groups->active_processes->wstatus = ret;
+	ft_dprintf(2, "[EXECUTE CHILD][RET: %d]\n", ret);
 	return (ret);
 }
 

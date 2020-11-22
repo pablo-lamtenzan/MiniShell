@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/22 03:11:12 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 03:51:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,11 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 // TO DO: WAIT MSG (MSG IN GENERAL USE THE SAME SYNTAX DO 1 fct!!! for it)
 // TO DO: builtins error msg when there no groups
 // TO DO: TEST WAIT (need ctrl^Z)
+// TO DO: Ctl^Z (need global session)
+// TO DO: SIGCHLD (need global session and change term->st in session)
+// TO DO: SESSION GLOBAL (do when all builtins will work as good as i don't need dgb printf anymore)
+// TO DO: optimize builtins (need global session)
+// TO DO: put color in the prompt
 
 static int 			exec(t_tok* tokens, t_term* term)
 {

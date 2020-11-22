@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:26:18 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/20 21:10:57 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 06:41:06 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void		session_end(t_session* session)
 	t_process*	fill;
 	// TO DO: kill all stopped
 	
+	force_exit_background(session);
 	while (!session_empty(session))
 		group_pop_front(&session);
 	while (session->history)

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/22 00:45:13 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 06:54:55 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ void		update_background(t_session* session, t_process **target, bool wait)
 		if (is_leader(session, *target))
 			update_session_history(session, *target);
 	}
+	ft_dprintf(2, "[UPDATE BACKGROUND][WSTATUS AT THE END = \'%d\']\n", (*target)->wstatus);
 	//ft_dprintf(2, "[UPDATE V2--2]ACTIVE PROCESSES: %p\n", (*target));
 	//ft_dprintf(2, "------> %d\n", (*target)->flags);
 }
@@ -192,6 +193,35 @@ void			force_exit_background(t_session* session)
 	}
 }
 */
+
+void			force_exit_background(t_session* session)
+{
+	t_group*	remember;
+	t_process*	remember_leader;
+
+	remember = session->groups;
+
+	while (session->groups != session->nil)
+	{
+		remember_leader = session->groups->active_processes;
+		while (session->groups->active_processes != session->groups->nil)
+		{
+			// WORKS! The zombies catcher print it return status
+			ft_dprintf(2, "[FORCE EXIT][PROCESS: [PROCESS: \'%d\'][\'%p\']\n", session->groups->active_processes->pid, session->groups->active_processes);
+			kill(session->groups->active_processes->pid, SIGCONT);
+			kill(session->groups->active_processes->pid, SIGHUP);
+			//while (waitpid(session->groups->active_processes->pid, &session->groups->active_processes->wstatus, WUNTRACED) <= 0)
+			//	;
+			//if (WIFEXITED(session->groups->active_processes->wstatus))
+				session->groups->active_processes = session->groups->active_processes->next;
+			//else
+			//	ft_dprintf(2, "[FORCE EXIT][PROCESS: \'%d\'][\'%p\'][DOESN'T EXIT!]\n", session->groups->active_processes->pid, session->groups->active_processes);
+			
+		}
+		session->groups = session->groups->next;	
+	}
+	session->groups = remember;
+}
 
 bool			is_leader(t_session* session, t_process* target)
 {
