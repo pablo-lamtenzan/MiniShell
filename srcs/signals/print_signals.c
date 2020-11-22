@@ -223,7 +223,7 @@ void	print_signal_v2(t_session* session, t_process* target, int flags)
 		is_in_history(session, target), // print history index
 		flags & PRINT_PID ? pid = ft_itoa(target->pid) : "", // print pid
 		signals[signal - 1],
-		__WCOREDUMP(signal) ? "(core dumped)" : ""
+		WCOREDUMP(signal) ? "(core dumped)" : ""
 		);
 	if (flags & PRINT_JOBS_CMD)
 		ft_dprintf(STDERR_FILENO, "%s", "COMMAND LINE TRIMMED BY SEPARATORS HERE");
