@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/22 06:54:55 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 22:19:26 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,4 +237,22 @@ bool			is_leader(t_session* session, t_process* target)
 		groups = groups->next;
 	}
 	return (false);
+}
+
+bool			is_not_ambigous(t_session* session, t_process* target)
+{
+	t_group*	groups;
+	size_t		count;
+
+	count = 0;
+	if (!target)
+		return (false);
+	groups = session->groups;
+	while (groups != session->nil && groups->nil && groups->nil->next)
+	{
+		if (groups->nil->next && groups->nil->next->data && !ft_strncmp(groups->nil->next->data[0], target->data[0], ft_strlen(target->data[0])))
+			count++;
+		groups = groups->next;
+	}
+	return (count == 1);
 }

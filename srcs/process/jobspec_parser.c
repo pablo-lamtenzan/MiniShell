@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 12:40:22 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/21 18:44:00 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 22:25:28 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ bool			is_string_digit(const char* string)
 	while (string[++i])
 		if (string[i] > '9' || string[i] < '0')
 			return (false);
-	return (true);
+	return (i);
 }
 
 bool			is_jobspec(const char* string)
@@ -96,6 +96,7 @@ t_process**		get_process_by_index(t_session* session, t_group* groups, size_t in
 }
 
 // Returns addr in active_processes
+/* THIS IS BASH IS IMPLEMEMNT LIKE PURE TRASH */
 t_process**		get_process_by_pid(t_session* session, t_group* groups, pid_t pid)
 {
 	// pid
@@ -114,6 +115,7 @@ t_process**		get_process_by_pid(t_session* session, t_group* groups, pid_t pid)
 }
 
 // Returns addr in active processes
+/* ONLY RETURNS IF IS LEADER */
 t_process**		get_process_by_name(t_session* session, t_group* groups, const char* av)
 {
 	// %name
@@ -127,6 +129,9 @@ t_process**		get_process_by_name(t_session* session, t_group* groups, const char
 	if (search_mode == 0)
 		return (NULL);
 	match = 0;
+	ret = NULL;
+
+	ft_dprintf(2, "%p ------------ %p\n", session->groups, groups);
 	while (groups != session->nil)
 	{
 		while (groups->active_processes != groups->nil)
@@ -134,23 +139,31 @@ t_process**		get_process_by_name(t_session* session, t_group* groups, const char
 			count = -1;
 			if (search_mode == 1) // %name
 			{
-				ft_dprintf(2, "TEST  %s \n", &groups->active_processes->data[0][2]);
-				if (!ft_strncmp(&groups->active_processes->data[0][2], av, ft_strlen(av)) && (match++)) // hange 1st arg to data[0] addr after trim ./ in execution fill
-					ret = &groups->active_processes;
+				ft_dprintf(2, "TEST  %s --- %s \n", groups->active_processes->data[0], av);
+				if (!ft_strncmp(groups->active_processes->data[0], av, ft_strlen(av)) && (++match))
+				{
+					ft_dprintf(2, "[DATA][FOUND: %p]\n", groups->active_processes);
+					if (is_leader(session, groups->active_processes) && is_not_ambigous(session, groups->active_processes))
+						return(&groups->active_processes);
+				}
 			}
 			else if (search_mode == 2) // %?name
 			{
+				// TO DO: debug this
 				while (++count < matrix_height((char**)groups->active_processes->data)) // change matrix height later
-					if (ft_strnstr(groups->active_processes->data[count], &av[1], ft_strlen(&av[1]) && (match++)))
-						ret = &groups->active_processes;
+					if (ft_strnstr(groups->active_processes->data[count], &av[1], ft_strlen(&av[1]) && (++match)))
+					{
+						ft_dprintf(2, "[DATA][FOUND: %p]\n", groups->active_processes);
+						if (is_leader(session, groups->active_processes) && is_not_ambigous(session, groups->active_processes))
+						return(&groups->active_processes);
+					}
 			}
 			groups->active_processes = groups->active_processes->next;
 		}
 		groups = groups->next;
 	}
-	if (match != 1)
-		return (NULL); // display error ?
-	return (ret);
+	ft_dprintf(2, "[DATA][NOT FOUND OR AMBIGOUS!!!!]\n");
+	return (NULL);
 }
 
 // Returns group leader (IN HISTORY I ONLY HAVE THE LEADERS)

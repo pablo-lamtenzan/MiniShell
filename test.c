@@ -47,5 +47,6 @@ int main()
     dprintf(2, "TEST\n");
     kill(pid, SIGSTOP);
     dprintf(2, "TEST2\n");
+	exit(9999);
     return (99999);
 }

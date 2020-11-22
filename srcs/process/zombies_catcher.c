@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 03:11:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/22 06:56:22 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 07:01:46 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void			zombies_catcher(int signal)
 	{
 		// Can't wait pid cause if another child exist it will wait for the wrong interrumping minishell
 		// THIS DOESN'T WORK FOR THE MOMMENT, NEED A PID (i guess)
-		ret = waitpid(-1, &wstatus, WNOHANG);
+		ret = waitpid(0, &wstatus, WNOHANG);
 		if (!ret || ret == -1)
 			return ;
 		else

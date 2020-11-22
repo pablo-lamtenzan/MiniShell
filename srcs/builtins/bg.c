@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 23:11:42 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/21 22:01:21 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 22:46:56 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int		ft_bg(t_exec* args, t_term* term)
 
     if (session_empty(term->session) || term->session->groups->next == term->session->nil)
     {
-        ft_dprintf(STD_ERROR, "minish: bg: current: no such job\n");
+        ft_dprintf(STDERR_FILENO, "minish: bg: current: no such job\n");
         return (STD_ERROR);
     }
 
