@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/21 21:33:43 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 03:14:01 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,9 +98,17 @@ void					force_exit_background(t_session* session);
 bool					is_leader(t_session* session, t_process* target);
 
 /*
+** Signals catcher
+*/
+void					zombies_catcher(int signal);
+void					suspend_process(int signal);
+
+
+/*
 ** Utils
 */
 int						parse_flags(int ac, const char* av, const char* pattern);
+
 
 // old
 /*

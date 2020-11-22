@@ -69,6 +69,7 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 						session.c\
 						group.c\
 						process_____.c\
+						zombies_catcher.c\
 					)\
 					$(addprefix main/,\
 						main.c\

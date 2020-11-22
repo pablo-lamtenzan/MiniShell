@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/22 02:53:09 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 03:11:12 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,8 +115,19 @@ static int 			exec(t_tok* tokens, t_term* term)
 	return (0);
 }
 
+void	suspend_process(int signal)
+{
+	(void)signal;
+	ft_dprintf(2, "THIS IS A TEST FOR CTRL^Z AND IT WORK NICE!!!!!\n");
+	
+	// need session;
+	// print process here with status "Stopped"
+	//kill(session->groups->active_processes->pid, SIGSTOP);
+}
 
 int		main(int ac, const char** av, const char** envp)
 {
+	signal(SIGTSTP, suspend_process);
+	signal(SIGCHLD, zombies_catcher);
     return (term_prompt(ac, av, envp, &exec));
 }
