@@ -16,6 +16,7 @@ int			ft_exit(t_exec *args, t_term *t);
 int			ft_export(t_exec *args, t_term *t);
 int			ft_pwd(t_exec *args, t_term *t);
 int			ft_unset(t_exec *args, t_term *t);
+int			ft_wait(t_exec* args, t_term* term);
 
 /*
 ** Job control builtins 

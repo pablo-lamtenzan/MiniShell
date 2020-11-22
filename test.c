@@ -41,6 +41,7 @@ int main()
 	*/
     int pid = getpid();
     dprintf(2, "Printf from test.c %d\n", pid);
+	sleep(22);
     kill(pid, SIGSTOP);
 	//sleep(20);
     dprintf(2, "TEST\n");

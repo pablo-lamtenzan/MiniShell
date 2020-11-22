@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 18:03:18 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/21 23:18:29 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 02:51:33 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,4 +92,14 @@ void			for_each_group(int arg, void (*action)(t_group**, t_process**, int))
 		session->groups = session->groups->prev;
 	}
 	session->groups = (t_group*)remember;
+}
+
+int				builtin_error(size_t index, int ret)
+{
+	// TO DO: search by index in errors database
+	
+	// AND
+
+	// returns the error
+	return (ret);
 }

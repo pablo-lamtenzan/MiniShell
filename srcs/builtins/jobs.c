@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 12:03:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/21 19:44:40 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 01:18:35 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,14 +205,13 @@ int				ft_jobs(t_exec* args, t_term* term)
 				ft_dprintf(2, "flags : %d\n", flags);
 				if (!(target = jobspec_parser(term->session, args->ac, &args->av[flags > 0 ? 1 : 0], NULL)))
 				{
-					ft_dprintf(STDERR_FILENO, "minish: jobs: %s: no such job\n", args->av[2]);
+					ft_dprintf(STDERR_FILENO, "minish: jobs: %s: no such job\n", args->av[flags > 0 ? 1 : 0]);
 					return (STD_ERROR);
 				}
 				// print it here and apply flags
 				print_group(term->session, *target, flags < 0 ? 0 : flags, term->session->groups);
 				return (SUCCESS);
 			}
-			//return (SUCCESS);
 		}
 	}
 	// flags with no args or no args print all jobs in background

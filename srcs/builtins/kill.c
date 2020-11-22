@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/21 21:35:55 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 00:57:58 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,7 +192,6 @@ int     	ft_kill(t_exec* args, t_term* term)
     }
 	if (args->ac < 3)
 	{
-		// TO DO: all elems in groups for any jobspec
 		// TO DO: only the target if pid
 		if ((st = get_target(args, sig_spec, term, &target)) != SUCCESS)
 			return (st);
@@ -201,7 +200,6 @@ int     	ft_kill(t_exec* args, t_term* term)
 	}
 	if (signal)
 	{
-		// TO DO: all elems in groups for any jobspec
 		// TO DO: only the target if pid
 		if (!(target = jobspec_parser(term->session, args->ac, &args->av[1], NULL)) && !sig_spec)
 		{

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/21 23:42:43 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 02:53:09 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,13 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 // TO DO: Signals mesages in all the shell (in any user-signal interaction)
 // TO DO: Bg: Don't remove the process, but have to remove it at its end! Have to build a zombie catcher
 // TO DO: Disown works but have interact with its flags with others builtins
-
+// TO DO: All builtins has error msg for pid and jobspec i have the same error msg...
+// TO DO: Contitionals with job control test: sleep 22 | sleep 22 && sleep 22 | sleep 22 (it seem the "after AND" just desapears)
+// TO DO: Ctrl^Z -> SIGTSTS to all the group members
+// TO DO: If Ret st != 0 -> Jobs print it
+// TO DO: WAIT MSG (MSG IN GENERAL USE THE SAME SYNTAX DO 1 fct!!! for it)
+// TO DO: builtins error msg when there no groups
+// TO DO: TEST WAIT (need ctrl^Z)
 
 static int 			exec(t_tok* tokens, t_term* term)
 {
