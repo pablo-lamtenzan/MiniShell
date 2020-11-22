@@ -17,6 +17,7 @@ int main(int ac, const char **av, const char **ep)
 		env_clr(&env);
 		return (1);
 	}
+	term.msg = TERM_PS1;
 	status = TERM_EOK;
 	while ((status = term_prompt(&term)) == TERM_ENL)
 	{
@@ -24,5 +25,7 @@ int main(int ac, const char **av, const char **ep)
 	}
 	term_destroy(&term);
 	env_clr(&env);
+	if (term.is_interactive)
+		ft_dprintf(2, "exit\n");
 	return (status);
 }

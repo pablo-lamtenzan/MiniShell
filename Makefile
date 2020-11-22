@@ -7,7 +7,7 @@ CC		=		/usr/bin/clang
 RM		=		/bin/rm
 CFLAGS	=		-Wall -Wextra -Werror -g3 -fsanitize=address
 IFLAGS	=		-I$(INCDIR) -I$(LIBFT)/includes
-LFLAGS	=		-L$(LIBFT) -lft -ltermcap
+LFLAGS	=		-L$(LIBFT) -lft -lcurses -ltermcap 
 
 SRCS	=		$(addprefix $(SRCDIR)/,\
 					$(addprefix term/,												\
@@ -31,6 +31,12 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 						pwd.c\
 						unset.c\
 						fg.c\
+						bg.c\
+						jobs.c\
+						kill.c\
+						wait.c\
+						disown.c\
+						builtins_utils.c\
 					)\
 					$(addprefix bst/,\
 						bst_fill.c\
@@ -63,6 +69,7 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 						session.c\
 						group.c\
 						process_____.c\
+						zombies_catcher.c\
 					)\
 					$(addprefix main/,\
 						main.c\
@@ -115,7 +122,7 @@ $(NAME):		$(OBJDS) $(OBJS) $(LIBFT)/libft.a
 	$(CC) $(OBJS) $(CFLAGS) $(LFLAGS) -o $(NAME)
 
 prompt:
-	clang -g3 -fsanitize=address -fsanitize=undefined -Wall -Wextra -Werror srcs/new_term/*.c srcs/env/*.c -I includes -Ilibft/includes -Llibft/ -lft -ltermcap -o $@
+	clang -g3 -Wall -Wextra -Werror srcs/new_term/*.c srcs/env/*.c -I includes -Ilibft/includes -Llibft/ -lft -lcurses -o $@ -fsanitize=address -fsanitize=undefined 
 
 $(OBJDS):
 	mkdir -p $@
@@ -136,6 +143,6 @@ fclean:			clean
 
 re:				fclean all
 
-.PHONY:			libft clean fclean
+.PHONY:			libft clean fclean prompt
 
 $(VERBOSE).SILENT:

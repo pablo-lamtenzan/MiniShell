@@ -48,10 +48,13 @@ t_term_err	term_new_line(t_term *term)
 {
 	if (write(term->fds[1], TERM_ENDL, sizeof(TERM_ENDL) - 1) == -1)
 		return (TERM_EWRITE);
-	ft_dprintf(2, "[PROMPT] result: '%s'\n", term->line->data);
-	if ((!term->hist.next || term->line == term->hist.next)
-	&& !(term->hist.next = line_new(10)))
-		return (TERM_EALLOC);
-	hist_add(&term->hist, term->line);
+	if (term->line->len != 0)
+	{
+		ft_dprintf(2, "[PROMPT] result: '%s'\n", term->line->data);
+		if ((!term->hist.next || term->line == term->hist.next)
+		&& !(term->hist.next = line_new(10)))
+			return (TERM_EALLOC);
+		hist_add(&term->hist, term->line);
+	}
 	return (TERM_ENL);
 }

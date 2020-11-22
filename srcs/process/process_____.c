@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:05:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/20 23:22:10 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/21 23:40:55 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void		process_insert(t_process* prev, t_process* next, t_process* target)
 	prev->next = target;
 	next->prev = target;
 	target->next = next;
-	target->prev = target;
+	target->prev = prev;
 }
 
 /*

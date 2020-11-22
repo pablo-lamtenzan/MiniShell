@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/20 23:58:06 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 06:54:55 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,15 @@
 
 // for the momment keep them
 
-void		update_background(t_session* session, t_process **target)
+void		update_background(t_session* session, t_process **target, bool wait)
 {
 	//ft_dprintf(2, "[UPDATE V2--1]ACTIVE PROCESSES: %p\n", (*target));
-	ft_dprintf(2, "[WAIING...][pid=\'%d\']\n", (*target)->pid);
-	while (waitpid((*target)->pid, &(*target)->wstatus, WUNTRACED) <= 0)
-		;
+	if (wait) // need for kill
+	{
+		while (waitpid((*target)->pid, &(*target)->wstatus, WUNTRACED) <= 0)
+			;
+		ft_dprintf(2, "[WAIING...][pid=\'%d\'][wstatus=\'%d\']\n", (*target)->pid, (*target)->wstatus);
+	}
 	// exited and not stopped
 	// HERE CAN REMOVE FLAGS IN ALL CASES AND ADD IT IF NECESARRY
 	if (WIFEXITED((*target)->wstatus) || !WIFSTOPPED((*target)->wstatus))
@@ -38,6 +41,7 @@ void		update_background(t_session* session, t_process **target)
 		if (is_leader(session, *target))
 			update_session_history(session, *target);
 	}
+	ft_dprintf(2, "[UPDATE BACKGROUND][WSTATUS AT THE END = \'%d\']\n", (*target)->wstatus);
 	//ft_dprintf(2, "[UPDATE V2--2]ACTIVE PROCESSES: %p\n", (*target));
 	//ft_dprintf(2, "------> %d\n", (*target)->flags);
 }
@@ -62,6 +66,7 @@ t_process**		background_find(t_process* target, const char* search_type, t_group
 {
 	const char*	modes[2] = { "PID", "STA" };
 	int 		i;
+	t_process*	remember = group->active_processes;
 
 	i = 0;
 	while (group->active_processes != group->nil)
@@ -69,18 +74,51 @@ t_process**		background_find(t_process* target, const char* search_type, t_group
 		while (i < 2 && ft_strncmp(modes[i], search_type, 3))
 			i++;
 		if (!i && target->pid == group->active_processes->pid)
+		{
+			group->active_processes = remember;
 			return (&group->active_processes);
+		}
 		else if (i && target->wstatus == group->active_processes->wstatus)
+		{
+			group->active_processes = remember;
 			return (&group->active_processes);
+		}
+		group->active_processes = group->active_processes->next;
+	}
+	group->active_processes = remember;
+	return (NULL);
+}
+
+/*
+t_process**		background_find_leader(t_process* target, const char* search_type, t_group* group)
+{
+	const char*	modes[2] = { "PID", "STA" };
+	int 		i;
+	t_process** leader;
+
+	i = 0;
+	leader = &group->nil->next;
+	while (group->active_processes != group->nil)
+	{
+		while (i < 2 && ft_strncmp(modes[i], search_type, 3))
+			i++;
+		if (!i && target->pid == group->active_processes->pid)
+			return (leader);
+		else if (i && target->wstatus == group->active_processes->wstatus)
+			return (leader);
 		group->active_processes = group->active_processes->next;
 	}
 	return (NULL);
 }
+}
+*/
 
 bool		is_active_group(t_group* target)
 {
 	t_process*	process;
 
+	if (group_empty(target))
+		return (false);
 	process = target->nil->next;
 	ft_dprintf(2, "[IS ACTIVE GROUP (leader): %p]\n", process);
 	while (process != target->nil)
@@ -155,6 +193,35 @@ void			force_exit_background(t_session* session)
 	}
 }
 */
+
+void			force_exit_background(t_session* session)
+{
+	t_group*	remember;
+	t_process*	remember_leader;
+
+	remember = session->groups;
+
+	while (session->groups != session->nil)
+	{
+		remember_leader = session->groups->active_processes;
+		while (session->groups->active_processes != session->groups->nil)
+		{
+			// WORKS! The zombies catcher print it return status
+			ft_dprintf(2, "[FORCE EXIT][PROCESS: [PROCESS: \'%d\'][\'%p\']\n", session->groups->active_processes->pid, session->groups->active_processes);
+			kill(session->groups->active_processes->pid, SIGCONT);
+			kill(session->groups->active_processes->pid, SIGHUP);
+			//while (waitpid(session->groups->active_processes->pid, &session->groups->active_processes->wstatus, WUNTRACED) <= 0)
+			//	;
+			//if (WIFEXITED(session->groups->active_processes->wstatus))
+				session->groups->active_processes = session->groups->active_processes->next;
+			//else
+			//	ft_dprintf(2, "[FORCE EXIT][PROCESS: \'%d\'][\'%p\'][DOESN'T EXIT!]\n", session->groups->active_processes->pid, session->groups->active_processes);
+			
+		}
+		session->groups = session->groups->next;	
+	}
+	session->groups = remember;
+}
 
 bool			is_leader(t_session* session, t_process* target)
 {

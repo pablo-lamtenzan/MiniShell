@@ -28,19 +28,23 @@ bool		term_init_caps(t_term *term, t_env **env)
 {
 	struct stat	term_st;
 	const char	*term_type;
-	char		term_buff[MAX_ENTRY];
+	char		term_buff[MAX_ENTRY + 1];
+	int			ent_st;
 
 	if (fstat(term->fds[0], &term_st)
 	|| !(term->is_interactive = S_ISCHR(term_st.st_mode))
 	|| !env_set(env, "PS1", TERM_PS1, false)
 	|| !env_set(env, "PS2", TERM_PS2, false)
 	|| !(term_type = env_get(*env, "TERM", 4))
-	|| tgetent(term_buff, term_type) <= 0
-	|| tcgetattr(term->fds[0], &term->caps.s_ios) == -1)
+	|| (ent_st = tgetent(term_buff, term_type)) == -1)
+		return (false);
+	if (ent_st == 0)
+		return (true);
+	if (tcgetattr(term->fds[0], &term->caps.s_ios) == -1)
 		return (false);
 	term->caps.s_ios_orig = term->caps.s_ios;
 	term->caps.s_ios.c_lflag &= ~(ICANON | ECHO | ISIG);
-	if (tcsetattr(STDIN_FILENO, TCSANOW, &term->caps.s_ios) == -1)
+	if (tcsetattr(term->fds[0], TCSANOW, &term->caps.s_ios) == -1)
 		return (false);
 	term->has_caps = load_caps(&term->caps);
 	return (true);

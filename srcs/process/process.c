@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/21 00:55:34 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 06:16:23 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,21 @@ void		update_used_pids(int new, pid_t** used_pids)
 }
 */
 // used
-static int	handle_wstatus(t_process* target, t_group* curr)
+static int	handle_wstatus(t_session* session, t_process* target)
 {
+	ft_dprintf(2, "[HANDLE WSTATUS: wstatus: %d]\n", target->wstatus);
 	if (WIFEXITED(target->wstatus))
+	{
+		ft_dprintf(2, "[HANDLE WSTATUS][PROCESS: \'%d\' EXITS]\n", target->pid);
 		return (WEXITSTATUS(target->wstatus));
-	if (WIFSIGNALED(target->wstatus) && (target->wstatus = WTERMSIG(target->wstatus)))
-		print_signals(target, curr); // change this
+	}
+	else if (WIFSIGNALED(target->wstatus))
+		target->wstatus = WTERMSIG(target->wstatus);
+	else if (WIFSTOPPED(target->wstatus))
+		target->wstatus = WSTOPSIG(target->wstatus);
+	
+	ft_dprintf(2, "[HANDLE WSTATUS][PROCESS; \'%d\' IS SIGNALED OR STOPPED]\n", target->pid);
+	print_signal_v2(session, target, 2);
 	return (target->wstatus + SIGNAL_BASE);
 }
 
@@ -102,6 +111,7 @@ t_exec_status	wait_processes(t_term* term, t_exec_status st)
 }
 */
 
+
 t_exec_status	wait_processes_v2(t_term* term, t_exec_status st)
 {
 	t_group*	group;
@@ -124,9 +134,9 @@ t_exec_status	wait_processes_v2(t_term* term, t_exec_status st)
 	while (group->active_processes != group->nil)
 	{
 		// put flags
-		update_background(term->session, &group->active_processes);
+		update_background(term->session, &group->active_processes, true);
 		// get return value + print signals if there are
-		term->st = handle_wstatus(group->active_processes, term->session->groups);
+		term->st = handle_wstatus(term->session, group->active_processes);
 		ft_dprintf(2, "[WAIT PROCESSES V2][PID=\'%d\'][FLAGS=\'%d\']\n", group->active_processes->pid, group->active_processes->flags);
 		group->active_processes = group->active_processes->next;
 		//ft_dprintf(2, "NEXT: %p\n", group->active_processes);

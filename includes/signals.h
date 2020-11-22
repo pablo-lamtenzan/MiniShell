@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 03:28:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 14:49:32 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 04:47:39 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,5 +34,6 @@ typedef struct      s_signal_print
 }                   t_signal_print;
 
 void	            print_signals(t_process* target, t_group* group);
+void				print_signal_v2(t_session* session, t_process* target, int flags);
 
 #endif

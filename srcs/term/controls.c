@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   controls.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/18 19:29:17 by chamada           #+#    #+#             */
-/*   Updated: 2020/11/13 18:20:10 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/22 03:06:37 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,18 @@ int			term_cancel(t_term *t)
 void		term_stop(t_term *t)
 {
 	const pid_t	pid
-		= t->session->processes[t->session->processes[MANAGE].pid].pid;
+		= t->session->groups->active_processes->pid;
 
 	if (pid != 0)
 		kill(pid, SIGSTOP);
+}
+
+void		term_suspend(t_term *t)
+{
+	const pid_t pid = t->session->groups->active_processes->pid;
+	
+	if (pid != 0)
+		kill(pid, SIGTSTP);
 }
 
 int			term_next_line(t_term *t, int status)

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/18 22:59:12 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 00:57:58 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,47 @@ kill -l|-L [exit_status]:
  -> Returns !0 if an error occurs ir invalid option
 */
 
+void		kill_group(t_session* session, t_process* leader, int signal, t_group* itself)
+{
+	t_group*	remember;
+	t_process*	remember_leader;
+
+	remember = session->groups;
+	
+	// skip itself
+	if (session->groups == itself)
+		session->groups = session->groups->next;
+
+	while (session->groups != session->nil)
+	{
+		if (session->groups->nil->next->pid == leader->pid)
+		{
+			remember_leader = session->groups->active_processes;
+			while (session->groups->active_processes != session->groups->nil)
+			{
+				ft_dprintf(2, "[KILL][KILL (signal=\'%d\') \'%d\']\n", signal, session->groups->active_processes->pid);
+				kill(session->groups->active_processes->pid, signal);
+				update_background(session, &session->groups->active_processes, signal == SIGCONT); // TO DO: more execptions
+				session->groups->active_processes = session->groups->active_processes->next;
+			}
+			if (!is_active_group(session->groups))
+			{
+				t_group*	fill = session->groups;
+				session->groups->prev->next = session->groups->next;
+				session->groups->next->prev = session->groups->prev;
+				free(fill);
+				fill = NULL;
+			}
+			else
+				session->groups->active_processes = remember_leader;
+			session->groups = remember;
+			return ;
+		}
+		session->groups = session->groups->next;
+	}
+	session->groups = remember;
+}
+
 int     	ft_kill(t_exec* args, t_term* term)
 {
     int			signal;
@@ -134,6 +175,7 @@ int     	ft_kill(t_exec* args, t_term* term)
     }
 	if (args->av[1][0] == '-' && (sig_spec = true))
 		get_signal(&args->av[1][1], &signal); // return 256 with -l
+	ft_dprintf(2, "[KILL][SIGNAL FORMAT IS: %d]\n", sig_spec);
 	ft_dprintf(2, "[SIGNAL IS %d]\n", signal);
     if (signal == 256)
     { 
@@ -149,15 +191,17 @@ int     	ft_kill(t_exec* args, t_term* term)
 		return (SUCCESS);
     }
 	if (args->ac < 3)
-	{		
+	{
+		// TO DO: only the target if pid
 		if ((st = get_target(args, sig_spec, term, &target)) != SUCCESS)
 			return (st);
-		kill((*target)->pid, SIGTERM);
+		kill_group(term->session, *target, SIGTERM, term->session->groups);
 		return (st);
 	}
 	if (signal)
 	{
-		if (!(target = jobspec_parser(term->session, args->ac, args->av, NULL)) && !sig_spec)
+		// TO DO: only the target if pid
+		if (!(target = jobspec_parser(term->session, args->ac, &args->av[1], NULL)) && !sig_spec)
 		{
 			// CANT get target here for the comment (av[2] istead of av[1])
 			if (args->av[2][0] == '%')
@@ -168,18 +212,12 @@ int     	ft_kill(t_exec* args, t_term* term)
 				ft_dprintf(2, "minish: kill: %s: arguments must be process or job IDs\n", args->av[2]);
 			return (STD_ERROR);
 		}
-		else if (sig_spec)
+		else if (!sig_spec)
 		{
 			ft_dprintf(2, "%s", "minish: kill: invalid signal specification\n");
 			return (STD_ERROR);
 		}
-		// handle if signal stop in read in or write out -> set ttin, ttou
-		// use something like lsof ?
-		kill((*target)->pid, signal);
-		// wait for it after and remove it if exited
-		
-		// check upadte background param process
-		update_background(term->session, target);
+		kill_group(term->session, *target, signal, term->session->groups);
 		return (SUCCESS); // check this ret
 	}
 	ft_dprintf(STDERR_FILENO, "%s\n", "minish: kill: COT: invalid signal specification");

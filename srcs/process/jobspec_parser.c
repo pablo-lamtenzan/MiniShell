@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 12:40:22 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/19 18:36:43 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/21 18:44:00 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,16 +76,22 @@ t_process**		get_process_by_index(t_session* session, t_group* groups, size_t in
 	// %index
 	if (!index)
 		return (NULL);
+
+	//index++; // skip itself
 	ft_dprintf(2, "[INDEX][index: %lu]\n", index);
-	while (groups != session->nil && (--index))
+	while (index && groups->next != session->nil)
 	{
 		//if (!--index)
 		//	break ;
+		index--;
 		//while (groups->active_processes != groups->nil)
 		//	groups->active_processes = groups->active_processes->next;
 		groups = groups->next;
 	}
 	//ft_dprintf(2, "pid found: %d\n", groups->active_processes->pid);
+	ft_dprintf(2, "[INDEX: %lu]\n", index);
+	//ft_dprintf(2, "POSSIBLE ADDR TO RET: %p\n", groups);
+	//ft_dprintf(2, "POSSIBLE ADDR TO RET: %p\n", &groups->nil->next);
 	return (index ? NULL : &groups->nil->next);
 }
 

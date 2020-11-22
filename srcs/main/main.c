@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/19 14:44:07 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 03:51:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 		1,
 		1
 	};
-	ft_dprintf(STD_ERROR, error_msg[exec_st], exit_return[exec_st]);
+	ft_dprintf(STDERR_FILENO, error_msg[exec_st], exit_return[exec_st]);
 	free_bst(root);
 	// TODO: resume_suspended_processes(&term->suspended_processes);
 	term_destroy(term);
@@ -83,14 +83,23 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 // TO DO: Redirect fds in job control builtins
 // TO DO: If a stopped process is resume in the backgroud it will be removed from the history
 // TO DO: Other builtins interactions with new flags RESTRICT_OP AND NO_HANGUP
-// TO DO: Current job == current group not process
-	// so if jobspec exec for jobsec else exec curr group (only for process sttoped)
-	// so the history too points to the LEADER of each group
-	// jsut change it in all builtins and is nice
-	// in jobs have to print the cmd input line (session will be global so it will be easy to give its value)
-// TO DO: Jobspec %n is for groups not for processes (%+ %- %% too)
-// Change names to job <- group <- session and for execute_cmd to execute_process and active_processes to active_jobs
-// Leader is last not first!!!! i push font each process
+// TO DO: Kill update background issue (can t wait fix it with a flags but i have problems now) I CAN'T WAIT IT IN KILL BUT I CAN WAIT AFTER IN FG WHY?????????????????????
+// TO DO: Signals mesages in all the shell (in any user-signal interaction)
+// TO DO: Bg: Don't remove the process, but have to remove it at its end! Have to build a zombie catcher
+// TO DO: Disown works but have interact with its flags with others builtins
+// TO DO: All builtins has error msg for pid and jobspec i have the same error msg...
+// TO DO: Contitionals with job control test: sleep 22 | sleep 22 && sleep 22 | sleep 22 (it seem the "after AND" just desapears)
+// TO DO: Ctrl^Z -> SIGTSTS to all the group members
+// TO DO: If Ret st != 0 -> Jobs print it
+// TO DO: WAIT MSG (MSG IN GENERAL USE THE SAME SYNTAX DO 1 fct!!! for it)
+// TO DO: builtins error msg when there no groups
+// TO DO: TEST WAIT (need ctrl^Z)
+// TO DO: Ctl^Z (need global session)
+// TO DO: SIGCHLD (need global session and change term->st in session)
+// TO DO: SESSION GLOBAL (do when all builtins will work as good as i don't need dgb printf anymore)
+// TO DO: optimize builtins (need global session)
+// TO DO: put color in the prompt
+
 static int 			exec(t_tok* tokens, t_term* term)
 {
 	t_exec_status	exec_st;
@@ -111,8 +120,19 @@ static int 			exec(t_tok* tokens, t_term* term)
 	return (0);
 }
 
+void	suspend_process(int signal)
+{
+	(void)signal;
+	ft_dprintf(2, "THIS IS A TEST FOR CTRL^Z AND IT WORK NICE!!!!!\n");
+	
+	// need session;
+	// print process here with status "Stopped"
+	//kill(session->groups->active_processes->pid, SIGSTOP);
+}
 
 int		main(int ac, const char** av, const char** envp)
 {
+	signal(SIGTSTP, suspend_process);
+	signal(SIGCHLD, zombies_catcher);
     return (term_prompt(ac, av, envp, &exec));
 }

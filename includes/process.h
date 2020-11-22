@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/20 21:52:45 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/22 04:26:37 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void					process_pop_back(t_group** group);
 /*
 ** Job Control
 */
-void					update_background(t_session* session, t_process **target);
+void					update_background(t_session* session, t_process **target, bool wait);
 bool            		update_session_history(t_session *session, t_process *update);
 t_process**				background_find(t_process* target, const char* search_type, t_group* group);
 bool					is_active_group(t_group* target);
@@ -96,6 +96,20 @@ pid_t					get_process_leader_pid(t_group* nil, t_process* target);
 size_t					get_background_index(t_group* nil, t_process* target);
 void					force_exit_background(t_session* session);
 bool					is_leader(t_session* session, t_process* target);
+
+/*
+** Signals catcher
+*/
+void					zombies_catcher(int signal);
+void					suspend_process(int signal);
+
+
+/*
+** Utils
+*/
+int						parse_flags(int ac, const char* av, const char* pattern);
+const char*				is_in_history(t_session* session, t_process* target);
+
 
 // old
 /*
