@@ -42,9 +42,11 @@ int main()
     int pid = getpid();
     dprintf(2, "Printf from test.c %d\n", pid);
     kill(pid, SIGSTOP);
-	sleep(20);
+	//sleep(22);
+	//sleep(20);
     dprintf(2, "TEST\n");
     kill(pid, SIGSTOP);
     dprintf(2, "TEST2\n");
-    return (0);
+	exit(9999);
+    return (99999);
 }

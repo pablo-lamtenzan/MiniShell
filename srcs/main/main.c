@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/19 14:44:07 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 06:14:41 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,10 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 	};
 	const int		exit_return[5] = {
 		SIGNAL_BASE + SIGABRT, 
-		1,
-		1, // TO DEFINE
-		1,
-		1
+		SIGNAL_BASE + SIGSYS,
+		SIGNAL_BASE + SIGSYS,
+		SIGNAL_BASE + SIGSYS,
+		SIGNAL_BASE + SIGSYS
 	};
 	ft_dprintf(STDERR_FILENO, error_msg[exec_st], exit_return[exec_st]);
 	free_bst(root);
@@ -82,15 +82,36 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 
 // TO DO: Redirect fds in job control builtins
 // TO DO: If a stopped process is resume in the backgroud it will be removed from the history
-// TO DO: Other builtins interactions with new flags RESTRICT_OP AND NO_HANGUP
-// TO DO: Current job == current group not process
-	// so if jobspec exec for jobsec else exec curr group (only for process sttoped)
-	// so the history too points to the LEADER of each group
-	// jsut change it in all builtins and is nice
-	// in jobs have to print the cmd input line (session will be global so it will be easy to give its value)
-// TO DO: Jobspec %n is for groups not for processes (%+ %- %% too)
-// Change names to job <- group <- session and for execute_cmd to execute_process and active_processes to active_jobs
-// Leader is last not first!!!! i push font each process
+// TO DO: Kill update background issue (can t wait fix it with a flags but i have problems now) I CAN'T WAIT IT IN KILL BUT I CAN WAIT AFTER IN FG WHY?????????????????????
+// TO DO: Bg: Don't remove the process, but have to remove it at its end! Have to build a zombie catcher
+// TO DO: All builtins has error msg for pid and jobspec i have the same error msg...
+// TO DO: Contitionals with job control test: sleep 22 | sleep 22 && sleep 22 | sleep 22 (it seem the "after AND" just desapears)
+// TO DO: If Ret st != 0 -> Jobs print it
+// TO DO: SIGCHLD (need global session and change term->st in session)
+// TO DO: SESSION GLOBAL (do when all builtins will work as good as i don't need dgb printf anymore)
+// TO DO: optimize builtins (need global session)
+// TO DO: put color in the prompt
+// TO DO: st after stop a process is 148
+// TO DO: History is GROUPSS!!! not processes (test ls | sleep 22 + jobs in minish to see the problem)
+// TO DO: Builtins multiflags jobspec confics or even segfault (just ezz modify parse flags)
+// TO DO: IN KILL: Jobspec parser segmentation fault (reads NULL) -> sleep 22 + crtl^Z + sleep 22 + clrt^Z + kill -QUIT %sleep
+
+
+// Todays Plan:
+// Jobspec parse perfect (data done), pid is strange a ?name to debug
+// Every Builtin perfect: DONE: fg, jobs (have little exection), bg, kill (process status - signals interactions to study), wait, disown
+// IMPLEMENT GLOBAL SESSION
+// Upgrade builtins
+// Zombies
+// Can norme a little bit now
+// Research the next
+
+/* GET CMD LINE FOR JOBS IDEA */
+
+// 1) Copy input
+// 2) Split copy by separators
+// 3) Each new job group get the next split (if false split++ tooo)
+
 static int 			exec(t_tok* tokens, t_term* term)
 {
 	t_exec_status	exec_st;
@@ -111,8 +132,19 @@ static int 			exec(t_tok* tokens, t_term* term)
 	return (0);
 }
 
+void	suspend_process(int signal)
+{
+	(void)signal;
+
+	write(2, "\n", 1);
+	
+}
 
 int		main(int ac, const char** av, const char** envp)
 {
+	signal(SIGTSTP, suspend_process);
+	//signal(SIGCHLD, zombies_catcher);
+	//signal(SIGTERM, todo); // need documentation about this
+		// maybe it has to send SIGHUB to all the no market child (market in diswon)
     return (term_prompt(ac, av, envp, &exec));
 }

@@ -6,23 +6,23 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/21 00:48:55 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 09:16:42 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <builtins.h>
 #include <expansion.h>
-#include <process.h>
+#include <job_control.h>
 #include <errors.h>
 
 static t_exec_status	get_exec(t_exec* info, t_term* term)
 {
 	const char	*names[] = {"echo", "cd", "pwd", "export", "unset", "env", \
-			"exit", "fg" /*,"kill", "bg", "jobs", "disown"*/};
-	const int	lengths[] = {4, 3, 4, 7, 5, 4, 5, 2 /*, 4, 2, 4, 6*/};
+			"exit", "fg", "jobs", "kill", "bg", "disown", "wait"};
+	const int	lengths[] = {4, 3, 4, 7, 5, 4, 5, 2, 4, 4, 2, 6, 4};
 	const t_executable 	builtins[] = {&ft_echo, &ft_cd, &ft_pwd, &ft_export, \
-			&ft_unset, &ft_env, &ft_exit, &ft_fg, /* &ft_kill, &ft_bg, &ft_jobs, &ft_disown */};
+			&ft_unset, &ft_env, &ft_exit, &ft_fg, &ft_jobs, &ft_kill, &ft_bg, &ft_disown, &ft_wait};
 	size_t			i;
 
 	int status = SUCCESS;
@@ -58,6 +58,8 @@ static t_exec_status	execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
 			term->st = info->exec(info, term);
 		else
 			destroy_execve_args(info);
+		if (PRINT_DEBUG)
+			ft_dprintf(2, "[EXEC CMD][CURR PROCESS FLAGS: %d][\'%p\']\n", g_session->groups->active_processes->flags, g_session->groups->active_processes);
 		if (close_pipe_fds(info->fds) != SUCCESS)
 			return (BAD_CLOSE);// return error code (could not BAD_CLOSE to define later)
 	}
@@ -90,9 +92,15 @@ t_exec_status			execute_bst(t_bst* root, t_term* term)
 	// New stuff
 	if (!(group = group_new()))
 		return (BAD_ALLOC);
-	if (term->session->groups && term->session->groups->active_processes)
-		ft_dprintf(2, "[XXXXXXXXXXXXXXXXX : %p]\n", term->session->groups->active_processes);
-	group_push_front(&term->session, group);
+	if (PRINT_DEBUG) {
+	if (g_session->groups && g_session->groups->active_processes)
+	{
+		ft_dprintf(2, "[XXXXXXXXXXXXXXXXX : %p]\n", g_session->groups->active_processes);
+		if (g_session->groups->next && g_session->groups->next->active_processes)
+			ft_dprintf(2, "[EXEC BST][PREVIOUS GROUP LEADER FLAGS ARE: %d][\'%p\']\n", g_session->groups->next->active_processes->flags, g_session->groups->next->active_processes);
+	}
+	}
+	group_push_front(group);
 
 	ft_bzero(&info, sizeof(t_exec));
 	info = (t_exec){.fds[FDS_STDOUT]=FDS_STDOUT, .fds[FDS_AUX]=FDS_AUX};

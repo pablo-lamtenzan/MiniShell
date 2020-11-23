@@ -6,5 +6,6 @@
 		"string_view": "c",
 		"ranges": "c",
 		"functional": "c"
-	}
+	},
+	"C_Cpp.dimInactiveRegions": false
 }

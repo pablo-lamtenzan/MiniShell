@@ -6,11 +6,14 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 15:44:03 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 09:18:00 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <signals.h>
+#include <sys/wait.h>
+#include <job_control.h>
+#include <signal.h>
 
 // TO DO: buffer overflow
 // TO DO: check more signals like time out
@@ -151,6 +154,8 @@ t_signal_print	get_signal_print(size_t index)
 // token + to prev pid, token - to prev - 1 pid
 // need to remember to its pid and cmp
 
+
+
 void	print_signals(t_process* target, t_group* nil)
 {
 	int						i;
@@ -177,4 +182,102 @@ void	print_signals(t_process* target, t_group* nil)
 			ft_dprintf(STDERR_FILENO, "%s%s", target->data[i], target->data[i + 1] ? " " : "");
 	write(STDERR_FILENO, "\n", 1);
 	free(addr);
+}
+
+/* New Version */
+
+// SIGSTOP 127
+
+
+void	print_job_args(t_process* target)
+{
+	int i;
+
+	i = -1;
+	while (target->data[++i])
+		ft_dprintf(STDERR_FILENO, "%s%s", target->data[i], target->data[i + 1] ? " " : "");
+}
+
+// THIS PRINTS ALL THE CMD LINE NOT THE ARSG!!!!!
+void	print_index_args(t_process* target)
+{
+	const bool leader = is_leader(target);
+	char* index;
+
+	index = NULL;
+	ft_dprintf(STDERR_FILENO, "%s%s%s%-2s",
+		leader ? "[" : " ",
+		leader ? index = ft_itoa(get_background_index(g_session->nil, target)) : " ", // print "[ background index ]"
+		leader ? "]" : " ",
+		is_in_history(target)
+		);
+	print_job_args(target);
+	free(index);
+}
+
+# define PRINT_PID		1
+# define PRINT_JOB_ARGS	2
+# define PRINT_JOBS_CMD	4
+
+// TO DO: CORE DUMPED WORK ONLY WITH THE WSTATUS ...
+// TO DO: TARGET wstatus can t be transformed (has to be ret of wait)
+
+void	print_signal_v2(t_process* target, int flags)
+{
+	static const char*		signals[32] = {
+		"Hangup", "", "Quit", "Illegal instruction", "Trace/breakpoint trap", "Aborted", \
+		"Bus error", "Floating point exception", "Killed", "User defined signal 1", \
+		"Segmentation fault", "User defined signal 2","", "Alarm clock", "Terminated", "Stack fault", \
+		"", "", "Stopped", "Stopped", "Stopped", "Stopped", "", "CPU time limit exceeded", \
+		"File size limit exceeded", "Virtual timer expired", "Profiling timer expired", "I/O possible", \
+		"Power failure", "Bad system call", "Done", "Exit"};
+	int signal;
+	const bool leader = is_leader(target);
+	char* pid;
+	char* index;
+	char*	rett;
+	int ret = 0;
+
+	pid = NULL;
+	index = NULL;
+	rett = NULL;
+	if (WIFEXITED(target->wstatus))
+	{
+		if (WEXITSTATUS(target->wstatus) == 0)
+			signal = 31;
+		else
+		{
+			signal = 32;
+			ret = WEXITSTATUS(target->wstatus);
+		}
+	}
+	else if (WIFSIGNALED(target->wstatus))
+		signal = WTERMSIG(target->wstatus);
+	else
+		signal = WSTOPSIG(target->wstatus);
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "[PRINT SIGNAL][SIGNAL IS: \'%d\']\n", signal);
+
+	// format: [[suspended/backgound index][history index][spaces]or[paddin spaces]+[pid if pid][siganls[signal]][WCOREDUMP][CONST SPACES][ARGS OR CMD]
+	if (signal >= 19 && signal <= 22 && signal != SIGTSTP)
+		write(2, "\n", 1);
+	ft_dprintf(STDERR_FILENO, "%s%s%s%s %s %s %s %-16s",
+		leader ? "[" : " ",
+		leader ? index = ft_itoa(get_background_index(g_session->nil, target)) : " ", // print "[ background index ]"
+		leader ? "]" : " ",
+		is_in_history(target), // print history index
+		flags & PRINT_PID ? pid = ft_itoa(target->pid) : "", // print pid
+		// PROBLEM HERE: IF PROCESS IS IN BACKGROUND NEED TO REMOVE THE FLAG WHEN IT END... (in zombies catcher)
+		target->flags & BACKGROUND ? "Runnnig" : signals[signal - 1],
+		ret ? rett = ft_itoa(ret) : "",
+		__WCOREDUMP(target->wstatus) ? "(core dumped)" : ""
+		);
+	if (flags & PRINT_JOBS_CMD)
+		ft_dprintf(STDERR_FILENO, "%s", "COMMAND LINE TRIMMED BY SEPARATORS HERE");
+	else if (flags & PRINT_JOB_ARGS && target->data)
+		print_job_args(target);
+	write(STDERR_FILENO, "\n", 1);
+	free(pid);
+	free(index);
+	free(rett);
 }

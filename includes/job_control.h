@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   process.h                                          :+:      :+:    :+:   */
+/*   job_control.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/20 21:52:45 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 09:20:49 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PROCESS_H
-# define PROCESS_H
+#ifndef JOB_CONTROL_H
+# define JOB_CONTROL_H
 
 # include <unistd.h>
 # include <stdbool.h>
@@ -19,13 +19,16 @@
 
 # include <errors.h>
 
+#define PRINT_DEBUG		1
+
 #define PROCESSES_MAX   4096
 #define MANAGE          0
 
-#define	BACKGROUD		1
+#define	BACKGROUND		1
 #define STOPPED			2
-#define RESTRICT_OP		4
-#define NO_HANGUP		8
+#define EXITED			4
+#define RESTRICT_OP		8
+#define NO_HANGUP		16
 
 typedef struct 			s_process
 {
@@ -45,13 +48,22 @@ typedef struct			s_group
 	struct s_group*		prev;
 }						t_group;
 
+typedef struct 			s_history
+{
+	t_group*			group; // never operate over this just need it for the address
+	struct s_history*	next;
+}						t_history;
+
 typedef struct			s_session
 {
 	t_group*			groups; // all background processes by group
 	t_process			processes[PROCESSES_MAX + 1]; // exec processes
 	t_process			*history;
+	t_history*			hist; // change it name later
 	t_group				*nil;
 }						t_session;
+
+t_session*				g_session;
 
 // new stuff i wish is the last time i redo all
 
@@ -59,8 +71,8 @@ typedef struct			s_session
 ** Session
 */
 t_session*				session_start();
-void					session_end(t_session* session);
-bool					session_empty(t_session *target);
+void					session_end();
+bool					session_empty();
 
 /*
 ** Groups
@@ -68,11 +80,11 @@ bool					session_empty(t_session *target);
 t_group					*group_new();
 bool					group_empty(t_group* group);
 void					group_insert(t_group* prev, t_group* next, t_group* target);
-void					group_remove(t_session** session, t_group** prev, t_group** next);
-void					group_push_front(t_session** session, t_group* target);
-void					group_push_back(t_session** session, t_group* target);
-void					group_pop_front(t_session** session);
-void					group_pop_back(t_session** session);
+void					group_remove(t_group** prev, t_group** next);
+void					group_push_front(t_group* target);
+void					group_push_back(t_group* target);
+void					group_pop_front();
+void					group_pop_back();
 
 /*
 ** Process
@@ -88,14 +100,31 @@ void					process_pop_back(t_group** group);
 /*
 ** Job Control
 */
-void					update_background(t_session* session, t_process **target);
-bool            		update_session_history(t_session *session, t_process *update);
+void					update_background(t_process **target, bool wait);
+bool            		update_session_history(t_process *update);
+bool					update_session_history_v2(t_group* update);
 t_process**				background_find(t_process* target, const char* search_type, t_group* group);
 bool					is_active_group(t_group* target);
 pid_t					get_process_leader_pid(t_group* nil, t_process* target);
 size_t					get_background_index(t_group* nil, t_process* target);
-void					force_exit_background(t_session* session);
-bool					is_leader(t_session* session, t_process* target);
+void					force_exit_background();
+bool					is_leader(t_process* target);
+
+/*
+** Signals catcher
+*/
+void					zombies_catcher(int signal);
+void					suspend_process(int signal);
+
+
+/*
+** Utils
+*/
+int						parse_flags(int ac, const char* av, const char* pattern);
+const char*				is_in_history(t_process* target);
+bool					is_not_ambigous(t_process* target);
+void					print_index_args(t_process* target);
+
 
 // old
 /*
@@ -125,8 +154,22 @@ void					update_groups(t_session* session, t_group** group);
 void					force_exit_background(t_session* session);
 */
 
-t_process**				jobspec_parser(t_session* session, int ac, char*const* av, t_process** (*fill)(int ac, char*const* av));
+t_process**				jobspec_parser(int ac, char*const* av, t_process** (*fill)(int ac, char*const* av));
 bool					is_string_digit(const char* string);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // old stuff
 size_t					suspended_process_nb(t_process* suspended);

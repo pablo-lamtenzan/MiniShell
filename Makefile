@@ -31,6 +31,12 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 						pwd.c\
 						unset.c\
 						fg.c\
+						bg.c\
+						jobs.c\
+						kill.c\
+						wait.c\
+						disown.c\
+						builtins_utils.c\
 					)\
 					$(addprefix bst/,\
 						bst_fill.c\
@@ -54,7 +60,7 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 					$(addprefix signals/,\
 						print_signals.c\
 					)\
-					$(addprefix process/,\
+					$(addprefix job_control/,\
 						process_lib.c\
 						resume_suspended_processes.c\
 						jobspec_parser.c\
@@ -63,6 +69,7 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 						session.c\
 						group.c\
 						process_____.c\
+						zombies_catcher.c\
 					)\
 					$(addprefix main/,\
 						main.c\
@@ -81,7 +88,7 @@ OBJDS	=		$(addprefix $(OBJDIR)/,\
 					path\
 					separators\
 					signals\
-					process\
+					job_control\
 					term\
 					term/env\
 					term/lexer\
@@ -97,7 +104,7 @@ HDRS	=		$(addprefix $(INCDIR)/,\
 					separators.h\
 					path.h\
 					signals.h\
-					process.h\
+					job_control.h\
 					errors.h\
 					$(addprefix term/, caps.h cursor.h env.h hist.h lexer.h\
 					line.h term.h token.h)\
