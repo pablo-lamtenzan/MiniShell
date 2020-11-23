@@ -24,6 +24,11 @@ static bool	load_caps(t_caps *caps)
 	&& caps->key.up && caps->key.down && caps->key.left && caps->key.right);
 }
 
+/*
+**	Detect and init the terminal's capabilities
+**
+**	returns true if successful, or false otherwise.
+*/
 bool		term_init_caps(t_term *term, t_env **env)
 {
 	struct stat	term_st;
@@ -31,9 +36,11 @@ bool		term_init_caps(t_term *term, t_env **env)
 	char		term_buff[MAX_ENTRY + 1];
 	int			ent_st;
 
-	if (fstat(term->fds[0], &term_st)
-	|| !(term->is_interactive = S_ISCHR(term_st.st_mode))
-	|| !env_set(env, "PS1", TERM_PS1, false)
+	if (fstat(term->fds[0], &term_st))
+		return (false);
+	if (!(term->is_interactive = S_ISCHR(term_st.st_mode)))
+		return (true);
+	if (!env_set(env, "PS1", TERM_PS1, false)
 	|| !env_set(env, "PS2", TERM_PS2, false)
 	|| !(term_type = env_get(*env, "TERM", 4))
 	|| (ent_st = tgetent(term_buff, term_type)) == -1)
