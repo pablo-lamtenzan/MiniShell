@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 10:27:06 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 12:10:00 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 15:31:07 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ char**		split_separators(char* input, char** separators)
 	char**	res;
 	size_t	size;
 	
+	size = 0;
 	if (PRINT_DEBUG)
 	if (!(res = ft_calloc((size = get_separators_nb(input, separators)) + 1, sizeof(char*))))
 		return (NULL);

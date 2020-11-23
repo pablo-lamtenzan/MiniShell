@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 03:11:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 14:36:58 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 15:58:09 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,9 @@ void			zombies_catcher(int signal)
 	t_group*	next_g;
 	t_process*	next_p;
 	int			wret;
+
+	if (!g_session)
+		return ;
 	
 	remember = g_session->groups;
 
@@ -87,42 +90,48 @@ void			zombies_catcher(int signal)
 		while (g_session->groups->active_processes != g_session->groups->nil)
 		{
 			next_p = g_session->groups->active_processes->next;
-			if (g_session->groups->active_processes->flags & BACKGROUND && ft_dprintf(2, "[ZOMBIES CATCHER TRIES FOR: \'%p\'][pid =  %d]\n", g_session->groups->active_processes, g_session->groups->active_processes->pid))
+			if (g_session->groups->active_processes->flags & BACKGROUND)
 			{
 				while (42)
 				{
 					wret = waitpid(g_session->groups->active_processes->pid, &g_session->groups->active_processes->wstatus, WNOHANG | WUNTRACED);
 					if (wret == -1)
 					{
-						ft_dprintf(2, "[ZOMBIES CATCHER FAIL][\'%p\']\n", g_session->groups->active_processes);
+						if (PRINT_DEBUG)
+							ft_dprintf(2, "[ZOMBIES CATCHER FAIL][\'%p\']\n", g_session->groups->active_processes);
 						break ;
 					}
 					else if (wret == 0)
 					{
-						ft_dprintf(2, "[ZOMBIES CATCHER FAIL][\'%p\']\n", g_session->groups->active_processes);
+						if (PRINT_DEBUG)
+							ft_dprintf(2, "[ZOMBIES CATCHER FAIL][\'%p\']\n", g_session->groups->active_processes);
 						break ;
 					}
 					else
 					{
 						// TO DO: DOES NOT DISPLAY PROMT (research about)
-						ft_dprintf(2, "[ZOMBIES CATCHER SUCESS][\'%p\']\n", g_session->groups->active_processes);
+						if (PRINT_DEBUG)
+							ft_dprintf(2, "[ZOMBIES CATCHER SUCESS][\'%p\']\n", g_session->groups->active_processes);
 						g_session->groups->active_processes->flags &= ~BACKGROUND; // for jobs printing
 						// Catch return
 						if (WIFEXITED(g_session->groups->active_processes->wstatus))
 						{
-							ft_dprintf(2, "[ZOMBIES CATCHER][PROCESS: \'%p\' EXITS][exit return: %d]\n", g_session->groups->active_processes, WEXITSTATUS(g_session->groups->active_processes->wstatus));
+							if (PRINT_DEBUG)
+								ft_dprintf(2, "[ZOMBIES CATCHER][PROCESS: \'%p\' EXITS][exit return: %d]\n", g_session->groups->active_processes, WEXITSTATUS(g_session->groups->active_processes->wstatus));
 							; // g_session->st = WEXITSTATUS(g_session->groups->active_processes->wstatus); // TO DO st in session
 							g_session->groups->active_processes->flags |= EXITED; // print too
 						}
 						else if (WIFSIGNALED(g_session->groups->active_processes->wstatus))
 						{
-							ft_dprintf(2, "[ZOMBIES CATCHER][PROCESS: \'%p\' IS SIGNALED]\n", g_session->groups->active_processes);
+							if (PRINT_DEBUG)
+								ft_dprintf(2, "[ZOMBIES CATCHER][PROCESS: \'%p\' IS SIGNALED]\n", g_session->groups->active_processes);
 							; // g_session->st = WTERMSIG + SIGNAL_BASE;
 							g_session->groups->active_processes->flags |= EXITED; // not sure if it happens in all the case
 						}
 						else
 						{
-							ft_dprintf(2, "[ZOMBIES CATCHER][PROCESS: \'%p\' STOP]\n", g_session->groups->active_processes);
+							if (PRINT_DEBUG)
+								ft_dprintf(2, "[ZOMBIES CATCHER][PROCESS: \'%p\' STOP]\n", g_session->groups->active_processes);
 							g_session->groups->active_processes->flags |= STOPPED;
 						}
 						// FREE HERE IS A VERY BAD IDEA (HIS SEMS ASSYCRONOUS TO MINISHELL) 
@@ -151,5 +160,5 @@ void			zombies_catcher(int signal)
 		g_session->groups = next_g;
 	}
 	g_session->groups = remember;
-	ft_dprintf(2, "minish> "); // JUST FOR TEST
+	//ft_dprintf(2, "minish> "); // JUST FOR TEST
 }

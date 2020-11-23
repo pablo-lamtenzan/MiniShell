@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 15:04:02 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 15:46:07 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 # include <errors.h>
 
-#define PRINT_DEBUG		1
+#define PRINT_DEBUG		0
 
 #define PROCESSES_MAX   4096
 #define MANAGE          0
@@ -61,6 +61,7 @@ typedef struct			s_session
 	t_process			*history;
 	t_history*			hist; // change it name later
 	t_group				*nil;
+	unsigned char		exit_count;
 }						t_session;
 
 t_session*				g_session;
@@ -111,6 +112,8 @@ pid_t					get_process_leader_pid(t_group* nil, t_process* target);
 size_t					get_background_index(t_group* nil, t_process* target);
 void					force_exit_background();
 bool					is_leader(t_process* target);
+void					handle_exit_with_active_background(int exit_status);
+void					update_exit_count(const char* name);
 
 /*
 ** Signals catcher
