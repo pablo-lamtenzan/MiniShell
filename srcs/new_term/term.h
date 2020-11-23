@@ -9,6 +9,8 @@
 # include "line.h"
 # include "caps.h"
 
+# define TERM_DEV_NULL	"/dev/null"
+
 /*
 **	The starting size of a newly allocated empty line.
 */
@@ -67,7 +69,6 @@ typedef struct		s_hist
 
 typedef struct		s_term
 {
-	int			fds[3];
 	t_caps		caps;
 	bool		is_interactive;
 	bool		has_caps;
@@ -95,6 +96,11 @@ void				term_destroy(t_term *term);
 t_term_err			term_prompt(t_term *term);
 
 /*
+**					write.c
+*/
+int					putc_err(int c);
+
+/*
 **					caps.c
 */
 bool				term_init_caps(t_term *term, t_env **env);
@@ -109,6 +115,11 @@ t_term_err			term_read(t_term *term);
 **					read_esc.c
 */
 t_term_err			term_read_esc(t_term *term);
+
+/*
+**					read_csi.c
+*/
+t_term_err			term_read_csi(t_term *term);
 
 /*
 **					controls.c
@@ -127,7 +138,7 @@ t_term_err			cursor_start_line(t_term *term);
 t_term_err			cursor_end_line(t_term *term);
 
 /*
-**				select.c
+**					select.c
 */
 t_term_err			select_left(t_term *t);
 t_term_err			select_right(t_term *t);

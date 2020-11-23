@@ -40,9 +40,8 @@ t_term_err	clip_cut(t_term *t)
 	{
 		if ((status = clip_copy(t)) != TERM_EOK)
 			return (status);
-		tputs(tgoto(t->caps.ctrl.move_h, 0, t->origin + t->pos),
-			0, &ft_putchar);
-		tputs(t->caps.ctrl.del_n, t->clip.line.len, &ft_putchar);
+		tputs(tgoto(t->caps.ctrl.move_h, 0, t->origin + t->pos), 0, &putc_err);
+		tputs(t->caps.ctrl.del_n, t->clip.line.len, &putc_err);
 		// TODO: Fix line_erase with full line (Actually it seems to work...)
 		line_erase(t->line, t->pos, t->clip.line.len);
 		select_clear(t);
@@ -55,7 +54,7 @@ t_term_err		clip_paste(t_term *t)
 	if (!t->clip.line.len)
 		return (TERM_EOK);
 	select_clear(t);
-	if (write(t->fds[1], t->clip.line.data, t->clip.line.len) == -1)
+	if (write(STDERR_FILENO, t->clip.line.data, t->clip.line.len) == -1)
 		return (TERM_EWRITE);
 	if (!line_insert(t->line, t->pos, t->clip.line.data, t->clip.line.len))
 		return (TERM_EALLOC);

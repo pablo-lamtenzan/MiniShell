@@ -2,9 +2,9 @@
 
 t_term_err	term_interrupt(t_term *term)
 {
-	if (term->msg && (write(term->fds[2], TERM_ENDL, sizeof(TERM_ENDL) -1) == -1
+	if (term->msg && (write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) -1) == -1
 	|| ((term->origin = ft_strlen(term->msg))
-	&& write(term->fds[2], term->msg, term->origin) == -1)))
+	&& write(STDERR_FILENO, term->msg, term->origin) == -1)))
 		return (TERM_EWRITE);
 	if (term->has_caps)
 		select_clear(term);

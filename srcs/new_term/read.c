@@ -45,7 +45,7 @@ int		term_read(t_term *term)
 	term->line->data = NULL;
 	term->line->len = 0;
 	term->line->size = 0;
-	if ((read_st = get_next_line(term->fds[0], &term->line->data)) == -1)
+	if ((read_st = get_next_line(STDIN_FILENO, &term->line->data)) == -1)
 		return (TERM_EREAD);
 	term->line->len = ft_strlen(term->line->data);
 	term->line->size = term->line->len + 1;
@@ -72,7 +72,7 @@ t_term_err	term_read_caps(t_term *term)
 	tputs(term->caps.mode.insert, 0, ft_putchar);
 	while (status == TERM_EOK)
 	{
-		if ((read_st = read(term->fds[0], &c, 1)) != 1)
+		if ((read_st = read(STDIN_FILENO, &c, 1)) != 1)
 			status = (read_st == 0) ? TERM_EEOF : TERM_EREAD;
 		else if (c == TERM_ESC)
 			status = term_read_esc(term);
@@ -80,7 +80,7 @@ t_term_err	term_read_caps(t_term *term)
 			status = term_read_cntrl(term, c);
 		else if (!line_insert(term->line, term->pos, &c, 1))
 			status = TERM_EALLOC;
-		else if (write(term->fds[1], &c, 1) == -1)
+		else if (write(STDERR_FILENO, &c, 1) == -1)
 			status = TERM_EWRITE;
 		else
 			term->pos++;
