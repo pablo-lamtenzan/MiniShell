@@ -26,6 +26,7 @@
 
 
 # define TERM_ESC		'\033'
+# define TERM_CSI		'['
 # define TERM_ALTESC	'1'
 # define TERM_SHIFT		'2'
 
