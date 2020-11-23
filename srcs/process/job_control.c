@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/22 22:19:26 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 01:45:07 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ size_t			get_background_index(t_group* nil, t_process* target)
 
 	index = 0;
 	groups = nil->prev;
-	while (groups != nil && (index++))
+	while (groups != nil && (++index))
 	{
 		fill = groups->nil->prev;
 		while (fill != groups->nil)

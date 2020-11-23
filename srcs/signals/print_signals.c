@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/22 22:50:09 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 02:14:04 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,6 +198,22 @@ void	print_job_args(t_process* target)
 		ft_dprintf(STDERR_FILENO, "%s%s", target->data[i], target->data[i + 1] ? " " : "");
 }
 
+void	print_index_args(t_session* session, t_process* target)
+{
+	const bool leader = is_leader(session, target);
+	char* index;
+
+	index = NULL;
+	ft_dprintf(STDERR_FILENO, "%s%s%s%-2s",
+		leader ? "[" : " ",
+		leader ? index = ft_itoa(get_background_index(session->nil, target)) : " ", // print "[ background index ]"
+		leader ? "]" : " ",
+		is_in_history(session, target)
+		);
+	print_job_args(target);
+	free(index);
+}
+
 # define PRINT_PID		1
 # define PRINT_JOB_ARGS	2
 # define PRINT_JOBS_CMD	4
@@ -213,14 +229,20 @@ void	print_signal_v2(t_session* session, t_process* target, int flags)
 		"Segmentation fault", "User defined signal 2","", "Alarm clock", "Terminated", "Stack fault", \
 		"", "", "Stopped", "Stopped", "Stopped", "Stopped", "", "CPU time limit exceeded", \
 		"File size limit exceeded", "Virtual timer expired", "Profiling timer expired", "I/O possible", \
-		"Power failure", "Bad system call"};
-	const int signal = target->wstatus;
+		"Power failure", "Bad system call", "Done"};
+	int signal;
 	const bool leader = is_leader(session, target);
 	char* pid;
 	char* index;
 
 	pid = NULL;
 	index = NULL;
+	if (WIFEXITED(target->wstatus))
+		signal = 31;
+	else if (WIFSIGNALED(target->wstatus))
+		signal = WTERMSIG(target->wstatus);
+	else
+		signal = WSTOPSIG(target->wstatus);
 	ft_dprintf(2, "[PRINT SIGNAL][SIGNAL IS: \'%d\']\n", signal);
 
 	// format: [[suspended/backgound index][history index][spaces]or[paddin spaces]+[pid if pid][siganls[signal]][WCOREDUMP][CONST SPACES][ARGS OR CMD]
@@ -233,7 +255,7 @@ void	print_signal_v2(t_session* session, t_process* target, int flags)
 		is_in_history(session, target), // print history index
 		flags & PRINT_PID ? pid = ft_itoa(target->pid) : "", // print pid
 		signals[signal - 1],
-		__WCOREDUMP(signal) ? "(core dumped)" : ""
+		__WCOREDUMP(target->wstatus) ? "(core dumped)" : ""
 		);
 	if (flags & PRINT_JOBS_CMD)
 		ft_dprintf(STDERR_FILENO, "%s", "COMMAND LINE TRIMMED BY SEPARATORS HERE");

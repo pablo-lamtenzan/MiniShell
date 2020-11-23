@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 23:11:42 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/22 22:46:56 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 02:12:56 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <execution.h>
 #include <process.h>
+#include <signals.h>
 
 void	resume_background_group(t_session* session, t_process* leader)
 {
@@ -65,9 +66,14 @@ int		ft_bg(t_exec* args, t_term* term)
 {
     t_process**		target;
 
+	if (args->av[1] && args->av[1][0] == '-')
+	{
+		ft_dprintf(STDERR_FILENO, "minish: bg: %s: invalid option\n%s\n", args->av[1], "bg: usage: bg [job_spec]");
+		return (CMD_BAD_USE);
+	}
     if (session_empty(term->session) || term->session->groups->next == term->session->nil)
     {
-        ft_dprintf(STDERR_FILENO, "minish: bg: current: no such job\n");
+        ft_dprintf(STDERR_FILENO, "minish: bg: %s: no such job\n", args->ac == 1 ? "current" : args->av[1]);
         return (STD_ERROR);
     }
 
@@ -85,7 +91,9 @@ int		ft_bg(t_exec* args, t_term* term)
 	//ft_dprintf(2, "*target = %p\n", *target);
 	//ft_dprintf(2, "active processes = %p\n", term->session->groups->active_processes == term->session->groups->nil ? term->session->groups->next->active_processes : term->session->groups->active_processes);
 
-	
+	// 
+	print_index_args(term->session, *target);
+	write(STDERR_FILENO, " &\n", 3);
 	ft_dprintf(2, "[BG] [session->groups before resume][%p]\n", term->session->groups);
 	// termary for skip itself, leader must be next->active_processes
 	resume_background_group(term->session, *target);

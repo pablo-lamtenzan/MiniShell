@@ -6,11 +6,32 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 12:03:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/22 04:35:08 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 01:45:26 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
+#include <signals.h>
+
+
+/*
+TESTS:
+
+USAGE:
+1) jobs from stopped job DONE
+2) jobs from running process FAIL (could be bg problem too) <------
+3) jobs from exit DONE (execpt for background processes) <-
+4) jobs from pipe cmd DONE (except for the cmd line msg) <-
+
+NEED:
+- fix history
+
+ERRORS:
+1) invalid flag + empty/ not empty background  -> error msg
+2) invalid jobspec not empty/ not empty background -> error msg
+
+
+*/
 
 /*	- Each [n] is a group index, only in leaders
 	- "-n" is a mistery for the momment
@@ -96,7 +117,6 @@ void			print_process(t_session* session, t_process* target, int flags)
 	char*		itoa1;
 	char*		itoa2;
 	int			i;
-	const bool		leader = is_leader(session, target);
 
 	i = -1;
 	itoa1 = NULL;
@@ -108,9 +128,10 @@ void			print_process(t_session* session, t_process* target, int flags)
 		return ;
 	if (flags & 4 && (WIFEXITED(target->wstatus) || !WIFSTOPPED(target->wstatus))) // -s print stopped
 		return ;
+	print_signal_v2(session, target, flags & 8 ? 3 : 2);
 	//ft_dprintf(2, "PRINTS: %p\n", target);
 	// [group index if leader][history index][space(s)][pid if -l][status][spaces][av]
-	ft_dprintf(STDERR_FILENO, "%s%s%s%s %s %-19s",
+	/*ft_dprintf(STDERR_FILENO, "%s%s%s%s %s %-19s",
 		leader ? "[" : "",
 		leader ? itoa1 = ft_itoa(get_background_index(session->nil, target)) : "", // index
 		leader ? "]" : "",
@@ -123,6 +144,7 @@ void			print_process(t_session* session, t_process* target, int flags)
 	write(2, "\n", 1);
 	free(itoa1);
 	free(itoa2);
+*/
 }
 
 void			print_group(t_session* session, t_process* leader, int flags, t_group* itself)
@@ -157,6 +179,24 @@ void			print_group(t_session* session, t_process* leader, int flags, t_group* it
 	session->groups = remember;
 }
 
+void			print_all_leaders(t_session* session, int flags)
+{
+	t_group*	remember;
+
+	remember = session->groups;
+
+	session->groups = session->nil->prev;
+	while (session->groups != session->nil->next)
+	{
+		// TO DO: check in all the list i think
+		if (!(flags & 2 && (WIFEXITED(session->groups->nil->next->wstatus) || WIFSTOPPED(session->groups->nil->next->wstatus))) 
+				&& !(flags & 4 && (WIFEXITED(session->groups->nil->next->wstatus) || !WIFSTOPPED(session->groups->nil->next->wstatus))))
+			print_signal_v2(session, session->groups->nil->next, 4);
+		session->groups = session->groups->prev;
+	}
+	session->groups = remember;
+}
+
 void			print_all_groups(t_session* session, int flags)
 {
 	t_group*	remember;
@@ -185,19 +225,22 @@ int				ft_jobs(t_exec* args, t_term* term)
 
 	flags = 0;
 	i = -1;
-	 //if (!term->session->groups || term->session->groups == term->session->nil 
-		//	|| !term->session->groups->active_processes
-			/*|| term->session->groups->active_processes == term->session->groups->nil)*/
+	if ((flags = parse_flags(args->ac, args->av[1], "nrsl")) < 0 && args->av[1][0] == '-')
+	{
+		ft_dprintf(STDERR_FILENO, "minish: jobs: %s: invalid option\n%s", args->av[1] ,"jobs: usage: jobs: [-lnprs] [jobspec ...] or jobs -x command [args]\n");
+		return (CMD_BAD_USE);
+	}
 	if (session_empty(term->session) || term->session->groups->next == term->session->nil)
+	{
+		if (args->ac > 1 && flags < 0)
+		{
+			ft_dprintf(STDERR_FILENO, "minish: jobs: %s: no such job\n", args->av[1]);
+			return (STD_ERROR);
+		}
 		return (SUCCESS);
+	}
 	if (args->ac > 1)
 	{
-		// get flags
-		if ((flags = parse_flags(args->ac, args->av[1], "nrsl")) < 0 && args->av[1][0] == '-')
-		{
-			ft_dprintf(STDERR_FILENO, "%s", "minish: usage: jobs: [-lnprs] [jobspec ...] or jobs -x command [args]\n");
-			return (CMD_BAD_USE);
-		}
 		if (args->ac >= 2) // check if theres some jobspec after and print it
 		{
 			while (++i < args->ac - (flags > 0 ? 2 : 1))
@@ -209,12 +252,19 @@ int				ft_jobs(t_exec* args, t_term* term)
 					return (STD_ERROR);
 				}
 				// print it here and apply flags
-				print_group(term->session, *target, flags < 0 ? 0 : flags, term->session->groups);
+				if (flags > 0 && flags & 8)
+					print_group(term->session, *target, flags < 0 ? 0 : flags, term->session->groups);
+				else if (!(flags & 2 && (WIFEXITED((*target)->wstatus) || WIFSTOPPED((*target)->wstatus))) 
+					&& !(flags & 4 && (WIFEXITED((*target)->wstatus) || !WIFSTOPPED((*target)->wstatus))))
+					
 				return (SUCCESS);
 			}
 		}
 	}
 	// flags with no args or no args print all jobs in background
-	print_all_groups(term->session, flags < 0 ? 0 : flags);
+	if (flags > 0 && flags & 8)
+		print_all_groups(term->session, flags < 0 ? 0 : flags);
+	else
+		print_all_leaders(term->session, flags);
 	return (SUCCESS);
 }

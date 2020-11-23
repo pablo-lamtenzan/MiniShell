@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/22 22:25:47 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 02:16:53 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,17 +100,24 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 // TO DO: optimize builtins (need global session)
 // TO DO: put color in the prompt
 // TO DO: st after stop a process is 148
+// TO DO: History is GROUPSS!!! not processes (test ls | sleep 22 + jobs in minish to see the problem)
+// TO DO: Builtins multiflags jobspec confics or even segfault (just ezz modify parse flags)
 
 // Todays Plan:
 // Jobspec parse perfect (data done), pid is strange a ?name to debug
-// Every Builtin perfect
+// Every Builtin perfect: DONE: fg, jobs (have little exection), bg, 
 // IMPLEMENT GLOBAL SESSION
-// Ctrl^Z
 // Test WAIT builtin
 // Upgrade builtins
 // Zombies
 // Can norme a little bit now
 // Research the next
+
+/* GET CMD LINE FOR JOBS IDEA */
+
+// 1) Copy input
+// 2) Split copy by separators
+// 3) Each new job group get the next split (if false split++ tooo)
 
 static int 			exec(t_tok* tokens, t_term* term)
 {
@@ -143,7 +150,7 @@ void	suspend_process(int signal)
 int		main(int ac, const char** av, const char** envp)
 {
 	signal(SIGTSTP, suspend_process);
-	signal(SIGCHLD, zombies_catcher);
+	//signal(SIGCHLD, zombies_catcher);
 	//signal(SIGTERM, todo); // need documentation about this
 		// maybe it has to send SIGHUB to all the no market child (market in diswon)
     return (term_prompt(ac, av, envp, &exec));
