@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 23:11:42 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 02:12:56 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 04:00:33 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,9 @@ void	resume_background_group(t_session* session, t_process* leader)
 			while (session->groups->active_processes != session->groups->nil)
 			{
 				ft_dprintf(2, "[BG][KILL -SIGCONT \'%d\'][\'%p\']\n", session->groups->active_processes->pid, session->groups->active_processes);
+				session->groups->active_processes->flags &= ~STOPPED;
 				kill(session->groups->active_processes->pid, SIGCONT);
-				ft_dprintf(2, "[BG][UPDATE BACKGROUND]\n");
+				ft_dprintf(2, "[BG][TARGET FLAGS: %d][\'%p\']\n", session->groups->active_processes->flags, session->groups->active_processes);
 				//update_background(session, &session->groups->active_processes, true);
 				session->groups->active_processes = session->groups->active_processes->next;
 			}

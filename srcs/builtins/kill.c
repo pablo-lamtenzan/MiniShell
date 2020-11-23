@@ -6,12 +6,29 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/22 00:57:58 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 03:19:08 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <signal.h>
+
+/* TEST
+
+1) -l flag witout jobspec or sigspec DONE
+2) -l with wrong sigspec DONE
+3) -l with good sigspec DONE
+4) kill no flags wrong jobspec DONE
+5) kill invalid flags with jobspec/no jobspec
+6) kill empty session DONE
+-------------------------------------
+7) kill without sigpec a job -> Doesn't terminates the process eigher all is ok
+8) kill with jobspec a job -> Depend of the signal (need investigation about this)
+
+9) do in bash kill % 2 times with 1 process in background -> DO TO the error msg
+
+*/
+
 
 // TODO: Cross platform compatibility for missing signals
 // TODO: Test on 42 XUbuntu VM
@@ -25,24 +42,25 @@
 
 const static char*	get_signal(const char* key, int* res)
 {
-	const char*	signals[32] = {
+	ft_dprintf(2, "[GET SIGNAL][key is = \'%s\']\n", key);
+	const char*	signals[31] = {
 		"SIGHUP", "SIGINT", "SIGQUIT", "SIGILL", "SIGTRAP", "SIGABRT",
 		"SIGBUS", "SIGFPE", "SIGKILL", "SIGUSR1", "SIGSEGV", "SIGUSR2",
 		"SIGPIPE", "SIGALRM", "SIGTERM", "SIGSTKFLT", "SIGCHLD", "SIGCONT",
 		"SIGSTOP", "SIGSTPT", "SIGTTIN", "SIGTTOU", "SIGURG", "SIGXCPU",
-		"SIGXCPU", "SIGXFSZ", "SIGVALRM", "SIGPROF", "SIGWINCH", "SIGIO",
-		"SIGPWR", "SIGSYS"
+		"SIGXFSZ", "SIGVALRM", "SIGPROF", "SIGWINCH", "SIGIO", "SIGPWR",
+		"SIGSYS"
 	};
-	const int	values[32] = {
+	const int	values[31] = {
 		SIGHUP, SIGINT, SIGQUIT, SIGILL, SIGTRAP, SIGABRT, SIGBUS, SIGFPE,
 		SIGKILL, SIGUSR1, SIGSEGV, SIGUSR2, SIGPIPE, SIGALRM, SIGTERM,
 		SIGSTKFLT, SIGCHLD, SIGCONT, SIGSTOP, SIGTSTP, SIGTTIN, SIGTTOU,
-		SIGURG, SIGXCPU, SIGXCPU, SIGXFSZ, SIGVTALRM, SIGPROF, SIGWINCH,
+		SIGURG, SIGXCPU, SIGXFSZ, SIGVTALRM, SIGPROF, SIGWINCH,
 		SIGIO, SIGPWR, SIGSYS
 	};
-	const char*	cvalues[32] = { "1", "2", "3", "4", "5", "6", "7", "8", "9",
+	const char*	cvalues[31] = { "1", "2", "3", "4", "5", "6", "7", "8", "9",
 		 "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21",
-		 "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", ""
+		 "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"
 	};
 	int			i;
 
@@ -54,7 +72,7 @@ const static char*	get_signal(const char* key, int* res)
 	}
 	while (i < 31 && ft_strncmp(signals[i], key, ft_strlen(signals[i])) // signal name
 			&& ft_strncmp(&signals[i][3], key, ft_strlen(signals[i]) - 3) // skip sig from the name
-			&& ft_strncmp(cvalues[i], key, ft_strlen(cvalues[i]))) // numeric value
+			&& ft_strncmp(cvalues[i], key, ft_strlen(cvalues[i]) + 1)) // numeric value
 		i++;
 	if (i == 31 && !(*res = 0))
 		return (NULL);
@@ -73,7 +91,7 @@ static void		print_all_signals()
 	i = -1;
 	while (++i < 31)
 	{
-		ft_dprintf(STDERR_FILENO, "%2d) %-7s ", i + 1, get_signal(cvalues[i], &tmp));
+		ft_dprintf(STDERR_FILENO, "%2d) %-9s ", i + 1, get_signal(cvalues[i], &tmp));
 		if ((i + 1) % 5 == 0)
 			write(STDERR_FILENO, "\n", 1);
 	}
@@ -181,7 +199,7 @@ int     	ft_kill(t_exec* args, t_term* term)
     { 
         if (args->ac == 2)
 			print_all_signals();
-		else if (signal && (test = (char*)get_signal(&args->av[2][1], &signal)))
+		else if (signal && (test = (char*)get_signal(&args->av[2][0], &signal)))
 			ft_dprintf(STDERR_FILENO, "%d\n", signal);
 		else if (!test)
 		{
@@ -212,7 +230,7 @@ int     	ft_kill(t_exec* args, t_term* term)
 				ft_dprintf(2, "minish: kill: %s: arguments must be process or job IDs\n", args->av[2]);
 			return (STD_ERROR);
 		}
-		else if (!sig_spec)
+		else if (!target && sig_spec)
 		{
 			ft_dprintf(2, "%s", "minish: kill: invalid signal specification\n");
 			return (STD_ERROR);

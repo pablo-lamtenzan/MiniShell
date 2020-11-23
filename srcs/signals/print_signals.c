@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 02:14:04 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 03:39:13 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,6 +198,7 @@ void	print_job_args(t_process* target)
 		ft_dprintf(STDERR_FILENO, "%s%s", target->data[i], target->data[i + 1] ? " " : "");
 }
 
+// THIS PRINTS ALL THE CMD LINE NOT THE ARSG!!!!!
 void	print_index_args(t_session* session, t_process* target)
 {
 	const bool leader = is_leader(session, target);

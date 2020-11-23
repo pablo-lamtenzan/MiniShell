@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 02:16:53 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 04:34:40 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,10 +102,14 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 // TO DO: st after stop a process is 148
 // TO DO: History is GROUPSS!!! not processes (test ls | sleep 22 + jobs in minish to see the problem)
 // TO DO: Builtins multiflags jobspec confics or even segfault (just ezz modify parse flags)
+// TO DO: IN KILL: Jobspec parser segmentation fault (reads NULL) -> sleep 22 + crtl^Z + sleep 22 + clrt^Z + kill -QUIT %sleep
+// TO DO: BG DIDN'T REMOVE GROUPS SO I CAN'T WAIT MULTIPLE GROUPS (doing: bg ; bg ; wait) (HAVE TO PUT A "BG" FLAG TO HANDLE THIS TO ITERATE OVER THE RIGHT TARGET)
+	// THEN RM THIS FLAG IN FG
+
 
 // Todays Plan:
 // Jobspec parse perfect (data done), pid is strange a ?name to debug
-// Every Builtin perfect: DONE: fg, jobs (have little exection), bg, 
+// Every Builtin perfect: DONE: fg, jobs (have little exection), bg, kill (process status - signals interactions to study), 
 // IMPLEMENT GLOBAL SESSION
 // Test WAIT builtin
 // Upgrade builtins

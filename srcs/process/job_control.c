@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 02:26:01 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 03:41:53 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ void		update_background(t_session* session, t_process **target, bool wait)
 	{
 		ft_dprintf(2, "[PROCESS EXITS]\n");
 		(*target)->flags &= ~STOPPED;
+		(*target)->flags |= EXITED;
 	}
 	// stopped
 	else

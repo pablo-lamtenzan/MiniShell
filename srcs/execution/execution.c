@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/22 02:43:15 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 04:11:57 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ static t_exec_status	execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
 			term->st = info->exec(info, term);
 		else
 			destroy_execve_args(info);
+		ft_dprintf(2, "[EXEC CMD][CURR PROCESS FLAGS: %d][\'%p\']\n", term->session->groups->active_processes->flags, term->session->groups->active_processes);
 		if (close_pipe_fds(info->fds) != SUCCESS)
 			return (BAD_CLOSE);// return error code (could not BAD_CLOSE to define later)
 	}
@@ -91,7 +92,11 @@ t_exec_status			execute_bst(t_bst* root, t_term* term)
 	if (!(group = group_new()))
 		return (BAD_ALLOC);
 	if (term->session->groups && term->session->groups->active_processes)
+	{
 		ft_dprintf(2, "[XXXXXXXXXXXXXXXXX : %p]\n", term->session->groups->active_processes);
+		if (term->session->groups->next && term->session->groups->next->active_processes)
+			ft_dprintf(2, "[EXEC BST][PREVIOUS GROUP LEADER FLAGS ARE: %d][\'%p\']\n", term->session->groups->next->active_processes->flags, term->session->groups->next->active_processes);
+	}
 	group_push_front(&term->session, group);
 
 	ft_bzero(&info, sizeof(t_exec));

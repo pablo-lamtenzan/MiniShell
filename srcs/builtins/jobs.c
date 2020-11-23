@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 12:03:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 01:45:26 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 04:49:47 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,7 +216,6 @@ void			print_all_groups(t_session* session, int flags)
 	session->groups = remember;
 }
 
-// TO DO: correct index
 int				ft_jobs(t_exec* args, t_term* term)
 {
 	int			flags;
@@ -251,12 +250,13 @@ int				ft_jobs(t_exec* args, t_term* term)
 					ft_dprintf(STDERR_FILENO, "minish: jobs: %s: no such job\n", args->av[flags > 0 ? 1 : 0]);
 					return (STD_ERROR);
 				}
+				ft_dprintf(2, "[JOBS JOBSPEC][\'%p\']\n", *target);
 				// print it here and apply flags
 				if (flags > 0 && flags & 8)
 					print_group(term->session, *target, flags < 0 ? 0 : flags, term->session->groups);
-				else if (!(flags & 2 && (WIFEXITED((*target)->wstatus) || WIFSTOPPED((*target)->wstatus))) 
-					&& !(flags & 4 && (WIFEXITED((*target)->wstatus) || !WIFSTOPPED((*target)->wstatus))))
-					
+				else if (!(flags > 0 && flags & 2 && (WIFEXITED((*target)->wstatus) || WIFSTOPPED((*target)->wstatus))) 
+					&& !(flags > 0 && flags & 4 && (WIFEXITED((*target)->wstatus) || !WIFSTOPPED((*target)->wstatus))))
+					print_signal_v2(term->session, *target, 2);
 				return (SUCCESS);
 			}
 		}
@@ -265,6 +265,6 @@ int				ft_jobs(t_exec* args, t_term* term)
 	if (flags > 0 && flags & 8)
 		print_all_groups(term->session, flags < 0 ? 0 : flags);
 	else
-		print_all_leaders(term->session, flags);
+		print_all_leaders(term->session, flags < 0 ? 0 : flags);
 	return (SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 18:03:18 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/22 03:06:48 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 05:00:24 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ int				parse_flags(int ac, const char* av, const char* pattern)
 			}
 			if ((flags |= (1 << ft_strpos(pattern, av[i]))) < 0)
 				return (-1);
+			
 		}
 	}
 	return (flags);
