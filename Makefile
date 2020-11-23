@@ -56,6 +56,7 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 					$(addprefix separators/,\
 						conditionals.c\
 						separators.c\
+						split_separators.c\
 					)\
 					$(addprefix signals/,\
 						print_signals.c\
