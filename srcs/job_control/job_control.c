@@ -6,13 +6,14 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 09:05:43 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 15:06:46 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <job_control.h>
 #include <libft.h>
 #include <sys/wait.h>
+#include <stdlib.h>
 #include <signal.h>
 
 // for the momment keep them
@@ -316,4 +317,57 @@ bool			is_not_ambigous(t_process* target)
 		groups = groups->next;
 	}
 	return (count == 1);
+}
+
+void		remove_history_node(t_group* target)
+{
+	t_history*	prev;
+	t_history*	first;
+
+	first = g_session->hist;
+	prev = NULL;
+	while (g_session->hist)
+	{
+		if (target->nil->next->pid == g_session->hist->group->nil->next->pid)
+		{
+			if (prev)
+				prev->next = g_session->hist->next;
+			if (PRINT_DEBUG)
+				ft_dprintf(2, "[RM HISTORY NODE][\'%p\'][ %d ]\n", g_session->hist, g_session->hist->group->nil->next->pid);
+			free(g_session->hist);
+			g_session->hist = NULL;
+			break ;
+		}
+		prev = g_session->hist;
+		g_session->hist = g_session->hist->next;
+	}
+	// update first
+	if (g_session->hist && first->group->nil->next->pid == target->nil->next->pid)
+		g_session->hist = first->next;
+	else if (!g_session->hist)
+		g_session->hist = NULL;
+	else
+		g_session->hist = first;
+	if (PRINT_DEBUG && g_session->hist)
+		ft_dprintf(2, "[RM HISTORY NODE][NOW CURR HISTORY NODE IS][\'%p\'][ %d ]\n", g_session->hist, g_session->hist->group->nil->next->pid);
+}
+
+void		remove_exited_zombies()
+{
+	t_group*	remember;
+	t_group*	next;
+
+	remember = g_session->groups;
+	while (g_session->groups != g_session->nil)
+	{
+		next = g_session->groups->next;
+		if (!is_active_group(g_session->groups))
+		{
+			remove_history_node(g_session->groups);
+			ft_dprintf(2, "[REMOVE EXITED ZOMBIES][REMOVE EXITED ZOMBIE GROUP: %p]\n", g_session->groups);
+			group_remove_v2(&g_session->groups);
+		}
+		g_session->groups = next;
+	}
+	g_session->groups = remember;
 }

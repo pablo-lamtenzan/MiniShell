@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 06:14:41 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 14:39:41 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,6 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 // TO DO: Contitionals with job control test: sleep 22 | sleep 22 && sleep 22 | sleep 22 (it seem the "after AND" just desapears)
 // TO DO: If Ret st != 0 -> Jobs print it
 // TO DO: SIGCHLD (need global session and change term->st in session)
-// TO DO: SESSION GLOBAL (do when all builtins will work as good as i don't need dgb printf anymore)
 // TO DO: optimize builtins (need global session)
 // TO DO: put color in the prompt
 // TO DO: st after stop a process is 148
@@ -99,14 +98,14 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 
 // Todays Plan:
 // Jobspec parse perfect (data done), pid is strange a ?name to debug
-// Every Builtin perfect: DONE: fg, jobs (have little exection), bg, kill (process status - signals interactions to study), wait, disown
-// IMPLEMENT GLOBAL SESSION
-// Upgrade builtins
-// Zombies
-// Can norme a little bit now
+// Every Builtin perfect: DONE: fg, jobs (all fine exep las arg for not -l), bg, kill (process status - signals interactions to study), wait, disown
+// IMPLEMENT GLOBAL SESSION DONE
+// Upgrade builtins TOMORROW I NORME THEM
+// Zombies DONE
+// Can norme a little bit now TOMORROW
 // Research the next
 
-/* GET CMD LINE FOR JOBS IDEA */
+/* GET CMD LINE FOR JOBS IDEA (IMPLEMENTED BUT NOT TESTED )*/ 
 
 // 1) Copy input
 // 2) Split copy by separators
@@ -143,7 +142,7 @@ void	suspend_process(int signal)
 int		main(int ac, const char** av, const char** envp)
 {
 	signal(SIGTSTP, suspend_process);
-	//signal(SIGCHLD, zombies_catcher);
+	signal(SIGCHLD, zombies_catcher);
 	//signal(SIGTERM, todo); // need documentation about this
 		// maybe it has to send SIGHUB to all the no market child (market in diswon)
     return (term_prompt(ac, av, envp, &exec));

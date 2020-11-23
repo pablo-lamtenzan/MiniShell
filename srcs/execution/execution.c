@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 09:16:42 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 14:34:55 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,16 +90,17 @@ t_exec_status			execute_bst(t_bst* root, t_term* term)
 	t_group*			group;
 
 	// New stuff
+	remove_exited_zombies();
 	if (!(group = group_new()))
 		return (BAD_ALLOC);
-	if (PRINT_DEBUG) {
+/*	if (PRINT_DEBUG) {
 	if (g_session->groups && g_session->groups->active_processes)
 	{
 		ft_dprintf(2, "[XXXXXXXXXXXXXXXXX : %p]\n", g_session->groups->active_processes);
 		if (g_session->groups->next && g_session->groups->next->active_processes)
 			ft_dprintf(2, "[EXEC BST][PREVIOUS GROUP LEADER FLAGS ARE: %d][\'%p\']\n", g_session->groups->next->active_processes->flags, g_session->groups->next->active_processes);
 	}
-	}
+	}*/
 	group_push_front(group);
 
 	ft_bzero(&info, sizeof(t_exec));

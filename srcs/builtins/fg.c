@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 09:14:32 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 14:20:05 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,15 @@ void	resume_group(t_process* leader)
 			remember_leader = g_session->groups->active_processes;
 			while (g_session->groups->active_processes != g_session->groups->nil)
 			{
-				if (PRINT_DEBUG)
+				if (g_session->groups->active_processes->flags & (STOPPED | BACKGROUND))
+				{
+					if (PRINT_DEBUG)
 					ft_dprintf(2, "[FG][KILL -SIGCONT \'%d\'][\'%p\']\n", g_session->groups->active_processes->pid, g_session->groups->active_processes);
-				kill(g_session->groups->active_processes->pid, SIGCONT);
-				if (PRINT_DEBUG)
+					kill(g_session->groups->active_processes->pid, SIGCONT);
+					if (PRINT_DEBUG)
 					ft_dprintf(2, "[FG][UPDATE BACKGROUND]\n");
-				update_background(&g_session->groups->active_processes, true);
+					update_background(&g_session->groups->active_processes, true);
+				}
 				g_session->groups->active_processes = g_session->groups->active_processes->next;
 			}
 			if (!is_active_group(g_session->groups))

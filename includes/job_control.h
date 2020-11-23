@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 09:20:49 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 15:04:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ t_group					*group_new();
 bool					group_empty(t_group* group);
 void					group_insert(t_group* prev, t_group* next, t_group* target);
 void					group_remove(t_group** prev, t_group** next);
+void					group_remove_v2(t_group** target);
 void					group_push_front(t_group* target);
 void					group_push_back(t_group* target);
 void					group_pop_front();
@@ -102,6 +103,7 @@ void					process_pop_back(t_group** group);
 */
 void					update_background(t_process **target, bool wait);
 bool            		update_session_history(t_process *update);
+void					remove_history_node(t_group* target);
 bool					update_session_history_v2(t_group* update);
 t_process**				background_find(t_process* target, const char* search_type, t_group* group);
 bool					is_active_group(t_group* target);
@@ -114,6 +116,7 @@ bool					is_leader(t_process* target);
 ** Signals catcher
 */
 void					zombies_catcher(int signal);
+void					remove_exited_zombies();
 void					suspend_process(int signal);
 
 
