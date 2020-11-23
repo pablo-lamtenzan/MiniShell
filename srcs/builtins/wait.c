@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:20:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 05:10:06 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 06:45:03 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ int			wait_process(t_session* session, t_process** target, int flags)
 		return (WEXITSTATUS((*target)->wstatus));
 	if ((*target)->flags & STOPPED)
 	{
-		ft_dprintf(2, "---------------------> %p STOPPED\n", *target);
 		ft_dprintf(STDERR_FILENO, "bash: warning: wait_for_job: job %lu[%d] is stopped\n", get_background_index(session->nil, *target), (*target)->pid);
 		return (148);
 	}
@@ -73,8 +72,9 @@ int			wait_group(t_session* session, t_process* leader, int flags, t_group* itse
 			remember_leader = session->groups->active_processes;
 			while (session->groups->active_processes != session->groups->nil)
 			{
+				if (PRINT_DEBUG){
 				ft_dprintf(2, "[WAIT][TARGET FLAGS: %d][\'%p\']\n", session->groups->active_processes->flags, session->groups->active_processes);
-				ft_dprintf(2, "[WAIT][PROCESS: %d][\'%p\']\n", session->groups->active_processes->pid, session->groups->active_processes);
+				ft_dprintf(2, "[WAIT][PROCESS: %d][\'%p\']\n", session->groups->active_processes->pid, session->groups->active_processes);}
 				ret = wait_process(session, &session->groups->active_processes, flags);
 				session->groups->active_processes = session->groups->active_processes->next;
 			}

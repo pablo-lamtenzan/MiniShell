@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 05:10:53 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 07:51:16 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 # include <sys/types.h>
 
 # include <errors.h>
+
+#define PRINT_DEBUG		1
 
 #define PROCESSES_MAX   4096
 #define MANAGE          0
@@ -46,11 +48,18 @@ typedef struct			s_group
 	struct s_group*		prev;
 }						t_group;
 
+typedef struct 			s_history
+{
+	t_group*			group; // never operate over this just need it for the address
+	struct s_history*	next;
+}						t_history;
+
 typedef struct			s_session
 {
 	t_group*			groups; // all background processes by group
 	t_process			processes[PROCESSES_MAX + 1]; // exec processes
 	t_process			*history;
+	t_history*			hist; // change it name later
 	t_group				*nil;
 }						t_session;
 
@@ -91,6 +100,7 @@ void					process_pop_back(t_group** group);
 */
 void					update_background(t_session* session, t_process **target, bool wait);
 bool            		update_session_history(t_session *session, t_process *update);
+bool					update_session_history_v2(t_session* session, t_group* update);
 t_process**				background_find(t_process* target, const char* search_type, t_group* group);
 bool					is_active_group(t_group* target);
 pid_t					get_process_leader_pid(t_group* nil, t_process* target);

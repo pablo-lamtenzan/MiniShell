@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 06:10:09 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 06:44:25 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,8 @@ void		kill_group(t_session* session, t_process* leader, int signal, t_group* its
 			remember_leader = session->groups->active_processes;
 			while (session->groups->active_processes != session->groups->nil)
 			{
-				ft_dprintf(2, "[KILL][KILL (signal=\'%d\') \'%d\']\n", signal, session->groups->active_processes->pid);
+				if (PRINT_DEBUG)
+					ft_dprintf(2, "[KILL][KILL (signal=\'%d\') \'%d\']\n", signal, session->groups->active_processes->pid);
 				kill(session->groups->active_processes->pid, signal);
 				update_background(session, &session->groups->active_processes, signal == SIGCONT); // TO DO: more execptions
 				session->groups->active_processes = session->groups->active_processes->next;
@@ -193,8 +194,9 @@ int     	ft_kill(t_exec* args, t_term* term)
     }
 	if (args->av[1][0] == '-' && (sig_spec = true))
 		get_signal(&args->av[1][1], &signal); // return 256 with -l
+	if (PRINT_DEBUG) {
 	ft_dprintf(2, "[KILL][SIGNAL FORMAT IS: %d]\n", sig_spec);
-	ft_dprintf(2, "[SIGNAL IS %d]\n", signal);
+	ft_dprintf(2, "[SIGNAL IS %d]\n", signal);}
     if (signal == 256)
     { 
         if (args->ac == 2)

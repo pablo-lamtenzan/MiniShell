@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 05:11:24 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 07:55:08 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,36 @@
 
 // for the momment keep them
 
+t_group*	get_group(t_session* session, t_process* target)
+{
+	t_group*	remember;
+	t_process*	remember_leader;
+	t_group*	found;
+
+	remember = session->groups;
+	while (session->groups != session->nil)
+	{
+		remember_leader = session->groups->active_processes;
+		found = session->groups;
+		while (session->groups->active_processes != session->groups->nil)
+		{
+			if (session->groups->active_processes->pid == target->pid)
+			{
+				session->groups->active_processes = remember_leader;
+				session->groups = remember;
+				if (PRINT_DEBUG)
+					ft_dprintf(2, "[GET GROUP FOUND: %p]\n", found);
+				return (found);
+			}
+			session->groups->active_processes = session->groups->active_processes->next;
+		}
+		session->groups->active_processes = remember_leader;
+		session->groups = session->groups->next;
+	}
+	session->groups = remember;
+	return (NULL);
+}
+
 void		update_background(t_session* session, t_process **target, bool wait)
 {
 	//ft_dprintf(2, "[UPDATE V2--1]ACTIVE PROCESSES: %p\n", (*target));
@@ -25,25 +55,29 @@ void		update_background(t_session* session, t_process **target, bool wait)
 		(*target)->flags &= ~BACKGROUND;
 		while (waitpid((*target)->pid, &(*target)->wstatus, WUNTRACED) <= 0)
 			;
-		ft_dprintf(2, "[WAIING...][pid=\'%d\'][wstatus=\'%d\']\n", (*target)->pid, (*target)->wstatus);
+		if (PRINT_DEBUG)
+			ft_dprintf(2, "[WAIING...][pid=\'%d\'][wstatus=\'%d\']\n", (*target)->pid, (*target)->wstatus);
 	}
 	// exited and not stopped
 	// HERE CAN REMOVE FLAGS IN ALL CASES AND ADD IT IF NECESARRY
 	if (WIFEXITED((*target)->wstatus) || !WIFSTOPPED((*target)->wstatus))
 	{
-		ft_dprintf(2, "[PROCESS EXITS]\n");
+		if (PRINT_DEBUG)
+			ft_dprintf(2, "[PROCESS EXITS]\n");
 		(*target)->flags &= ~STOPPED;
 		(*target)->flags |= EXITED;
 	}
 	// stopped
 	else
 	{
-		ft_dprintf(2, "[PROCESS DOESN'T EXIT]\n");
+		if (PRINT_DEBUG)
+			ft_dprintf(2, "[PROCESS DOESN'T EXIT]\n");
 		(*target)->flags |= STOPPED;
-		if (is_leader(session, *target))
-			update_session_history(session, *target);
+		//if (is_leader(session, *target))
+		update_session_history_v2(session, get_group(session, *target));
 	}
-	ft_dprintf(2, "[UPDATE BACKGROUND][WSTATUS AT THE END = \'%d\']\n", (*target)->wstatus);
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "[UPDATE BACKGROUND][WSTATUS AT THE END = \'%d\']\n", (*target)->wstatus);
 	//ft_dprintf(2, "[UPDATE V2--2]ACTIVE PROCESSES: %p\n", (*target));
 	//ft_dprintf(2, "------> %d\n", (*target)->flags);
 }
@@ -53,7 +87,8 @@ bool            update_session_history(t_session *session, t_process *update)
     t_process*  cp_update;
 	t_process*	fill;
 
-	ft_dprintf(2, "[UPDATE SESSION HISTORY (make a copy) ][\'%p\']\n", update);
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "[UPDATE SESSION HISTORY (make a copy) ][\'%p\']\n", update);
     if (!(cp_update = process_new(update->pid, update->wstatus, update->data)))
 		return (false);
 	fill = session->history;
@@ -61,6 +96,22 @@ bool            update_session_history(t_session *session, t_process *update)
 	cp_update->next = fill;
 	if (fill)
 		fill->prev = cp_update;
+	return (true);
+}
+
+bool			update_session_history_v2(t_session* session, t_group* update)
+{
+	t_history*	fill;
+	t_history*	hist;
+
+	if (!update || !(hist = ft_calloc(1, sizeof(t_history))))
+		return (false);
+	*hist = (t_history){.group=update};
+	fill = session->hist;
+	session->hist = hist;
+	hist->next = fill;
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "[UPDATE SESSION HISTORY][CURR GROUP IS: \'%p\'][ITS LEADER: \'%p\'][ %d ]\n", session->hist->group, session->hist->group->nil->next, session->hist->group->nil->next->pid);
 	return (true);
 }
 
@@ -122,7 +173,8 @@ bool		is_active_group(t_group* target)
 	if (group_empty(target))
 		return (false);
 	process = target->nil->next;
-	ft_dprintf(2, "[IS ACTIVE GROUP (leader): %p]\n", process);
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "[IS ACTIVE GROUP (leader): %p]\n", process);
 	while (process != target->nil)
 	{
 		if (process->flags & (BACKGROUND | STOPPED))
@@ -215,7 +267,8 @@ void			force_exit_background(t_session* session)
 		while (session->groups->active_processes != session->groups->nil)
 		{
 			// WORKS! The zombies catcher print it return status
-			ft_dprintf(2, "[FORCE EXIT][PROCESS: [PROCESS: \'%d\'][\'%p\']\n", session->groups->active_processes->pid, session->groups->active_processes);
+			if (PRINT_DEBUG)
+				ft_dprintf(2, "[FORCE EXIT][PROCESS: [PROCESS: \'%d\'][\'%p\']\n", session->groups->active_processes->pid, session->groups->active_processes);
 			kill(session->groups->active_processes->pid, SIGCONT);
 			kill(session->groups->active_processes->pid, SIGHUP);
 			//while (waitpid(session->groups->active_processes->pid, &session->groups->active_processes->wstatus, WUNTRACED) <= 0)

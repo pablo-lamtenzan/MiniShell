@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:05:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/21 23:40:55 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 06:36:58 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ t_process*		process_new(pid_t pid, int wstatus, char*const* data)
 	if (!(process = ft_calloc(1, sizeof(t_process))))
 		return (NULL);
 	*process = (t_process){.pid=pid, .wstatus=wstatus, .data=data};
-	ft_dprintf(2, "[NEW PROCESS][\'%p\']\n", process);
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "[NEW PROCESS][\'%p\']\n", process);
 	return (process);
 }
 
@@ -105,9 +106,11 @@ void		process_push_back(t_group** group, t_process* target)
 		fill = (*group)->nil->prev;
 		process_insert(fill, (*group)->nil, target);
 	}
-	ft_dprintf(2, "[PROCESS PUSH FRONT][LAST PROCESS NOW IS: \'%p\']\n", (*group)->nil->prev);
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "[PROCESS PUSH FRONT][LAST PROCESS NOW IS: \'%p\']\n", (*group)->nil->prev);
 	(*group)->active_processes = (*group)->nil->next;
-	ft_dprintf(2, "[PROCESS PUSH BACK][FIRST PROCESS NOW IS: \'%p\']\n", (*group)->active_processes);
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "[PROCESS PUSH BACK][FIRST PROCESS NOW IS: \'%p\']\n", (*group)->active_processes);
 }
 
 void		process_pop_font(t_group** group)

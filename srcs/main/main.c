@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 05:27:55 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 06:14:41 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,11 +82,8 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 
 // TO DO: Redirect fds in job control builtins
 // TO DO: If a stopped process is resume in the backgroud it will be removed from the history
-// TO DO: Other builtins interactions with new flags RESTRICT_OP AND NO_HANGUP
 // TO DO: Kill update background issue (can t wait fix it with a flags but i have problems now) I CAN'T WAIT IT IN KILL BUT I CAN WAIT AFTER IN FG WHY?????????????????????
-// TO DO: Signals mesages in all the shell (in any user-signal interaction)
 // TO DO: Bg: Don't remove the process, but have to remove it at its end! Have to build a zombie catcher
-// TO DO: Disown works but have interact with its flags with others builtins
 // TO DO: All builtins has error msg for pid and jobspec i have the same error msg...
 // TO DO: Contitionals with job control test: sleep 22 | sleep 22 && sleep 22 | sleep 22 (it seem the "after AND" just desapears)
 // TO DO: If Ret st != 0 -> Jobs print it
@@ -102,9 +99,8 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 
 // Todays Plan:
 // Jobspec parse perfect (data done), pid is strange a ?name to debug
-// Every Builtin perfect: DONE: fg, jobs (have little exection), bg, kill (process status - signals interactions to study), wait, 
+// Every Builtin perfect: DONE: fg, jobs (have little exection), bg, kill (process status - signals interactions to study), wait, disown
 // IMPLEMENT GLOBAL SESSION
-// Test WAIT builtin
 // Upgrade builtins
 // Zombies
 // Can norme a little bit now

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 05:29:19 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 06:39:25 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,38 +224,52 @@ void	print_index_args(t_session* session, t_process* target)
 
 void	print_signal_v2(t_session* session, t_process* target, int flags)
 {
-	static const char*		signals[31] = {
+	static const char*		signals[32] = {
 		"Hangup", "", "Quit", "Illegal instruction", "Trace/breakpoint trap", "Aborted", \
 		"Bus error", "Floating point exception", "Killed", "User defined signal 1", \
 		"Segmentation fault", "User defined signal 2","", "Alarm clock", "Terminated", "Stack fault", \
 		"", "", "Stopped", "Stopped", "Stopped", "Stopped", "", "CPU time limit exceeded", \
 		"File size limit exceeded", "Virtual timer expired", "Profiling timer expired", "I/O possible", \
-		"Power failure", "Bad system call", "Done"};
+		"Power failure", "Bad system call", "Done", "Exit"};
 	int signal;
 	const bool leader = is_leader(session, target);
 	char* pid;
 	char* index;
+	char*	rett;
+	int ret = 0;
 
 	pid = NULL;
 	index = NULL;
+	rett = NULL;
 	if (WIFEXITED(target->wstatus))
-		signal = 31;
+	{
+		if (WEXITSTATUS(target->wstatus) == 0)
+			signal = 31;
+		else
+		{
+			signal = 32;
+			ret = WEXITSTATUS(target->wstatus);
+		}
+	}
 	else if (WIFSIGNALED(target->wstatus))
 		signal = WTERMSIG(target->wstatus);
 	else
 		signal = WSTOPSIG(target->wstatus);
-	ft_dprintf(2, "[PRINT SIGNAL][SIGNAL IS: \'%d\']\n", signal);
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "[PRINT SIGNAL][SIGNAL IS: \'%d\']\n", signal);
 
 	// format: [[suspended/backgound index][history index][spaces]or[paddin spaces]+[pid if pid][siganls[signal]][WCOREDUMP][CONST SPACES][ARGS OR CMD]
 	if (signal >= 19 && signal <= 22 && signal != SIGTSTP)
 		write(2, "\n", 1);
-	ft_dprintf(STDERR_FILENO, "%s%s%s%s %s %s %-16s",
+	ft_dprintf(STDERR_FILENO, "%s%s%s%s %s %s %s %-16s",
 		leader ? "[" : " ",
 		leader ? index = ft_itoa(get_background_index(session->nil, target)) : " ", // print "[ background index ]"
 		leader ? "]" : " ",
 		is_in_history(session, target), // print history index
 		flags & PRINT_PID ? pid = ft_itoa(target->pid) : "", // print pid
+		// PROBLEM HERE: IF PROCESS IS IN BACKGROUND NEED TO REMOVE THE FLAG WHEN IT END... (in zombies catcher)
 		target->flags & BACKGROUND ? "Runnnig" : signals[signal - 1],
+		ret ? rett = ft_itoa(ret) : "",
 		__WCOREDUMP(target->wstatus) ? "(core dumped)" : ""
 		);
 	if (flags & PRINT_JOBS_CMD)
@@ -265,4 +279,5 @@ void	print_signal_v2(t_session* session, t_process* target, int flags)
 	write(STDERR_FILENO, "\n", 1);
 	free(pid);
 	free(index);
+	free(rett);
 }

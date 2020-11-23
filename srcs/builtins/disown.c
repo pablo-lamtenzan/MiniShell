@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:48:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 06:12:28 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 07:45:07 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,23 @@ void			history_pop_front(t_session* session)
 	if (session->history)
 	{
 		fill = session->history->next;
-		ft_dprintf(2, "[DISOWN][REMOVE FROM HISTORY: %p]\n", session->history);
+		if (PRINT_DEBUG)
+			ft_dprintf(2, "[DISOWN][REMOVE FROM HISTORY: %p]\n", session->history);
 		//delete_process(&session->history);
 		free(session->history);
 		session->history = fill;
+	}
+}
+
+void			history_pop_front_v2(t_session* session)
+{
+	t_history*	fill;
+
+	if (session->hist)
+	{
+		fill = session->hist->next;
+		free(session->hist);
+		session->hist = fill;
 	}
 }
 
@@ -56,11 +69,15 @@ void			remove_process(t_process** target)
 
 	next = &(*target)->next;
 	prev = &(*target)->prev;
+	if (PRINT_DEBUG) {
 	ft_dprintf(2, "[REMOVE PROCESS][NEXT = \'%p\']\n", (*next));
 	ft_dprintf(2, "[REMOVE PROCESS][PREV = \'%p\']\n", (*prev));
+	}
 	(*next)->prev = *prev;
 	(*prev)->next = *next;
+	if (PRINT_DEBUG) {
 	ft_dprintf(2, "[REMOVE: \'%p\']\n", *target);
+	}
 	free(*target); // not only free
 	*target = NULL;
 }
@@ -73,11 +90,12 @@ void			disown_process(t_session* session, t_process** target, int flags)
 	if (flags & 1 && (*target)->flags & STOPPED) // -r only running processes
 	{
 		// put flag
-		ft_dprintf(2, "[DISOWN][RESTRIC OPERATION TO: %p]\n", *target);
+		if (PRINT_DEBUG) {
+		ft_dprintf(2, "[DISOWN][RESTRIC OPERATION TO: %p]\n", *target);}
 		(*target)->flags |= RESTRICT_OP;
 		
 		// rm from history (probally this pop front needs a condition for flags + jobspec)
-		history_pop_front(session);
+		history_pop_front_v2(session);
 		return ;
 	}
 	if (flags & 4) // -h process doenst recive SIGHUB when the term exits
@@ -86,9 +104,10 @@ void			disown_process(t_session* session, t_process** target, int flags)
 		return ;
 	}
 	while (++i < 2) // check 2 times: 1 for + and another for -
-		if (session->history && session->history->pid == (*target)->pid)
-			history_pop_front(session);
-	ft_dprintf(2, "[DISOWN][flags: %d][\'%p\']\n", (*target)->flags, *target);
+		if (session->hist && background_find(*target, "PID", session->hist->group))
+			history_pop_front_v2(session);
+	if (PRINT_DEBUG) {
+	ft_dprintf(2, "[DISOWN][flags: %d][\'%p\']\n", (*target)->flags, *target);}
 	if ((*target)->flags & STOPPED)
 		ft_dprintf(STDERR_FILENO, "minish: warning: deleting stopped job %lu with process group %d\n", get_background_index(session->nil, *target), get_process_leader_pid(session->nil, *target));
 	remove_process(target);
@@ -128,11 +147,13 @@ void		disown_group(t_session* session, t_process* leader, int flags, t_group* it
 	{
 		if (session->groups->nil->next->pid == leader->pid)
 		{
-			ft_dprintf(2, "[DISOWN][LEADER: %p][PID: %d]\n[DISOWN][CURR GROUP: %p][CURR ACTIVE PROCESSES: %p]\n", leader, leader->pid, session->groups, session->groups->active_processes);
+			if (PRINT_DEBUG)
+				ft_dprintf(2, "[DISOWN][LEADER: %p][PID: %d]\n[DISOWN][CURR GROUP: %p][CURR ACTIVE PROCESSES: %p]\n", leader, leader->pid, session->groups, session->groups->active_processes);
 			remember_leader = session->groups->active_processes;
 			while (session->groups->active_processes != session->groups->nil)
 			{
-				ft_dprintf(2, "[DISOWN][PROCESS: %d][\'%p\']\n", session->groups->active_processes->pid, session->groups->active_processes);
+				if (PRINT_DEBUG)
+					ft_dprintf(2, "[DISOWN][PROCESS: %d][\'%p\']\n", session->groups->active_processes->pid, session->groups->active_processes);
 				next = session->groups->active_processes->next;
 				disown_process(session, &session->groups->active_processes, flags);
 				session->groups->active_processes = next;
@@ -166,7 +187,8 @@ void		disown_all_groups(t_session* session, int flags)
 	while (session->groups != session->nil->next)
 	{
 		prev = session->groups->prev;
-		ft_dprintf(2, "[DISOWN ALL GROUPS][CURR GROUP IS: %p][ACTIVE PROCESSES: %p]\n", session->groups, session->groups->active_processes);
+		if (PRINT_DEBUG)
+			ft_dprintf(2, "[DISOWN ALL GROUPS][CURR GROUP IS: %p][ACTIVE PROCESSES: %p]\n", session->groups, session->groups->active_processes);
 		disown_group(session, session->groups->nil->next, flags, remember);
 		session->groups = prev;
 	}
@@ -212,7 +234,7 @@ int		ft_disown(t_exec* args, t_term* term)
 	flags = 0;
 	i = -1;
 	target = NULL;
-	if ((flags = parse_flags(args->ac, args->av[1], "rah")) < 0 && ft_dprintf(2, "[DISWON][Flags are: %d]\n", flags) &&args->av[1][0] == '-')
+	if ((flags = parse_flags(args->ac, args->av[1], "rah")) < 0 && args->av[1][0] == '-')
 	{
 		ft_dprintf(STDERR_FILENO, "%s", "minish: usage: disown: [-h] [-ar] [jobspec ... | pid ...]\n");
 		return (CMD_BAD_USE);
@@ -231,7 +253,8 @@ int		ft_disown(t_exec* args, t_term* term)
 		if (flags < 0 || !(flags & 3)) // not have to disown all
 		{
 			// disown jobspecs
-			ft_dprintf(2, "[DISOWN JOBSPEC: flags: %d --- %d]\n", flags, args->ac - (flags > 0 ? 2 : 1));
+			if (PRINT_DEBUG)
+				ft_dprintf(2, "[DISOWN JOBSPEC: flags: %d --- %d]\n", flags, args->ac - (flags > 0 ? 2 : 1));
 
 			while (++i < args->ac - (flags > 0 ? 2 : 1))
 			{
@@ -246,10 +269,10 @@ int		ft_disown(t_exec* args, t_term* term)
 		else
 			disown_all_groups(term->session, flags < 0 ? 0 : flags);
 	}
-	else if (term->session->history)
+	else if (term->session->hist)
 	{
 		//target = background_find(term->session->history, "PID", term->session->groups);
-		disown_group(term->session, term->session->history, flags < 0 ? 0 : flags, term->session->groups);
+		disown_group(term->session, term->session->hist->group->nil->next, flags < 0 ? 0 : flags, term->session->groups);
 	}
 	// disown curr
 	return (SUCCESS);

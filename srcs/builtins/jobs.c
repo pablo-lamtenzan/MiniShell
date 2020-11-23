@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 12:03:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 05:30:17 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 08:00:29 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,11 +88,11 @@ static int				parse_flags(int ac, const char* av)
 */
 const char*			is_in_history(t_session* session, t_process* target)
 {
-	if (!session->history) // for the momment
+	if (!session->hist) // for the momment
 		return (" ");
-	if (target->pid == session->history->pid)
+	if (background_find(target, "PID", session->hist->group) && is_leader(session, target))
 		return ("+");
-	else if (session->history->next && target->pid == session->history->next->pid)
+	else if (session->hist->next && background_find(target, "PID", session->hist->next->group) && is_leader(session, target))
 		return ("-");
 	else
 		return (" ");
@@ -153,12 +153,14 @@ void			print_group(t_session* session, t_process* leader, int flags, t_group* it
 
 	remember = session->groups;
 
+	if (PRINT_DEBUG) {
 	ft_dprintf(2, "[PRINT GROUP]LEADER: %p\n", leader);
-	ft_dprintf(2, "[PRINT GROUP]ITSELF PARAM: %p\n", itself);
+	ft_dprintf(2, "[PRINT GROUP]ITSELF PARAM: %p\n", itself);}
 	// skip itself
 	if (session->groups == itself)
 		session->groups = session->groups->next;
-	ft_dprintf(2, "[PRINT GROUP][SESSION GROUP: %p]\n", session->groups);
+	if (PRINT_DEBUG) {
+	ft_dprintf(2, "[PRINT GROUP][SESSION GROUP: %p]\n", session->groups);}
 	while (session->groups != session->nil)
 	{
 		if (session->groups->nil->next->pid == leader->pid)
@@ -243,13 +245,15 @@ int				ft_jobs(t_exec* args, t_term* term)
 		{
 			while (++i < args->ac - (flags > 0 ? 2 : 1))
 			{
-				ft_dprintf(2, "flags : %d\n", flags);
+				if (PRINT_DEBUG)
+					ft_dprintf(2, "flags : %d\n", flags);
 				if (!(target = jobspec_parser(term->session, args->ac, &args->av[flags > 0 ? 1 : 0], NULL)))
 				{
 					ft_dprintf(STDERR_FILENO, "minish: jobs: %s: no such job\n", args->av[flags > 0 ? 1 : 0]);
 					return (STD_ERROR);
 				}
-				ft_dprintf(2, "[JOBS JOBSPEC][\'%p\']\n", *target);
+				if (PRINT_DEBUG)
+					ft_dprintf(2, "[JOBS JOBSPEC][\'%p\']\n", *target);
 				// print it here and apply flags
 				if (flags > 0 && flags & 8)
 					print_group(term->session, *target, flags < 0 ? 0 : flags, term->session->groups);

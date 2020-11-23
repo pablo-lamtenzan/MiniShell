@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 12:40:22 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/22 22:25:28 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 07:49:29 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,8 @@ t_process**		get_process_by_index(t_session* session, t_group* groups, size_t in
 		return (NULL);
 
 	//index++; // skip itself
-	ft_dprintf(2, "[INDEX][index: %lu]\n", index);
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "[INDEX][index: %lu]\n", index);
 	while (index && groups->next != session->nil)
 	{
 		//if (!--index)
@@ -89,7 +90,8 @@ t_process**		get_process_by_index(t_session* session, t_group* groups, size_t in
 		groups = groups->next;
 	}
 	//ft_dprintf(2, "pid found: %d\n", groups->active_processes->pid);
-	ft_dprintf(2, "[INDEX: %lu]\n", index);
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "[INDEX: %lu]\n", index);
 	//ft_dprintf(2, "POSSIBLE ADDR TO RET: %p\n", groups);
 	//ft_dprintf(2, "POSSIBLE ADDR TO RET: %p\n", &groups->nil->next);
 	return (index ? NULL : &groups->nil->next);
@@ -100,7 +102,8 @@ t_process**		get_process_by_index(t_session* session, t_group* groups, size_t in
 t_process**		get_process_by_pid(t_session* session, t_group* groups, pid_t pid)
 {
 	// pid
-	ft_dprintf(2, "[PID][pid: %i]\n", pid);
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "[PID][pid: %i]\n", pid);
 	while (groups != session->nil)
 	{
 		while (groups->active_processes != groups->nil)
@@ -131,7 +134,8 @@ t_process**		get_process_by_name(t_session* session, t_group* groups, const char
 	match = 0;
 	ret = NULL;
 
-	ft_dprintf(2, "%p ------------ %p\n", session->groups, groups);
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "%p ------------ %p\n", session->groups, groups);
 	while (groups != session->nil)
 	{
 		while (groups->active_processes != groups->nil)
@@ -139,10 +143,12 @@ t_process**		get_process_by_name(t_session* session, t_group* groups, const char
 			count = -1;
 			if (search_mode == 1) // %name
 			{
-				ft_dprintf(2, "TEST  %s --- %s \n", groups->active_processes->data[0], av);
+				if (PRINT_DEBUG)
+					ft_dprintf(2, "TEST  %s --- %s \n", groups->active_processes->data[0], av);
 				if (!ft_strncmp(groups->active_processes->data[0], av, ft_strlen(av)) && (++match))
 				{
-					ft_dprintf(2, "[DATA][FOUND: %p]\n", groups->active_processes);
+					if (PRINT_DEBUG)
+						ft_dprintf(2, "[DATA][FOUND: %p]\n", groups->active_processes);
 					if (is_leader(session, groups->active_processes) && is_not_ambigous(session, groups->active_processes))
 						return(&groups->active_processes);
 				}
@@ -153,7 +159,8 @@ t_process**		get_process_by_name(t_session* session, t_group* groups, const char
 				while (++count < matrix_height((char**)groups->active_processes->data)) // change matrix height later
 					if (ft_strnstr(groups->active_processes->data[count], &av[1], ft_strlen(&av[1]) && (++match)))
 					{
-						ft_dprintf(2, "[DATA][FOUND: %p]\n", groups->active_processes);
+						if (PRINT_DEBUG)
+							ft_dprintf(2, "[DATA][FOUND: %p]\n", groups->active_processes);
 						if (is_leader(session, groups->active_processes) && is_not_ambigous(session, groups->active_processes))
 						return(&groups->active_processes);
 					}
@@ -173,22 +180,24 @@ t_process**		get_process_by_history(t_session* session, t_group* groups, size_t 
 	// %%
 	// %-
 	// %+
-	ft_dprintf(2, "[HISTORY][index: %lu]\n", index);
-	t_process*	hist_addr;
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "[HISTORY][index: %lu]\n", index);
+	t_history*	hist_addr;
 
 	hist_addr = NULL;
-	if (!session->history || !index)
+	if (!session->hist || !index)
 		return (NULL);
-	else if (!session->history->next || index == 1)
-		hist_addr = session->history;
+	else if (!session->hist->next || index == 1)
+		hist_addr = session->hist;
 	else if (index == 2)
-		hist_addr = session->history->next;
-	return (get_process_by_pid(session, groups, hist_addr->pid));
+		hist_addr = session->hist->next;
+	return (get_process_by_pid(session, groups, hist_addr->group->nil->next->pid));
 }
 
 t_process**		process_search(t_session* session, char*const* av)
 {
-	ft_dprintf(2, "[PROCESS SEARCH][AV IS [%s]]\n", av[1]);
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "[PROCESS SEARCH][AV IS [%s]]\n", av[1]);
 	if (is_jobspec(av[1]))
 	{
 		if (is_string_digit(&av[1][1]))
@@ -207,7 +216,8 @@ t_process**		process_search(t_session* session, char*const* av)
 t_process**		jobspec_parser(t_session* session, int ac, char*const* av, t_process** (*fill)(int ac, char*const* av))
 {
 	// TO DEFINE: types in fill
-	ft_dprintf(2, "%s\n", av[1]);
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "%s\n", av[1]);
 
 	if (fill && !fill(ac, av))
 		return (NULL);

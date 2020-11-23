@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 06:07:34 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 06:42:33 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,20 +35,25 @@ void	resume_group(t_session* session, t_process* leader)
 	remember = session->groups;
 
 	// skip itself
-	ft_dprintf(2, "[FG][SKIPPED ITSELF: %p]\n", remember);
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "[FG][SKIPPED ITSELF: %p]\n", remember);
 	session->groups = session->groups->next;
 	while (session->groups != session->nil)
 	{
-		ft_dprintf(2, "test:::::: %p [%d] --- %p [%d] \n", session->groups->active_processes, session->groups->active_processes->pid, leader, leader->pid);
+		if (PRINT_DEBUG)
+			ft_dprintf(2, "test:::::: %p [%d] --- %p [%d] \n", session->groups->active_processes, session->groups->active_processes->pid, leader, leader->pid);
 		if (session->groups->active_processes->pid == leader->pid)
 		{
-			ft_dprintf(2, "[FG][TARGET GROUP: %p][LEADER: %p]\n", session->groups, session->groups->active_processes);
+			if (PRINT_DEBUG)
+				ft_dprintf(2, "[FG][TARGET GROUP: %p][LEADER: %p]\n", session->groups, session->groups->active_processes);
 			remember_leader = session->groups->active_processes;
 			while (session->groups->active_processes != session->groups->nil)
 			{
-				ft_dprintf(2, "[FG][KILL -SIGCONT \'%d\'][\'%p\']\n", session->groups->active_processes->pid, session->groups->active_processes);
+				if (PRINT_DEBUG)
+					ft_dprintf(2, "[FG][KILL -SIGCONT \'%d\'][\'%p\']\n", session->groups->active_processes->pid, session->groups->active_processes);
 				kill(session->groups->active_processes->pid, SIGCONT);
-				ft_dprintf(2, "[FG][UPDATE BACKGROUND]\n");
+				if (PRINT_DEBUG)
+					ft_dprintf(2, "[FG][UPDATE BACKGROUND]\n");
 				update_background(session, &session->groups->active_processes, true);
 				session->groups->active_processes = session->groups->active_processes->next;
 			}
@@ -107,10 +112,13 @@ int		ft_fg(t_exec* args, t_term* term)
 
 	print_job_args(*target);
 	write(STDERR_FILENO, "\n", 1);
-	ft_dprintf(2, "[FG] [session->groups before resume][%p]\n", term->session->groups);
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "[FG] [session->groups before resume][%p]\n", term->session->groups);
 	// termary for skip itself, leader must be next->active_processes
 	resume_group(term->session, *target);
+	if (PRINT_DEBUG) {
 	ft_dprintf(2, "[FG] [session->groups after resume][%p]\n", term->session->groups);
 	ft_dprintf(2, "[FG]ACTIVE PROCESSES AT THE END: \'%p\'\n", term->session->groups->active_processes == term->session->groups->nil ? term->session->groups->next->active_processes : term->session->groups->active_processes);
+	}
     return (SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 03:11:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/22 07:01:46 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 06:38:59 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@
 void			zombies_catcher(int signal)
 {
 	(void)signal;
-	ft_dprintf(2, "[TEST] HAVE TO DISPLAY THIS MSG FOR EACH TERMINATED CHILD (yeah works nice!)\n");
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "[TEST] HAVE TO DISPLAY THIS MSG FOR EACH TERMINATED CHILD (yeah works nice!)\n");
 
 	
 	int wstatus;

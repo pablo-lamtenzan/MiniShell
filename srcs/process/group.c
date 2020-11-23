@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 18:26:31 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/21 23:40:32 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 06:51:01 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ t_group			*group_new()
 	group->nil->next = group->nil;
 	group->nil->prev = group->nil;
 	group->active_processes = group->nil;
-	ft_dprintf(2, "[GROUP NEW][\'%p\'][nil=\'%p\']\n", group, group->nil);
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "[GROUP NEW][\'%p\'][nil=\'%p\']\n", group, group->nil);
 	return (group);
 }
 
@@ -63,7 +64,8 @@ void			group_remove(t_session** session, t_group** prev, t_group** next)
 	//ft_dprintf(2, "Prevvvvvvvvvvvvvv: %p\n", *prev);
 	if (*prev == *next)
 	{
-		ft_dprintf(2, "[GROUP REMOVE][REMOVE:\'%p\']\n", (*prev)->next);
+		if (PRINT_DEBUG)
+			ft_dprintf(2, "[GROUP REMOVE][REMOVE:\'%p\']\n", (*prev)->next);
 		free((*prev)->next->nil);
 		free((*prev)->next);
 		(*prev)->next = NULL;
@@ -72,14 +74,16 @@ void			group_remove(t_session** session, t_group** prev, t_group** next)
 	}
 	else
 	{
-		ft_dprintf(2, "[GROUP REMOVE][AT LEAST 1 PROCESS STTOPEED OR IN BACKGROUND!]\n");
+		if (PRINT_DEBUG)
+			ft_dprintf(2, "[GROUP REMOVE][AT LEAST 1 PROCESS STTOPEED OR IN BACKGROUND!]\n");
 		//while (fill != *next)
-		//{
+		//{if (PRINT_DEBUG)
+		if (PRINT_DEBUG)
 			ft_dprintf(2, "[GROUP REMOVE][REMOVE:\'%p\'] nil= %p prev= %p \n",(*prev)->next, (*prev)->next->nil, *prev);
-			free((*prev)->next->nil);
-			free((*prev)->next); // remove it process too
+		free((*prev)->next->nil);
+		free((*prev)->next); // remove it process too
 			//ft_dprintf(2, " %p ----- %p \n", (*prev), NULL/**next*/);
-			(*prev)->next = NULL;
+		(*prev)->next = NULL;
 		//}
 		//(*prev)->next = *next;
 		//(*next)->prev = *prev;
@@ -101,8 +105,9 @@ void			group_push_front(t_session** session, t_group* target)
 		group_insert((*session)->nil, fill, target);
 	}
 	(*session)->groups = (*session)->nil->next;
+	if (PRINT_DEBUG) {
 	ft_dprintf(2, "[GROUP PUSH FRONT][CURR GROUP NOW IS: \'%p\']\n", (*session)->groups);
-	ft_dprintf(2, "[GROUP PUSH FRONT][PREV=\'%p\'][NEXT=\'%p\']\n", (*session)->groups->prev, (*session)->groups->next);
+	ft_dprintf(2, "[GROUP PUSH FRONT][PREV=\'%p\'][NEXT=\'%p\']\n", (*session)->groups->prev, (*session)->groups->next);}
 }
 
 /*
@@ -132,11 +137,11 @@ void			group_pop_front(t_session** session)
 	if (session_empty(*session))
 		return ;
 	fill = (*session)->nil->next->next;
-	ft_dprintf(2, "<<>>>>>>%p\n", (*session)->nil->next);
 	group_remove(session, &(*session)->nil, &(*session)->nil->next->next);
 	(*session)->nil->next = fill;
 	(*session)->groups = (*session)->nil->next;
-	ft_dprintf(2, "[GROUP POP FRONT][CURR GROUP IS NOW: \'%p\']\n", (*session)->groups);
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "[GROUP POP FRONT][CURR GROUP IS NOW: \'%p\']\n", (*session)->groups);
 }
 
 /*
