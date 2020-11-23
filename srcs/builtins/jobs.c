@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 12:03:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 08:02:26 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 09:14:53 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,13 +83,13 @@ static int				parse_flags(int ac, const char* av)
 	return (flags);
 }
 */
-const char*			is_in_history(t_session* session, t_process* target)
+const char*			is_in_history(t_process* target)
 {
-	if (!session->hist) // for the momment
+	if (!g_session->hist) // for the momment
 		return (" ");
-	if (background_find(target, "PID", session->hist->group) && is_leader(session, target))
+	if (background_find(target, "PID", g_session->hist->group) && is_leader(target))
 		return ("+");
-	else if (session->hist->next && background_find(target, "PID", session->hist->next->group) && is_leader(session, target))
+	else if (g_session->hist->next && background_find(target, "PID", g_session->hist->next->group) && is_leader(target))
 		return ("-");
 	else
 		return (" ");
@@ -108,7 +108,7 @@ const char*			get_status(int wstatus)
 }
 
 // -n flag no alrreaddy handled
-void			print_process(t_session* session, t_process* target, int flags)
+void			print_process(t_process* target, int flags)
 {
 	char*		itoa1;
 	char*		itoa2;
@@ -124,7 +124,7 @@ void			print_process(t_session* session, t_process* target, int flags)
 		return ;
 	if (flags & 4 && (WIFEXITED(target->wstatus) || !WIFSTOPPED(target->wstatus))) // -s print stopped
 		return ;
-	print_signal_v2(session, target, flags & 8 ? 3 : 2);
+	print_signal_v2(target, flags & 8 ? 3 : 2);
 	//ft_dprintf(2, "PRINTS: %p\n", target);
 	// [group index if leader][history index][space(s)][pid if -l][status][spaces][av]
 	/*ft_dprintf(STDERR_FILENO, "%s%s%s%s %s %-19s",
@@ -143,75 +143,75 @@ void			print_process(t_session* session, t_process* target, int flags)
 */
 }
 
-void			print_group(t_session* session, t_process* leader, int flags, t_group* itself)
+void			print_group(t_process* leader, int flags, t_group* itself)
 {
 	t_group*	remember;
 	t_process*	remember_leader;
 
-	remember = session->groups;
+	remember = g_session->groups;
 
 	if (PRINT_DEBUG) {
 	ft_dprintf(2, "[PRINT GROUP]LEADER: %p\n", leader);
 	ft_dprintf(2, "[PRINT GROUP]ITSELF PARAM: %p\n", itself);}
 	// skip itself
-	if (session->groups == itself)
-		session->groups = session->groups->next;
+	if (g_session->groups == itself)
+		g_session->groups = g_session->groups->next;
 	if (PRINT_DEBUG) {
-	ft_dprintf(2, "[PRINT GROUP][SESSION GROUP: %p]\n", session->groups);}
-	while (session->groups != session->nil)
+	ft_dprintf(2, "[PRINT GROUP][g_session GROUP: %p]\n", g_session->groups);}
+	while (g_session->groups != g_session->nil)
 	{
-		if (session->groups->nil->next->pid == leader->pid)
+		if (g_session->groups->nil->next->pid == leader->pid)
 		{
-			remember_leader = session->groups->active_processes;
-			while (session->groups->active_processes != session->groups->nil)
+			remember_leader = g_session->groups->active_processes;
+			while (g_session->groups->active_processes != g_session->groups->nil)
 			{
-				print_process(session, session->groups->active_processes, flags);
-				session->groups->active_processes = session->groups->active_processes->next;
+				print_process(g_session->groups->active_processes, flags);
+				g_session->groups->active_processes = g_session->groups->active_processes->next;
 			}
-			session->groups->active_processes = remember_leader;
-			session->groups = remember;
+			g_session->groups->active_processes = remember_leader;
+			g_session->groups = remember;
 			return ;
 		}
-		session->groups = session->groups->next;
+		g_session->groups = g_session->groups->next;
 	}
-	session->groups = remember;
+	g_session->groups = remember;
 }
 
-void			print_all_leaders(t_session* session, int flags)
+void			print_all_leaders(int flags)
 {
 	t_group*	remember;
 
-	remember = session->groups;
+	remember = g_session->groups;
 
-	session->groups = session->nil->prev;
-	while (session->groups != session->nil->next)
+	g_session->groups = g_session->nil->prev;
+	while (g_session->groups != g_session->nil->next)
 	{
 		// TO DO: check in all the list i think
-		if (!(flags & 2 && (WIFEXITED(session->groups->nil->next->wstatus) || WIFSTOPPED(session->groups->nil->next->wstatus))) 
-				&& !(flags & 4 && (WIFEXITED(session->groups->nil->next->wstatus) || !WIFSTOPPED(session->groups->nil->next->wstatus))))
-			print_signal_v2(session, session->groups->nil->next, 4);
-		session->groups = session->groups->prev;
+		if (!(flags & 2 && (WIFEXITED(g_session->groups->nil->next->wstatus) || WIFSTOPPED(g_session->groups->nil->next->wstatus))) 
+				&& !(flags & 4 && (WIFEXITED(g_session->groups->nil->next->wstatus) || !WIFSTOPPED(g_session->groups->nil->next->wstatus))))
+			print_signal_v2(g_session->groups->nil->next, 4);
+		g_session->groups = g_session->groups->prev;
 	}
-	session->groups = remember;
+	g_session->groups = remember;
 }
 
-void			print_all_groups(t_session* session, int flags)
+void			print_all_groups(int flags)
 {
 	t_group*	remember;
 
-	remember = session->groups;
+	remember = g_session->groups;
 	// First is last
-	session->groups = session->nil->prev;
-	while (session->groups != session->nil->next)
+	g_session->groups = g_session->nil->prev;
+	while (g_session->groups != g_session->nil->next)
 	{
-		//ft_dprintf(2, "[PRINT ALL GROUPS][CURR GROUP IS: %p]\n", session->groups);
-		print_group(session, session->groups->nil->next, flags, remember);
-		//ft_dprintf(2, "[PRINT ALL GROUPS][CURR GROUP IS: %p]\n", session->groups);
-		session->groups = session->groups->prev;
-		//ft_dprintf(2, "[PRINT ALL GROUPS][CURR GROUP IS: %p]\n", session->groups);
+		//ft_dprintf(2, "[PRINT ALL GROUPS][CURR GROUP IS: %p]\n", g_session->groups);
+		print_group(g_session->groups->nil->next, flags, remember);
+		//ft_dprintf(2, "[PRINT ALL GROUPS][CURR GROUP IS: %p]\n", g_session->groups);
+		g_session->groups = g_session->groups->prev;
+		//ft_dprintf(2, "[PRINT ALL GROUPS][CURR GROUP IS: %p]\n", g_session->groups);
 		//return ;
 	}
-	session->groups = remember;
+	g_session->groups = remember;
 }
 
 int				ft_jobs(t_exec* args, t_term* term)
@@ -219,6 +219,7 @@ int				ft_jobs(t_exec* args, t_term* term)
 	int			flags;
 	int			i;
 	t_process**	target;
+	(void)term;
 
 	flags = 0;
 	i = -1;
@@ -227,7 +228,7 @@ int				ft_jobs(t_exec* args, t_term* term)
 		ft_dprintf(STDERR_FILENO, "minish: jobs: %s: invalid option\n%s", args->av[1] ,"jobs: usage: jobs: [-lnprs] [jobspec ...] or jobs -x command [args]\n");
 		return (CMD_BAD_USE);
 	}
-	if (session_empty(term->session) || term->session->groups->next == term->session->nil)
+	if (session_empty() || g_session->groups->next == g_session->nil)
 	{
 		if (args->ac > 1 && flags < 0)
 		{
@@ -244,7 +245,7 @@ int				ft_jobs(t_exec* args, t_term* term)
 			{
 				if (PRINT_DEBUG)
 					ft_dprintf(2, "flags : %d\n", flags);
-				if (!(target = jobspec_parser(term->session, args->ac, &args->av[flags > 0 ? 1 : 0], NULL)))
+				if (!(target = jobspec_parser(args->ac, &args->av[flags > 0 ? 1 : 0], NULL)))
 				{
 					ft_dprintf(STDERR_FILENO, "minish: jobs: %s: no such job\n", args->av[flags > 0 ? 1 : 0]);
 					return (STD_ERROR);
@@ -253,18 +254,18 @@ int				ft_jobs(t_exec* args, t_term* term)
 					ft_dprintf(2, "[JOBS JOBSPEC][\'%p\']\n", *target);
 				// print it here and apply flags
 				if (flags > 0 && flags & 8)
-					print_group(term->session, *target, flags < 0 ? 0 : flags, term->session->groups);
+					print_group(*target, flags < 0 ? 0 : flags, g_session->groups);
 				else if (!(flags > 0 && flags & 2 && (WIFEXITED((*target)->wstatus) || WIFSTOPPED((*target)->wstatus))) 
 					&& !(flags > 0 && flags & 4 && (WIFEXITED((*target)->wstatus) || !WIFSTOPPED((*target)->wstatus))))
-					print_signal_v2(term->session, *target, 2);
+					print_signal_v2(*target, 2);
 				return (SUCCESS);
 			}
 		}
 	}
 	// flags with no args or no args print all jobs in background
 	if (flags > 0 && flags & 8)
-		print_all_groups(term->session, flags < 0 ? 0 : flags);
+		print_all_groups(flags < 0 ? 0 : flags);
 	else
-		print_all_leaders(term->session, flags < 0 ? 0 : flags);
+		print_all_leaders(flags < 0 ? 0 : flags);
 	return (SUCCESS);
 }

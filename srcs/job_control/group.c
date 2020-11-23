@@ -6,11 +6,11 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 18:26:31 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 06:51:01 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 09:02:36 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <process.h>
+#include <job_control.h>
 #include <libft.h>
 #include <stdlib.h>
 
@@ -35,9 +35,9 @@ t_group			*group_new()
 /*
 ** Returns true if the session is empty
 */
-bool			session_empty(t_session *target)
+bool			session_empty()
 {
-	return (target->nil->next == target->nil && target->nil->prev == target->nil);
+	return (g_session->nil->next == g_session->nil && g_session->nil->prev == g_session->nil);
 }
 
 /*
@@ -54,7 +54,7 @@ void			group_insert(t_group* prev, t_group* next, t_group* target)
 /*
 ** Remove all group nodes between prev and next
 */
-void			group_remove(t_session** session, t_group** prev, t_group** next)
+void			group_remove(t_group** prev, t_group** next)
 {
 	//t_group*	fill;
 	//t_group*	fill2;
@@ -69,8 +69,8 @@ void			group_remove(t_session** session, t_group** prev, t_group** next)
 		free((*prev)->next->nil);
 		free((*prev)->next);
 		(*prev)->next = NULL;
-		(*session)->nil->next = (*session)->nil;
-		(*session)->nil->prev = (*session)->nil;
+		g_session->nil->next = g_session->nil;
+		g_session->nil->prev = g_session->nil;
 	}
 	else
 	{
@@ -93,68 +93,68 @@ void			group_remove(t_session** session, t_group** prev, t_group** next)
 /*
 ** Adds a new group after the head
 */
-void			group_push_front(t_session** session, t_group* target)
+void			group_push_front(t_group* target)
 {
 	t_group*	fill;
 
-	if (session_empty(*session))
-		group_insert((*session)->nil, (*session)->nil, target);
+	if (session_empty())
+		group_insert(g_session->nil, g_session->nil, target);
 	else
 	{
-		fill = (*session)->nil->next;
-		group_insert((*session)->nil, fill, target);
+		fill = g_session->nil->next;
+		group_insert(g_session->nil, fill, target);
 	}
-	(*session)->groups = (*session)->nil->next;
+	g_session->groups = g_session->nil->next;
 	if (PRINT_DEBUG) {
-	ft_dprintf(2, "[GROUP PUSH FRONT][CURR GROUP NOW IS: \'%p\']\n", (*session)->groups);
-	ft_dprintf(2, "[GROUP PUSH FRONT][PREV=\'%p\'][NEXT=\'%p\']\n", (*session)->groups->prev, (*session)->groups->next);}
+	ft_dprintf(2, "[GROUP PUSH FRONT][CURR GROUP NOW IS: \'%p\']\n", g_session->groups);
+	ft_dprintf(2, "[GROUP PUSH FRONT][PREV=\'%p\'][NEXT=\'%p\']\n", g_session->groups->prev, g_session->groups->next);}
 }
 
 /*
 ** Adds a group before the tail
 */
-void			group_push_back(t_session** session, t_group* target)
+void			group_push_back(t_group* target)
 {
 	t_group*	fill;
 
-	if (session_empty(*session))
-		group_insert((*session)->nil, (*session)->nil, target);
+	if (session_empty())
+		group_insert(g_session->nil, g_session->nil, target);
 	else
 	{
-		fill = (*session)->nil->prev;
-		group_insert(fill, (*session)->nil->prev, target);
+		fill = g_session->nil->prev;
+		group_insert(fill, g_session->nil->prev, target);
 	}
-	(*session)->groups = (*session)->nil->next;
+	g_session->groups = g_session->nil->next;
 }
 
 /*
 ** Removes a group after the head
 */
-void			group_pop_front(t_session** session)
+void			group_pop_front()
 {
 	t_group*	fill;
 	
-	if (session_empty(*session))
+	if (session_empty())
 		return ;
-	fill = (*session)->nil->next->next;
-	group_remove(session, &(*session)->nil, &(*session)->nil->next->next);
-	(*session)->nil->next = fill;
-	(*session)->groups = (*session)->nil->next;
+	fill = g_session->nil->next->next;
+	group_remove(&g_session->nil, &g_session->nil->next->next);
+	g_session->nil->next = fill;
+	g_session->groups = g_session->nil->next;
 	if (PRINT_DEBUG)
-		ft_dprintf(2, "[GROUP POP FRONT][CURR GROUP IS NOW: \'%p\']\n", (*session)->groups);
+		ft_dprintf(2, "[GROUP POP FRONT][CURR GROUP IS NOW: \'%p\']\n", g_session->groups);
 }
 
 /*
 ** Removes a group before the tail
 */
-void			group_pop_back(t_session** session)
+void			group_pop_back()
 {
 	t_group*	fill;
 
-	if (session_empty(*session))
+	if (session_empty())
 		return ;
-	fill = (*session)->nil->prev->prev;
-	group_remove(session, &(*session)->nil->prev->prev, &(*session)->nil->prev);
-	(*session)->nil->prev = fill;
-	(*session)->groups = (*session)->nil->next;
+	fill = g_session->nil->prev->prev;
+	group_remove(&g_session->nil->prev->prev, &g_session->nil->prev);
+	g_session->nil->prev = fill;
+	g_session->groups = g_session->nil->next;
 }

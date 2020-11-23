@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/18 18:57:02 by chamada           #+#    #+#             */
-/*   Updated: 2020/11/20 20:12:19 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 09:13:05 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int			term_init(t_term *t, const char **envp,
 	t->exec = exec;
 	if (!(t->line = line_new(10))
 	|| !(t->env = env_import(envp))
-	|| !(t->session = session_start()))
+	|| !(session_start()))
 		return (0);
 	t->line->prev = t->hist.last;
 	*t->line->data = '\0';
@@ -93,7 +93,7 @@ int			term_init(t_term *t, const char **envp,
 
 int			term_destroy(t_term *t)
 {
-	session_end(t->session);
+	session_end();
 	token_clr(&t->lex_st.tokens);
 	hist_clear(&t->hist);
 	env_clr(&t->env);

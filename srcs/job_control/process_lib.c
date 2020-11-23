@@ -6,12 +6,12 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 08:18:13 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/20 20:39:11 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 08:22:58 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
-# include <process.h>
+# include <job_control.h>
 # include <stdlib.h>
 # include <libft.h>
 # include <unistd.h>

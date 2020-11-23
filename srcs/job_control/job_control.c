@@ -6,48 +6,48 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 07:55:08 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 09:05:43 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <process.h>
+#include <job_control.h>
 #include <libft.h>
 #include <sys/wait.h>
 #include <signal.h>
 
 // for the momment keep them
 
-t_group*	get_group(t_session* session, t_process* target)
+t_group*	get_group(t_process* target)
 {
 	t_group*	remember;
 	t_process*	remember_leader;
 	t_group*	found;
 
-	remember = session->groups;
-	while (session->groups != session->nil)
+	remember = g_session->groups;
+	while (g_session->groups != g_session->nil)
 	{
-		remember_leader = session->groups->active_processes;
-		found = session->groups;
-		while (session->groups->active_processes != session->groups->nil)
+		remember_leader = g_session->groups->active_processes;
+		found = g_session->groups;
+		while (g_session->groups->active_processes != g_session->groups->nil)
 		{
-			if (session->groups->active_processes->pid == target->pid)
+			if (g_session->groups->active_processes->pid == target->pid)
 			{
-				session->groups->active_processes = remember_leader;
-				session->groups = remember;
+				g_session->groups->active_processes = remember_leader;
+				g_session->groups = remember;
 				if (PRINT_DEBUG)
 					ft_dprintf(2, "[GET GROUP FOUND: %p]\n", found);
 				return (found);
 			}
-			session->groups->active_processes = session->groups->active_processes->next;
+			g_session->groups->active_processes = g_session->groups->active_processes->next;
 		}
-		session->groups->active_processes = remember_leader;
-		session->groups = session->groups->next;
+		g_session->groups->active_processes = remember_leader;
+		g_session->groups = g_session->groups->next;
 	}
-	session->groups = remember;
+	g_session->groups = remember;
 	return (NULL);
 }
 
-void		update_background(t_session* session, t_process **target, bool wait)
+void		update_background(t_process **target, bool wait)
 {
 	//ft_dprintf(2, "[UPDATE V2--1]ACTIVE PROCESSES: %p\n", (*target));
 	if (wait) // need for kill
@@ -73,8 +73,8 @@ void		update_background(t_session* session, t_process **target, bool wait)
 		if (PRINT_DEBUG)
 			ft_dprintf(2, "[PROCESS DOESN'T EXIT]\n");
 		(*target)->flags |= STOPPED;
-		//if (is_leader(session, *target))
-		update_session_history_v2(session, get_group(session, *target));
+		//if (is_leader(g_session, *target))
+		update_session_history_v2(get_group(*target));
 	}
 	if (PRINT_DEBUG)
 		ft_dprintf(2, "[UPDATE BACKGROUND][WSTATUS AT THE END = \'%d\']\n", (*target)->wstatus);
@@ -82,7 +82,7 @@ void		update_background(t_session* session, t_process **target, bool wait)
 	//ft_dprintf(2, "------> %d\n", (*target)->flags);
 }
 
-bool            update_session_history(t_session *session, t_process *update)
+bool            update_session_history(t_process *update)
 {
     t_process*  cp_update;
 	t_process*	fill;
@@ -91,15 +91,15 @@ bool            update_session_history(t_session *session, t_process *update)
 		ft_dprintf(2, "[UPDATE SESSION HISTORY (make a copy) ][\'%p\']\n", update);
     if (!(cp_update = process_new(update->pid, update->wstatus, update->data)))
 		return (false);
-	fill = session->history;
-	session->history = cp_update;
+	fill = g_session->history;
+	g_session->history = cp_update;
 	cp_update->next = fill;
 	if (fill)
 		fill->prev = cp_update;
 	return (true);
 }
 
-bool			update_session_history_v2(t_session* session, t_group* update)
+bool			update_session_history_v2(t_group* update)
 {
 	t_history*	fill;
 	t_history*	hist;
@@ -107,11 +107,11 @@ bool			update_session_history_v2(t_session* session, t_group* update)
 	if (!update || !(hist = ft_calloc(1, sizeof(t_history))))
 		return (false);
 	*hist = (t_history){.group=update};
-	fill = session->hist;
-	session->hist = hist;
+	fill = g_session->hist;
+	g_session->hist = hist;
 	hist->next = fill;
 	if (PRINT_DEBUG)
-		ft_dprintf(2, "[UPDATE SESSION HISTORY][CURR GROUP IS: \'%p\'][ITS LEADER: \'%p\'][ %d ]\n", session->hist->group, session->hist->group->nil->next, session->hist->group->nil->next->pid);
+		ft_dprintf(2, "[UPDATE SESSION HISTORY][CURR GROUP IS: \'%p\'][ITS LEADER: \'%p\'][ %d ]\n", g_session->hist->group, g_session->hist->group->nil->next, g_session->hist->group->nil->next->pid);
 	return (true);
 }
 
@@ -254,44 +254,44 @@ void			force_exit_background(t_session* session)
 }
 */
 
-void			force_exit_background(t_session* session)
+void			force_exit_background()
 {
 	t_group*	remember;
 	t_process*	remember_leader;
 
-	remember = session->groups;
+	remember = g_session->groups;
 
-	while (session->groups != session->nil)
+	while (g_session->groups != g_session->nil)
 	{
-		remember_leader = session->groups->active_processes;
-		while (session->groups->active_processes != session->groups->nil)
+		remember_leader = g_session->groups->active_processes;
+		while (g_session->groups->active_processes != g_session->groups->nil)
 		{
 			// WORKS! The zombies catcher print it return status
 			if (PRINT_DEBUG)
-				ft_dprintf(2, "[FORCE EXIT][PROCESS: [PROCESS: \'%d\'][\'%p\']\n", session->groups->active_processes->pid, session->groups->active_processes);
-			kill(session->groups->active_processes->pid, SIGCONT);
-			kill(session->groups->active_processes->pid, SIGHUP);
-			//while (waitpid(session->groups->active_processes->pid, &session->groups->active_processes->wstatus, WUNTRACED) <= 0)
+				ft_dprintf(2, "[FORCE EXIT][PROCESS: [PROCESS: \'%d\'][\'%p\']\n", g_session->groups->active_processes->pid, g_session->groups->active_processes);
+			kill(g_session->groups->active_processes->pid, SIGCONT);
+			kill(g_session->groups->active_processes->pid, SIGHUP);
+			//while (waitpid(g_session->groups->active_processes->pid, &g_session->groups->active_processes->wstatus, WUNTRACED) <= 0)
 			//	;
-			//if (WIFEXITED(session->groups->active_processes->wstatus))
-				session->groups->active_processes = session->groups->active_processes->next;
+			//if (WIFEXITED(g_session->groups->active_processes->wstatus))
+				g_session->groups->active_processes = g_session->groups->active_processes->next;
 			//else
-			//	ft_dprintf(2, "[FORCE EXIT][PROCESS: \'%d\'][\'%p\'][DOESN'T EXIT!]\n", session->groups->active_processes->pid, session->groups->active_processes);
+			//	ft_dprintf(2, "[FORCE EXIT][PROCESS: \'%d\'][\'%p\'][DOESN'T EXIT!]\n", g_session->groups->active_processes->pid, g_session->groups->active_processes);
 			
 		}
-		session->groups = session->groups->next;	
+		g_session->groups = g_session->groups->next;	
 	}
-	session->groups = remember;
+	g_session->groups = remember;
 }
 
-bool			is_leader(t_session* session, t_process* target)
+bool			is_leader(t_process* target)
 {
 	t_group*	groups;
 
 	if (!target)
 		return (false);
-	groups = session->groups;
-	while (groups != session->nil && groups->nil && groups->nil->next)
+	groups = g_session->groups;
+	while (groups != g_session->nil && groups->nil && groups->nil->next)
 	{
 		if (groups->nil->next && groups->nil->next->pid == target->pid)
 			return (true);
@@ -300,7 +300,7 @@ bool			is_leader(t_session* session, t_process* target)
 	return (false);
 }
 
-bool			is_not_ambigous(t_session* session, t_process* target)
+bool			is_not_ambigous(t_process* target)
 {
 	t_group*	groups;
 	size_t		count;
@@ -308,8 +308,8 @@ bool			is_not_ambigous(t_session* session, t_process* target)
 	count = 0;
 	if (!target)
 		return (false);
-	groups = session->groups;
-	while (groups != session->nil && groups->nil && groups->nil->next)
+	groups = g_session->groups;
+	while (groups != g_session->nil && groups->nil && groups->nil->next)
 	{
 		if (groups->nil->next && groups->nil->next->data && !ft_strncmp(groups->nil->next->data[0], target->data[0], ft_strlen(target->data[0])))
 			count++;

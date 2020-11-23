@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   term.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/23 16:00:47 by chamada           #+#    #+#             */
-/*   Updated: 2020/11/12 05:27:09 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/23 08:29:35 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # include <term/caps.h>
 # include <term/env.h>
 # include <term/lexer.h>
-# include <process.h>
+# include <job_control.h>
 
 /*
 ** Displayed before reading the first-line of a command.
@@ -75,7 +75,7 @@ typedef	struct	s_term
 	t_env			*env;
 	char			*name;
 	bool			interactive;
-	t_session		*session;
+	//t_session		*session;
 	int				st;
 	struct termios	s_ios;
 	struct termios	s_ios_bkp;

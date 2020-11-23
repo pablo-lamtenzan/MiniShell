@@ -6,12 +6,13 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:20:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 08:03:09 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 09:15:16 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <signals.h>
+#include <job_control.h>
 
 /* TESTS
 
@@ -24,7 +25,7 @@
 
 */
 
-int			wait_process(t_session* session, t_process** target, int flags)
+int			wait_process(t_process** target, int flags)
 {
 	(void)flags;
 	// -n RETURN CURR GROUP WAITED EXIT STATUS
@@ -38,81 +39,81 @@ int			wait_process(t_session* session, t_process** target, int flags)
 		return (WEXITSTATUS((*target)->wstatus));
 	if ((*target)->flags & STOPPED)
 	{
-		ft_dprintf(STDERR_FILENO, "bash: warning: wait_for_job: job %lu[%d] is stopped\n", get_background_index(session->nil, *target), (*target)->pid);
+		ft_dprintf(STDERR_FILENO, "bash: warning: wait_for_job: job %lu[%d] is stopped\n", get_background_index(g_session->nil, *target), (*target)->pid);
 		return (148);
 	}
-	update_background(session, target, true);
+	update_background(target, true);
 	if ((*target)->flags & STOPPED)
 	{
-		ft_dprintf(STDERR_FILENO, "bash: warning: wait_for_job: job %lu[%d] is stopped\n", get_background_index(session->nil, *target), (*target)->pid);
+		ft_dprintf(STDERR_FILENO, "bash: warning: wait_for_job: job %lu[%d] is stopped\n", get_background_index(g_session->nil, *target), (*target)->pid);
 		return (CMD_NOT_FOUND);
 	}
 	// TO DO: PRINTS THE INPUT CMD
-	print_signal_v2(session, *target, 2);
+	print_signal_v2(*target, 2);
 	return (WEXITSTATUS((*target)->wstatus));
 }
 
-int			wait_group(t_session* session, t_process* leader, int flags, t_group* itself)
+int			wait_group(t_process* leader, int flags, t_group* itself)
 {
 	t_group*	remember;
 	t_process*	remember_leader;
 	int ret;
 
 	ret = 0;
-	remember = session->groups;
+	remember = g_session->groups;
 
-	if (session->groups == itself)
-		session->groups = session->groups->next;
+	if (g_session->groups == itself)
+		g_session->groups = g_session->groups->next;
 
-	while (session->groups != session->nil)
+	while (g_session->groups != g_session->nil)
 	{
-		if (session->groups->nil->next->pid == leader->pid)
+		if (g_session->groups->nil->next->pid == leader->pid)
 		{
-			remember_leader = session->groups->active_processes;
-			while (session->groups->active_processes != session->groups->nil)
+			remember_leader = g_session->groups->active_processes;
+			while (g_session->groups->active_processes != g_session->groups->nil)
 			{
 				if (PRINT_DEBUG){
-				ft_dprintf(2, "[WAIT][TARGET FLAGS: %d][\'%p\']\n", session->groups->active_processes->flags, session->groups->active_processes);
-				ft_dprintf(2, "[WAIT][PROCESS: %d][\'%p\']\n", session->groups->active_processes->pid, session->groups->active_processes);}
-				ret = wait_process(session, &session->groups->active_processes, flags);
-				session->groups->active_processes = session->groups->active_processes->next;
+				ft_dprintf(2, "[WAIT][TARGET FLAGS: %d][\'%p\']\n", g_session->groups->active_processes->flags, g_session->groups->active_processes);
+				ft_dprintf(2, "[WAIT][PROCESS: %d][\'%p\']\n", g_session->groups->active_processes->pid, g_session->groups->active_processes);}
+				ret = wait_process(&g_session->groups->active_processes, flags);
+				g_session->groups->active_processes = g_session->groups->active_processes->next;
 			}
-			if (!is_active_group(session->groups))
+			if (!is_active_group(g_session->groups))
 			{
-				t_group*	fill = session->groups;
-				session->groups->prev->next = session->groups->next;
-				session->groups->next->prev = session->groups->prev;
+				t_group*	fill = g_session->groups;
+				g_session->groups->prev->next = g_session->groups->next;
+				g_session->groups->next->prev = g_session->groups->prev;
 				free(fill);
 				fill = NULL;
 			}
 			else
-				session->groups->active_processes = remember_leader;
-			session->groups = remember;
+				g_session->groups->active_processes = remember_leader;
+			g_session->groups = remember;
 			return (ret);
 		}
-		session->groups = session->groups->next;
+		g_session->groups = g_session->groups->next;
 	}
-	session->groups = remember;
+	g_session->groups = remember;
 	return (ret);
 }
 
-int			wait_all_groups(t_session* session, int flags)
+int			wait_all_groups(int flags)
 {
 	t_group*	remember;
 	t_group*	prev;
 	int			ret;
 
 	ret = 0;
-	remember = session->groups;
+	remember = g_session->groups;
 
-	session->groups = session->nil->prev;
-	while (session->groups != session->nil->next)
+	g_session->groups = g_session->nil->prev;
+	while (g_session->groups != g_session->nil->next)
 	{
-		prev = session->groups->prev;
-		ret = wait_group(session, session->groups->nil->next, flags, remember);
-		session->groups = prev;
+		prev = g_session->groups->prev;
+		ret = wait_group(g_session->groups->nil->next, flags, remember);
+		g_session->groups = prev;
 	}
-	session->groups = remember;
+	g_session->groups = remember;
 	return (ret);
 }
 
@@ -129,6 +130,7 @@ int			ft_wait(t_exec* args, t_term* term)
  -> Job not found return 127
  -> At the end when a process exit prints per ex: "[1]-  Done                    sleep 22"
  */
+	(void)term;
 	int flags;
 	int i;
 	static int last_return = SUCCESS;
@@ -142,7 +144,7 @@ int			ft_wait(t_exec* args, t_term* term)
 		ft_dprintf(STDERR_FILENO, "minish: wait: %s: inalid option\n%s\n", args->av[1], "wait: usage: wait [-fn] [id ...]");
 		return (CMD_BAD_USE);
 	}
-	if (session_empty(term->session) || term->session->groups->next == term->session->nil)
+	if (session_empty() || g_session->groups->next == g_session->nil)
 	{
 		ft_dprintf(2, "[WAIT FLAGS][%d]\n", flags);
 		if (args->ac > 1 && flags < 0)
@@ -162,18 +164,18 @@ int			ft_wait(t_exec* args, t_term* term)
 		{
 			while (++i < args->ac - (flags > 0 ? 2 : 1))
 			{
-				if (!(target = jobspec_parser(term->session, args->ac, &args->av[flags > 0 ? 1 : 0], NULL)))
+				if (!(target = jobspec_parser(args->ac, &args->av[flags > 0 ? 1 : 0], NULL)))
 				{
 					// TO DO ERROR PID
 					ft_dprintf(STDERR_FILENO, "bash: wait: %s: no such job\n", args->av[flags > 0 ? 1 : 0]);
 					return (CMD_NOT_FOUND);
 				}
 				tmp = last_return;
-				last_return = wait_group(term->session, *target, flags < 0 ? 0 : flags, term->session->groups);
+				last_return = wait_group(*target, flags < 0 ? 0 : flags, g_session->groups);
 				return (!flags ? tmp : last_return);
 			}
 		}
 	}
-	wait_all_groups(term->session, flags < 0 ? 0 : flags);
+	wait_all_groups(flags < 0 ? 0 : flags);
 	return (SUCCESS);
 }

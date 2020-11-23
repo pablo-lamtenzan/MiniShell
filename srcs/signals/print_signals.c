@@ -6,13 +6,13 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 08:05:03 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 09:18:00 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <signals.h>
 #include <sys/wait.h>
-#include <process.h>
+#include <job_control.h>
 #include <signal.h>
 
 // TO DO: buffer overflow
@@ -199,17 +199,17 @@ void	print_job_args(t_process* target)
 }
 
 // THIS PRINTS ALL THE CMD LINE NOT THE ARSG!!!!!
-void	print_index_args(t_session* session, t_process* target)
+void	print_index_args(t_process* target)
 {
-	const bool leader = is_leader(session, target);
+	const bool leader = is_leader(target);
 	char* index;
 
 	index = NULL;
 	ft_dprintf(STDERR_FILENO, "%s%s%s%-2s",
 		leader ? "[" : " ",
-		leader ? index = ft_itoa(get_background_index(session->nil, target)) : " ", // print "[ background index ]"
+		leader ? index = ft_itoa(get_background_index(g_session->nil, target)) : " ", // print "[ background index ]"
 		leader ? "]" : " ",
-		is_in_history(session, target)
+		is_in_history(target)
 		);
 	print_job_args(target);
 	free(index);
@@ -222,7 +222,7 @@ void	print_index_args(t_session* session, t_process* target)
 // TO DO: CORE DUMPED WORK ONLY WITH THE WSTATUS ...
 // TO DO: TARGET wstatus can t be transformed (has to be ret of wait)
 
-void	print_signal_v2(t_session* session, t_process* target, int flags)
+void	print_signal_v2(t_process* target, int flags)
 {
 	static const char*		signals[32] = {
 		"Hangup", "", "Quit", "Illegal instruction", "Trace/breakpoint trap", "Aborted", \
@@ -232,7 +232,7 @@ void	print_signal_v2(t_session* session, t_process* target, int flags)
 		"File size limit exceeded", "Virtual timer expired", "Profiling timer expired", "I/O possible", \
 		"Power failure", "Bad system call", "Done", "Exit"};
 	int signal;
-	const bool leader = is_leader(session, target);
+	const bool leader = is_leader(target);
 	char* pid;
 	char* index;
 	char*	rett;
@@ -263,9 +263,9 @@ void	print_signal_v2(t_session* session, t_process* target, int flags)
 		write(2, "\n", 1);
 	ft_dprintf(STDERR_FILENO, "%s%s%s%s %s %s %s %-16s",
 		leader ? "[" : " ",
-		leader ? index = ft_itoa(get_background_index(session->nil, target)) : " ", // print "[ background index ]"
+		leader ? index = ft_itoa(get_background_index(g_session->nil, target)) : " ", // print "[ background index ]"
 		leader ? "]" : " ",
-		is_in_history(session, target), // print history index
+		is_in_history(target), // print history index
 		flags & PRINT_PID ? pid = ft_itoa(target->pid) : "", // print pid
 		// PROBLEM HERE: IF PROCESS IS IN BACKGROUND NEED TO REMOVE THE FLAG WHEN IT END... (in zombies catcher)
 		target->flags & BACKGROUND ? "Runnnig" : signals[signal - 1],

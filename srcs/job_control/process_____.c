@@ -6,11 +6,11 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:05:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 06:36:58 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 08:22:51 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <process.h>
+#include <job_control.h>
 #include <libft.h>
 #include <stdlib.h>
 

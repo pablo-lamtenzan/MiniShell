@@ -6,11 +6,12 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 06:44:25 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 09:15:03 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
+#include <job_control.h>
 #include <signal.h>
 
 /* TEST
@@ -100,8 +101,8 @@ static void		print_all_signals()
 
 int		get_target(t_exec* args, bool sig_spec, t_term* term, t_process*** target)
 {
-
-	if (!(*target = jobspec_parser(term->session, args->ac, args->av, NULL)) && !sig_spec)
+	(void)term;
+	if (!(*target = jobspec_parser(args->ac, args->av, NULL)) && !sig_spec)
 	{
 		if (args->av[1][0] == '%')
 			ft_dprintf(STDERR_FILENO, "minish: kill: %s: no such job\n", args->av[1]);
@@ -132,46 +133,46 @@ kill -l|-L [exit_status]:
  -> Returns !0 if an error occurs ir invalid option
 */
 
-void		kill_group(t_session* session, t_process* leader, int signal, t_group* itself)
+void		kill_group(t_process* leader, int signal, t_group* itself)
 {
 	t_group*	remember;
 	t_process*	remember_leader;
 
-	remember = session->groups;
+	remember = g_session->groups;
 	
 	// skip itself
-	if (session->groups == itself)
-		session->groups = session->groups->next;
+	if (g_session->groups == itself)
+		g_session->groups = g_session->groups->next;
 
-	while (session->groups != session->nil)
+	while (g_session->groups != g_session->nil)
 	{
-		if (session->groups->nil->next->pid == leader->pid)
+		if (g_session->groups->nil->next->pid == leader->pid)
 		{
-			remember_leader = session->groups->active_processes;
-			while (session->groups->active_processes != session->groups->nil)
+			remember_leader = g_session->groups->active_processes;
+			while (g_session->groups->active_processes != g_session->groups->nil)
 			{
 				if (PRINT_DEBUG)
-					ft_dprintf(2, "[KILL][KILL (signal=\'%d\') \'%d\']\n", signal, session->groups->active_processes->pid);
-				kill(session->groups->active_processes->pid, signal);
-				update_background(session, &session->groups->active_processes, signal == SIGCONT); // TO DO: more execptions
-				session->groups->active_processes = session->groups->active_processes->next;
+					ft_dprintf(2, "[KILL][KILL (signal=\'%d\') \'%d\']\n", signal, g_session->groups->active_processes->pid);
+				kill(g_session->groups->active_processes->pid, signal);
+				update_background(&g_session->groups->active_processes, signal == SIGCONT); // TO DO: more execptions
+				g_session->groups->active_processes = g_session->groups->active_processes->next;
 			}
-			if (!is_active_group(session->groups))
+			if (!is_active_group(g_session->groups))
 			{
-				t_group*	fill = session->groups;
-				session->groups->prev->next = session->groups->next;
-				session->groups->next->prev = session->groups->prev;
+				t_group*	fill = g_session->groups;
+				g_session->groups->prev->next = g_session->groups->next;
+				g_session->groups->next->prev = g_session->groups->prev;
 				free(fill);
 				fill = NULL;
 			}
 			else
-				session->groups->active_processes = remember_leader;
-			session->groups = remember;
+				g_session->groups->active_processes = remember_leader;
+			g_session->groups = remember;
 			return ;
 		}
-		session->groups = session->groups->next;
+		g_session->groups = g_session->groups->next;
 	}
-	session->groups = remember;
+	g_session->groups = remember;
 }
 
 int     	ft_kill(t_exec* args, t_term* term)
@@ -220,13 +221,13 @@ int     	ft_kill(t_exec* args, t_term* term)
 			ft_dprintf(STDERR_FILENO, "minish: kill: %s: no such job\n", args->av[1]);
             	return (STD_ERROR);
 		}
-		kill_group(term->session, *target, SIGTERM, term->session->groups);
+		kill_group(*target, SIGTERM, g_session->groups);
 		return (st);
 	}
 	if (signal)
 	{
 		// TO DO: only the target if pid
-		if (!(target = jobspec_parser(term->session, args->ac, &args->av[1], NULL)) && !sig_spec)
+		if (!(target = jobspec_parser(args->ac, &args->av[1], NULL)) && !sig_spec)
 		{
 			// CANT get target here for the comment (av[2] istead of av[1])
 			if (args->av[2][0] == '%')
@@ -247,7 +248,7 @@ int     	ft_kill(t_exec* args, t_term* term)
 			ft_dprintf(STDERR_FILENO, "minish: kill: %s: no such job\n", args->av[1]);
             return (STD_ERROR);
 		}
-		kill_group(term->session, *target, signal, term->session->groups);
+		kill_group(*target, signal, g_session->groups);
 		return (SUCCESS); // check this ret
 	}
 	ft_dprintf(STDERR_FILENO, "%s\n", "minish: kill: COT: invalid signal specification");

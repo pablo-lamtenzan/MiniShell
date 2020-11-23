@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 03:28:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/22 22:32:21 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 08:33:42 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # define CORE   "(core dumped)"
 
-# include <process.h>
+# include <job_control.h>
 
 # include <stdlib.h>
 # include <stdbool.h>
@@ -34,7 +34,7 @@ typedef struct      s_signal_print
 }                   t_signal_print;
 
 void	            print_signals(t_process* target, t_group* group);
-void				print_signal_v2(t_session* session, t_process* target, int flags);
+void				print_signal_v2(t_process* target, int flags);
 void				print_job_args(t_process* target);
 
 #endif
