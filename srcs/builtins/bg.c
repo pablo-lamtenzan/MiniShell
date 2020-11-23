@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 23:11:42 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 04:00:33 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 05:20:30 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ void	resume_background_group(t_session* session, t_process* leader)
 	// skip itself
 	ft_dprintf(2, "[BG][SKIPPED ITSELF: %p]\n", remember);
 	session->groups = session->groups->next;
+	//while (session->groups->active_processes->flags & BACKGROUND)
+	//	session->groups = session->groups->next;
 	while (session->groups != session->nil)
 	{
 		ft_dprintf(2, "test:::::: %p [%d] --- %p [%d] \n", session->groups->active_processes, session->groups->active_processes->pid, leader, leader->pid);
@@ -38,6 +40,7 @@ void	resume_background_group(t_session* session, t_process* leader)
 			{
 				ft_dprintf(2, "[BG][KILL -SIGCONT \'%d\'][\'%p\']\n", session->groups->active_processes->pid, session->groups->active_processes);
 				session->groups->active_processes->flags &= ~STOPPED;
+				session->groups->active_processes->flags |= BACKGROUND;
 				kill(session->groups->active_processes->pid, SIGCONT);
 				ft_dprintf(2, "[BG][TARGET FLAGS: %d][\'%p\']\n", session->groups->active_processes->flags, session->groups->active_processes);
 				//update_background(session, &session->groups->active_processes, true);
@@ -77,8 +80,17 @@ int		ft_bg(t_exec* args, t_term* term)
         ft_dprintf(STDERR_FILENO, "minish: bg: %s: no such job\n", args->ac == 1 ? "current" : args->av[1]);
         return (STD_ERROR);
     }
-
-    target = term->session->groups->active_processes == term->session->groups->nil ? &term->session->groups->next->active_processes : &term->session->groups->active_processes;
+	t_group*	remember;
+	remember = term->session->groups;
+	while (term->session->groups != term->session->nil)
+	{
+    	target = term->session->groups->active_processes == term->session->groups->nil ? &term->session->groups->next->active_processes : &term->session->groups->active_processes;
+		if ((*target)->flags & BACKGROUND)
+			term->session->groups = term->session->groups->next;
+		else
+			break ;
+	}
+	term->session->groups = remember;
     if (args->ac > 1)
     {
 		// TO DO: if jobspec is pid has to resume is grou p or just the process ?
@@ -97,6 +109,7 @@ int		ft_bg(t_exec* args, t_term* term)
 	write(STDERR_FILENO, " &\n", 3);
 	ft_dprintf(2, "[BG] [session->groups before resume][%p]\n", term->session->groups);
 	// termary for skip itself, leader must be next->active_processes
+
 	resume_background_group(term->session, *target);
 	ft_dprintf(2, "[BG] [session->groups after resume][%p]\n", term->session->groups);
 	ft_dprintf(2, "[BG]ACTIVE PROCESSES AT THE END: \'%p\'\n", term->session->groups->active_processes == term->session->groups->nil ? term->session->groups->next->active_processes : term->session->groups->active_processes);

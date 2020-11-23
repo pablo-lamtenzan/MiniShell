@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 03:41:53 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 05:11:24 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void		update_background(t_session* session, t_process **target, bool wait)
 	//ft_dprintf(2, "[UPDATE V2--1]ACTIVE PROCESSES: %p\n", (*target));
 	if (wait) // need for kill
 	{
+		(*target)->flags &= ~BACKGROUND;
 		while (waitpid((*target)->pid, &(*target)->wstatus, WUNTRACED) <= 0)
 			;
 		ft_dprintf(2, "[WAIING...][pid=\'%d\'][wstatus=\'%d\']\n", (*target)->pid, (*target)->wstatus);
@@ -124,7 +125,7 @@ bool		is_active_group(t_group* target)
 	ft_dprintf(2, "[IS ACTIVE GROUP (leader): %p]\n", process);
 	while (process != target->nil)
 	{
-		if (process->flags & (BACKGROUD | STOPPED))
+		if (process->flags & (BACKGROUND | STOPPED))
 			return (true);
 		process = process->next;
 	}

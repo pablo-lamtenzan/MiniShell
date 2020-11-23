@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 03:42:22 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 05:10:53 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 #define PROCESSES_MAX   4096
 #define MANAGE          0
 
-#define	BACKGROUD		1
+#define	BACKGROUND		1
 #define STOPPED			2
 #define EXITED			4
 #define RESTRICT_OP		8

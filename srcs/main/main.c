@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 04:34:40 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 05:22:31 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,12 +89,7 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 // TO DO: Disown works but have interact with its flags with others builtins
 // TO DO: All builtins has error msg for pid and jobspec i have the same error msg...
 // TO DO: Contitionals with job control test: sleep 22 | sleep 22 && sleep 22 | sleep 22 (it seem the "after AND" just desapears)
-// TO DO: Ctrl^Z -> SIGTSTS to all the group members
 // TO DO: If Ret st != 0 -> Jobs print it
-// TO DO: WAIT MSG (MSG IN GENERAL USE THE SAME SYNTAX DO 1 fct!!! for it)
-// TO DO: builtins error msg when there no groups
-// TO DO: TEST WAIT (need ctrl^Z)
-// TO DO: Ctl^Z (need global session)
 // TO DO: SIGCHLD (need global session and change term->st in session)
 // TO DO: SESSION GLOBAL (do when all builtins will work as good as i don't need dgb printf anymore)
 // TO DO: optimize builtins (need global session)
@@ -103,8 +98,6 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 // TO DO: History is GROUPSS!!! not processes (test ls | sleep 22 + jobs in minish to see the problem)
 // TO DO: Builtins multiflags jobspec confics or even segfault (just ezz modify parse flags)
 // TO DO: IN KILL: Jobspec parser segmentation fault (reads NULL) -> sleep 22 + crtl^Z + sleep 22 + clrt^Z + kill -QUIT %sleep
-// TO DO: BG DIDN'T REMOVE GROUPS SO I CAN'T WAIT MULTIPLE GROUPS (doing: bg ; bg ; wait) (HAVE TO PUT A "BG" FLAG TO HANDLE THIS TO ITERATE OVER THE RIGHT TARGET)
-	// THEN RM THIS FLAG IN FG
 
 
 // Todays Plan:
