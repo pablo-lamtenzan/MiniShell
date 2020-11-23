@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 12:03:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 08:00:29 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 08:02:26 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,6 @@ USAGE:
 1) jobs from stopped job DONE
 3) jobs from exit DONE (execpt for background processes) <-
 4) jobs from pipe cmd DONE (except for the cmd line msg) <-
-
-NEED:
-- fix history
 
 ERRORS:
 1) invalid flag + empty/ not empty background  -> error msg

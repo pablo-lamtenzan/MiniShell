@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:20:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 06:45:03 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 08:03:09 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@
 4) Wait for multiple groups DONE
 5) Wait bad flag DONE
 6) Wait invalid jobspec DONE
-7) Wait 
 
 */
 
