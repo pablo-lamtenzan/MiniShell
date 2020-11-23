@@ -122,7 +122,7 @@ $(NAME):		$(OBJDS) $(OBJS) $(LIBFT)/libft.a
 	$(CC) $(OBJS) $(CFLAGS) $(LFLAGS) -o $(NAME)
 
 prompt:
-	clang -g3 -Wall -Wextra -Werror srcs/new_term/*.c srcs/env/*.c -I includes -Ilibft/includes -Llibft/ -lft -lcurses -o $@ -fsanitize=address -fsanitize=undefined 
+	clang -g3 -Wall -Wextra srcs/new_term/*.c srcs/env/*.c -I includes -Ilibft/includes -Llibft/ -lft -lcurses -o $@ -fsanitize=address -fsanitize=undefined 
 
 $(OBJDS):
 	mkdir -p $@
