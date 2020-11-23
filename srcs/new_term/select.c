@@ -20,12 +20,12 @@ static void	highlight(t_term *t)
 			t->clip.select.start, t->clip.select.end); */
 		tputs(tgoto(t->caps.ctrl.move_h, 0, t->origin), 0, &ft_putchar);
 		tputs(t->caps.ctrl.del_line, 0, &ft_putchar);
-		write(1, t->line->data, t->clip.select.start);
+		write(t->fds[1], t->line->data, t->clip.select.start);
 		tputs(t->caps.mode.standout, 0, &ft_putchar);
-		write(1, t->line->data + t->clip.select.start,
+		write(t->fds[1], t->line->data + t->clip.select.start,
 			t->clip.select.end - t->clip.select.start);
 		tputs(t->caps.mode.standout_end, 0, &ft_putchar);
-		write(1, t->line->data + t->clip.select.end,
+		write(t->fds[1], t->line->data + t->clip.select.end,
 			t->line->len - t->clip.select.end);
 		tputs(tgoto(t->caps.ctrl.move_h, 0, t->origin + t->pos),
 			0, &ft_putchar);
@@ -85,10 +85,10 @@ t_term_err	select_clear(t_term *t)
 		t->clip.select.end = -1U;
 		if (t->line)
 		{
-			tputs(tgoto(t->caps.ctrl.move_h, 0, t->origin),
-				0, &ft_putchar);
+			tputs(tgoto(t->caps.ctrl.move_h, 0, t->origin), 0, &ft_putchar);
 			tputs(t->caps.ctrl.del_line, 0, &ft_putchar);
-			write(1, t->line->data, t->line->len);
+			if (write(t->fds[1], t->line->data, t->line->len) == -1)
+				return (TERM_EWRITE);
 			tputs(tgoto(t->caps.ctrl.move_h, 0, t->origin + t->pos), 0, &ft_putchar);
 		}
 	}
