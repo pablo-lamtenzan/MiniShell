@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 03:19:08 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 06:10:09 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,6 +213,11 @@ int     	ft_kill(t_exec* args, t_term* term)
 		// TO DO: only the target if pid
 		if ((st = get_target(args, sig_spec, term, &target)) != SUCCESS)
 			return (st);
+		if ((*target)->flags & RESTRICT_OP)
+		{
+			ft_dprintf(STDERR_FILENO, "minish: kill: %s: no such job\n", args->av[1]);
+            	return (STD_ERROR);
+		}
 		kill_group(term->session, *target, SIGTERM, term->session->groups);
 		return (st);
 	}
@@ -235,10 +240,14 @@ int     	ft_kill(t_exec* args, t_term* term)
 			ft_dprintf(2, "%s", "minish: kill: invalid signal specification\n");
 			return (STD_ERROR);
 		}
+		if ((*target)->flags & RESTRICT_OP)
+		{
+			ft_dprintf(STDERR_FILENO, "minish: kill: %s: no such job\n", args->av[1]);
+            return (STD_ERROR);
+		}
 		kill_group(term->session, *target, signal, term->session->groups);
 		return (SUCCESS); // check this ret
 	}
 	ft_dprintf(STDERR_FILENO, "%s\n", "minish: kill: COT: invalid signal specification");
 	return (STD_ERROR);
-
 }

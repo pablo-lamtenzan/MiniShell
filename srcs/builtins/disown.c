@@ -6,11 +6,24 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:48:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/22 00:46:20 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 06:12:28 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
+
+/* TESTS
+
+1) Invalid flag DONE
+2) Invalid jobspec DONE
+3) Disown a running process DONE
+4) Disown a stopped process DONE
+5) Disown -a to multiple running pipes DONE
+6) Disown -a to multiple stopped pipes DONE
+7) Disown -r to stopped process + OTHER BUILTINS INTERACTIONS DONE
+8) Disown -h // put the flag only for the momment
+
+*/
 
 // -r disown running  only + own = FALSE and is deleted from the history for STTOPED
 // -a  disown all + rm from data-structure
@@ -57,9 +70,10 @@ void			disown_process(t_session* session, t_process** target, int flags)
 	int i;
 
 	i = -1;
-	if (flags & 1 && !WIFEXITED((*target)->wstatus) && WIFSTOPPED((*target)->wstatus)) // -r only running processes
+	if (flags & 1 && (*target)->flags & STOPPED) // -r only running processes
 	{
 		// put flag
+		ft_dprintf(2, "[DISOWN][RESTRIC OPERATION TO: %p]\n", *target);
 		(*target)->flags |= RESTRICT_OP;
 		
 		// rm from history (probally this pop front needs a condition for flags + jobspec)
@@ -74,7 +88,8 @@ void			disown_process(t_session* session, t_process** target, int flags)
 	while (++i < 2) // check 2 times: 1 for + and another for -
 		if (session->history && session->history->pid == (*target)->pid)
 			history_pop_front(session);
-	if (!WIFEXITED((*target)->wstatus) && WIFSTOPPED((*target)->wstatus))
+	ft_dprintf(2, "[DISOWN][flags: %d][\'%p\']\n", (*target)->flags, *target);
+	if ((*target)->flags & STOPPED)
 		ft_dprintf(STDERR_FILENO, "minish: warning: deleting stopped job %lu with process group %d\n", get_background_index(session->nil, *target), get_process_leader_pid(session->nil, *target));
 	remove_process(target);
 }
@@ -197,19 +212,26 @@ int		ft_disown(t_exec* args, t_term* term)
 	flags = 0;
 	i = -1;
 	target = NULL;
+	if ((flags = parse_flags(args->ac, args->av[1], "rah")) < 0 && ft_dprintf(2, "[DISWON][Flags are: %d]\n", flags) &&args->av[1][0] == '-')
+	{
+		ft_dprintf(STDERR_FILENO, "%s", "minish: usage: disown: [-h] [-ar] [jobspec ... | pid ...]\n");
+		return (CMD_BAD_USE);
+	}
 	if (session_empty(term->session) || term->session->groups->next == term->session->nil)
+	{
+		if (args->ac > 1 && flags < 0)
+		{
+			ft_dprintf(STDERR_FILENO, "minish: jobs: %s: no such job\n", args->av[1]);
+			return (STD_ERROR);
+		}
 		return (SUCCESS);
+	}
 	if (args->ac > 1)
 	{
-		if ((flags = parse_flags(args->ac, args->av[1], "rah")) < 0 && ft_dprintf(2, "[DISWON][Flags are: %d]\n", flags) &&args->av[1][0] == '-')
-		{
-			ft_dprintf(STDERR_FILENO, "%s", "minish: usage: disown: [-h] [-ar] [jobspec ... | pid ...]\n");
-			return (CMD_BAD_USE);
-		}
-		else if (flags < 0 || !(flags & 2)) // not have to disown all
+		if (flags < 0 || !(flags & 3)) // not have to disown all
 		{
 			// disown jobspecs
-			ft_dprintf(2, "[DISOWN JOBSPEC]\n");
+			ft_dprintf(2, "[DISOWN JOBSPEC: flags: %d --- %d]\n", flags, args->ac - (flags > 0 ? 2 : 1));
 
 			while (++i < args->ac - (flags > 0 ? 2 : 1))
 			{
@@ -218,16 +240,16 @@ int		ft_disown(t_exec* args, t_term* term)
 					ft_dprintf(STDERR_FILENO, "minish: disown: %s: no such job\n", args->av[2]);
 					return (STD_ERROR);
 				}
-				disown_group(term->session, *target, flags > 0 ? 1 : 0, term->session->groups);
+				disown_group(term->session, *target, flags < 0 ? 0 : flags, term->session->groups);
 			}
 		}
 		else
-			disown_all_groups(term->session, 0);
+			disown_all_groups(term->session, flags < 0 ? 0 : flags);
 	}
-	if (term->session->history)
+	else if (term->session->history)
 	{
 		//target = background_find(term->session->history, "PID", term->session->groups);
-		disown_group(term->session, term->session->history, flags > 0 ? 1 : 0, term->session->groups);
+		disown_group(term->session, term->session->history, flags < 0 ? 0 : flags, term->session->groups);
 	}
 	// disown curr
 	return (SUCCESS);

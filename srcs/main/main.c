@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 05:22:31 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 05:27:55 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 
 // Todays Plan:
 // Jobspec parse perfect (data done), pid is strange a ?name to debug
-// Every Builtin perfect: DONE: fg, jobs (have little exection), bg, kill (process status - signals interactions to study), 
+// Every Builtin perfect: DONE: fg, jobs (have little exection), bg, kill (process status - signals interactions to study), wait, 
 // IMPLEMENT GLOBAL SESSION
 // Test WAIT builtin
 // Upgrade builtins

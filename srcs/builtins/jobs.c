@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 12:03:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 04:49:47 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 05:30:17 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ TESTS:
 
 USAGE:
 1) jobs from stopped job DONE
-2) jobs from running process FAIL (could be bg problem too) <------
 3) jobs from exit DONE (execpt for background processes) <-
 4) jobs from pipe cmd DONE (except for the cmd line msg) <-
 

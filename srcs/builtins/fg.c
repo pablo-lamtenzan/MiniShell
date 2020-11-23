@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 05:10:10 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 06:07:34 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,11 @@ int		ft_fg(t_exec* args, t_term* term)
             return (STD_ERROR);
         }
     }
+	if ((*target)->flags & RESTRICT_OP)
+	{
+		ft_dprintf(STDERR_FILENO, "minish: fg: %s: no such job\n", args->av[1]);
+            return (STD_ERROR);
+	}
 	//ft_dprintf(2, "target = %p\n", target);
 	//ft_dprintf(2, "*target = %p\n", *target);
 	//ft_dprintf(2, "active processes = %p\n", term->session->groups->active_processes == term->session->groups->nil ? term->session->groups->next->active_processes : term->session->groups->active_processes);

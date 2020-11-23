@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 03:39:13 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 05:29:19 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,7 +255,7 @@ void	print_signal_v2(t_session* session, t_process* target, int flags)
 		leader ? "]" : " ",
 		is_in_history(session, target), // print history index
 		flags & PRINT_PID ? pid = ft_itoa(target->pid) : "", // print pid
-		signals[signal - 1],
+		target->flags & BACKGROUND ? "Runnnig" : signals[signal - 1],
 		__WCOREDUMP(target->wstatus) ? "(core dumped)" : ""
 		);
 	if (flags & PRINT_JOBS_CMD)
