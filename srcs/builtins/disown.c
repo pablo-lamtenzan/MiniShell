@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:48:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 16:27:08 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 17:05:51 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,9 +103,7 @@ void			disown_process(t_process** target, int flags)
 		(*target)->flags |= NO_HANGUP;
 		return ;
 	}
-	while (++i < 2) // check 2 times: 1 for + and another for -
-		if (g_session->hist && background_find(*target, "PID", g_session->hist->group))
-			history_pop_front_v2();
+
 	if (PRINT_DEBUG) {
 	ft_dprintf(2, "[DISOWN][flags: %d][\'%p\']\n", (*target)->flags, *target);}
 	if ((*target)->flags & STOPPED)
@@ -160,7 +158,9 @@ void		disown_group(t_process* leader, int flags, t_group* itself)
 			}
 			if (!is_active_group(g_session->groups))
 			{
+				remove_history_node(g_session->groups);
 				t_group*	fill = g_session->groups;
+				
 				g_session->groups->prev->next = g_session->groups->next;
 				g_session->groups->next->prev = g_session->groups->prev;
 				free(fill);

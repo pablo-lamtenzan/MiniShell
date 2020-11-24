@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 14:22:25 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 16:53:20 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,18 +79,18 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 // TO DO: [JOBS] If Ret st != 0 -> Jobs print it
 // TO DO: [ALL BUILTINS] optimize builtins
 // TO DO: [OPTIONAL] put color in the prompt
-// TO DO: [PARSE FLAGS] Builtins multiflags jobspec confics or even segfault (just ezz modify parse flags)
 // TO DO: [KILL] Jobspec parser segmentation fault (reads NULL) -> sleep 22 + crtl^Z + sleep 22 + clrt^Z + kill -QUIT %sleep
 // TO DO: [KILL] interaction between stopped and runnig processes and different kinds of SIGNALS
 // TO DO: [ALL BUILTINS] Upgrade (better functions) and norme (shortter code) builtins
 // TO DO: [UNKNOWN] cat | cat -e | echo a resarch (now we have all the job control build, must be easy to fix)
-// TO DO: [PIPES WITH STOPPED] return last pipe process ret when theres stopped ? (check things like that for bg, kill...)
+// TO DO: [PIPES WITH STOPPED] return (g_session->st) last pipe process ret when theres stopped ? (check things like that for bg, kill...)
 // TO DO: [JOBS] must print exit status if its != 0
 // TO DO: [JOBS] witout -l no spaces between pipes and cmds
 // TO DO: [CTRL^Z] Print index + history if stopped job is not first (ctrl^Z)
 // TO DO: [CTRL^Z] Print info when i: sleep 22 -> ctrl^Z -> bg -> fg -> ctrl^Z (in the second ctrl^Z)
 // TO DO: [JOBS] print keeps "running" for finisheed background processes
 // TO DO: [JOBSPEC] own is ambigous fct for %?name
+// TO DO: [ALL BUILTINS]: fg, bg, jobs no pid, wait, kill, disown pid (easy cause i ve implemented this for all the builtins)
 // TO DO: [ZOMBIES] handle zombies can segfault cause is fcking async have to make it insegfaultable
 	// if per example a SIGCHLD happend at the same time as the curr cmd (not stopped) is being freed: zombies handler could iterate over a freed node
 	// How solve it? Dont iterate xD

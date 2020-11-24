@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 13:02:45 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 16:39:45 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,7 @@ t_process**		background_find(t_process* target, const char* search_type, t_group
 {
 	const char*	modes[2] = { "PID", "STA" };
 	int 		i;
+	ft_dprintf(2, "[TEST: %p]\n", group);
 	t_process*	remember = group->active_processes;
 
 	i = 0;
