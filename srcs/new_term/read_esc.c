@@ -1,44 +1,74 @@
 #include "term.h"
 
-/* static t_term_err	term_read_shift(t_term *term, char c)
+# define TERM_RPT_DIG	8
+# define TERM_RPT_PRE	"(arg: "
+# define TERM_RPT_SUF	") "
+# define TERM_RPT_MSG	TERM_RPT_PRE""TERM_RPT_SUF
+
+static t_term_err	repeat_atoi(t_term *term, char c, uint32_t *dest)
 {
-	const t_keybind	bindings[] = {
-		{term->caps.key.left[2], &select_left},
-		{term->caps.key.right[2], &select_right}
-	};
-	size_t			i;
+	t_term_err	status;
+	ssize_t		read_st;
+	char		digits;
+	size_t		repeat;
+	size_t		pos;
 
-	i = 0;
-	while (i < sizeof(bindings) / sizeof(*bindings) && c != bindings[i].key)
-		i++;
-	if (i < sizeof(bindings) / sizeof(*bindings))
-		return (bindings[i].action(term));
-	return (TERM_EOK);
-} */
+	status = term_write_msg(term, TERM_RPT_MSG, sizeof(TERM_RPT_MSG) - 1);
+	if (status != TERM_EOK)
+		return (status);
+	pos = sizeof(TERM_RPT_PRE) - 1;
+	digits = 1;
+	repeat = 0;
+	while (ft_isdigit(c) && ++digits < TERM_RPT_DIG)
+	{
+		tputs(tgoto(term->caps.ctrl.move_h, 0, pos), 0, &putc_err);
+		if (write(STDERR_FILENO, &c, 1) == -1)
+			return (TERM_EWRITE);
+		tputs(tgoto(term->caps.ctrl.move_h, 0, term->pos), 0, &putc_err);
+		pos++;
+		term->origin++;
+		repeat = (10 * repeat) + (c - '0');
+		if ((read_st = read(0, &c, 1)) != 1)
+			return ((read_st == 0) ? TERM_EEOF: TERM_EREAD);
+	}
+	status = term_write_msg(term, term->msg, ft_strlen(term->msg));
+	*dest = (repeat == 0) ? 1 : repeat;
+	return (status);
+}
 
-/* static t_term_err	term_read_alt_esc(t_term *term)
+static t_term_err	term_read_repeat(t_term *term, char c)
 {
-	ssize_t			read_st;
-	char			c[3];
+	t_term_err	status;
+	ssize_t		read_st;
+	uint32_t	repeat;
+	char		*repetition;
 
-	if ((read_st = read(0, c, 3)) != 3)
-		return ((read_st == 0) ? TERM_EEOF : TERM_EREAD);
-	if (c[1] == TERM_SHIFT)
-		return (term_read_shift(term, c[2]));
-	else if (c[1] == '5')
-		ft_dprintf(2, "[PROMPT][ESC][ALT] ctrl + %c\n", c[2]);
-	return (TERM_EOK);
-} */
+	status = TERM_EOK;
+	if (ft_isdigit(c) && (status = repeat_atoi(term, c, &repeat)) == TERM_EOK)
+	{
+		if ((read_st = read(STDIN_FILENO, &c, 1)) != 1)
+			status = (read_st == 0) ? TERM_EEOF : TERM_EREAD;
+		else if (repeat == 1)
+			status = term_write(term, &c, 1);
+		else if ((repetition = malloc(sizeof(*repetition) * repeat)))
+		{
+			ft_memset(repetition, c, repeat);
+			status = term_write(term, repetition, repeat);
+			free(repetition);
+		}
+		else
+			status = TERM_EALLOC;
+	}
+	return (status);
+}
 
 /*
 **	Special key-strokes preceded by ANSI escape.
 */
-t_term_err	term_read_esc(t_term *term)
+t_term_err			term_read_esc(t_term *term)
 {
 	ssize_t	read_st;
 	char	c;
-	int		repeat;
-	int		digits;
 
 	if ((read_st = read(0, &c, 1)) != 1)
 		return ((read_st == 0) ? TERM_EEOF: TERM_EREAD);
@@ -46,18 +76,6 @@ t_term_err	term_read_esc(t_term *term)
 		return (TERM_EOK);
 	if (c == TERM_CSI)
 		return (term_read_csi(term));
-	digits = 1;
-	repeat = 0;
-	while (ft_isdigit(c) && ++digits < 8)
-	{
-		repeat = (10 * repeat) + (c - '0');
-		term_clear_line(term);
-		ft_dprintf(STDERR_FILENO, "(arg: %d) ", repeat);
-		if ((read_st = read(0, &c, 1)) != 1)
-			return ((read_st == 0) ? TERM_EEOF: TERM_EREAD);
-	}
-	if (digits == 8)
-		term_clear_line(term);
-	//ft_dprintf(2, "[PROMPT][ESC][REPEAT] %d\n", repeat);
-	return (TERM_EOK);
+	//ft_dprintf(2, "[PROMPT][ESC][RPT] %d\n", repeat);
+	return (term_read_repeat(term, c));
 }
