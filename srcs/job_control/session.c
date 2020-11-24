@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:26:18 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 09:11:25 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 15:58:34 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,4 +47,5 @@ void		session_end()
 	}
 	free(g_session->nil);
 	free(g_session);
+	g_session = NULL;
 }

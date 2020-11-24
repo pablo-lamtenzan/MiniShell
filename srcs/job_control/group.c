@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 18:26:31 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 09:02:36 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 13:46:51 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,21 @@ void			group_insert(t_group* prev, t_group* next, t_group* target)
 }
 
 /*
-** Remove all group nodes between prev and next
 */
+void			group_remove_v2(t_group** target)
+{
+	t_group**	next;
+	t_group**	prev;
+
+	next = &(*target)->next;
+	prev = &(*target)->prev;
+	(*next)->prev = *prev;
+	(*prev)->next = *next;
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "REMOVE GROUP: %p\n" ,*target);
+	free(*target);
+	//*target = NULL;
+}
 void			group_remove(t_group** prev, t_group** next)
 {
 	//t_group*	fill;
@@ -137,9 +150,12 @@ void			group_pop_front()
 	if (session_empty())
 		return ;
 	fill = g_session->nil->next->next;
-	group_remove(&g_session->nil, &g_session->nil->next->next);
+	//group_remove(&g_session->nil, &g_session->nil->next->next);
+	group_remove_v2(&g_session->groups);
 	g_session->nil->next = fill;
 	g_session->groups = g_session->nil->next;
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "[GROUP POP FRONT][NEXT GROUP: %p]\n[GROUP POP FRONT][PREV GROUP: %p]\n", g_session->groups->next, g_session->groups->prev);
 	if (PRINT_DEBUG)
 		ft_dprintf(2, "[GROUP POP FRONT][CURR GROUP IS NOW: \'%p\']\n", g_session->groups);
 }

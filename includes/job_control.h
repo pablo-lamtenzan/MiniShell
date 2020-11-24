@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 09:20:49 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 15:46:07 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 # include <errors.h>
 
-#define PRINT_DEBUG		1
+#define PRINT_DEBUG		0
 
 #define PROCESSES_MAX   4096
 #define MANAGE          0
@@ -61,6 +61,7 @@ typedef struct			s_session
 	t_process			*history;
 	t_history*			hist; // change it name later
 	t_group				*nil;
+	unsigned char		exit_count;
 }						t_session;
 
 t_session*				g_session;
@@ -81,6 +82,7 @@ t_group					*group_new();
 bool					group_empty(t_group* group);
 void					group_insert(t_group* prev, t_group* next, t_group* target);
 void					group_remove(t_group** prev, t_group** next);
+void					group_remove_v2(t_group** target);
 void					group_push_front(t_group* target);
 void					group_push_back(t_group* target);
 void					group_pop_front();
@@ -102,6 +104,7 @@ void					process_pop_back(t_group** group);
 */
 void					update_background(t_process **target, bool wait);
 bool            		update_session_history(t_process *update);
+void					remove_history_node(t_group* target);
 bool					update_session_history_v2(t_group* update);
 t_process**				background_find(t_process* target, const char* search_type, t_group* group);
 bool					is_active_group(t_group* target);
@@ -109,11 +112,14 @@ pid_t					get_process_leader_pid(t_group* nil, t_process* target);
 size_t					get_background_index(t_group* nil, t_process* target);
 void					force_exit_background();
 bool					is_leader(t_process* target);
+void					handle_exit_with_active_background(int exit_status);
+void					update_exit_count(const char* name);
 
 /*
 ** Signals catcher
 */
 void					zombies_catcher(int signal);
+void					remove_exited_zombies();
 void					suspend_process(int signal);
 
 

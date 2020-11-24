@@ -6,13 +6,14 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 09:05:43 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 15:59:36 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <job_control.h>
 #include <libft.h>
 #include <sys/wait.h>
+#include <stdlib.h>
 #include <signal.h>
 
 // for the momment keep them
@@ -269,12 +270,14 @@ void			force_exit_background()
 			// WORKS! The zombies catcher print it return status
 			if (PRINT_DEBUG)
 				ft_dprintf(2, "[FORCE EXIT][PROCESS: [PROCESS: \'%d\'][\'%p\']\n", g_session->groups->active_processes->pid, g_session->groups->active_processes);
-			kill(g_session->groups->active_processes->pid, SIGCONT);
-			kill(g_session->groups->active_processes->pid, SIGHUP);
+			if (!(g_session->groups->active_processes->flags & NO_HANGUP)) // disown -h
+				kill(g_session->groups->active_processes->pid, SIGHUP);
+			if (g_session->groups->active_processes->flags & STOPPED) // check for disown -h if i have to continue too
+				kill(g_session->groups->active_processes->pid, SIGCONT);
 			//while (waitpid(g_session->groups->active_processes->pid, &g_session->groups->active_processes->wstatus, WUNTRACED) <= 0)
 			//	;
 			//if (WIFEXITED(g_session->groups->active_processes->wstatus))
-				g_session->groups->active_processes = g_session->groups->active_processes->next;
+			g_session->groups->active_processes = g_session->groups->active_processes->next;
 			//else
 			//	ft_dprintf(2, "[FORCE EXIT][PROCESS: \'%d\'][\'%p\'][DOESN'T EXIT!]\n", g_session->groups->active_processes->pid, g_session->groups->active_processes);
 			
@@ -316,4 +319,95 @@ bool			is_not_ambigous(t_process* target)
 		groups = groups->next;
 	}
 	return (count == 1);
+}
+
+void		remove_history_node(t_group* target)
+{
+	t_history*	prev;
+	t_history*	first;
+
+	first = g_session->hist;
+	prev = NULL;
+	while (g_session->hist)
+	{
+		if (target->nil->next->pid == g_session->hist->group->nil->next->pid)
+		{
+			if (prev)
+				prev->next = g_session->hist->next;
+			if (PRINT_DEBUG)
+				ft_dprintf(2, "[RM HISTORY NODE][\'%p\'][ %d ]\n", g_session->hist, g_session->hist->group->nil->next->pid);
+			free(g_session->hist);
+			g_session->hist = NULL;
+			break ;
+		}
+		prev = g_session->hist;
+		g_session->hist = g_session->hist->next;
+	}
+	// update first
+	if (g_session->hist && first->group->nil->next->pid == target->nil->next->pid)
+		g_session->hist = first->next;
+	else if (!g_session->hist)
+		g_session->hist = NULL;
+	else
+		g_session->hist = first;
+	if (PRINT_DEBUG && g_session->hist)
+		ft_dprintf(2, "[RM HISTORY NODE][NOW CURR HISTORY NODE IS][\'%p\'][ %d ]\n", g_session->hist, g_session->hist->group->nil->next->pid);
+}
+
+void		remove_exited_zombies()
+{
+	t_group*	remember;
+	t_group*	next;
+
+	remember = g_session->groups;
+	while (g_session->groups != g_session->nil)
+	{
+		next = g_session->groups->next;
+		if (!is_active_group(g_session->groups))
+		{
+			remove_history_node(g_session->groups);
+			if (PRINT_DEBUG)
+				ft_dprintf(2, "[REMOVE EXITED ZOMBIES][REMOVE EXITED ZOMBIE GROUP: %p]\n", g_session->groups);
+			group_remove_v2(&g_session->groups);
+		}
+		g_session->groups = next;
+	}
+	g_session->groups = remember;
+}
+
+bool		is_active_background()
+{
+	t_group*	remember;
+
+	remember = g_session->groups;
+	while (g_session->groups != g_session->nil)
+	{
+		if (is_active_group(g_session->groups))
+		{
+			g_session->groups = remember;
+			return (true);
+		}
+		g_session->groups = g_session->groups->next;
+	}
+	g_session->groups = remember;
+	return (false);
+}
+
+void		handle_exit_with_active_background(int exit_status)
+{
+	if (g_session->exit_count++ == 2 || !is_active_background())
+		exit(exit_status);
+	else
+		write(STDERR_FILENO, "There are stopped jobs.\n", 25);
+}
+
+void		update_exit_count(const char* name)
+{
+	if (!ft_strncmp(name, "exit", 5) && g_session->exit_count == 1)
+	{
+		ft_dprintf(2, "TRUEEEEEEEEEEEEEEEEEEE\n");
+		g_session->exit_count++;
+	}
+	else
+		g_session->exit_count = 0;
 }

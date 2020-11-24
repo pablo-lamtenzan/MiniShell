@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 09:18:00 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 12:31:53 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -273,7 +273,7 @@ void	print_signal_v2(t_process* target, int flags)
 		__WCOREDUMP(target->wstatus) ? "(core dumped)" : ""
 		);
 	if (flags & PRINT_JOBS_CMD)
-		ft_dprintf(STDERR_FILENO, "%s", "COMMAND LINE TRIMMED BY SEPARATORS HERE");
+		ft_dprintf(STDERR_FILENO, "%s", "PRINT ELEM IN COMMAND LINE SPLITTED BY SEPARATORS HERE");
 	else if (flags & PRINT_JOB_ARGS && target->data)
 		print_job_args(target);
 	write(STDERR_FILENO, "\n", 1);

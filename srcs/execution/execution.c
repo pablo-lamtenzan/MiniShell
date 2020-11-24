@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 09:16:42 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 15:46:58 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ static t_exec_status	execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
 		if (!info->av[0])
 			return (SUCCESS);
 		;
+		update_exit_count(info->av[0]);
 		if ((exec_st = get_exec(info, term)) == SUCCESS)
 			term->st = info->exec(info, term);
 		else
@@ -89,19 +90,19 @@ t_exec_status			execute_bst(t_bst* root, t_term* term)
 	t_exec_status		st;
 	t_group*			group;
 
-	// New stuff
+	remove_exited_zombies();
 	if (!(group = group_new()))
 		return (BAD_ALLOC);
-	if (PRINT_DEBUG) {
+/*	if (PRINT_DEBUG) {
 	if (g_session->groups && g_session->groups->active_processes)
 	{
 		ft_dprintf(2, "[XXXXXXXXXXXXXXXXX : %p]\n", g_session->groups->active_processes);
 		if (g_session->groups->next && g_session->groups->next->active_processes)
 			ft_dprintf(2, "[EXEC BST][PREVIOUS GROUP LEADER FLAGS ARE: %d][\'%p\']\n", g_session->groups->next->active_processes->flags, g_session->groups->next->active_processes);
 	}
-	}
+	}*/
 	group_push_front(group);
-
+	
 	ft_bzero(&info, sizeof(t_exec));
 	info = (t_exec){.fds[FDS_STDOUT]=FDS_STDOUT, .fds[FDS_AUX]=FDS_AUX};
 	if (root->type & PIPE)

@@ -6,16 +6,13 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 06:14:41 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/23 15:50:19 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <separators.h>
 #include <builtins.h>
-
-// TODO: Nb process printed in print_signals (for inperrumpt signals) into pipe
-// TODO: > file or < file without cmd DONE?
 
 // TODO: ERROR codes: execution and builtins [error msg] -> [optional help] -> [return]
 /* Errors List:
@@ -27,17 +24,12 @@
 - bash: $a: ambiguous redirect -> 1
 - bash:	filename: File name too long -> redirect to a long filename -> 1
 
-// perror for fork
+// perror for fork?
 // SIGPIPE for pipes
 // SIGHUP job control (sent to a job when its term is closed 99% sure)
 
-// check if the ret of fg is the ret of the continued signal
-
-// have t collect the zombies process pid with wait
 // SIGHUP dans le term -> pour chaque process (actif ou stoppe) SIGHUP -> ensuite pour chauqe process stoppe SIGCONT -> ensuite exit
 // Cat ; ctrl + z -> SIGSTPT -> if (signal stoped and read or writes) -> all group process recives SIGTTIN
-	// to handle groups create a node each new bst of all the process
-// Change suspended_processes by active_processes ??
 
 void	token_print(t_tok *tokens, const char *prefix)
 {
@@ -83,34 +75,25 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 // TO DO: Redirect fds in job control builtins
 // TO DO: If a stopped process is resume in the backgroud it will be removed from the history
 // TO DO: Kill update background issue (can t wait fix it with a flags but i have problems now) I CAN'T WAIT IT IN KILL BUT I CAN WAIT AFTER IN FG WHY?????????????????????
-// TO DO: Bg: Don't remove the process, but have to remove it at its end! Have to build a zombie catcher
 // TO DO: All builtins has error msg for pid and jobspec i have the same error msg...
 // TO DO: Contitionals with job control test: sleep 22 | sleep 22 && sleep 22 | sleep 22 (it seem the "after AND" just desapears)
 // TO DO: If Ret st != 0 -> Jobs print it
 // TO DO: SIGCHLD (need global session and change term->st in session)
-// TO DO: SESSION GLOBAL (do when all builtins will work as good as i don't need dgb printf anymore)
 // TO DO: optimize builtins (need global session)
 // TO DO: put color in the prompt
 // TO DO: st after stop a process is 148
-// TO DO: History is GROUPSS!!! not processes (test ls | sleep 22 + jobs in minish to see the problem)
 // TO DO: Builtins multiflags jobspec confics or even segfault (just ezz modify parse flags)
 // TO DO: IN KILL: Jobspec parser segmentation fault (reads NULL) -> sleep 22 + crtl^Z + sleep 22 + clrt^Z + kill -QUIT %sleep
+// TO DO: JOBS builtin print cmd when flags != -l
+// TO DO: KILL interaction between stopped and runnig processes and different kinds of SIGNALS
+// TO DO: Parse Jobspec ?name to debug
+// TO DO: Upgrade (better functions) and norme (shortter code) builtins
+// TO DO: cat | cat -e | echo a resarch (now we have all the job control build, must be easy to fix)
+// TO DO: fg return 127 if the resumed process return false (check things like that for bg, kill...)
 
+// UNWORKING STUFF I FOUND
+// echo $? doesnt work
 
-// Todays Plan:
-// Jobspec parse perfect (data done), pid is strange a ?name to debug
-// Every Builtin perfect: DONE: fg, jobs (have little exection), bg, kill (process status - signals interactions to study), wait, disown
-// IMPLEMENT GLOBAL SESSION
-// Upgrade builtins
-// Zombies
-// Can norme a little bit now
-// Research the next
-
-/* GET CMD LINE FOR JOBS IDEA */
-
-// 1) Copy input
-// 2) Split copy by separators
-// 3) Each new job group get the next split (if false split++ tooo)
 
 static int 			exec(t_tok* tokens, t_term* term)
 {
@@ -143,7 +126,7 @@ void	suspend_process(int signal)
 int		main(int ac, const char** av, const char** envp)
 {
 	signal(SIGTSTP, suspend_process);
-	//signal(SIGCHLD, zombies_catcher);
+	signal(SIGCHLD, zombies_catcher);
 	//signal(SIGTERM, todo); // need documentation about this
 		// maybe it has to send SIGHUB to all the no market child (market in diswon)
     return (term_prompt(ac, av, envp, &exec));
