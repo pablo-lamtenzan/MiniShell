@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 13:09:40 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 14:22:25 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,10 +82,9 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 // TO DO: [PARSE FLAGS] Builtins multiflags jobspec confics or even segfault (just ezz modify parse flags)
 // TO DO: [KILL] Jobspec parser segmentation fault (reads NULL) -> sleep 22 + crtl^Z + sleep 22 + clrt^Z + kill -QUIT %sleep
 // TO DO: [KILL] interaction between stopped and runnig processes and different kinds of SIGNALS
-// TO DO: [JOBSPEC PARSE] Parse Jobspec ?name to debug
 // TO DO: [ALL BUILTINS] Upgrade (better functions) and norme (shortter code) builtins
 // TO DO: [UNKNOWN] cat | cat -e | echo a resarch (now we have all the job control build, must be easy to fix)
-// TO DO: [FG + UNLNOWN] fg return 127 if the resumed process return false (check things like that for bg, kill...)
+// TO DO: [PIPES WITH STOPPED] return last pipe process ret when theres stopped ? (check things like that for bg, kill...)
 // TO DO: [JOBS] must print exit status if its != 0
 // TO DO: [JOBS] witout -l no spaces between pipes and cmds
 // TO DO: [CTRL^Z] Print index + history if stopped job is not first (ctrl^Z)

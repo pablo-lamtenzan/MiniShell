@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 11:57:13 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 15:03:11 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,7 @@ void					suspend_process(int signal);
 /*
 ** Utils
 */
-int						parse_flags(int ac, const char* av, const char* pattern);
+int						parse_flags(int ac, char*const* av, const char* pattern, int *nb_flags);
 const char*				is_in_history(t_process* target);
 bool					is_not_ambigous(t_process* target);
 void					print_index_args(t_process* target);

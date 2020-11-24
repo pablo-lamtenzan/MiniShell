@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 12:03:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 12:07:53 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 15:56:28 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,48 +218,53 @@ int				ft_jobs(t_exec* args, t_term* term)
 {
 	int			flags;
 	int			i;
+	int			nb;
 	t_process**	target;
 	(void)term;
 
 	flags = 0;
 	i = -1;
-	if ((flags = parse_flags(args->ac, args->av[1], "nrsl")) < 0 && args->av[1][0] == '-')
+	if ((flags = parse_flags(args->ac, &args->av[1], "nrsl", &nb)) < 0 && args->av[nb + 1][0] == '-')
 	{
 		ft_dprintf(STDERR_FILENO, "minish: jobs: %s: invalid option\n%s", args->av[1] ,"jobs: usage: jobs: [-lnprs] [jobspec ...] or jobs -x command [args]\n");
 		return (CMD_BAD_USE);
 	}
+	//ft_dprintf(2, "PARSE FLAGS AFTER CHECK: %s\n", args->av[nb + 1]);
 	if (session_empty() || g_session->groups->next == g_session->nil)
 	{
 		if (args->ac > 1 && flags < 0)
 		{
-			ft_dprintf(STDERR_FILENO, "minish: jobs: %s: no such job\n", args->av[1]);
+			ft_dprintf(STDERR_FILENO, "minish: jobs: %s: no such job\n", args->av[args->ac]);
 			return (STD_ERROR);
 		}
 		return (SUCCESS);
 	}
 	if (args->ac > 1)
 	{
-		if (args->ac >= 2) // check if theres some jobspec after and print it
+		//ft_dprintf(2, "NB FLAGS IS: %d\n", nb);
+		if (args->ac > nb + 1) // check if theres some jobspec after and print it
 		{
-			while (++i < args->ac - (flags > 0 ? 2 : 1))
+			//ft_dprintf(2, "[JOBSPEC IT CHECK: %d]\n", args->ac - nb - 1);
+			while (++i < args->ac - nb - 1)
 			{
 				if (PRINT_DEBUG)
 					ft_dprintf(2, "flags : %d\n", flags);
-				if (!(target = jobspec_parser(args->ac, &args->av[flags > 0 ? 1 : 0], NULL)))
+				if (!(target = jobspec_parser(args->ac, &args->av[nb + i], NULL)))
 				{
-					ft_dprintf(STDERR_FILENO, "minish: jobs: %s: no such job\n", args->av[flags > 0 ? 1 : 0]);
+					ft_dprintf(STDERR_FILENO, "minish: jobs: %s: no such job\n", args->av[nb + i + 1]);
 					return (STD_ERROR);
 				}
 				if (PRINT_DEBUG)
 					ft_dprintf(2, "[JOBS JOBSPEC][\'%p\']\n", *target);
 				// print it here and apply flags
+				flags = flags < 0 ? -flags : flags;
 				if (flags > 0 && flags & 8)
 					print_group(*target, flags < 0 ? 0 : flags, g_session->groups);
 				else if (!(flags > 0 && flags & 2 && (WIFEXITED((*target)->wstatus) || WIFSTOPPED((*target)->wstatus))) 
 					&& !(flags > 0 && flags & 4 && (WIFEXITED((*target)->wstatus) || !WIFSTOPPED((*target)->wstatus))))
 					print_signal_v2(*target, 2);
-				return (SUCCESS);
 			}
+			return (SUCCESS);
 		}
 	}
 	// flags with no args or no args print all jobs in background

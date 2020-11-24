@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 12:40:22 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 13:05:58 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 15:24:16 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,8 @@ t_process**		get_process_by_index(t_group* groups, size_t index)
 		return (NULL);
 
 	//index++; // skip itself
-	if (PRINT_DEBUG)
-		ft_dprintf(2, "[INDEX][index: %lu]\n", index);
+	//if (PRINT_DEBUG)
+	ft_dprintf(2, "[INDEX][index: %lu]\n", index);
 	while (index && groups->next != g_session->nil)
 	{
 		//if (!--index)
@@ -126,7 +126,6 @@ t_process**		get_process_by_name(t_group* groups, const char* av)
 	// %?name
 	ft_dprintf(2, "[NAME][name: %s]\n", av);
 	const int	search_mode = get_search_mode(av); // lexer
-	ft_dprintf(2, "SEARCH MODE: %d", search_mode);
 	int			match;
 	t_process**	ret;
 	int			count;
@@ -161,7 +160,6 @@ t_process**		get_process_by_name(t_group* groups, const char* av)
 				while (++count < matrix_height((char**)groups->active_processes->data)) // change matrix height later
 					if (ft_strnstr(groups->active_processes->data[count], &av[1], ft_strlen(&av[1]) && (++match)))
 					{
-						ft_dprintf(2, "TESTESTET\n");
 						if (PRINT_DEBUG)
 							ft_dprintf(2, "[DATA][FOUND: %p]\n", groups->active_processes);
 						if (is_leader(groups->active_processes) && is_not_ambigous(groups->active_processes))
@@ -219,7 +217,7 @@ t_process**		process_search(char*const* av)
 t_process**		jobspec_parser(int ac, char*const* av, t_process** (*fill)(int ac, char*const* av))
 {
 	// TO DEFINE: types in fill
-	if (PRINT_DEBUG)
+	//if (PRINT_DEBUG)
 		ft_dprintf(2, "%s\n", av[1]);
 
 	if (fill && !fill(ac, av))

@@ -6,38 +6,46 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 18:03:18 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 08:37:21 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 15:55:45 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <job_control.h>
 
-int				parse_flags(int ac, const char* av, const char* pattern)
+int				parse_flags(int ac, char*const* av, const char* pattern, int *nb_flags)
 {
 	int			cont;
 	int			flags;
 	int 		i;
+	int			prev;
+	*nb_flags = 0;
 
 	cont = -1;
 	flags = 0;
 	while (++cont < ac - 1)
 	{
 		i = -1;
-		while (av[++i])
+		//ft_dprintf(2, "[PARSE FLAGS: %s]\n", av[cont]);
+		while (av[cont][++i])
 		{
-			if (av[i] == '-')
+			if (av[cont][i] == '-')
 			{
 				if (i == 0)
 					continue ;
 				else
 					return (-1);
 			}
-			if ((flags |= (1 << ft_strpos(pattern, av[i]))) < 0)
-				return (-1);
-			
+			prev = flags;
+			if ((flags |= (1 << ft_strpos(pattern, av[cont][i]))) < 0)
+			{
+				//ft_dprintf(2, "[PARSE FLAGS: RESULT ERROR: %d]\n", !*nb_flags ? -1 : -prev);
+				return (!*nb_flags ? -1 : -prev);
+			}
 		}
+		(*nb_flags)++;
 	}
+	//ft_dprintf(2, "[PARSE FLAGS: RESULT SUCESS: %d]\n", flags);
 	return (flags);
 }
 

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 14:20:05 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 14:03:31 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 
 */
 
-void	resume_group(t_process* leader)
+void		resume_group(t_process* leader)
 {
 	t_group*	remember;
 	t_process*	remember_leader;
@@ -56,7 +56,7 @@ void	resume_group(t_process* leader)
 					kill(g_session->groups->active_processes->pid, SIGCONT);
 					if (PRINT_DEBUG)
 					ft_dprintf(2, "[FG][UPDATE BACKGROUND]\n");
-					update_background(&g_session->groups->active_processes, true);
+					update_background(&g_session->groups->active_processes, true);	
 				}
 				g_session->groups->active_processes = g_session->groups->active_processes->next;
 			}
@@ -118,11 +118,7 @@ int		ft_fg(t_exec* args, t_term* term)
 	write(STDERR_FILENO, "\n", 1);
 	if (PRINT_DEBUG)
 		ft_dprintf(2, "[FG] [session->groups before resume][%p]\n", g_session->groups);
-	// termary for skip itself, leader must be next->active_processes
+
 	resume_group(*target);
-	if (PRINT_DEBUG) {
-	ft_dprintf(2, "[FG] [session->groups after resume][%p]\n", g_session->groups);
-	ft_dprintf(2, "[FG]ACTIVE PROCESSES AT THE END: \'%p\'\n", g_session->groups->active_processes == g_session->groups->nil ? g_session->groups->next->active_processes : g_session->groups->active_processes);
-	}
     return (SUCCESS);
 }
