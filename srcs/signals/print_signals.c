@@ -1,15 +1,15 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   print_signals.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 13:08:19 by pablo            ###   ########.fr       */
-/*                                                                            */
+/*                                                          LE - /            */
+/*                                                              /             */
+/*   print_signals.c                                  .::    .:/ .      .::   */
+/*                                                 +:+:+   +:    +:  +:+:+    */
+/*   By: chamada <chamada@student.le-101.fr>        +:+   +:    +:    +:+     */
+/*                                                 #+#   #+    #+    #+#      */
+/*   Created: 2020/11/13 21:45:15 by pablo        #+#   ##    ##    #+#       */
+/*   Updated: 2020/11/24 14:58:29 by chamada     ###    #+. /#+    ###.fr     */
+/*                                                         /                  */
+/*                                                        /                   */
 /* ************************************************************************** */
-
 #include <signals.h>
 #include <sys/wait.h>
 #include <job_control.h>
@@ -270,7 +270,7 @@ void	print_signal_v2(t_process* target, int flags)
 		// PROBLEM HERE: IF PROCESS IS IN BACKGROUND NEED TO REMOVE THE FLAG WHEN IT END... (in zombies catcher)
 		target->flags & BACKGROUND ? "Runnnig" : signals[signal - 1],
 		ret ? rett = ft_itoa(ret) : "",
-		__WCOREDUMP(target->wstatus) ? "(core dumped)" : ""
+		WCOREDUMP(target->wstatus) ? "(core dumped)" : ""
 		);
 	if (flags & PRINT_JOBS_CMD)
 	{
