@@ -134,8 +134,14 @@ t_term_err			term_new_line(t_term *term);
 */
 t_term_err			cursor_l(t_term *term);
 t_term_err			cursor_r(t_term *term);
+
+/*
+**					cursor_jmp.c
+*/
 t_term_err			cursor_start_line(t_term *term);
 t_term_err			cursor_end_line(t_term *term);
+t_term_err			cursor_next_word(t_term *term);
+t_term_err			cursor_prev_word(t_term *term);
 
 /*
 **					select.c
