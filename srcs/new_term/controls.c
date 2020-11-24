@@ -6,9 +6,9 @@ t_term_err	term_clear_screen(t_term *term)
 {
 	if (term->caps.mode.clear)
 	{
-		tputs(term->caps.mode.clear, 0, &ft_putchar);
+		tputs(term->caps.mode.clear, 0, &putc_err);
 		if ((term->msg
-		&& write(term->fds[2], term->msg, ft_strlen(term->msg)) == -1)
+		&& write(STDERR_FILENO, term->msg, ft_strlen(term->msg)) == -1)
 		|| write(1, term->line->data, term->line->len) == -1)
 			return (TERM_EWRITE);
 		term->pos = term->line->len;
@@ -23,8 +23,8 @@ t_term_err	term_backspace(t_term *term)
 {
 	if (term->pos > 0)
 	{
-		tputs(term->caps.ctrl.left, 0, &ft_putchar);
-		tputs(term->caps.ctrl.del, 0, &ft_putchar);
+		tputs(term->caps.ctrl.left, 0, &putc_err);
+		tputs(term->caps.ctrl.del, 0, &putc_err);
 		term->pos--;
 		line_erase(term->line, term->pos, 1);
 	}
@@ -37,7 +37,7 @@ t_term_err	term_backspace(t_term *term)
 t_term_err	term_clear_line(t_term *term)
 {
 	cursor_start_line(term);
-	tputs(term->caps.ctrl.del_line, 0, &ft_putchar);
+	tputs(term->caps.ctrl.del_line, 0, &putc_err);
 	return (TERM_EOK);
 }
 
@@ -46,7 +46,7 @@ t_term_err	term_clear_line(t_term *term)
 */
 t_term_err	term_new_line(t_term *term)
 {
-	if (write(term->fds[1], TERM_ENDL, sizeof(TERM_ENDL) - 1) == -1)
+	if (write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) - 1) == -1)
 		return (TERM_EWRITE);
 	if (term->line->len != 0)
 	{
