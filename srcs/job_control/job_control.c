@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 20:36:05 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 23:45:37 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -384,7 +384,7 @@ void		remove_zombie_node(t_group* target)
 			//if (PRINT_DEBUG)
 			if (first == g_session->zombies)
 				first = NULL;
-			ft_dprintf(2, "[RM ZOMBIE NODE][\'%p\'][GROUP][\'%p\'][ %d ]\n", g_session->zombies, *g_session->zombies->background_group , (*g_session->zombies->background_group)->nil->next->pid);
+			//ft_dprintf(2, "[RM ZOMBIE NODE][\'%p\'][GROUP][\'%p\'][ %d ]\n", g_session->zombies, *g_session->zombies->background_group , (*g_session->zombies->background_group)->nil->next->pid);
 			free(g_session->zombies);
 			g_session->zombies = NULL;
 			break ;
@@ -408,20 +408,27 @@ void		remove_exited_zombies()
 {
 	t_group*	remember;
 	t_group*	next;
+	//bool		execption;
 
+	//execption = true;
 	remember = g_session->groups;
 	while (g_session->groups && g_session->groups != g_session->nil)
 	{
 		next = g_session->groups->next;
 		if (!is_active_group(g_session->groups))
 		{
+			if (g_session->groups == remember)
+				remember = remember->next;
+			//if (!remember || remember == g_session->nil)
+			//	execption = true;
 			remove_history_node(g_session->groups);
-			if (PRINT_DEBUG)
+			//if (PRINT_DEBUG)
 				ft_dprintf(2, "[REMOVE EXITED ZOMBIES][REMOVE EXITED ZOMBIE GROUP: %p]\n", g_session->groups);
 			group_remove_v2(&g_session->groups);
 		}
 		g_session->groups = next;
 	}
+	ft_dprintf(2, "[REMOVE EXITED ZOMBIES][REMEMBER: %p]\n", remember);
 	g_session->groups = remember;
 }
 

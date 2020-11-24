@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 22:53:56 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 23:28:00 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ t_exec_status			execute_bst(t_bst* root, t_term* term)
 	t_exec_status		st;
 	t_group*			group;
 
-	remove_exited_zombies();
+	//remove_exited_zombies();
 	if (!(group = group_new()))
 		return (BAD_ALLOC);
 	g_session->open_print = true;

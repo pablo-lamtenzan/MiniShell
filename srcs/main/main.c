@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 23:09:12 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 23:47:56 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,6 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 
 }
 
-// TO DO: [BUILTINS] Redirect fds in job control builtins
 // TO DO: [KILL] Kill update background issue (can t wait fix it with a flags but i have problems now) I CAN'T WAIT IT IN KILL BUT I CAN WAIT AFTER IN FG WHY?????????????????????
 // TO DO: [ALL BUILTINS] All builtins has error msg for pid and jobspec i have the same error msg...
 // TO DO: [ALL BUILTINS] optimize builtins
@@ -85,7 +84,6 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 // TO DO: [PIPES WITH STOPPED] return (g_session->st) last pipe process ret when theres stopped ? (check things like that for bg, kill...)
 // TO DO: [JOBS] must print exit status if its != 0
 // TO DO: [JOBS] witout -l no spaces between pipes and cmds
-// TO DO: [JOBS] print keeps "running" for finisheed background processes
 // TO DO: [ALL BUILTINS]: fg, bg, jobs no pid, wait, kill, disown pid (easy cause i ve implemented this for all the builtins)
 
 

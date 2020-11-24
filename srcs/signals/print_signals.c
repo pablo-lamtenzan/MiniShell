@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 23:07:07 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 23:36:01 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -270,14 +270,14 @@ bool	stopped_signal(int signal, bool ignore_tstp)
 	return (signal == SIGSTOP || (!ignore_tstp && signal == SIGTSTP) || signal == SIGTTIN || signal == SIGTTOU);
 }
 
-bool	stopped_signal_group(t_group* group)
+bool	stopped_signal_group(t_group* group, bool wcheck)
 {
 	t_process	*leader;
 	
 	leader = group->active_processes;
 	while (leader != group->nil)
 	{
-		if (leader->flags & STOPPED || WIFSTOPPED(leader->wstatus))
+		if (leader->flags & STOPPED || (wcheck && WIFSTOPPED(leader->wstatus)))
 			return (true);
 		leader = leader->next;
 	}
@@ -326,24 +326,25 @@ void	print_signal(int fd, t_process* target, int mode)
 	int		exit_status;
 	t_group*	aux;
 
-	exit_status = 0;
+	exit_status = -1;
 	aux = get_group(target);
 	ft_bzero(freed, sizeof(freed));
 	if (stopped_signal(signal = check_wstatus(target, &exit_status), true))
 		write(fd, "\n", 1);
+	ft_dprintf(2, "[TEST PRINT SIGNALS][SIGNAL: %d]\n", signal);
 	ft_dprintf(fd, "%s%s%s%s%s%s%s%s%s %s",
-		stopped_signal_group(aux) && (!mode || (mode && is__leader)) ? "[" : (mode ? " " : ""),
-		stopped_signal_group(aux) && (!mode || (mode && is__leader)) ? freed[0] = ft_itoa(get_background_index(g_session->nil, target)) : (mode ? " " : ""),
-		stopped_signal_group(aux) && (!mode || (mode && is__leader)) ? "]" : (mode ? " " : ""),
-		stopped_signal_group(aux) && (!mode || (mode && is__leader)) ? is_in_history(target) : (mode ? " " : ""),
-		stopped_signal_group(aux) && (!mode || (mode && is__leader)) ? " " : "",
+		(stopped_signal_group(aux, true) || !exit_status) && (!mode || (mode && is__leader)) ? "[" : (mode ? " " : ""),
+		(stopped_signal_group(aux, true) || !exit_status) && (!mode || (mode && is__leader)) ? freed[0] = ft_itoa(get_background_index(g_session->nil, target)) : (mode ? " " : ""),
+		(stopped_signal_group(aux, true) || !exit_status) && (!mode || (mode && is__leader)) ? "]" : (mode ? " " : ""),
+		(stopped_signal_group(aux, true) || !exit_status) && (!mode || (mode && is__leader)) ? is_in_history(target) : (mode ? " " : ""),
+		(stopped_signal_group(aux, true) || !exit_status) && (!mode || (mode && is__leader)) ? " " : "",
 		mode ? freed[1] = ft_itoa(target->pid) : "",
-		stopped_signal_group(aux) && (!mode || (mode && is__leader)) ? " " : "",
-		(!mode && is_active_group(aux) ? "Stopped" : get_signal(signal)),
-		exit_status ? freed[2] = ft_itoa(exit_status) : "",
+		(stopped_signal_group(aux, true) || !exit_status) && (!mode || (mode && is__leader)) ? " " : "",
+		(!mode && stopped_signal_group(aux, false) ? "Stopped" : get_signal(signal)),
+		exit_status > 0 ? freed[2] = ft_itoa(exit_status) : "",
 		(mode && __WCOREDUMP(target->wstatus)) || (!mode && group_coredump(aux)) ? "(core dumped)" : ""
 	);
-	if (stopped_signal(signal, false))
+	if (stopped_signal(signal, false) || signal == 33 || signal == 31)
 	{
 		padding_spaces(fd, ft_strlen((!mode && is_active_group(aux) ? "Stopped" : get_signal(signal))));
 		mode ? print_job_args(fd, target) : print_group_line(fd, aux);
