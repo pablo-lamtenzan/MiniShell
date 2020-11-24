@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   caps.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/11/24 18:53:27 by chamada           #+#    #+#             */
+/*   Updated: 2020/11/24 18:53:52 by chamada          ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "term.h"
 
 static bool	load_caps(t_caps *caps)
@@ -45,7 +57,8 @@ bool		term_init_caps(t_term *term, t_env **env)
 	if (tcgetattr(STDIN_FILENO, &term->caps.s_ios) == -1)
 		return (false);
 	term->caps.s_ios_orig = term->caps.s_ios;
-	term->caps.s_ios.c_lflag &= ~(ICANON | ECHO | ISIG);
+	term->caps.s_ios.c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG);
+	term->caps.s_ios.c_cflag |= ONLCR;
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &term->caps.s_ios) == -1)
 		return (false);
 	term->has_caps = load_caps(&term->caps);
