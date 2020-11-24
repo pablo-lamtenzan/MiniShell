@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:46 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 15:51:06 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 11:20:15 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int		ft_exit(t_exec *args, t_term *t) // TODO: Callbacks in ft_term.h
 	int i;
 	bool st;
 
-	i = t->st;
+	i = g_session->st;
 	st = true;
 	if (args && args->ac > 1)
 	{

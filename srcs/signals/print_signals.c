@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 12:31:53 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 13:08:19 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,7 @@ void	print_job_args(t_process* target)
 	int i;
 
 	i = -1;
-	while (target->data[++i])
+	while (target && target->data && target->data[++i])
 		ft_dprintf(STDERR_FILENO, "%s%s", target->data[i], target->data[i + 1] ? " " : "");
 }
 
@@ -273,7 +273,12 @@ void	print_signal_v2(t_process* target, int flags)
 		__WCOREDUMP(target->wstatus) ? "(core dumped)" : ""
 		);
 	if (flags & PRINT_JOBS_CMD)
-		ft_dprintf(STDERR_FILENO, "%s", "PRINT ELEM IN COMMAND LINE SPLITTED BY SEPARATORS HERE");
+	{
+		t_group* g = get_group(target);
+		int i = -1;
+		while (g && g->input && g->input[++i])
+			ft_dprintf(STDERR_FILENO, "%s%s", g->input[i], g->input[i + 1] ? " " : "");
+	}
 	else if (flags & PRINT_JOB_ARGS && target->data)
 		print_job_args(target);
 	write(STDERR_FILENO, "\n", 1);

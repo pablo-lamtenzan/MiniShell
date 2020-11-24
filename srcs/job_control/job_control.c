@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 15:59:36 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 13:02:45 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void		update_background(t_process **target, bool wait)
 		if (PRINT_DEBUG)
 			ft_dprintf(2, "[PROCESS DOESN'T EXIT]\n");
 		(*target)->flags |= STOPPED;
-		//if (is_leader(g_session, *target))
+		g_session->st = 148;
 		update_session_history_v2(get_group(*target));
 	}
 	if (PRINT_DEBUG)
@@ -227,34 +227,6 @@ size_t			get_background_index(t_group* nil, t_process* target)
 	return (index);
 }
 
-/*
-
-void			force_exit_background(t_session* session)
-{
-	t_process**	fill;
-
-	while (session->groups != session->nil)
-	{
-		while (session->groups->active_processes != session->groups->nil)
-		{
-			// TO DO: for SIGTTIN SIGTTOU -> SIGHUB
-			kill(session->groups->active_processes->pid, SIGCONT);
-			// wait for the process to exit and then iterate
-			while (waitpid(session->groups->active_processes->pid, &session->groups->active_processes->wstatus, 0) <= 0)
-				;
-			if (WIFEXITED(session->groups->active_processes->wstatus))
-			{
-				fill = &session->groups->active_processes;
-				session->groups->active_processes = session->groups->active_processes->next;
-				remove_process(fill);
-			}
-			session->groups->active_processes = session->groups->active_processes->next;
-		}
-		session->groups = session->groups->next;
-	}
-}
-*/
-
 void			force_exit_background()
 {
 	t_group*	remember;
@@ -272,11 +244,12 @@ void			force_exit_background()
 				ft_dprintf(2, "[FORCE EXIT][PROCESS: [PROCESS: \'%d\'][\'%p\']\n", g_session->groups->active_processes->pid, g_session->groups->active_processes);
 			if (!(g_session->groups->active_processes->flags & NO_HANGUP)) // disown -h
 				kill(g_session->groups->active_processes->pid, SIGHUP);
-			if (g_session->groups->active_processes->flags & STOPPED) // check for disown -h if i have to continue too
-				kill(g_session->groups->active_processes->pid, SIGCONT);
-			//while (waitpid(g_session->groups->active_processes->pid, &g_session->groups->active_processes->wstatus, WUNTRACED) <= 0)
-			//	;
-			//if (WIFEXITED(g_session->groups->active_processes->wstatus))
+			kill(g_session->groups->active_processes->pid, SIGCONT);
+			if (!(g_session->groups->active_processes->pid & NO_HANGUP))
+			{
+				while (waitpid(g_session->groups->active_processes->pid, &g_session->groups->active_processes->wstatus, 0) <= 0)
+					;
+			}
 			g_session->groups->active_processes = g_session->groups->active_processes->next;
 			//else
 			//	ft_dprintf(2, "[FORCE EXIT][PROCESS: \'%d\'][\'%p\'][DOESN'T EXIT!]\n", g_session->groups->active_processes->pid, g_session->groups->active_processes);
@@ -404,10 +377,7 @@ void		handle_exit_with_active_background(int exit_status)
 void		update_exit_count(const char* name)
 {
 	if (!ft_strncmp(name, "exit", 5) && g_session->exit_count == 1)
-	{
-		ft_dprintf(2, "TRUEEEEEEEEEEEEEEEEEEE\n");
 		g_session->exit_count++;
-	}
 	else
 		g_session->exit_count = 0;
 }

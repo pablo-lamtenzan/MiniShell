@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 12:40:22 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 09:07:39 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 13:05:58 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ size_t			get_history_index(const char* key)
 
 size_t			get_search_mode(const char* av)
 {
+	ft_dprintf(2, "AV : %s\n", av);
 	if (av[0] && av[0] != '?')
 		return (1);
 	if (av[0] == '?' && av[1])
@@ -124,7 +125,8 @@ t_process**		get_process_by_name(t_group* groups, const char* av)
 	// %name
 	// %?name
 	ft_dprintf(2, "[NAME][name: %s]\n", av);
-	const int	search_mode = get_search_mode(&av[1]); // lexer
+	const int	search_mode = get_search_mode(av); // lexer
+	ft_dprintf(2, "SEARCH MODE: %d", search_mode);
 	int			match;
 	t_process**	ret;
 	int			count;
@@ -145,7 +147,7 @@ t_process**		get_process_by_name(t_group* groups, const char* av)
 			{
 				if (PRINT_DEBUG)
 					ft_dprintf(2, "TEST  %s --- %s \n", groups->active_processes->data[0], av);
-				if (!ft_strncmp(groups->active_processes->data[0], av, ft_strlen(av)) && (++match))
+				if (!ft_strncmp(groups->active_processes->data[0], av, ft_strlen(groups->active_processes->data[0])) && (++match))
 				{
 					if (PRINT_DEBUG)
 						ft_dprintf(2, "[DATA][FOUND: %p]\n", groups->active_processes);
@@ -159,6 +161,7 @@ t_process**		get_process_by_name(t_group* groups, const char* av)
 				while (++count < matrix_height((char**)groups->active_processes->data)) // change matrix height later
 					if (ft_strnstr(groups->active_processes->data[count], &av[1], ft_strlen(&av[1]) && (++match)))
 					{
+						ft_dprintf(2, "TESTESTET\n");
 						if (PRINT_DEBUG)
 							ft_dprintf(2, "[DATA][FOUND: %p]\n", groups->active_processes);
 						if (is_leader(groups->active_processes) && is_not_ambigous(groups->active_processes))

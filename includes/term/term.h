@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/23 16:00:47 by chamada           #+#    #+#             */
-/*   Updated: 2020/11/23 08:29:35 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 11:17:04 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,6 @@ typedef	struct	s_term
 	t_env			*env;
 	char			*name;
 	bool			interactive;
-	//t_session		*session;
-	int				st;
 	struct termios	s_ios;
 	struct termios	s_ios_bkp;
 	t_lex_st		lex_st;

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 15:46:07 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 11:57:13 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef struct			s_group
 	t_process*			nil;
 	struct s_group*		next;
 	struct s_group*		prev;
+	char**				input;
 }						t_group;
 
 typedef struct 			s_history
@@ -58,10 +59,14 @@ typedef struct			s_session
 {
 	t_group*			groups; // all background processes by group
 	t_process			processes[PROCESSES_MAX + 1]; // exec processes
-	t_process			*history;
+	t_process			*history;// TO DO: JOBS builtin print cmd when flags != -l
+
 	t_history*			hist; // change it name later
 	t_group				*nil;
 	unsigned char		exit_count;
+	int					st;
+	char**				input_line;
+	size_t				input_line_index;
 }						t_session;
 
 t_session*				g_session;
@@ -112,6 +117,7 @@ pid_t					get_process_leader_pid(t_group* nil, t_process* target);
 size_t					get_background_index(t_group* nil, t_process* target);
 void					force_exit_background();
 bool					is_leader(t_process* target);
+t_group*				get_group(t_process* target);
 void					handle_exit_with_active_background(int exit_status);
 void					update_exit_count(const char* name);
 
@@ -130,6 +136,7 @@ int						parse_flags(int ac, const char* av, const char* pattern);
 const char*				is_in_history(t_process* target);
 bool					is_not_ambigous(t_process* target);
 void					print_index_args(t_process* target);
+char**					split_separators(char* input, char** separators);
 
 
 // old

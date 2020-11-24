@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/18 19:29:17 by chamada           #+#    #+#             */
-/*   Updated: 2020/11/23 09:14:13 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 11:35:38 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,12 @@ void		term_suspend(t_term *t)
 
 int			term_next_line(t_term *t, int status)
 {
+	// TESTING THIS (is fir job builtin)
+	static const char*	seps[4] = {"||", "&&", ";", NULL};
+	g_session->input_line = split_separators(t->line->data, (char**)seps);
+	g_session->input_line_index = 0;
+
+	
 	// TODO: Check if multi-line crashes (lex_ifs.c:11 heap-use-after-free)
 	if (t->interactive)
 		write(2, "\n", 1);
@@ -113,7 +119,7 @@ void		term_lex_error(t_term *t)
 		input = t->lex_st.input;
 	ft_dprintf(2, "%s: syntax error near unexpected token `%s'\n",
 		t->name, input);
-	t->st = 258;
+	g_session->st = 258;
 	lex_reset(&t->lex_st);
 	*t->line->data = '\0';
 	t->line->len = 0;

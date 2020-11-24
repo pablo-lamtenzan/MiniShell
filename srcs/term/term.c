@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   term.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/18 19:29:38 by chamada           #+#    #+#             */
-/*   Updated: 2020/11/14 02:39:19 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/24 12:44:56 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ int			term_prompt(int ac, const char **av, const char **envp,
 		free(term.name);
 		return (-1);
 	}
+	// JUST FIXING TEMPORALLY SEGFAULT
+	int tmp = g_session->st;
 	term_write_prompt(&term, status);
 	while (status & TERM_READING)
 		status = handle_status(&term, term_read(&term, status));
@@ -49,5 +51,6 @@ int			term_prompt(int ac, const char **av, const char **envp,
 		status |= TERM_ERROR;
 	if (term.interactive)
 		write(2, "exit\n", 5);
-	return ((status & TERM_ERROR) ? -1 : term.st);
+	// JUST TEMPORALLY FIXED
+	return ((status & TERM_ERROR) ? -1 : tmp);
 }

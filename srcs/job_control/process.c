@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 14:06:17 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 11:20:47 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ t_exec_status	wait_processes(t_term* term, t_exec_status st)
         if (!update_background(term->session, &fixxxx))
 			return (RDR_BAD_ALLOC);
 		term->session->processes[i] = *fixxxx; // random bullshit test
-        term->st = handle_wstatus(&term->session->processes[i], term->session->nil);		
+        g_session->st = handle_wstatus(&term->session->processes[i], term->session->nil);		
     }
 	// TO DO: if group is not active
 	if (term->session->groups == term->session->nil || !is_active_group(term->session->groups))
@@ -118,6 +118,7 @@ t_exec_status	wait_processes_v2(t_term* term, t_exec_status st)
 {
 	t_group*	group;
 	t_process*	remember;
+	(void)term;
 
 	if (PRINT_DEBUG){
 	ft_dprintf(2, "SESSION GROUPS ACTIVE PROCESSES: %p\n", g_session->groups->active_processes);
@@ -146,7 +147,7 @@ t_exec_status	wait_processes_v2(t_term* term, t_exec_status st)
 		// put flags
 		update_background(&group->active_processes, true);
 		// get return value + print signals if there are
-		term->st = handle_wstatus(group->active_processes);
+		g_session->st = handle_wstatus(group->active_processes);
 		if (PRINT_DEBUG)
 			ft_dprintf(2, "[WAIT PROCESSES V2][PID=\'%d\'][FLAGS=\'%d\']\n", group->active_processes->pid, group->active_processes->flags);
 		group->active_processes = group->active_processes->next;

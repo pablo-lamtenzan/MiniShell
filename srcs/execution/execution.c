@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 15:46:58 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 11:54:05 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static t_exec_status	execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
 		;
 		update_exit_count(info->av[0]);
 		if ((exec_st = get_exec(info, term)) == SUCCESS)
-			term->st = info->exec(info, term);
+			g_session->st = info->exec(info, term);
 		else
 			destroy_execve_args(info);
 		if (PRINT_DEBUG)
@@ -93,6 +93,7 @@ t_exec_status			execute_bst(t_bst* root, t_term* term)
 	remove_exited_zombies();
 	if (!(group = group_new()))
 		return (BAD_ALLOC);
+	group->input = ft_split(g_session->input_line[g_session->input_line_index++], ' ');
 /*	if (PRINT_DEBUG) {
 	if (g_session->groups && g_session->groups->active_processes)
 	{

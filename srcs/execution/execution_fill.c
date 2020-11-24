@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 09:15:58 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 11:10:50 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ t_exec_status		build_execve_args(t_exec* info, t_term* term)
 {
 	if (!(info->execution_path = path_get(info->av[0], env_get(term->env, "PATH", 4))))
 	{
-		term->st = CMD_NOT_FOUND;
+		g_session->st = CMD_NOT_FOUND;
 		return (BAD_PATH);
 	}
 	if (!(info->ep = (char*const*)env_export(term->env)))

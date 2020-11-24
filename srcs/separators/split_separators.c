@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 10:27:06 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 15:31:07 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 12:41:57 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,15 +88,22 @@ int			copy_inter_seps(char*** res, char* input, char** separators)
 
 char**		split_separators(char* input, char** separators)
 {
-	char**	res;
+	char**	res = NULL;
 	size_t	size;
 	
 	size = 0;
-	if (PRINT_DEBUG)
 	if (!(res = ft_calloc((size = get_separators_nb(input, separators)) + 1, sizeof(char*))))
 		return (NULL);
+	//ft_dprintf(2, "\nSLIT SIZE IS: %lu\n", size + 1);
+	res[size] = NULL;
 	if (!(copy_inter_seps(&res, input, separators)))
 		return (false); // TO DO: free in case of error
-	res[size] = NULL;
+
+	// TESTING
+	/*
+	write(2, "\n", 1);
+	for (size_t i = 0; i < size + 1; i++)
+		ft_dprintf(2, "SLIPT BY SEPARATORS[%lu]: \'%s\'\n", i, res[i]);
+	*/
 	return (res);
 }

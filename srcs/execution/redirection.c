@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 08:52:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 17:25:01 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 11:20:32 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 t_exec_status			print_redirection_error(t_redir_status rstatus, char** filename, t_term* term)
 {
+	(void)term;
 	const char*	error_msg[3] = {
 		"minish: %s: No such file or directory\n",
 		"minish: %s: ambigous redirect\n",
@@ -23,7 +24,7 @@ t_exec_status			print_redirection_error(t_redir_status rstatus, char** filename,
 	if (rstatus == RDR_BAD_ALLOC)
 		return (RDR_BAD_ALLOC);
 	ft_dprintf(STDERR_FILENO, error_msg[-rstatus - 1], filename);
-	term->st = STD_ERROR;
+	g_session->st = STD_ERROR;
 	return (SUCCESS);
 }
 
@@ -85,9 +86,9 @@ t_redir_status			redirections_handler(t_exec** info, t_bst* cmd, t_term* term, c
     t_redir_status      redir_st;
 
 	tmp = -1; // TODO: Init
-	if (!cmd->b)
+	if (!(t_tok*)cmd->b)
 		return (CONTINUE);
-	if (!(*filename = tokens_expand((t_tok**)&cmd->b, &term->env, &height))) // TODO
+	if (!(*filename = tokens_expand((t_tok**)&cmd->b, &term->env, &height)) || !(t_tok*)cmd->b) // TODO
 		return (RDR_BAD_ALLOC);
 	if ((redir_st = try_catch_filename(filename, ((t_tok*)cmd->b)->data, height)) != CONTINUE)
         return (redir_st);
