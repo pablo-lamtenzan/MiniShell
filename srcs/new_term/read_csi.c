@@ -12,7 +12,7 @@ t_term_err	term_read_mod_none(t_term *term)
 		//ft_dprintf(2, "[PROMPT][ESC][NONE ] Reentering CSI!\n");
 		return (term_read_csi(term));
 	}
-	ft_dprintf(2, "[PROMPT][ESC][NONE ] %hu\n", c);
+	ft_dprintf(2, "[PROMPT][ESC][NONE ] %hhu\n", c);
 	return (TERM_EOK);
 }
 
