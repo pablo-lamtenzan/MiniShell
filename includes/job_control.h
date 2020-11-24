@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 15:03:11 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 18:47:10 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,20 @@ typedef struct 			s_history
 	struct s_history*	next;
 }						t_history;
 
+typedef struct			s_background
+{
+	t_group**			background_group;
+	struct s_background*	next;
+}						t_background;
+
 typedef struct			s_session
 {
 	t_group*			groups; // all background processes by group
-	t_process			processes[PROCESSES_MAX + 1]; // exec processes
-	t_process			*history;// TO DO: JOBS builtin print cmd when flags != -l
+	t_process			processes[PROCESSES_MAX + 1]; // not used
+	t_process			*history;// not used
 
 	t_history*			hist; // change it name later
+	t_background*		zombies;
 	t_group				*nil;
 	unsigned char		exit_count;
 	int					st;
@@ -125,7 +132,11 @@ void					update_exit_count(const char* name);
 ** Signals catcher
 */
 void					zombies_catcher(int signal);
+void					zombie_catcher_v2(int signal);
+bool					update_zombies(t_group** update);
 void					remove_exited_zombies();
+bool					update_zombies(t_group** update);
+void					remove_zombie_node(t_group* target);
 void					suspend_process(int signal);
 
 
@@ -135,7 +146,9 @@ void					suspend_process(int signal);
 int						parse_flags(int ac, char*const* av, const char* pattern, int *nb_flags);
 const char*				is_in_history(t_process* target);
 bool					is_not_ambigous(t_process* target);
+bool					is_not_ambigous_v2(const char* niddle);
 void					print_index_args(t_process* target);
+int						matrix_height(char **matrix);
 char**					split_separators(char* input, char** separators);
 
 

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 12:40:22 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 15:24:16 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 17:37:51 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,7 @@ t_process**		get_process_by_name(t_group* groups, const char* av)
 					{
 						if (PRINT_DEBUG)
 							ft_dprintf(2, "[DATA][FOUND: %p]\n", groups->active_processes);
-						if (is_leader(groups->active_processes) && is_not_ambigous(groups->active_processes))
+						if (is_leader(groups->active_processes) && is_not_ambigous_v2(&av[1]))
 						return(&groups->active_processes);
 					}
 			}

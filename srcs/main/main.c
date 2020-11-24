@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 16:53:20 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 20:10:53 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,6 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 // TO DO: [CTRL^Z] Print index + history if stopped job is not first (ctrl^Z)
 // TO DO: [CTRL^Z] Print info when i: sleep 22 -> ctrl^Z -> bg -> fg -> ctrl^Z (in the second ctrl^Z)
 // TO DO: [JOBS] print keeps "running" for finisheed background processes
-// TO DO: [JOBSPEC] own is ambigous fct for %?name
 // TO DO: [ALL BUILTINS]: fg, bg, jobs no pid, wait, kill, disown pid (easy cause i ve implemented this for all the builtins)
 // TO DO: [ZOMBIES] handle zombies can segfault cause is fcking async have to make it insegfaultable
 	// if per example a SIGCHLD happend at the same time as the curr cmd (not stopped) is being freed: zombies handler could iterate over a freed node
@@ -136,7 +135,7 @@ void	test(int signal)
 int		main(int ac, const char** av, const char** envp)
 {
 	signal(SIGTSTP, suspend_process);
-	signal(SIGCHLD, zombies_catcher);
+	signal(SIGCHLD, zombie_catcher_v2);
 	//signal(SIGTTIN, test);
 	//signal(SIGTERM, todo); // need documentation about this
 		// maybe it has to send SIGHUB to all the no market child (market in diswon)

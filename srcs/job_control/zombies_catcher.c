@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 03:11:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 11:24:19 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 20:35:01 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,4 +97,89 @@ void			zombies_catcher(int signal)
 		g_session->groups = next_g;
 	}
 	g_session->groups = remember;
+}
+
+
+// New zombie catcher: uses a new data structure who has the groups addresses
+// The idea is to not iterate over the groups cause this turns in async
+// Iterate async over the groups can cause "heap use after free" if theres a SIGCHLD when minishell is deleting a group
+// NOW: only iterates over non deletable groups, so might work nice
+
+void		zombie_catcher_v2(int signal)
+{
+	(void)signal;
+	t_background*	remember;
+	t_background*	next;
+	bool			skip;
+	bool			first_freed;
+	t_process*		remember_leader;
+	int				wreturn;
+
+	remember = g_session->zombies;
+	first_freed = false;
+	while (g_session->zombies)
+	{
+		skip = false;
+		next = g_session->zombies->next;
+		if (*g_session->zombies->background_group)
+		{
+			remember_leader = (*g_session->zombies->background_group)->active_processes;
+			while ((*g_session->zombies->background_group)->active_processes != (*g_session->zombies->background_group)->nil)
+			{
+				if ((*g_session->zombies->background_group)->active_processes->flags & BACKGROUND)
+				{
+					wreturn = waitpid((*g_session->zombies->background_group)->active_processes->pid, &(*g_session->zombies->background_group)->active_processes->wstatus, WNOHANG | WUNTRACED);
+					if (wreturn == -1)
+					{
+						if (PRINT_DEBUG)
+							ft_dprintf(2, "[ZOMBIES CATCHER V2][WAITPID ERROR]\n");
+					}
+					else if (wreturn == 0)
+					{
+						if (PRINT_DEBUG)
+							ft_dprintf(2, "[ZOMBIES CATCHER V2][PROCESS \'%p\' IS IN BACKGROUND]\n", (*g_session->zombies->background_group)->active_processes);
+					}
+					else
+					{
+						if (PRINT_DEBUG)
+							ft_dprintf(2, "[ZOMBIES CATCHER V2 CATCHED \'%p\' SUCESFULLY!]\n", (*g_session->zombies->background_group)->active_processes);
+						
+						// This makes the node in g_session->groups will be rm later (now causse asyncrous results, not preditable)
+						(*g_session->zombies->background_group)->active_processes->flags &= ~BACKGROUND;
+
+						if (WIFEXITED((*g_session->zombies->background_group)->active_processes->wstatus))
+						{
+							// This is for print "Done" in jobs
+							(*g_session->zombies->background_group)->active_processes->flags |= EXITED;
+							// This is for the return status
+							g_session->st = WEXITSTATUS((*g_session->zombies->background_group)->active_processes->wstatus);
+						}
+						else if (WIFSTOPPED((*g_session->zombies->background_group)->active_processes->wstatus))
+						{
+							g_session->st = 148;
+							(*g_session->zombies->background_group)->active_processes->flags |= STOPPED;
+						}
+						else
+						{
+							g_session->st = WTERMSIG((*g_session->zombies->background_group)->active_processes->wstatus) + SIGNAL_BASE;
+						}
+						if (!((*g_session->zombies->background_group)->active_processes->flags & BACKGROUND))
+						{
+							skip = true;
+							if (remember == g_session->zombies)
+								first_freed = true;
+							(*g_session->zombies->background_group)->active_processes = remember_leader;
+							remove_zombie_node(*g_session->zombies->background_group);
+							break ;
+						}
+					}
+				}
+				(*g_session->zombies->background_group)->active_processes = (*g_session->zombies->background_group)->active_processes->next;
+			}
+			if (!skip)
+				(*g_session->zombies->background_group)->active_processes = remember_leader;
+		}
+		g_session->zombies = next;
+	}
+	g_session->zombies = first_freed ? NULL : remember;
 }
