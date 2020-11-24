@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 20:30:34 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 22:53:56 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ t_exec_status			execute_bst(t_bst* root, t_term* term)
 	remove_exited_zombies();
 	if (!(group = group_new()))
 		return (BAD_ALLOC);
+	g_session->open_print = true;
 	group->input = ft_split(g_session->input_line[g_session->input_line_index++], ' ');
 /*	if (PRINT_DEBUG) {
 	if (g_session->groups && g_session->groups->active_processes)

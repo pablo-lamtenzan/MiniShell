@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 20:10:53 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 22:58:55 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,9 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 
 }
 
-// TO DO: [ANY PRINT_SIGNAL_V2 CALL] Redirect fds in job control builtins
+// TO DO: [BUILTINS] Redirect fds in job control builtins
 // TO DO: [KILL] Kill update background issue (can t wait fix it with a flags but i have problems now) I CAN'T WAIT IT IN KILL BUT I CAN WAIT AFTER IN FG WHY?????????????????????
 // TO DO: [ALL BUILTINS] All builtins has error msg for pid and jobspec i have the same error msg...
-// TO DO: [JOBS] If Ret st != 0 -> Jobs print it
 // TO DO: [ALL BUILTINS] optimize builtins
 // TO DO: [OPTIONAL] put color in the prompt
 // TO DO: [KILL] Jobspec parser segmentation fault (reads NULL) -> sleep 22 + crtl^Z + sleep 22 + clrt^Z + kill -QUIT %sleep
@@ -90,9 +89,7 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 // TO DO: [CTRL^Z] Print info when i: sleep 22 -> ctrl^Z -> bg -> fg -> ctrl^Z (in the second ctrl^Z)
 // TO DO: [JOBS] print keeps "running" for finisheed background processes
 // TO DO: [ALL BUILTINS]: fg, bg, jobs no pid, wait, kill, disown pid (easy cause i ve implemented this for all the builtins)
-// TO DO: [ZOMBIES] handle zombies can segfault cause is fcking async have to make it insegfaultable
-	// if per example a SIGCHLD happend at the same time as the curr cmd (not stopped) is being freed: zombies handler could iterate over a freed node
-	// How solve it? Dont iterate xD
+
 
 // UNWORKING STUFF I FOUND
 // echo $? doesnt work
@@ -123,6 +120,8 @@ void	suspend_process(int signal)
 	(void)signal;
 
 	write(2, "\n", 1);
+	if (g_session->open_print)
+		print_signal(2, g_session->groups->active_processes, 0);
 	
 }
 

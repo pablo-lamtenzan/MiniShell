@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 12:03:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 15:56:28 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 22:43:13 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ void			print_process(t_process* target, int flags)
 		return ;
 	if (flags & 4 && (WIFEXITED(target->wstatus) || !WIFSTOPPED(target->wstatus))) // -s print stopped
 		return ;
-	print_signal_v2(target, flags & 8 ? 3 : 2);
+	print_signal(2, target, flags & 8);
 	//ft_dprintf(2, "PRINTS: %p\n", target);
 	// [group index if leader][history index][space(s)][pid if -l][status][spaces][av]
 	/*ft_dprintf(STDERR_FILENO, "%s%s%s%s %s %-19s",
@@ -189,7 +189,7 @@ void			print_all_leaders(int flags)
 		// TO DO: check in all the list i think
 		if (!(flags & 2 && (WIFEXITED(g_session->groups->nil->next->wstatus) || WIFSTOPPED(g_session->groups->nil->next->wstatus))) 
 				&& !(flags & 4 && (WIFEXITED(g_session->groups->nil->next->wstatus) || !WIFSTOPPED(g_session->groups->nil->next->wstatus))))
-			print_signal_v2(g_session->groups->nil->next, 4);
+			print_signal(2, g_session->groups->nil->next, 0);
 		g_session->groups = g_session->groups->prev;
 	}
 	g_session->groups = remember;
@@ -262,7 +262,7 @@ int				ft_jobs(t_exec* args, t_term* term)
 					print_group(*target, flags < 0 ? 0 : flags, g_session->groups);
 				else if (!(flags > 0 && flags & 2 && (WIFEXITED((*target)->wstatus) || WIFSTOPPED((*target)->wstatus))) 
 					&& !(flags > 0 && flags & 4 && (WIFEXITED((*target)->wstatus) || !WIFSTOPPED((*target)->wstatus))))
-					print_signal_v2(*target, 2);
+					print_signal(2, *target, 0);
 			}
 			return (SUCCESS);
 		}

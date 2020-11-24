@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 18:47:10 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 22:52:43 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ typedef struct			s_session
 	int					st;
 	char**				input_line;
 	size_t				input_line_index;
+	bool				open_print;
 }						t_session;
 
 t_session*				g_session;
@@ -125,6 +126,7 @@ size_t					get_background_index(t_group* nil, t_process* target);
 void					force_exit_background();
 bool					is_leader(t_process* target);
 t_group*				get_group(t_process* target);
+void					print_signal(int fd, t_process* target, int mode);
 void					handle_exit_with_active_background(int exit_status);
 void					update_exit_count(const char* name);
 

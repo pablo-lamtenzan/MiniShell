@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 14:03:31 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 22:29:42 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ int		ft_fg(t_exec* args, t_term* term)
 	//ft_dprintf(2, "*target = %p\n", *target);
 	//ft_dprintf(2, "active processes = %p\n", g_session->groups->active_processes == g_session->groups->nil ? g_session->groups->next->active_processes : g_session->groups->active_processes);
 
-	print_job_args(*target);
+	print_job_args(2, *target);
 	write(STDERR_FILENO, "\n", 1);
 	if (PRINT_DEBUG)
 		ft_dprintf(2, "[FG] [session->groups before resume][%p]\n", g_session->groups);

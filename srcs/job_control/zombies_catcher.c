@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 03:11:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 20:35:01 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 22:42:46 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,8 @@ void		zombie_catcher_v2(int signal)
 	t_process*		remember_leader;
 	int				wreturn;
 
+	if (!g_session)
+		return ;
 	remember = g_session->zombies;
 	first_freed = false;
 	while (g_session->zombies)
@@ -169,6 +171,7 @@ void		zombie_catcher_v2(int signal)
 							if (remember == g_session->zombies)
 								first_freed = true;
 							(*g_session->zombies->background_group)->active_processes = remember_leader;
+							// IF THIS CAUSES PROBLEMS I CAN JUST MARK THE NODES AND FREE THEM NEXT
 							remove_zombie_node(*g_session->zombies->background_group);
 							break ;
 						}

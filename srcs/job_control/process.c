@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 11:20:47 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 22:58:14 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static int	handle_wstatus(t_process* target)
 		//target->wstatus = WSTOPSIG(target->wstatus);
 	if (PRINT_DEBUG)
 		ft_dprintf(2, "[HANDLE WSTATUS][PROCESS; \'%d\' IS SIGNALED OR STOPPED]\n", target->pid);
-	print_signal_v2(target, 2);
+	print_signal(STDERR_FILENO, target, 0);
 	return (SIGNAL_BASE + (WIFSTOPPED(target->wstatus) ? WSTOPSIG(target->wstatus) : WTERMSIG(target->wstatus)));
 }
 
@@ -145,6 +145,7 @@ t_exec_status	wait_processes_v2(t_term* term, t_exec_status st)
 	while (group->active_processes != group->nil)
 	{
 		// put flags
+		g_session->open_print = false;
 		update_background(&group->active_processes, true);
 		// get return value + print signals if there are
 		g_session->st = handle_wstatus(group->active_processes);
