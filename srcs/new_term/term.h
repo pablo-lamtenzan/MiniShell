@@ -108,6 +108,11 @@ t_term_err			term_write(t_term *term, const char *input, size_t length);
 bool				term_init_caps(t_term *term, t_env **env);
 
 /*
+**					keybind.c
+*/
+t_term_action		keybind_get(const t_keybind *keybinds, size_t n, char key);
+
+/*
 **					read.c
 */
 t_term_err			term_read_caps(t_term *term);
