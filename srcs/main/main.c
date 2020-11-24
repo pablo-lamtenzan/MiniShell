@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 22:58:55 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 23:09:12 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,8 +85,6 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 // TO DO: [PIPES WITH STOPPED] return (g_session->st) last pipe process ret when theres stopped ? (check things like that for bg, kill...)
 // TO DO: [JOBS] must print exit status if its != 0
 // TO DO: [JOBS] witout -l no spaces between pipes and cmds
-// TO DO: [CTRL^Z] Print index + history if stopped job is not first (ctrl^Z)
-// TO DO: [CTRL^Z] Print info when i: sleep 22 -> ctrl^Z -> bg -> fg -> ctrl^Z (in the second ctrl^Z)
 // TO DO: [JOBS] print keeps "running" for finisheed background processes
 // TO DO: [ALL BUILTINS]: fg, bg, jobs no pid, wait, kill, disown pid (easy cause i ve implemented this for all the builtins)
 
