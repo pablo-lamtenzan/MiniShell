@@ -24,26 +24,26 @@ t_term_err			term_write_msg(t_term *t, const char *msg, size_t len)
 	const size_t	remainder = (overflow) ? len - t->origin : t->origin - len;
 
 	//ft_dprintf(2, "overlap: %lu, remainder: %lu\n", overlap, remainder);
-	tputs(tgoto(t->caps.ctrl.move_h, 0, 0), 0, &putc_err);
+	tputs(tgoto(t->caps.ctrl.move_h, 0, 0), 1, &putc_err);
 	if (overlap != 0)
 	{
-		tputs(t->caps.mode.insert_end, 0, &putc_err);
+		tputs(t->caps.mode.insert_end, 1, &putc_err);
 		if (write(STDERR_FILENO, msg, overlap) == -1)
 			return (TERM_EWRITE);
-		tputs(t->caps.mode.insert, 0, &putc_err);
+		tputs(t->caps.mode.insert, 1, &putc_err);
 	}
 	if (remainder != 0)
 	{
 		if (!overflow)
 		{
-			//tputs(tgoto(t->caps.ctrl.move_h, 0, len - 1), 0, &putc_err);
+			//tputs(tgoto(t->caps.ctrl.move_h, 0, overlap), 0, &putc_err);
 			tputs(t->caps.ctrl.del_n, remainder, &putc_err);
 		}
 		else if (write(STDERR_FILENO, msg + t->origin, remainder) == -1)
 			return (TERM_EWRITE);
 	}
 	t->origin = len;
-	tputs(tgoto(t->caps.ctrl.move_h, 0, t->origin + t->pos), 0, &putc_err);
+	tputs(tgoto(t->caps.ctrl.move_h, 0, t->origin + t->pos), 1, &putc_err);
 	return (TERM_EOK);
 }
 

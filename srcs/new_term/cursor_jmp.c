@@ -2,7 +2,7 @@
 
 t_term_err	cursor_start_line(t_term *term)
 {
-	tputs(tgoto(term->caps.ctrl.move_h, 0, term->origin), 0, &putc_err);
+	tputs(tgoto(term->caps.ctrl.move_h, 0, term->origin), 1, &putc_err);
 	term->pos = 0;
 	return (TERM_EOK);
 }
@@ -13,7 +13,7 @@ t_term_err	cursor_end_line(t_term *term)
 	{
 		term->pos = term->line->len;
 		tputs(tgoto(term->caps.ctrl.move_h, 0, term->origin + term->pos),
-			0, &putc_err);
+			1, &putc_err);
 	}
 	return (TERM_EOK);
 }

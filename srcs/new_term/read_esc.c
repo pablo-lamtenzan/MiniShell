@@ -21,12 +21,12 @@ static t_term_err	repeat_atoi(t_term *term, char *c, uint32_t *rep_dest)
 	{
 		if (*c != '0' || digits == 0)
 		{
-			tputs(tgoto(term->caps.ctrl.move_h, 0, sizeof(TERM_RPT_PRE) - 1 + digits), 0, &putc_err);
+			tputs(tgoto(term->caps.ctrl.move_h, 0, sizeof(TERM_RPT_PRE) - 1 + digits), 1, &putc_err);
 			if (write(STDERR_FILENO, c, 1) == -1)
 				return (TERM_EWRITE);
 			digits++;
 			term->origin++;
-			tputs(tgoto(term->caps.ctrl.move_h, 0, term->origin + term->pos), 0, &putc_err);
+			tputs(tgoto(term->caps.ctrl.move_h, 0, term->origin + term->pos), 1, &putc_err);
 			repeat = (10 * repeat) + (*c - '0');
 		}
 		if ((read_st = read(0, c, 1)) == -1)
