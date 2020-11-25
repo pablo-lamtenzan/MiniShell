@@ -66,7 +66,7 @@ t_term_err	term_read_caps(t_term *term)
 	status = TERM_EOK;
 	term->line = term->hist.next;
 	term->pos = 0;
-	tputs(term->caps.mode.insert, 0, ft_putchar);
+	tputs(term->caps.mode.insert, 1, ft_putchar);
 	while (status == TERM_EOK)
 	{
 		if ((read_st = read(STDIN_FILENO, &c, 1)) != 1)
@@ -82,6 +82,6 @@ t_term_err	term_read_caps(t_term *term)
 		else
 			term->pos++;
 	}
-	tputs(term->caps.mode.insert_end, 0, ft_putchar);
+	tputs(term->caps.mode.insert_end, 1, ft_putchar);
 	return (status);
 }
