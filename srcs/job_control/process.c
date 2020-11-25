@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 11:20:47 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 16:14:18 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static int	handle_wstatus(t_process* target)
 		//target->wstatus = WSTOPSIG(target->wstatus);
 	if (PRINT_DEBUG)
 		ft_dprintf(2, "[HANDLE WSTATUS][PROCESS; \'%d\' IS SIGNALED OR STOPPED]\n", target->pid);
-	print_signal_v2(target, 2);
+	print_signal(STDERR_FILENO, target, 0);
 	return (SIGNAL_BASE + (WIFSTOPPED(target->wstatus) ? WSTOPSIG(target->wstatus) : WTERMSIG(target->wstatus)));
 }
 
@@ -126,14 +126,30 @@ t_exec_status	wait_processes_v2(t_term* term, t_exec_status st)
 	ft_dprintf(2, "SESSION GROUP NIL: %p\n", g_session->groups->nil);
 	ft_dprintf(2, "GROUP ADDR: %p\n", g_session->groups);}
 
-	
+	/*
+	if (g_session->groups->next && g_session->groups->next != g_session->nil)
+	{
+
+		ft_dprintf(2, "-----------> TEST: %d\n", g_session->groups->next->active_processes->flags);
+
+		if (g_session->groups->next->active_processes->flags & SIGNALED && !(g_session->groups->next->active_processes->flags & KILLED))
+		g_session->groups->active_processes->flags &= ~SIGNALED;
+		if (g_session->groups->next->active_processes->flags & KILLED)
+		{
+			g_session->groups->next->active_processes->flags &= ~KILLED;
+			ft_dprintf(2, "[REMOVE KILL FLAG]\n");
+		}
+	}
+	*/
+
 	// Catch builtins
 	if (!(group = g_session->groups) || g_session->groups->active_processes == g_session->groups->nil)
 	{
 		if (PRINT_DEBUG){
 		if (g_session->groups->next && g_session->groups->next->active_processes)
 			ft_dprintf(2, "[WAIT V2][PREVIOUS GROUP LEADER FLAGS ARE: %d][\'%p\']\n", g_session->groups->next->active_processes->flags, g_session->groups->next->active_processes);}
-		group_pop_front();
+		if (!(g_session->groups->active_processes->flags & SIGNALED))
+			group_pop_front();
 		if (PRINT_DEBUG) {
 		if (g_session->groups && g_session->groups->active_processes)
 			ft_dprintf(2, "[WAIT V2][PREVIOUS GROUP LEADER FLAGS ARE: %d][\'%p\']\n", g_session->groups->active_processes->flags, g_session->groups->active_processes);}
@@ -145,6 +161,7 @@ t_exec_status	wait_processes_v2(t_term* term, t_exec_status st)
 	while (group->active_processes != group->nil)
 	{
 		// put flags
+		g_session->open_print = false;
 		update_background(&group->active_processes, true);
 		// get return value + print signals if there are
 		g_session->st = handle_wstatus(group->active_processes);

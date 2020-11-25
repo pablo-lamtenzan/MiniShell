@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:48:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 09:15:26 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 17:05:51 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,9 +103,7 @@ void			disown_process(t_process** target, int flags)
 		(*target)->flags |= NO_HANGUP;
 		return ;
 	}
-	while (++i < 2) // check 2 times: 1 for + and another for -
-		if (g_session->hist && background_find(*target, "PID", g_session->hist->group))
-			history_pop_front_v2();
+
 	if (PRINT_DEBUG) {
 	ft_dprintf(2, "[DISOWN][flags: %d][\'%p\']\n", (*target)->flags, *target);}
 	if ((*target)->flags & STOPPED)
@@ -160,7 +158,9 @@ void		disown_group(t_process* leader, int flags, t_group* itself)
 			}
 			if (!is_active_group(g_session->groups))
 			{
+				remove_history_node(g_session->groups);
 				t_group*	fill = g_session->groups;
+				
 				g_session->groups->prev->next = g_session->groups->next;
 				g_session->groups->next->prev = g_session->groups->prev;
 				free(fill);
@@ -231,11 +231,12 @@ int		ft_disown(t_exec* args, t_term* term)
 	t_process** target;
 	int i;
 	(void)term;
+	int nb;
 
 	flags = 0;
 	i = -1;
 	target = NULL;
-	if ((flags = parse_flags(args->ac, args->av[1], "rah")) < 0 && args->av[1][0] == '-')
+	if ((flags = parse_flags(args->ac, &args->av[1], "rah", &nb)) < 0 && args->av[nb + 1][0] == '-')
 	{
 		ft_dprintf(STDERR_FILENO, "%s", "minish: usage: disown: [-h] [-ar] [jobspec ... | pid ...]\n");
 		return (CMD_BAD_USE);
@@ -251,19 +252,20 @@ int		ft_disown(t_exec* args, t_term* term)
 	}
 	if (args->ac > 1)
 	{
-		if (flags < 0 || !(flags & 3)) // not have to disown all
+		ft_dprintf(2, "FLAGS ----> %d\n", flags);
+		if (flags < 0 || !(flags & 2)) // not have to disown all
 		{
 			// disown jobspecs
-			if (PRINT_DEBUG)
-				ft_dprintf(2, "[DISOWN JOBSPEC: flags: %d --- %d]\n", flags, args->ac - (flags > 0 ? 2 : 1));
-
-			while (++i < args->ac - (flags > 0 ? 2 : 1))
+			//if (PRINT_DEBUG)
+				ft_dprintf(2, "[DISOWN JOBSPEC: flags: %d --- %d]\n", flags, args->ac - nb - 1);
+			while (++i < args->ac - nb - 1)
 			{
-				if (!(target = jobspec_parser(args->ac, &args->av[flags > 0 ? 1 : 0], NULL)))
+				if (!(target = jobspec_parser(args->ac, &args->av[nb + i], NULL)))
 				{
-					ft_dprintf(STDERR_FILENO, "minish: disown: %s: no such job\n", args->av[2]);
+					ft_dprintf(STDERR_FILENO, "minish: disown: %s: no such job\n", args->av[nb + i + 1]);
 					return (STD_ERROR);
 				}
+				flags = flags < 0 ? -flags : flags;
 				disown_group(*target, flags < 0 ? 0 : flags, g_session->groups);
 			}
 		}

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 11:57:13 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 17:53:27 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,10 @@
 #define	BACKGROUND		1
 #define STOPPED			2
 #define EXITED			4
-#define RESTRICT_OP		8
-#define NO_HANGUP		16
+#define SIGNALED		8
+#define KILLED			16	
+#define RESTRICT_OP		32
+#define NO_HANGUP		64
 
 typedef struct 			s_process
 {
@@ -55,18 +57,26 @@ typedef struct 			s_history
 	struct s_history*	next;
 }						t_history;
 
+typedef struct			s_background
+{
+	t_group**			background_group;
+	struct s_background*	next;
+}						t_background;
+
 typedef struct			s_session
 {
 	t_group*			groups; // all background processes by group
-	t_process			processes[PROCESSES_MAX + 1]; // exec processes
-	t_process			*history;// TO DO: JOBS builtin print cmd when flags != -l
+	t_process			processes[PROCESSES_MAX + 1]; // not used
+	t_process			*history;// not used
 
 	t_history*			hist; // change it name later
+	t_background*		zombies;
 	t_group				*nil;
 	unsigned char		exit_count;
 	int					st;
 	char**				input_line;
 	size_t				input_line_index;
+	bool				open_print;
 }						t_session;
 
 t_session*				g_session;
@@ -118,6 +128,7 @@ size_t					get_background_index(t_group* nil, t_process* target);
 void					force_exit_background();
 bool					is_leader(t_process* target);
 t_group*				get_group(t_process* target);
+void					print_signal(int fd, t_process* target, int mode);
 void					handle_exit_with_active_background(int exit_status);
 void					update_exit_count(const char* name);
 
@@ -125,17 +136,24 @@ void					update_exit_count(const char* name);
 ** Signals catcher
 */
 void					zombies_catcher(int signal);
+void					zombie_catcher_v2(int signal);
+bool					update_zombies(t_group** update);
 void					remove_exited_zombies();
+bool					update_zombies(t_group** update);
+void					remove_zombie_node(t_group* target);
 void					suspend_process(int signal);
 
 
 /*
 ** Utils
 */
-int						parse_flags(int ac, const char* av, const char* pattern);
+int						parse_flags(int ac, char*const* av, const char* pattern, int *nb_flags);
 const char*				is_in_history(t_process* target);
 bool					is_not_ambigous(t_process* target);
+bool					is_not_ambigous_v2(const char* niddle);
 void					print_index_args(t_process* target);
+int						matrix_height(char **matrix);
+bool					ignore_pid(int ac, char*const* av);
 char**					split_separators(char* input, char** separators);
 
 
@@ -167,7 +185,7 @@ void					update_groups(t_session* session, t_group** group);
 void					force_exit_background(t_session* session);
 */
 
-t_process**				jobspec_parser(int ac, char*const* av, t_process** (*fill)(int ac, char*const* av));
+t_process**				jobspec_parser(int ac, char*const* av, bool (*fill)(int ac, char*const* av));
 bool					is_string_digit(const char* string);
 
 

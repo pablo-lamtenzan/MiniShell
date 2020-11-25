@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:20:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 09:15:16 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/24 22:43:23 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int			wait_process(t_process** target, int flags)
 		return (CMD_NOT_FOUND);
 	}
 	// TO DO: PRINTS THE INPUT CMD
-	print_signal_v2(*target, 2);
+	print_signal(2, *target, 0);
 	return (WEXITSTATUS((*target)->wstatus));
 }
 
@@ -136,17 +136,18 @@ int			ft_wait(t_exec* args, t_term* term)
 	static int last_return = SUCCESS;
 	int			tmp;
 	t_process**	target;
+	int nb;
 
 	flags = 0;
 	i = -1;
-	if ((flags = parse_flags(args->ac, args->av[1], "nf")) < 0 && args->av[1][0] == '-') // lexer error flags
+	if ((flags = parse_flags(args->ac, &args->av[1], "nf", &nb)) < 0 && args->av[nb + 1][0] == '-') // lexer error flags
 	{
 		ft_dprintf(STDERR_FILENO, "minish: wait: %s: inalid option\n%s\n", args->av[1], "wait: usage: wait [-fn] [id ...]");
 		return (CMD_BAD_USE);
 	}
 	if (session_empty() || g_session->groups->next == g_session->nil)
 	{
-		ft_dprintf(2, "[WAIT FLAGS][%d]\n", flags);
+		//ft_dprintf(2, "[WAIT FLAGS][%d]\n", flags);
 		if (args->ac > 1 && flags < 0)
 		{
 			if (!is_string_digit(args->av[1]))
@@ -160,17 +161,19 @@ int			ft_wait(t_exec* args, t_term* term)
 	if (args->ac > 1)
 	{
 
-		if (args->ac >= 2)
+		if (args->ac > nb + 1)
 		{
-			while (++i < args->ac - (flags > 0 ? 2 : 1))
+			// TO DO: Don t need the whil eonly 1 jobspec possible
+			while (++i < args->ac - nb - 1)
 			{
-				if (!(target = jobspec_parser(args->ac, &args->av[flags > 0 ? 1 : 0], NULL)))
+				if (!(target = jobspec_parser(args->ac, &args->av[nb + i], NULL)))
 				{
 					// TO DO ERROR PID
-					ft_dprintf(STDERR_FILENO, "bash: wait: %s: no such job\n", args->av[flags > 0 ? 1 : 0]);
+					ft_dprintf(STDERR_FILENO, "bash: wait: %s: no such job\n", args->av[nb + i + 1]);
 					return (CMD_NOT_FOUND);
 				}
 				tmp = last_return;
+				flags = flags < 0 ? -flags : flags;
 				last_return = wait_group(*target, flags < 0 ? 0 : flags, g_session->groups);
 				return (!flags ? tmp : last_return);
 			}

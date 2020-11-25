@@ -1,15 +1,15 @@
 /* ************************************************************************** */
-/*                                                          LE - /            */
-/*                                                              /             */
-/*   print_signals.c                                  .::    .:/ .      .::   */
-/*                                                 +:+:+   +:    +:  +:+:+    */
-/*   By: chamada <chamada@student.le-101.fr>        +:+   +:    +:    +:+     */
-/*                                                 #+#   #+    #+    #+#      */
-/*   Created: 2020/11/13 21:45:15 by pablo        #+#   ##    ##    #+#       */
-/*   Updated: 2020/11/24 14:58:29 by chamada     ###    #+. /#+    ###.fr     */
-/*                                                         /                  */
-/*                                                        /                   */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   print_signals.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
+/*   Updated: 2020/11/25 16:43:31 by pablo            ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
+
 #include <signals.h>
 #include <sys/wait.h>
 #include <job_control.h>
@@ -189,13 +189,13 @@ void	print_signals(t_process* target, t_group* nil)
 // SIGSTOP 127
 
 
-void	print_job_args(t_process* target)
+void	print_job_args(int fd, t_process* target)
 {
 	int i;
 
 	i = -1;
 	while (target && target->data && target->data[++i])
-		ft_dprintf(STDERR_FILENO, "%s%s", target->data[i], target->data[i + 1] ? " " : "");
+		ft_dprintf(fd, "%s%s", target->data[i], target->data[i + 1] ? " " : "");
 }
 
 // THIS PRINTS ALL THE CMD LINE NOT THE ARSG!!!!!
@@ -211,7 +211,7 @@ void	print_index_args(t_process* target)
 		leader ? "]" : " ",
 		is_in_history(target)
 		);
-	print_job_args(target);
+	print_job_args(2, target);
 	free(index);
 }
 
@@ -219,8 +219,152 @@ void	print_index_args(t_process* target)
 # define PRINT_JOB_ARGS	2
 # define PRINT_JOBS_CMD	4
 
-// TO DO: CORE DUMPED WORK ONLY WITH THE WSTATUS ...
-// TO DO: TARGET wstatus can t be transformed (has to be ret of wait)
+// Status of leader is always stopped if any elem is stopped in mode not pid
+// In mode pid each elem has its Status
+// must have a fds to print
+// Must print exit status if != 0
+// MUst stop printting Runnig for background
+// Must print done for exit == 0
+// Must not print the index and the history when is the result of a fork and its not stopped signal
+// Must be called after a fork, after ctrl z (1 TIME) and in all the builtins
+
+// Need 2 Modes:
+	// [index][+/-](if stopped signal group)[GROUP STATUS][CORE](cmd only args for stopped)[CMD] // STANDART
+	// [index][+/-](if leader and if stopped signal group)[PID][PROCESS STATUS][ARGS] // advanced (can add pipes at the end)
+
+# define STANDART		0
+# define ADVANCED		1
+
+const char*	get_signal(int index)
+{
+	static const char*		signals[33] = {
+		"Hangup", "", "Quit", "Illegal instruction", "Trace/breakpoint trap", "Aborted", \
+		"Bus error", "Floating point exception", "Killed", "User defined signal 1", \
+		"Segmentation fault", "User defined signal 2","", "Alarm clock", "Terminated", "Stack fault", \
+		"", "", "Stopped", "Stopped", "Stopped", "Stopped", "", "CPU time limit exceeded", \
+		"File size limit exceeded", "Virtual timer expired", "Profiling timer expired", "I/O possible", \
+		"Power failure", "Bad system call", "Done", "Exit", "Running"
+	};
+	return (signals[index - 1]);
+}
+
+int		check_wstatus(t_process* target, int *exit_status)
+{
+	if (target->flags & BACKGROUND)
+		return (33);
+	else if (WIFEXITED(target->wstatus))
+	{
+		if ((*exit_status = WEXITSTATUS(target->wstatus)))
+			return (32);
+		else
+			return (31);
+	}
+	else if (WIFSTOPPED(target->wstatus))
+		return (WSTOPSIG(target->wstatus));
+	else
+	{
+		// TO DO: THis works but coulb some exeptions that make it working when i haven't to
+			// The idea was do this with SIGNALED... BUT with WXITED seems work too
+			// Just have to test all the cases
+		if (target->flags & SIGNALED)
+			*exit_status = 0;
+		return (WTERMSIG(target->wstatus));
+	}
+}
+
+bool	stopped_signal(int signal, bool ignore_tstp)
+{
+	return (signal == SIGSTOP || (!ignore_tstp && signal == SIGTSTP) || signal == SIGTTIN || signal == SIGTTOU);
+}
+
+bool	stopped_signal_group(t_group* group, bool wcheck)
+{
+	t_process	*leader;
+	
+	leader = group->active_processes;
+	while (leader != group->nil)
+	{
+		if (leader->flags & STOPPED || (wcheck && WIFSTOPPED(leader->wstatus)))
+			return (true);
+		leader = leader->next;
+	}
+	return (false);
+}
+
+bool	group_coredump(t_group* group)
+{
+	t_process* leader;
+
+	leader = group->active_processes;
+	while (leader != group->nil)
+	{
+		if (__WCOREDUMP(leader->wstatus))
+			return (true);
+		leader = leader->next;
+	}
+	return (false);	
+}
+
+# define SIGNAL_PADDING 18
+
+void	padding_spaces(int fd, size_t alreaddy_written)
+{
+	int i;
+
+	i = -1;
+	while (++i < SIGNAL_PADDING - (int)alreaddy_written)
+		write(fd, " ", 1);
+}
+
+void	print_group_line(int fd, t_group *group)
+{
+	int i;
+	
+	i = -1;
+	while (group && group->input && group->input[++i])
+		ft_dprintf(fd, "%s%s", group->input[i], group->input[i + 1] ? " " : "");
+}
+
+void	print_signal(int fd, t_process* target, int mode)
+{
+	char*	freed[3];
+	int		signal;
+	const bool is__leader = is_leader(target);
+	int		exit_status;
+	t_group*	aux;
+
+	exit_status = -1;
+	aux = get_group(target);
+	ft_bzero(freed, sizeof(freed));
+	if (stopped_signal(signal = check_wstatus(target, &exit_status), true))
+		write(fd, "\n", 1);
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "[TEST PRINT SIGNALS][SIGNAL: %d]\n", signal);
+	ft_dprintf(fd, "%s%s%s%s%s%s%s%s%s %s",
+		(stopped_signal_group(aux, true) || !exit_status) && (!mode || (mode && is__leader)) ? "[" : (mode ? " " : ""),
+		(stopped_signal_group(aux, true) || !exit_status) && (!mode || (mode && is__leader)) ? freed[0] = ft_itoa(get_background_index(g_session->nil, target)) : (mode ? " " : ""),
+		(stopped_signal_group(aux, true) || !exit_status) && (!mode || (mode && is__leader)) ? "]" : (mode ? " " : ""),
+		(stopped_signal_group(aux, true) || !exit_status) && (!mode || (mode && is__leader)) ? is_in_history(target) : (mode ? " " : ""),
+		(stopped_signal_group(aux, true) || !exit_status) && (!mode || (mode && is__leader)) ? " " : "",
+		mode ? freed[1] = ft_itoa(target->pid) : "",
+		(stopped_signal_group(aux, true) || !exit_status) && (!mode || (mode && is__leader)) ? " " : "",
+		(!mode && stopped_signal_group(aux, false) ? "Stopped" : get_signal(signal)),
+		exit_status > 0 ? freed[2] = ft_itoa(exit_status) : "",
+		(mode && __WCOREDUMP(target->wstatus)) || (!mode && group_coredump(aux)) ? "(core dumped)" : ""
+	);
+	if (stopped_signal(signal, false) || signal == 33 || signal == 31 || target->flags & SIGNALED)
+	{
+		padding_spaces(fd, ft_strlen((!mode && is_active_group(aux) ? "Stopped" : get_signal(signal))));
+		mode ? print_job_args(fd, target) : print_group_line(fd, aux);
+	}
+	write(fd, "\n", 1);
+	free(freed[0]);
+	free(freed[1]);
+	free(freed[2]);
+}
+
+
+
 
 void	print_signal_v2(t_process* target, int flags)
 {
@@ -280,7 +424,7 @@ void	print_signal_v2(t_process* target, int flags)
 			ft_dprintf(STDERR_FILENO, "%s%s", g->input[i], g->input[i + 1] ? " " : "");
 	}
 	else if (flags & PRINT_JOB_ARGS && target->data)
-		print_job_args(target);
+		print_job_args(2,target);
 	write(STDERR_FILENO, "\n", 1);
 	free(pid);
 	free(index);

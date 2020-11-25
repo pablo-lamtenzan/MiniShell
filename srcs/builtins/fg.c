@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 14:20:05 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 17:51:30 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,15 @@
 
 */
 
-void	resume_group(t_process* leader)
+bool	ignore_pid(int ac, char*const* av)
+{
+	(void)ac;
+	if (is_string_digit(av[1]))
+		return (false);
+	return (true);
+}
+
+void		resume_group(t_process* leader)
 {
 	t_group*	remember;
 	t_process*	remember_leader;
@@ -56,7 +64,7 @@ void	resume_group(t_process* leader)
 					kill(g_session->groups->active_processes->pid, SIGCONT);
 					if (PRINT_DEBUG)
 					ft_dprintf(2, "[FG][UPDATE BACKGROUND]\n");
-					update_background(&g_session->groups->active_processes, true);
+					update_background(&g_session->groups->active_processes, true);	
 				}
 				g_session->groups->active_processes = g_session->groups->active_processes->next;
 			}
@@ -99,7 +107,7 @@ int		ft_fg(t_exec* args, t_term* term)
     if (args->ac > 1)
     {
 		// TO DO: if jobspec is pid has to resume is grou p or just the process ?
-        if (!(target = jobspec_parser(args->ac, args->av, NULL)))
+        if (!(target = jobspec_parser(args->ac, args->av, ignore_pid)))
 		{
             ft_dprintf(STDERR_FILENO, "minish: fg: %s: no such job\n", args->av[1]);
             return (STD_ERROR);
@@ -114,15 +122,11 @@ int		ft_fg(t_exec* args, t_term* term)
 	//ft_dprintf(2, "*target = %p\n", *target);
 	//ft_dprintf(2, "active processes = %p\n", g_session->groups->active_processes == g_session->groups->nil ? g_session->groups->next->active_processes : g_session->groups->active_processes);
 
-	print_job_args(*target);
+	print_job_args(STDERR_FILENO, *target);
 	write(STDERR_FILENO, "\n", 1);
 	if (PRINT_DEBUG)
 		ft_dprintf(2, "[FG] [session->groups before resume][%p]\n", g_session->groups);
-	// termary for skip itself, leader must be next->active_processes
+
 	resume_group(*target);
-	if (PRINT_DEBUG) {
-	ft_dprintf(2, "[FG] [session->groups after resume][%p]\n", g_session->groups);
-	ft_dprintf(2, "[FG]ACTIVE PROCESSES AT THE END: \'%p\'\n", g_session->groups->active_processes == g_session->groups->nil ? g_session->groups->next->active_processes : g_session->groups->active_processes);
-	}
     return (SUCCESS);
 }

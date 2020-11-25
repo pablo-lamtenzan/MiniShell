@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 13:02:45 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 03:17:46 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void		update_background(t_process **target, bool wait)
 	// stopped
 	else
 	{
-		if (PRINT_DEBUG)
+		//if (PRINT_DEBUG)
 			ft_dprintf(2, "[PROCESS DOESN'T EXIT]\n");
 		(*target)->flags |= STOPPED;
 		g_session->st = 148;
@@ -116,10 +116,26 @@ bool			update_session_history_v2(t_group* update)
 	return (true);
 }
 
+bool			update_zombies(t_group** update)
+{
+	t_background*	fill;
+	t_background*	zombie;
+
+	if (!update || !(zombie = ft_calloc(1, sizeof(t_background))))
+		return (false);
+	*zombie = (t_background){.background_group=update};
+	fill = g_session->zombies;
+	g_session->zombies = zombie;
+	zombie->next = fill;
+	//ft_dprintf(2, "UPDATE ZOMBIES: NEW NODE IN ZOMBIE LIST CONTANING THE ADDR: %p [\'%p\']\n", g_session->zombies, *update);
+	return (true);
+}
+
 t_process**		background_find(t_process* target, const char* search_type, t_group* group)
 {
 	const char*	modes[2] = { "PID", "STA" };
 	int 		i;
+	ft_dprintf(2, "[TEST: %p]\n", group);
 	t_process*	remember = group->active_processes;
 
 	i = 0;
@@ -178,7 +194,7 @@ bool		is_active_group(t_group* target)
 		ft_dprintf(2, "[IS ACTIVE GROUP (leader): %p]\n", process);
 	while (process != target->nil)
 	{
-		if (process->flags & (BACKGROUND | STOPPED))
+		if (process->flags & (BACKGROUND | STOPPED | SIGNALED))
 			return (true);
 		process = process->next;
 	}
@@ -294,6 +310,29 @@ bool			is_not_ambigous(t_process* target)
 	return (count == 1);
 }
 
+bool			is_not_ambigous_v2(const char* niddle)
+{
+	t_group*	groups;
+	int			count;
+	int			error;
+
+	count = -1;
+	error = 0;
+	groups = g_session->groups;
+	while (groups != g_session->nil && groups->nil && groups->nil->next)
+	{
+		if (groups->nil->next && groups->nil->next->data)
+		{
+			// TO DO: CHECK THE DOUBLE NIDLE IN SAME WORD
+			while (++count < matrix_height((char**)groups->active_processes->data))
+				if (ft_strnstr(groups->active_processes->data[count], niddle, ft_strlen(niddle)))
+					error++;
+		}
+		groups = groups->next;
+	}
+	return (error == 1);
+}
+
 void		remove_history_node(t_group* target)
 {
 	t_history*	prev;
@@ -327,17 +366,61 @@ void		remove_history_node(t_group* target)
 		ft_dprintf(2, "[RM HISTORY NODE][NOW CURR HISTORY NODE IS][\'%p\'][ %d ]\n", g_session->hist, g_session->hist->group->nil->next->pid);
 }
 
+void		remove_zombie_node(t_group* target)
+{
+	t_background*	prev;
+	t_background*	first;
+
+	first = g_session->zombies;
+	prev = NULL;
+	if (!target)
+		return ;
+	while (g_session->zombies)
+	{
+		if (*g_session->zombies->background_group && target->nil->next->pid == (*g_session->zombies->background_group)->nil->next->pid)
+		{
+			if (prev)
+				prev->next = g_session->zombies->next;
+			//if (PRINT_DEBUG)
+			if (first == g_session->zombies)
+				first = NULL;
+			//ft_dprintf(2, "[RM ZOMBIE NODE][\'%p\'][GROUP][\'%p\'][ %d ]\n", g_session->zombies, *g_session->zombies->background_group , (*g_session->zombies->background_group)->nil->next->pid);
+			free(g_session->zombies);
+			g_session->zombies = NULL;
+			break ;
+		}
+		prev = g_session->zombies;
+		g_session->zombies = g_session->zombies->next;
+	}
+	// update first
+	if (first && *first->background_group && (*first->background_group)->nil->next->pid == target->nil->next->pid)
+		g_session->zombies = first->next;
+	else
+		g_session->zombies = first;
+	if (PRINT_DEBUG && g_session->zombies && *g_session->zombies->background_group)
+		ft_dprintf(2, "[RM ZOMBIE NODE][NOW CURR HISTORY NODE IS][\'%p\'][ %d ]\n", g_session->zombies, (*g_session->zombies->background_group)->nil->next->pid);
+	//ft_dprintf(2, "ZOMBIES ARE NOW: %p\n", g_session->zombies);
+	//if (g_session->zombies && g_session->zombies->next)
+	//	ft_dprintf(2, "ZOMBIES THE NEXT: %p\n", g_session->zombies);
+}
+
 void		remove_exited_zombies()
 {
 	t_group*	remember;
 	t_group*	next;
+	//bool		execption;
 
+	//execption = true;
 	remember = g_session->groups;
-	while (g_session->groups != g_session->nil)
+	while (g_session->groups && g_session->groups != g_session->nil)
 	{
 		next = g_session->groups->next;
 		if (!is_active_group(g_session->groups))
 		{
+			if (g_session->groups == remember)
+				remember = remember->next;
+			//if (!remember || remember == g_session->nil)
+			//	execption = true;
 			remove_history_node(g_session->groups);
 			if (PRINT_DEBUG)
 				ft_dprintf(2, "[REMOVE EXITED ZOMBIES][REMOVE EXITED ZOMBIE GROUP: %p]\n", g_session->groups);
@@ -347,6 +430,8 @@ void		remove_exited_zombies()
 	}
 	g_session->groups = remember;
 }
+
+
 
 bool		is_active_background()
 {

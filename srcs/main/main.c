@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 13:09:40 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 18:09:40 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,28 +73,19 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 
 }
 
-// TO DO: [ANY PRINT_SIGNAL_V2 CALL] Redirect fds in job control builtins
-// TO DO: [KILL] Kill update background issue (can t wait fix it with a flags but i have problems now) I CAN'T WAIT IT IN KILL BUT I CAN WAIT AFTER IN FG WHY?????????????????????
-// TO DO: [ALL BUILTINS] All builtins has error msg for pid and jobspec i have the same error msg...
-// TO DO: [JOBS] If Ret st != 0 -> Jobs print it
+// TO DO: Redo kill at the end: Has to support 1 flag or not flags + n jobspec or pids
+
 // TO DO: [ALL BUILTINS] optimize builtins
-// TO DO: [OPTIONAL] put color in the prompt
-// TO DO: [PARSE FLAGS] Builtins multiflags jobspec confics or even segfault (just ezz modify parse flags)
-// TO DO: [KILL] Jobspec parser segmentation fault (reads NULL) -> sleep 22 + crtl^Z + sleep 22 + clrt^Z + kill -QUIT %sleep
-// TO DO: [KILL] interaction between stopped and runnig processes and different kinds of SIGNALS
-// TO DO: [JOBSPEC PARSE] Parse Jobspec ?name to debug
 // TO DO: [ALL BUILTINS] Upgrade (better functions) and norme (shortter code) builtins
+
+// TO DO: [OPTIONAL] put color in the prompt
+
 // TO DO: [UNKNOWN] cat | cat -e | echo a resarch (now we have all the job control build, must be easy to fix)
-// TO DO: [FG + UNLNOWN] fg return 127 if the resumed process return false (check things like that for bg, kill...)
-// TO DO: [JOBS] must print exit status if its != 0
-// TO DO: [JOBS] witout -l no spaces between pipes and cmds
-// TO DO: [CTRL^Z] Print index + history if stopped job is not first (ctrl^Z)
-// TO DO: [CTRL^Z] Print info when i: sleep 22 -> ctrl^Z -> bg -> fg -> ctrl^Z (in the second ctrl^Z)
-// TO DO: [JOBS] print keeps "running" for finisheed background processes
-// TO DO: [JOBSPEC] own is ambigous fct for %?name
-// TO DO: [ZOMBIES] handle zombies can segfault cause is fcking async have to make it insegfaultable
-	// if per example a SIGCHLD happend at the same time as the curr cmd (not stopped) is being freed: zombies handler could iterate over a freed node
-	// How solve it? Dont iterate xD
+// TO DO: [PIPES WITH STOPPED] return (g_session->st) last pipe process ret when theres stopped ? (check things like that for bg, kill...)
+// TO DO: [PRINT] must print exit status if its != 0
+// TO DO: [PRINT] witout -l no spaces between pipes and cmds
+// TO DO: [BG] if current is running bg has problems ... (not sure)
+
 
 // UNWORKING STUFF I FOUND
 // echo $? doesnt work
@@ -125,6 +116,8 @@ void	suspend_process(int signal)
 	(void)signal;
 
 	write(2, "\n", 1);
+	if (g_session->open_print)
+		print_signal(2, g_session->groups->active_processes, 0);
 	
 }
 
@@ -137,9 +130,8 @@ void	test(int signal)
 int		main(int ac, const char** av, const char** envp)
 {
 	signal(SIGTSTP, suspend_process);
-	signal(SIGCHLD, zombies_catcher);
+	signal(SIGCHLD, zombie_catcher_v2);
 	//signal(SIGTTIN, test);
 	//signal(SIGTERM, todo); // need documentation about this
-		// maybe it has to send SIGHUB to all the no market child (market in diswon)
     return (term_prompt(ac, av, envp, &exec));
 }
