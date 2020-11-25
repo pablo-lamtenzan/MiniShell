@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 17:53:27 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 21:44:52 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ typedef struct 			s_process
 	char*const*			data;
 	struct s_process*	next;
 	struct s_process*	prev;
+	int					ret;
 }						t_process;
 
 typedef struct			s_group
@@ -63,6 +64,12 @@ typedef struct			s_background
 	struct s_background*	next;
 }						t_background;
 
+typedef struct			s_endzombie
+{
+	t_process**			endzombie;
+	struct s_endzombie*	next;
+}						t_endzombie;
+
 typedef struct			s_session
 {
 	t_group*			groups; // all background processes by group
@@ -77,6 +84,7 @@ typedef struct			s_session
 	char**				input_line;
 	size_t				input_line_index;
 	bool				open_print;
+	t_endzombie*		end_zombies;
 }						t_session;
 
 t_session*				g_session;
@@ -127,6 +135,7 @@ pid_t					get_process_leader_pid(t_group* nil, t_process* target);
 size_t					get_background_index(t_group* nil, t_process* target);
 void					force_exit_background();
 bool					is_leader(t_process* target);
+void					get_group_return();
 t_group*				get_group(t_process* target);
 void					print_signal(int fd, t_process* target, int mode);
 void					handle_exit_with_active_background(int exit_status);
@@ -156,6 +165,10 @@ int						matrix_height(char **matrix);
 bool					ignore_pid(int ac, char*const* av);
 char**					split_separators(char* input, char** separators);
 
+t_endzombie*			endzombie_new(t_process** target);
+void					endzombie_push_back(t_endzombie* target);
+void					delete_endzombies();
+void					print_endzombies();
 
 // old
 /*

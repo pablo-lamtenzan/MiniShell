@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 17:51:30 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 20:39:31 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,13 @@ bool	ignore_pid(int ac, char*const* av)
 	return (true);
 }
 
-void		resume_group(t_process* leader)
+int		resume_group(t_process* leader)
 {
 	t_group*	remember;
 	t_process*	remember_leader;
+	int 		ret;
 
+	ret = SUCCESS;
 	remember = g_session->groups;
 
 	// skip itself
@@ -64,7 +66,9 @@ void		resume_group(t_process* leader)
 					kill(g_session->groups->active_processes->pid, SIGCONT);
 					if (PRINT_DEBUG)
 					ft_dprintf(2, "[FG][UPDATE BACKGROUND]\n");
-					update_background(&g_session->groups->active_processes, true);	
+					update_background(&g_session->groups->active_processes, true);
+					if (!(g_session->groups->active_processes->wstatus & STOPPED))
+						ret = g_session->groups->active_processes->ret;
 				}
 				g_session->groups->active_processes = g_session->groups->active_processes->next;
 			}
@@ -80,11 +84,12 @@ void		resume_group(t_process* leader)
 			else
 				g_session->groups->active_processes = remember_leader;
 			g_session->groups = remember;
-			return ;
+			return (ret);
 		}
 		g_session->groups = g_session->groups->next;
 	}
 	g_session->groups = remember;
+	return (ret);
 }
 
 int		ft_fg(t_exec* args, t_term* term)
@@ -126,7 +131,5 @@ int		ft_fg(t_exec* args, t_term* term)
 	write(STDERR_FILENO, "\n", 1);
 	if (PRINT_DEBUG)
 		ft_dprintf(2, "[FG] [session->groups before resume][%p]\n", g_session->groups);
-
-	resume_group(*target);
-    return (SUCCESS);
+    return (resume_group(*target));
 }

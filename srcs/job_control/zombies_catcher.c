@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 03:11:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 02:55:32 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 22:05:07 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,17 +153,21 @@ void		zombie_catcher_v2(int signal)
 						{
 							// This is for print "Done" in jobs
 							(*g_session->zombies->background_group)->active_processes->flags |= EXITED;
+
 							// This is for the return status
-							g_session->st = WEXITSTATUS((*g_session->zombies->background_group)->active_processes->wstatus);
+							(*g_session->zombies->background_group)->active_processes->ret = WEXITSTATUS((*g_session->zombies->background_group)->active_processes->wstatus);
+							//ft_dprintf(2, "[ZOMBIE CATCHER RET: %d]\n", (*g_session->zombies->background_group)->active_processes->ret);
+							endzombie_push_back(endzombie_new(&(*g_session->zombies->background_group)->active_processes));
+		
 						}
 						else if (WIFSTOPPED((*g_session->zombies->background_group)->active_processes->wstatus))
 						{
-							g_session->st = 148;
+							g_session->st = SIGNAL_BASE + WSTOPSIG((*g_session->zombies->background_group)->active_processes->wstatus);
 							(*g_session->zombies->background_group)->active_processes->flags |= STOPPED;
 						}
 						else
 						{
-							g_session->st = WTERMSIG((*g_session->zombies->background_group)->active_processes->wstatus) + SIGNAL_BASE;
+							g_session->st = SIGNAL_BASE + WTERMSIG((*g_session->zombies->background_group)->active_processes->wstatus);
 						}
 						if (!((*g_session->zombies->background_group)->active_processes->flags & BACKGROUND))
 						{

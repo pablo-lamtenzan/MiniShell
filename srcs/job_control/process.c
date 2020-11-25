@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 16:14:18 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 21:45:06 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,8 +141,9 @@ t_exec_status	wait_processes_v2(t_term* term, t_exec_status st)
 		}
 	}
 	*/
-
+	
 	// Catch builtins
+	// TO DO: Check if a need here to calc the return
 	if (!(group = g_session->groups) || g_session->groups->active_processes == g_session->groups->nil)
 	{
 		if (PRINT_DEBUG){
@@ -177,6 +178,10 @@ t_exec_status	wait_processes_v2(t_term* term, t_exec_status st)
 	//ft_dprintf(2, "WAIT PROCESSES after nil->next: %p\n", g_session->groups->nil->next);
 	//ft_dprintf(2, "WAIT PROCESSES after nil->prev: %p\n", g_session->groups->nil->prev);
 	//ft_dprintf(2, "NIL = %p\n", g_session->groups->nil);
+
+	get_group_return();
+	print_endzombies();
+	
 	if (PRINT_DEBUG)
 		ft_dprintf(2, "[WAIT PROCESSES v2][ACT PROCESSES AT THE END: %p]\n", g_session->groups->active_processes);
 	if (!is_active_group(g_session->groups))

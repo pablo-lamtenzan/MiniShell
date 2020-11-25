@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 19:20:21 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 20:40:11 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -328,6 +328,7 @@ int			ft_kill(t_exec* args, t_term* term)
 	if (signal == 256)
 	{
 		print_all_signals();
-		return (SUCCESS);
+		
 	}
+	return (SUCCESS);
 }
