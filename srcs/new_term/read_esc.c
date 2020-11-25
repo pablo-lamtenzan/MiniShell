@@ -29,17 +29,20 @@ static t_term_err	repeat_atoi(t_term *term, char *c, uint32_t *rep_dest)
 			caps_goto(&term->caps, term->origin + term->pos);
 			repeat = (10 * repeat) + (*c - '0');
 		}
-		if ((read_st = read(0, c, 1)) == -1)
+		if ((read_st = read(0, c, sizeof(*c))) != sizeof(*c))
 			return ((read_st == 0) ? TERM_EEOF: TERM_EREAD);
 	}
 	status = term_write_msg(term, term->msg, ft_strlen(term->msg));
 	if (digits == TERM_RPT_DIG)
 		*rep_dest = 0;
 	else
-		*rep_dest = (repeat == 0) ? 1 : repeat;
+		*rep_dest = repeat;
 	return (status);
 }
 
+/*
+**	Read an escaped repetition count and repeat the following character.
+*/
 static t_term_err	term_read_repeat(t_term *term, char c)
 {
 	t_term_err	status;
@@ -47,10 +50,12 @@ static t_term_err	term_read_repeat(t_term *term, char c)
 	char		*repetition;
 
 	status = TERM_EOK;
-	if (ft_isdigit(c) && (status = repeat_atoi(term, &c, &repeat)) == TERM_EOK && repeat != 0)
+	if ((status = repeat_atoi(term, &c, &repeat)) == TERM_EOK)
 	{
 		if (c == TERM_NL)
-			status = (write(1, TERM_ENDL, sizeof(TERM_ENDL) - 1) == -1) ? TERM_EWRITE : TERM_ENL;
+			status = term_new_line(term);
+		else if (repeat == 0)
+			status = TERM_EOK;
 		else if (repeat == 1)
 			status = term_write(term, &c, 1);
 		else if ((repetition = malloc(sizeof(*repetition) * repeat)))
