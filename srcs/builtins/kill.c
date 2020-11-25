@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/23 09:15:03 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 00:56:58 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,13 +151,16 @@ void		kill_group(t_process* leader, int signal, t_group* itself)
 			remember_leader = g_session->groups->active_processes;
 			while (g_session->groups->active_processes != g_session->groups->nil)
 			{
+				g_session->groups->active_processes->flags |= SIGNALED;
 				if (PRINT_DEBUG)
 					ft_dprintf(2, "[KILL][KILL (signal=\'%d\') \'%d\']\n", signal, g_session->groups->active_processes->pid);
 				kill(g_session->groups->active_processes->pid, signal);
-				update_background(&g_session->groups->active_processes, signal == SIGCONT); // TO DO: more execptions
+				kill(g_session->groups->active_processes->pid, SIGCONT);
+				update_background(&g_session->groups->active_processes, true /*signal == SIGCONT*/);
 				g_session->groups->active_processes = g_session->groups->active_processes->next;
 			}
-			if (!is_active_group(g_session->groups))
+			// Remove the group later
+			/*if (!is_active_group(g_session->groups))
 			{
 				t_group*	fill = g_session->groups;
 				g_session->groups->prev->next = g_session->groups->next;
@@ -165,7 +168,8 @@ void		kill_group(t_process* leader, int signal, t_group* itself)
 				free(fill);
 				fill = NULL;
 			}
-			else
+			*/
+			//else
 				g_session->groups->active_processes = remember_leader;
 			g_session->groups = remember;
 			return ;

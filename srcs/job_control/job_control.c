@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 23:45:37 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 00:54:00 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,14 +56,14 @@ void		update_background(t_process **target, bool wait)
 		(*target)->flags &= ~BACKGROUND;
 		while (waitpid((*target)->pid, &(*target)->wstatus, WUNTRACED) <= 0)
 			;
-		if (PRINT_DEBUG)
-			ft_dprintf(2, "[WAIING...][pid=\'%d\'][wstatus=\'%d\']\n", (*target)->pid, (*target)->wstatus);
+		//if (PRINT_DEBUG)
+		ft_dprintf(2, "[WAIING...][pid=\'%d\'][wstatus=\'%d\']\n", (*target)->pid, (*target)->wstatus);
 	}
 	// exited and not stopped
 	// HERE CAN REMOVE FLAGS IN ALL CASES AND ADD IT IF NECESARRY
 	if (WIFEXITED((*target)->wstatus) || !WIFSTOPPED((*target)->wstatus))
 	{
-		if (PRINT_DEBUG)
+		//if (PRINT_DEBUG)
 			ft_dprintf(2, "[PROCESS EXITS]\n");
 		(*target)->flags &= ~STOPPED;
 		(*target)->flags |= EXITED;
@@ -71,7 +71,7 @@ void		update_background(t_process **target, bool wait)
 	// stopped
 	else
 	{
-		if (PRINT_DEBUG)
+		//if (PRINT_DEBUG)
 			ft_dprintf(2, "[PROCESS DOESN'T EXIT]\n");
 		(*target)->flags |= STOPPED;
 		g_session->st = 148;
@@ -127,7 +127,7 @@ bool			update_zombies(t_group** update)
 	fill = g_session->zombies;
 	g_session->zombies = zombie;
 	zombie->next = fill;
-	ft_dprintf(2, "UPDATE ZOMBIES: NEW NODE IN ZOMBIE LIST CONTANING THE ADDR: %p [\'%p\']\n", g_session->zombies, *update);
+	//ft_dprintf(2, "UPDATE ZOMBIES: NEW NODE IN ZOMBIE LIST CONTANING THE ADDR: %p [\'%p\']\n", g_session->zombies, *update);
 	return (true);
 }
 
@@ -194,7 +194,7 @@ bool		is_active_group(t_group* target)
 		ft_dprintf(2, "[IS ACTIVE GROUP (leader): %p]\n", process);
 	while (process != target->nil)
 	{
-		if (process->flags & (BACKGROUND | STOPPED))
+		if (process->flags & (BACKGROUND | STOPPED | SIGNALED))
 			return (true);
 		process = process->next;
 	}
@@ -422,13 +422,12 @@ void		remove_exited_zombies()
 			//if (!remember || remember == g_session->nil)
 			//	execption = true;
 			remove_history_node(g_session->groups);
-			//if (PRINT_DEBUG)
+			if (PRINT_DEBUG)
 				ft_dprintf(2, "[REMOVE EXITED ZOMBIES][REMOVE EXITED ZOMBIE GROUP: %p]\n", g_session->groups);
 			group_remove_v2(&g_session->groups);
 		}
 		g_session->groups = next;
 	}
-	ft_dprintf(2, "[REMOVE EXITED ZOMBIES][REMEMBER: %p]\n", remember);
 	g_session->groups = remember;
 }
 

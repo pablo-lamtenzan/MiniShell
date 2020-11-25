@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 23:47:56 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 01:15:16 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,17 +73,17 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 
 }
 
-// TO DO: [KILL] Kill update background issue (can t wait fix it with a flags but i have problems now) I CAN'T WAIT IT IN KILL BUT I CAN WAIT AFTER IN FG WHY?????????????????????
 // TO DO: [ALL BUILTINS] All builtins has error msg for pid and jobspec i have the same error msg...
 // TO DO: [ALL BUILTINS] optimize builtins
 // TO DO: [OPTIONAL] put color in the prompt
 // TO DO: [KILL] Jobspec parser segmentation fault (reads NULL) -> sleep 22 + crtl^Z + sleep 22 + clrt^Z + kill -QUIT %sleep
-// TO DO: [KILL] interaction between stopped and runnig processes and different kinds of SIGNALS
 // TO DO: [ALL BUILTINS] Upgrade (better functions) and norme (shortter code) builtins
 // TO DO: [UNKNOWN] cat | cat -e | echo a resarch (now we have all the job control build, must be easy to fix)
 // TO DO: [PIPES WITH STOPPED] return (g_session->st) last pipe process ret when theres stopped ? (check things like that for bg, kill...)
-// TO DO: [JOBS] must print exit status if its != 0
-// TO DO: [JOBS] witout -l no spaces between pipes and cmds
+// TO DO: [PRINT] must print exit status if its != 0
+// TO DO: [PRINT] witout -l no spaces between pipes and cmds
+// TO DO: [BG] if current is rinning bg has problems ... (not sure)
+// TO DO: [KILL][PRINT][BUILTINS] Better if i use SGNALED for print istead of EXIT. Why ? I NEED SIGANLED WONT BE REMOVE AT THE BEGIN: Example do: sleep 5 + Ctrl^Z + sleep 5 + Ctrl^Z + kill % + kill % <------ PROBLEM IN LAST kill
 // TO DO: [ALL BUILTINS]: fg, bg, jobs no pid, wait, kill, disown pid (easy cause i ve implemented this for all the builtins)
 
 

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 23:28:00 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 00:56:39 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,9 @@ t_exec_status			execute_bst(t_bst* root, t_term* term)
 	t_exec_status		st;
 	t_group*			group;
 
+	if (!session_empty() && !group_empty(g_session->groups) && g_session->groups->active_processes->flags & SIGNALED)
+		g_session->groups->active_processes->flags &= ~SIGNALED;
+	
 	//remove_exited_zombies();
 	if (!(group = group_new()))
 		return (BAD_ALLOC);

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 22:52:43 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 00:48:10 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,9 @@
 #define	BACKGROUND		1
 #define STOPPED			2
 #define EXITED			4
-#define RESTRICT_OP		8
-#define NO_HANGUP		16
+#define SIGNALED		8		
+#define RESTRICT_OP		16
+#define NO_HANGUP		32
 
 typedef struct 			s_process
 {

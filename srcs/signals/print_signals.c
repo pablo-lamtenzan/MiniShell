@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 23:36:01 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 01:08:13 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -252,7 +252,7 @@ int		check_wstatus(t_process* target, int *exit_status)
 {
 	if (target->flags & BACKGROUND)
 		return (33);
-	if (WIFEXITED(target->wstatus))
+	else if (WIFEXITED(target->wstatus))
 	{
 		if ((*exit_status = WEXITSTATUS(target->wstatus)))
 			return (32);
@@ -262,7 +262,14 @@ int		check_wstatus(t_process* target, int *exit_status)
 	else if (WIFSTOPPED(target->wstatus))
 		return (WSTOPSIG(target->wstatus));
 	else
+	{
+		// TO DO: THis works but coulb some exeptions that make it working when i haven't to
+			// The idea was do this with SIGNALED... BUT with WXITED seems work too
+			// Just have to test all the cases
+		if (target->flags & EXITED)
+			*exit_status = 0;
 		return (WTERMSIG(target->wstatus));
+	}
 }
 
 bool	stopped_signal(int signal, bool ignore_tstp)
@@ -331,7 +338,8 @@ void	print_signal(int fd, t_process* target, int mode)
 	ft_bzero(freed, sizeof(freed));
 	if (stopped_signal(signal = check_wstatus(target, &exit_status), true))
 		write(fd, "\n", 1);
-	ft_dprintf(2, "[TEST PRINT SIGNALS][SIGNAL: %d]\n", signal);
+	if (PRINT_DEBUG)
+		ft_dprintf(2, "[TEST PRINT SIGNALS][SIGNAL: %d]\n", signal);
 	ft_dprintf(fd, "%s%s%s%s%s%s%s%s%s %s",
 		(stopped_signal_group(aux, true) || !exit_status) && (!mode || (mode && is__leader)) ? "[" : (mode ? " " : ""),
 		(stopped_signal_group(aux, true) || !exit_status) && (!mode || (mode && is__leader)) ? freed[0] = ft_itoa(get_background_index(g_session->nil, target)) : (mode ? " " : ""),
@@ -344,7 +352,7 @@ void	print_signal(int fd, t_process* target, int mode)
 		exit_status > 0 ? freed[2] = ft_itoa(exit_status) : "",
 		(mode && __WCOREDUMP(target->wstatus)) || (!mode && group_coredump(aux)) ? "(core dumped)" : ""
 	);
-	if (stopped_signal(signal, false) || signal == 33 || signal == 31)
+	if (stopped_signal(signal, false) || signal == 33 || signal == 31 || target->flags & EXITED)
 	{
 		padding_spaces(fd, ft_strlen((!mode && is_active_group(aux) ? "Stopped" : get_signal(signal))));
 		mode ? print_job_args(fd, target) : print_group_line(fd, aux);

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 22:58:14 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 00:53:43 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,8 @@ t_exec_status	wait_processes_v2(t_term* term, t_exec_status st)
 		if (PRINT_DEBUG){
 		if (g_session->groups->next && g_session->groups->next->active_processes)
 			ft_dprintf(2, "[WAIT V2][PREVIOUS GROUP LEADER FLAGS ARE: %d][\'%p\']\n", g_session->groups->next->active_processes->flags, g_session->groups->next->active_processes);}
-		group_pop_front();
+		if (!(g_session->groups->active_processes->flags & SIGNALED))
+			group_pop_front();
 		if (PRINT_DEBUG) {
 		if (g_session->groups && g_session->groups->active_processes)
 			ft_dprintf(2, "[WAIT V2][PREVIOUS GROUP LEADER FLAGS ARE: %d][\'%p\']\n", g_session->groups->active_processes->flags, g_session->groups->active_processes);}
