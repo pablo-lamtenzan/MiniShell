@@ -34,6 +34,7 @@ typedef struct	s_keys
 	char	*down;
 	char	*left;
 	char	*right;
+	char	*del;
 }				t_keys;
 
 typedef struct	s_caps
