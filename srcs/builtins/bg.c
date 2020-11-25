@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 23:11:42 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 20:30:40 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 23:22:08 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,13 @@ void	resume_background_group(t_process* leader)
 			{
 				if (g_session->groups->active_processes->flags & STOPPED)
 				{
-					//if (PRINT_DEBUG)
+					if (PRINT_DEBUG)
 						ft_dprintf(2, "[BG][KILL -SIGCONT \'%d\'][\'%p\'][\'%p\']\n", g_session->groups->active_processes->pid, g_session->groups->active_processes, g_session->groups);
 					g_session->groups->active_processes->flags &= ~STOPPED;
 					g_session->groups->active_processes->flags |= BACKGROUND;
 					kill(g_session->groups->active_processes->pid, SIGCONT);
 					update_zombies(&g_session->groups);
-					ft_dprintf(2, "AFTER UPDATE ZOMBIES: %p\n", g_session->zombies);
+					//ft_dprintf(2, "AFTER UPDATE ZOMBIES: %p\n", g_session->zombies);
 					if (PRINT_DEBUG)
 						ft_dprintf(2, "[BG][TARGET FLAGS: %d][\'%p\']\n", g_session->groups->active_processes->flags, g_session->groups->active_processes);
 					//update_background(g_session, &g_session->groups->active_processes, true);
@@ -91,12 +91,13 @@ int		ft_bg(t_exec* args, t_term* term)
         ft_dprintf(STDERR_FILENO, "minish: bg: %s: no such job\n", args->ac == 1 ? "current" : args->av[1]);
         return (STD_ERROR);
     }
+	// Sellect the first not alreaddy in background group
 	t_group*	remember;
 	remember = g_session->groups;
 	while (g_session->groups != g_session->nil->prev)
 	{
-    	target = g_session->groups->active_processes == g_session->groups->nil ? &g_session->groups->next->active_processes : &g_session->groups->active_processes;
-		if ((*target)->flags & BACKGROUND)
+    	target = g_session->groups->next != g_session->nil ? &g_session->groups->next->active_processes : &g_session->groups->active_processes;
+		if ((*target)->flags & (BACKGROUND | EXITED))
 			g_session->groups = g_session->groups->next;
 		else
 			break ;
@@ -105,7 +106,7 @@ int		ft_bg(t_exec* args, t_term* term)
     if (args->ac > 1)
     {
 		// TO DO: if jobspec is pid has to resume is grou p or just the process ?
-        if (!(target = jobspec_parser(args->ac, args->av, NULL)))
+        if (!(target = jobspec_parser(args->ac, args->av, ignore_pid)))
 		{
             ft_dprintf(STDERR_FILENO, "minish: bg: %s: no such job\n", args->av[1]);
             return (STD_ERROR);

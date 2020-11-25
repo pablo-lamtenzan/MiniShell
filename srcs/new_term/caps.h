@@ -8,24 +8,27 @@
 
 typedef struct	s_modes
 {
-	char	*insert;
-	char	*insert_end;
-	char	*clear;
-	char	*standout;
-	char	*standout_end;
+	const char	*insert;
+	const char	*insert_end;
+	const char	*del;
+	const char	*del_end;
+	const char	*clear;
+	const char	*standout;
+	const char	*standout_end;
 }				t_modes;
 
 typedef struct	s_ctrls
 {
-	char	*del;
-	char	*del_n;
-	char	*del_line;
-	char	*move;
-	char	*move_h;
-	char	*up;
-	char	*down;
-	char	*left;
-	char	*right;
+	const char	*del;
+	const char	*del_n;
+	const char	*del_line;
+	const char	*erase_n;
+	const char	*move;
+	const char	*move_h;
+	const char	*up;
+	const char	*down;
+	const char	*left;
+	const char	*right;
 }				t_ctrls;
 
 typedef struct	s_keys

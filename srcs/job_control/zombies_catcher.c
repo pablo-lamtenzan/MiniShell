@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 03:11:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 20:35:01 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 22:47:47 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,8 @@ void		zombie_catcher_v2(int signal)
 	t_process*		remember_leader;
 	int				wreturn;
 
+	if (!g_session)
+		return ;
 	remember = g_session->zombies;
 	first_freed = false;
 	while (g_session->zombies)
@@ -151,17 +153,20 @@ void		zombie_catcher_v2(int signal)
 						{
 							// This is for print "Done" in jobs
 							(*g_session->zombies->background_group)->active_processes->flags |= EXITED;
+
 							// This is for the return status
-							g_session->st = WEXITSTATUS((*g_session->zombies->background_group)->active_processes->wstatus);
+							(*g_session->zombies->background_group)->active_processes->ret = WEXITSTATUS((*g_session->zombies->background_group)->active_processes->wstatus);
+							endzombie_push_back(endzombie_new(&(*g_session->zombies->background_group)->active_processes));
+		
 						}
 						else if (WIFSTOPPED((*g_session->zombies->background_group)->active_processes->wstatus))
 						{
-							g_session->st = 148;
+							g_session->st = SIGNAL_BASE + WSTOPSIG((*g_session->zombies->background_group)->active_processes->wstatus);
 							(*g_session->zombies->background_group)->active_processes->flags |= STOPPED;
 						}
 						else
 						{
-							g_session->st = WTERMSIG((*g_session->zombies->background_group)->active_processes->wstatus) + SIGNAL_BASE;
+							g_session->st = SIGNAL_BASE + WTERMSIG((*g_session->zombies->background_group)->active_processes->wstatus);
 						}
 						if (!((*g_session->zombies->background_group)->active_processes->flags & BACKGROUND))
 						{
@@ -169,6 +174,7 @@ void		zombie_catcher_v2(int signal)
 							if (remember == g_session->zombies)
 								first_freed = true;
 							(*g_session->zombies->background_group)->active_processes = remember_leader;
+							// IF THIS CAUSES PROBLEMS I CAN JUST MARK THE NODES AND FREE THEM NEXT
 							remove_zombie_node(*g_session->zombies->background_group);
 							break ;
 						}

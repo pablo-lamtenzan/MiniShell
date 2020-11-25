@@ -72,7 +72,8 @@ void	term_destroy(t_term *term)
 */
 t_term_err	term_prompt(t_term *term)
 {
-	if (term->is_interactive && term->msg && (term->origin = ft_strlen(term->msg))
+	if (term->is_interactive && term->msg
+	&& (term->origin = ft_strlen(term->msg))
 	&& write(STDERR_FILENO, term->msg, term->origin) == -1)
 		return (TERM_EWRITE);
 	if (term->has_caps)

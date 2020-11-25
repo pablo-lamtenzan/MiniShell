@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 20:36:05 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 22:49:08 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,15 +66,16 @@ void		update_background(t_process **target, bool wait)
 		if (PRINT_DEBUG)
 			ft_dprintf(2, "[PROCESS EXITS]\n");
 		(*target)->flags &= ~STOPPED;
-		(*target)->flags |= EXITED;
+		//(*target)->flags |= EXITED; only for zombies i guess
+		(*target)->ret = WEXITSTATUS((*target)->wstatus);
 	}
 	// stopped
 	else
 	{
-		if (PRINT_DEBUG)
+		//if (PRINT_DEBUG)
 			ft_dprintf(2, "[PROCESS DOESN'T EXIT]\n");
 		(*target)->flags |= STOPPED;
-		g_session->st = 148;
+		//g_session->st = ; // CAN CNAGE DEPENDS OF THE SIGNAL
 		update_session_history_v2(get_group(*target));
 	}
 	if (PRINT_DEBUG)
@@ -127,7 +128,7 @@ bool			update_zombies(t_group** update)
 	fill = g_session->zombies;
 	g_session->zombies = zombie;
 	zombie->next = fill;
-	ft_dprintf(2, "UPDATE ZOMBIES: NEW NODE IN ZOMBIE LIST CONTANING THE ADDR: %p [\'%p\']\n", g_session->zombies, *update);
+	//ft_dprintf(2, "UPDATE ZOMBIES: NEW NODE IN ZOMBIE LIST CONTANING THE ADDR: %p [\'%p\']\n", g_session->zombies, *update);
 	return (true);
 }
 
@@ -194,7 +195,7 @@ bool		is_active_group(t_group* target)
 		ft_dprintf(2, "[IS ACTIVE GROUP (leader): %p]\n", process);
 	while (process != target->nil)
 	{
-		if (process->flags & (BACKGROUND | STOPPED))
+		if (process->flags & (BACKGROUND | STOPPED | SIGNALED))
 			return (true);
 		process = process->next;
 	}
@@ -384,7 +385,7 @@ void		remove_zombie_node(t_group* target)
 			//if (PRINT_DEBUG)
 			if (first == g_session->zombies)
 				first = NULL;
-			ft_dprintf(2, "[RM ZOMBIE NODE][\'%p\'][GROUP][\'%p\'][ %d ]\n", g_session->zombies, *g_session->zombies->background_group , (*g_session->zombies->background_group)->nil->next->pid);
+			//ft_dprintf(2, "[RM ZOMBIE NODE][\'%p\'][GROUP][\'%p\'][ %d ]\n", g_session->zombies, *g_session->zombies->background_group , (*g_session->zombies->background_group)->nil->next->pid);
 			free(g_session->zombies);
 			g_session->zombies = NULL;
 			break ;
@@ -408,17 +409,23 @@ void		remove_exited_zombies()
 {
 	t_group*	remember;
 	t_group*	next;
+	//bool		execption;
 
+	//execption = true;
 	remember = g_session->groups;
 	while (g_session->groups && g_session->groups != g_session->nil)
 	{
 		next = g_session->groups->next;
 		if (!is_active_group(g_session->groups))
 		{
+			if (g_session->groups == remember)
+				remember = remember->next;
+			//if (!remember || remember == g_session->nil)
+			//	execption = true;
 			remove_history_node(g_session->groups);
 			if (PRINT_DEBUG)
 				ft_dprintf(2, "[REMOVE EXITED ZOMBIES][REMOVE EXITED ZOMBIE GROUP: %p]\n", g_session->groups);
-			group_remove_v2(&g_session->groups);
+			//group_remove_v2(&g_session->groups);
 		}
 		g_session->groups = next;
 	}
@@ -459,4 +466,116 @@ void		update_exit_count(const char* name)
 		g_session->exit_count++;
 	else
 		g_session->exit_count = 0;
+}
+
+void		get_group_return()
+{
+	t_process* remember;
+
+	if (!is_active_group(g_session->groups)) // take care about signaled here too
+	{
+		if (!(g_session->groups->nil->prev->flags & (STOPPED | BACKGROUND)))
+			g_session->st = g_session->groups->nil->prev->ret;
+		else
+		{
+			remember = g_session->groups->active_processes;
+			while (g_session->groups->active_processes != g_session->groups->nil)
+			{
+				if (g_session->groups->active_processes->flags & (STOPPED | BACKGROUND))
+				{
+					g_session->st = (unsigned char)(SIGNAL_BASE + g_session->groups->active_processes->prev != g_session->groups->nil ? g_session->groups->active_processes->prev->ret : g_session->groups->active_processes->ret);
+					g_session->groups->active_processes = remember;
+					return ;
+				}
+				g_session->groups->active_processes = g_session->groups->active_processes->next;
+			}
+			g_session->groups->active_processes = remember;
+		}
+	}
+}
+
+t_endzombie*		endzombie_new(t_process** target)
+{
+	t_endzombie*	endzombie;
+	
+	if (!(endzombie = ft_calloc(1, sizeof(t_endzombie))))
+		return (NULL);
+	*endzombie = (t_endzombie){.endzombie=target};
+	return (endzombie);
+}
+
+void		endzombie_push_back(t_endzombie* target)
+{
+	t_endzombie*	remember;
+
+	if (!(remember = g_session->end_zombies))
+	{
+		g_session->end_zombies = target;
+		return ;
+	}
+	while (g_session->end_zombies->next)
+		g_session->end_zombies = g_session->end_zombies->next;
+	g_session->end_zombies->next = target;
+}
+
+void		delete_endzombies()
+{
+	t_endzombie*	fill;
+
+	while (g_session->end_zombies)
+	{
+		fill = g_session->end_zombies->next;
+		free(g_session->end_zombies);
+		g_session->end_zombies = fill;
+	}
+	g_session->end_zombies = NULL;
+}
+
+void		print_endzombies()
+{
+	t_endzombie*	first;
+
+	first = g_session->end_zombies;
+	while (g_session->end_zombies)
+	{
+		print_signal(STDERR_FILENO, *g_session->end_zombies->endzombie, 0);
+		g_session->end_zombies = g_session->end_zombies->next;
+	}
+	g_session->end_zombies = first;
+	delete_endzombies();
+}
+
+bool	group_exited(t_group* group)
+{
+	t_process* leader;
+
+	leader = group->active_processes;
+	while (leader != group->nil)
+	{
+		if (leader->flags & EXITED)
+			return (true);
+		leader = leader->next;
+	}
+	return (false);	
+}
+
+void	rm_exited_from_history()
+{
+	t_history* first;
+	t_history*	next;
+
+	first = g_session->hist;
+
+	while (g_session->hist)
+	{
+		next = g_session->hist->next;
+		if (group_exited(g_session->hist->group))
+		{
+			if (first == g_session->hist)
+				first = first->next;
+			free(g_session->hist);
+		}
+		g_session->hist = next;
+	}
+	g_session->hist = first;
 }

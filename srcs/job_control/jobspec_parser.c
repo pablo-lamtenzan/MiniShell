@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 12:40:22 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 17:37:51 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 17:58:52 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,14 +105,13 @@ t_process**		get_process_by_pid(t_group* groups, pid_t pid)
 	// pid
 	if (PRINT_DEBUG)
 		ft_dprintf(2, "[PID][pid: %i]\n", pid);
+	t_process fill;
+
+	fill.pid = pid;
 	while (groups != g_session->nil)
 	{
-		while (groups->active_processes != groups->nil)
-		{
-			if (groups->active_processes->pid == pid)
-				return (&groups->active_processes);
-			groups->active_processes = groups->active_processes->next;
-		}
+		if (background_find(&fill, "PID", groups))
+			return (&groups->active_processes);
 		groups = groups->next;
 	}
 	return (NULL);
@@ -214,7 +213,7 @@ t_process**		process_search(char*const* av)
 		return (NULL);
 }
 
-t_process**		jobspec_parser(int ac, char*const* av, t_process** (*fill)(int ac, char*const* av))
+t_process**		jobspec_parser(int ac, char*const* av, bool (*fill)(int ac, char*const* av))
 {
 	// TO DEFINE: types in fill
 	//if (PRINT_DEBUG)
