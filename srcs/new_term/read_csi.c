@@ -18,13 +18,13 @@ t_term_err	term_read_mod_none(t_term *term)
 
 t_term_err	term_read_mod_shift(t_term *term)
 {
-	const	t_keybind keys[] = {
+	const	t_keybind	keys[] = {
 		{term->caps.key.left[2], &select_left},
 		{term->caps.key.right[2], &select_right}
 	};
-	ssize_t			read_st;
-	char			c;
-	t_term_action	action;
+	ssize_t				read_st;
+	char				c;
+	t_term_action		action;
 
 	if ((read_st = read(STDIN_FILENO, &c, 1)) != 1)
 		return ((read_st == 0) ? TERM_EEOF: TERM_EREAD);
