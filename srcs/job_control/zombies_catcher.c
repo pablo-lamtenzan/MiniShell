@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 03:11:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 22:05:07 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 22:08:20 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,7 +156,7 @@ void		zombie_catcher_v2(int signal)
 
 							// This is for the return status
 							(*g_session->zombies->background_group)->active_processes->ret = WEXITSTATUS((*g_session->zombies->background_group)->active_processes->wstatus);
-							//ft_dprintf(2, "[ZOMBIE CATCHER RET: %d]\n", (*g_session->zombies->background_group)->active_processes->ret);
+							ft_dprintf(2, "[ZOMBIE CATCHER RET: %d]\n",WEXITSTATUS((*g_session->zombies->background_group)->active_processes->wstatus));
 							endzombie_push_back(endzombie_new(&(*g_session->zombies->background_group)->active_processes));
 		
 						}

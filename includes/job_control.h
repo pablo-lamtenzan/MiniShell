@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 21:44:52 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 22:20:01 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,7 @@ void					force_exit_background();
 bool					is_leader(t_process* target);
 void					get_group_return();
 t_group*				get_group(t_process* target);
+void					rm_exited_from_history();
 void					print_signal(int fd, t_process* target, int mode);
 void					handle_exit_with_active_background(int exit_status);
 void					update_exit_count(const char* name);

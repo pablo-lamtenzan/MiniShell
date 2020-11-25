@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 21:45:29 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 22:19:28 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -543,4 +543,39 @@ void		print_endzombies()
 	}
 	g_session->end_zombies = first;
 	delete_endzombies();
+}
+
+bool	group_exited(t_group* group)
+{
+	t_process* leader;
+
+	leader = group->active_processes;
+	while (leader != group->nil)
+	{
+		if (leader->flags & EXITED)
+			return (true);
+		leader = leader->next;
+	}
+	return (false);	
+}
+
+void	rm_exited_from_history()
+{
+	t_history* first;
+	t_history*	next;
+
+	first = g_session->hist;
+
+	while (g_session->hist)
+	{
+		next = g_session->hist->next;
+		if (group_exited(g_session->hist->group))
+		{
+			if (first == g_session->hist)
+				first = first->next;
+			free(g_session->hist);
+		}
+		g_session->hist = next;
+	}
+	g_session->hist = first;
 }

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 21:55:01 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 22:21:49 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,21 +81,16 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 // DATA-STRUCTURE PROBLEMS:
 // TO DO: [KILL] Update the data-structure well with SIGNALED flags
 // TO DO: [BG] if current is running bg has problems ... (not sure)
-// TO DO: Whan a group end in background print it????? (in bash group isn t in history after) <--- HISTORY
 
 // TO TEST
 // TO DO: [PIPES WITH STOPPED] return (g_session->st) last pipe process ret when theres stopped ? (check things like that for bg, kill...)
-// TO DO: [PRINT] must print exit status if its != 0
 
+// TO TEST
 // BACKGROUND GROUP RETURN
 // ---> Stopped group return the signal? (128) + last NOT stopped (ret) (last before 1st stop) DONE
 	// not last ? so the signal value of the stopped
 // ---> When the process ends its printed but the return after bg is 0 always theres no problems [BG RETURN 0][LAST IS PRINTED] DONE
 
-// FOREGROUND GROUP RETURN
-// ---> Stopped group return the signal? (128) + last NOT stopped (ret) (last before 1st stop) DONE
-	// not last ? so the signal value of the stopped
-// ---> Whan the process ends RETURNS THE LAST IN THE GROUP RETURN [FG RETURN][NOTHING PRINTED] DONE
 
 // UNWORKING STUFF I FOUND
 // echo $? doesnt work
