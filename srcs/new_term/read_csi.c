@@ -33,11 +33,23 @@ t_term_err	term_read_mod_shift(t_term *term)
 	return (TERM_EOK);
 }
 
+t_term_err	term_read_mod_alt(t_term *term)
+{
+	ssize_t			read_st;
+	char			c;
+
+	if ((read_st = read(0, &c, 1)) != 1)
+		return ((read_st == 0) ? TERM_EEOF: TERM_EREAD);
+	
+	return (TERM_EOK);
+}
+
 t_term_err	term_read_csi(t_term *term)
 {
 	const t_keybind	mods[] = {
 		{'1', &term_read_mod_none},
-		{'2', &term_read_mod_shift}
+		{'2', &term_read_mod_shift},
+		{'4', &term_read_mod_alt}
 	};
 	const t_keybind	keys[] = {
 		{'H', &cursor_start_line}, // TODO: Get in terminfo or remove caps.key
