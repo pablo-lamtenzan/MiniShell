@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 00:53:43 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 16:14:18 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,22 @@ t_exec_status	wait_processes_v2(t_term* term, t_exec_status st)
 	ft_dprintf(2, "SESSION GROUP NIL: %p\n", g_session->groups->nil);
 	ft_dprintf(2, "GROUP ADDR: %p\n", g_session->groups);}
 
-	
+	/*
+	if (g_session->groups->next && g_session->groups->next != g_session->nil)
+	{
+
+		ft_dprintf(2, "-----------> TEST: %d\n", g_session->groups->next->active_processes->flags);
+
+		if (g_session->groups->next->active_processes->flags & SIGNALED && !(g_session->groups->next->active_processes->flags & KILLED))
+		g_session->groups->active_processes->flags &= ~SIGNALED;
+		if (g_session->groups->next->active_processes->flags & KILLED)
+		{
+			g_session->groups->next->active_processes->flags &= ~KILLED;
+			ft_dprintf(2, "[REMOVE KILL FLAG]\n");
+		}
+	}
+	*/
+
 	// Catch builtins
 	if (!(group = g_session->groups) || g_session->groups->active_processes == g_session->groups->nil)
 	{

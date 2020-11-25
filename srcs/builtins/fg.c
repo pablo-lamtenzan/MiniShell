@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 23:15:55 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 17:51:30 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,14 @@
 5) background + valid jobspec -> all ok
 
 */
+
+bool	ignore_pid(int ac, char*const* av)
+{
+	(void)ac;
+	if (is_string_digit(av[1]))
+		return (false);
+	return (true);
+}
 
 void		resume_group(t_process* leader)
 {
@@ -99,7 +107,7 @@ int		ft_fg(t_exec* args, t_term* term)
     if (args->ac > 1)
     {
 		// TO DO: if jobspec is pid has to resume is grou p or just the process ?
-        if (!(target = jobspec_parser(args->ac, args->av, NULL)))
+        if (!(target = jobspec_parser(args->ac, args->av, ignore_pid)))
 		{
             ft_dprintf(STDERR_FILENO, "minish: fg: %s: no such job\n", args->av[1]);
             return (STD_ERROR);

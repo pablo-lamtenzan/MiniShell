@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 00:56:39 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 18:07:19 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,60 @@ t_exec_status			execute_bst(t_bst* root, t_term* term)
 	t_exec_status		st;
 	t_group*			group;
 
-	if (!session_empty() && !group_empty(g_session->groups) && g_session->groups->active_processes->flags & SIGNALED)
-		g_session->groups->active_processes->flags &= ~SIGNALED;
+
+	// TO DO: This shoulb be applied to all the group no only the leaders
+	// Used for keep the killed process 1 bst exec more than it shoulb be (used for printing the end status)
+	// If i forget: next is for sleep 22 + stop + kill % + sleep 22 + stop + jobs + jobs
+	// If i forget: curr is for sleep 22 + stop + kill % + jobs + jobs
+	bool	stop = false;
+	if (!session_empty() && !group_empty(g_session->groups))
+	{
+		// Not adding a new background process
+		if (g_session->groups->active_processes->flags & SIGNALED && !(g_session->groups->active_processes->flags & KILLED)) // change buy if group siganled and if not group killed
+		{
+			g_session->groups->active_processes->flags &= ~SIGNALED;
+			ft_dprintf(2, "REMOVE SIGANLED FROM CURR \'%p\'\n", g_session->groups->active_processes);
+			stop = true;
+			group_pop_front();
+		}
+		// Adding a new background process
+		if (g_session->groups->next && g_session->groups->next != g_session->nil)
+		{
+			if (g_session->groups->next->active_processes->flags & SIGNALED && !(g_session->groups->next->active_processes->flags & KILLED)) // change buy if group siganled and if not group killed
+			{
+				g_session->groups->next->active_processes->flags &= ~SIGNALED;
+				ft_dprintf(2, "REMOVE SIGANLED FROM NEXT \'%p\'\n", g_session->groups->next->active_processes);
+				//group_remove_v2(&g_session->groups->next);
+				
+				// TO DO: I ve alreaddy lost enought time (group address in kill != tahn freed addr but process still the same)
+					// I free session nil
+					// wtf wtf wtf how ???????
+					
+				/*
+				t_group**	next;
+				t_group**	prev;
+				next = &g_session->groups->next->next;
+				prev = &g_session->groups;
+				
+				(*next)->prev = *prev;
+				(*prev)->next = *next;
+				g_session->nil->next = *prev;
+				ft_dprintf(2, "prev: %p, next: %p, freed: %p, nil->next: %p\n", *prev, *next, g_session->groups->next, g_session->nil->next);
+				free(g_session->groups->next);
+				stop = true;
+				*/
+				
+			}
+		}
+		// Remove killed in all the cases
+		if (!stop && g_session->groups->active_processes->flags & KILLED) // change buy if not group killed
+		{
+			g_session->groups->active_processes->flags &= ~KILLED;
+			ft_dprintf(2, "REMOVE KILLED FROM \'%p\'\n", g_session->groups->active_processes);
+		}
+		
+	} 
+
 	
 	//remove_exited_zombies();
 	if (!(group = group_new()))

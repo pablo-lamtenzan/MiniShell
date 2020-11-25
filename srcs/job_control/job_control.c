@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 00:54:00 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 03:17:46 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,14 +56,14 @@ void		update_background(t_process **target, bool wait)
 		(*target)->flags &= ~BACKGROUND;
 		while (waitpid((*target)->pid, &(*target)->wstatus, WUNTRACED) <= 0)
 			;
-		//if (PRINT_DEBUG)
-		ft_dprintf(2, "[WAIING...][pid=\'%d\'][wstatus=\'%d\']\n", (*target)->pid, (*target)->wstatus);
+		if (PRINT_DEBUG)
+			ft_dprintf(2, "[WAIING...][pid=\'%d\'][wstatus=\'%d\']\n", (*target)->pid, (*target)->wstatus);
 	}
 	// exited and not stopped
 	// HERE CAN REMOVE FLAGS IN ALL CASES AND ADD IT IF NECESARRY
 	if (WIFEXITED((*target)->wstatus) || !WIFSTOPPED((*target)->wstatus))
 	{
-		//if (PRINT_DEBUG)
+		if (PRINT_DEBUG)
 			ft_dprintf(2, "[PROCESS EXITS]\n");
 		(*target)->flags &= ~STOPPED;
 		(*target)->flags |= EXITED;

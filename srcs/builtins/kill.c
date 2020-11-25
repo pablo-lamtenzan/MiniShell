@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 00:56:58 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 19:20:21 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,8 @@
 4) kill no flags wrong jobspec DONE
 5) kill invalid flags with jobspec/no jobspec
 6) kill empty session DONE
+7) Handles n jobspecs or pids with flag
 -------------------------------------
-7) kill without sigpec a job -> Doesn't terminates the process eigher all is ok
-8) kill with jobspec a job -> Depend of the signal (need investigation about this)
 
 9) do in bash kill % 2 times with 1 process in background -> DO TO the error msg
 
@@ -43,7 +42,7 @@
 
 const static char*	get_signal(const char* key, int* res)
 {
-	ft_dprintf(2, "[GET SIGNAL][key is = \'%s\']\n", key);
+	//ft_dprintf(2, "[GET SIGNAL][key is = \'%s\']\n", key);
 	const char*	signals[31] = {
 		"SIGHUP", "SIGINT", "SIGQUIT", "SIGILL", "SIGTRAP", "SIGABRT",
 		"SIGBUS", "SIGFPE", "SIGKILL", "SIGUSR1", "SIGSEGV", "SIGUSR2",
@@ -151,9 +150,9 @@ void		kill_group(t_process* leader, int signal, t_group* itself)
 			remember_leader = g_session->groups->active_processes;
 			while (g_session->groups->active_processes != g_session->groups->nil)
 			{
-				g_session->groups->active_processes->flags |= SIGNALED;
-				if (PRINT_DEBUG)
-					ft_dprintf(2, "[KILL][KILL (signal=\'%d\') \'%d\']\n", signal, g_session->groups->active_processes->pid);
+				g_session->groups->active_processes->flags |= (SIGNALED | KILLED);
+				//if (PRINT_DEBUG)
+					ft_dprintf(2, "[KILL][KILL (signal=\'%d\') \'%d\'][\'%p\'][group= %p]\n", signal, g_session->groups->active_processes->pid, g_session->groups->active_processes, g_session->groups);
 				kill(g_session->groups->active_processes->pid, signal);
 				kill(g_session->groups->active_processes->pid, SIGCONT);
 				update_background(&g_session->groups->active_processes, true /*signal == SIGCONT*/);
@@ -179,6 +178,7 @@ void		kill_group(t_process* leader, int signal, t_group* itself)
 	g_session->groups = remember;
 }
 
+/*
 int     	ft_kill(t_exec* args, t_term* term)
 {
     int			signal;
@@ -231,30 +231,103 @@ int     	ft_kill(t_exec* args, t_term* term)
 	if (signal)
 	{
 		// TO DO: only the target if pid
-		if (!(target = jobspec_parser(args->ac, &args->av[1], NULL)) && !sig_spec)
+		int i = -1;
+		while (++i < args->ac - 2)
 		{
-			// CANT get target here for the comment (av[2] istead of av[1])
-			if (args->av[2][0] == '%')
-				ft_dprintf(STDERR_FILENO, "minish: kill: %s: no such job\n", args->av[2]);
-			else if (is_string_digit(args->av[2]))
-				ft_dprintf(2, "minish: kill: (%s) - No such process\n", args->av[2]);
-			else
-				ft_dprintf(2, "minish: kill: %s: arguments must be process or job IDs\n", args->av[2]);
-			return (STD_ERROR);
+			if (!(target = jobspec_parser(args->ac, &args->av[i + 1], NULL)) && !sig_spec)
+			{
+				// CANT get target here for the comment (av[2] istead of av[1])
+				if (args->av[2][0] == '%')
+					ft_dprintf(STDERR_FILENO, "minish: kill: %s: no such job\n", args->av[2]);
+				else if (is_string_digit(args->av[2]))
+					ft_dprintf(2, "minish: kill: (%s) - No such process\n", args->av[2]);
+				else
+					ft_dprintf(2, "minish: kill: %s: arguments must be process or job IDs\n", args->av[2]);
+				return (STD_ERROR);
+			}
+			else if (!target && sig_spec)
+			{
+				ft_dprintf(2, "%s", "minish: kill: invalid signal specification\n");
+				return (STD_ERROR);
+			}
+			if ((*target)->flags & RESTRICT_OP)
+			{
+				ft_dprintf(STDERR_FILENO, "minish: kill: %s: no such job\n", args->av[1]);
+        	    return (STD_ERROR);
+			}
+			kill_group(*target, signal, g_session->groups);
 		}
-		else if (!target && sig_spec)
-		{
-			ft_dprintf(2, "%s", "minish: kill: invalid signal specification\n");
-			return (STD_ERROR);
-		}
-		if ((*target)->flags & RESTRICT_OP)
-		{
-			ft_dprintf(STDERR_FILENO, "minish: kill: %s: no such job\n", args->av[1]);
-            return (STD_ERROR);
-		}
-		kill_group(*target, signal, g_session->groups);
 		return (SUCCESS); // check this ret
 	}
 	ft_dprintf(STDERR_FILENO, "%s\n", "minish: kill: COT: invalid signal specification");
 	return (STD_ERROR);
+}
+*/
+
+// DO TO: find: ft_dprintf(STDERR_FILENO, "%s\n", "minish: kill: COT: invalid signal specification");
+	// in true kill
+int			ft_kill(t_exec* args, t_term* term)
+{
+	int		signal; // flags
+	int		i;
+	t_process** target;
+	char*	numeric;
+	int		tmp;
+	int		ret;
+	(void)term;
+
+	signal = 0;
+	i = -1;
+	if (args->ac == 1 || (args->ac == 2 && args->av[1][0] == '-' && ft_strncmp("-l", args->av[1], 3) && ft_strncmp("-L", args->av[1], 3)))
+	{
+		ft_dprintf(STDERR_FILENO, "%s\n", "kill: usage: kill [-s sigspec | -n signum | -sigspec] pid | jobspec ... or kill -l [sigspec]");
+        return (CMD_BAD_USE);
+	}
+	// signal == 0 -> no signal
+	if (!get_signal(&args->av[1][1], &signal) && (signal == 0) && args->av[1][0] == '-')
+	{
+		ft_dprintf(2, "minish: kill: %s: invalid signal specification\n", args->av[1]);
+		return (CMD_BAD_USE);
+	}
+	if (args->av[1][0] == '%')
+		signal = 0;
+	// if i have some jobspec o or pid
+	ft_dprintf(2, "[KILL][SIGNAL IS: %d]\nac: %d\niter: %d\n", signal, args->ac, (signal ? 1 : 0));
+	if (!(signal == 256 && args->ac == 2))
+	{
+		while (++i < args->ac - (signal ? 2 : 1))
+		{
+			ret = SUCCESS;
+			if (signal == 256)
+			{
+				// catch -l here
+				if ((numeric = (char*)get_signal(args->av[2 + i], &tmp)))
+					ft_dprintf(args->fds[1], "%s\n", numeric);
+				else
+				{
+					ret = CMD_BAD_USE;
+					ft_dprintf(2, "minish: kill: %s: invalid signal specification\n", args->av[2 + i]);
+				}
+				continue ;
+			}
+			if (!(target = jobspec_parser(args->ac, &args->av[(signal ? 1 : 0) + i], NULL)))
+			{
+				ret = CMD_BAD_USE;
+				if (args->av[(signal ? 2 : 1) + i][0] == '%')
+					ft_dprintf(STDERR_FILENO, "minish: kill: %s: no such job\n", args->av[(signal ? 2 : 1) + i]);
+				else if (is_string_digit(args->av[(signal ? 2 : 1) + i]))
+					ft_dprintf(2, "minish: kill: (%s) - No such process\n", args->av[(signal ? 2 : 1) + i]);
+				else
+					ft_dprintf(2, "minish: kill: %s: arguments must be process or job IDs\n", args->av[(signal ? 2 : 1) + i]);
+			}
+			else
+				kill_group(*target, signal ? signal : SIGTERM, g_session->groups);
+		}
+		return (ret);
+	}
+	if (signal == 256)
+	{
+		print_all_signals();
+		return (SUCCESS);
+	}
 }

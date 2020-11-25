@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 00:48:10 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 17:53:27 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,10 @@
 #define	BACKGROUND		1
 #define STOPPED			2
 #define EXITED			4
-#define SIGNALED		8		
-#define RESTRICT_OP		16
-#define NO_HANGUP		32
+#define SIGNALED		8
+#define KILLED			16	
+#define RESTRICT_OP		32
+#define NO_HANGUP		64
 
 typedef struct 			s_process
 {
@@ -152,6 +153,7 @@ bool					is_not_ambigous(t_process* target);
 bool					is_not_ambigous_v2(const char* niddle);
 void					print_index_args(t_process* target);
 int						matrix_height(char **matrix);
+bool					ignore_pid(int ac, char*const* av);
 char**					split_separators(char* input, char** separators);
 
 
@@ -183,7 +185,7 @@ void					update_groups(t_session* session, t_group** group);
 void					force_exit_background(t_session* session);
 */
 
-t_process**				jobspec_parser(int ac, char*const* av, t_process** (*fill)(int ac, char*const* av));
+t_process**				jobspec_parser(int ac, char*const* av, bool (*fill)(int ac, char*const* av));
 bool					is_string_digit(const char* string);
 
 

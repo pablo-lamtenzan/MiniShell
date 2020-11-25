@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 23:11:42 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 00:00:24 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 17:53:44 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ int		ft_bg(t_exec* args, t_term* term)
     if (args->ac > 1)
     {
 		// TO DO: if jobspec is pid has to resume is grou p or just the process ?
-        if (!(target = jobspec_parser(args->ac, args->av, NULL)))
+        if (!(target = jobspec_parser(args->ac, args->av, ignore_pid)))
 		{
             ft_dprintf(STDERR_FILENO, "minish: bg: %s: no such job\n", args->av[1]);
             return (STD_ERROR);

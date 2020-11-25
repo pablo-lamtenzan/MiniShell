@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 01:08:13 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 16:43:31 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,7 +266,7 @@ int		check_wstatus(t_process* target, int *exit_status)
 		// TO DO: THis works but coulb some exeptions that make it working when i haven't to
 			// The idea was do this with SIGNALED... BUT with WXITED seems work too
 			// Just have to test all the cases
-		if (target->flags & EXITED)
+		if (target->flags & SIGNALED)
 			*exit_status = 0;
 		return (WTERMSIG(target->wstatus));
 	}
@@ -352,7 +352,7 @@ void	print_signal(int fd, t_process* target, int mode)
 		exit_status > 0 ? freed[2] = ft_itoa(exit_status) : "",
 		(mode && __WCOREDUMP(target->wstatus)) || (!mode && group_coredump(aux)) ? "(core dumped)" : ""
 	);
-	if (stopped_signal(signal, false) || signal == 33 || signal == 31 || target->flags & EXITED)
+	if (stopped_signal(signal, false) || signal == 33 || signal == 31 || target->flags & SIGNALED)
 	{
 		padding_spaces(fd, ft_strlen((!mode && is_active_group(aux) ? "Stopped" : get_signal(signal))));
 		mode ? print_job_args(fd, target) : print_group_line(fd, aux);
