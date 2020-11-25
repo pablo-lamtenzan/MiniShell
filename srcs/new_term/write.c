@@ -53,7 +53,7 @@ t_term_err	term_write_msg(t_term *t, const char *msg, size_t len)
 /*
 **	Append to an interactive terminal's input line.
 */
-t_term_err			term_write(t_term *term, const char *input, size_t length)
+t_term_err	term_write(t_term *term, const char *input, size_t length)
 {
 	t_term_err status;
 
@@ -63,7 +63,10 @@ t_term_err			term_write(t_term *term, const char *input, size_t length)
 		if (write(STDERR_FILENO, input, length) == -1)
 			status = TERM_EWRITE;
 		else
+		{
 			status = line_insert(term->line, term->pos, input, length);
+			term->pos += length;
+		}
 	}
 	return (status);
 }
