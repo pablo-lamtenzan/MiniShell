@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/18 18:57:39 by chamada           #+#    #+#             */
-/*   Updated: 2020/11/24 18:50:46 by chamada          ###   ########lyon.fr   */
+/*   Updated: 2020/11/25 17:40:57 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void	highlight(t_term *t)
 	{
 		/* ft_dprintf(2, "[SELECT] start: %lu, end: %lu\n",
 			t->clip.select.start, t->clip.select.end); */
-		tputs(tgoto(t->caps.ctrl.move_h, 0, t->origin), 1, &putc_err);
+		caps_goto(&t->caps, t->origin);
 		tputs(t->caps.ctrl.del_line, 1, &putc_err);
 		write(STDERR_FILENO, t->line->data, t->clip.select.start);
 		tputs(t->caps.mode.standout, 1, &putc_err);
@@ -27,7 +27,7 @@ static void	highlight(t_term *t)
 		tputs(t->caps.mode.standout_end, 1, &putc_err);
 		write(STDERR_FILENO, t->line->data + t->clip.select.end,
 			t->line->len - t->clip.select.end);
-		tputs(tgoto(t->caps.ctrl.move_h, 0, t->origin + t->pos), 1, &putc_err);
+		caps_goto(&t->caps, t->origin + t->pos);
 	}
 }
 
@@ -84,11 +84,11 @@ t_term_err	select_clear(t_term *t)
 		t->clip.select.end = -1U;
 		if (t->line)
 		{
-			tputs(tgoto(t->caps.ctrl.move_h, 0, t->origin), 1, &putc_err);
+			caps_goto(&t->caps, t->origin);
 			tputs(t->caps.ctrl.del_line, 1, &putc_err);
 			if (write(STDERR_FILENO, t->line->data, t->line->len) == -1)
 				return (TERM_EWRITE);
-			tputs(tgoto(t->caps.ctrl.move_h, 0, t->origin + t->pos), 1, &putc_err);
+			caps_goto(&t->caps, t->origin + t->pos);
 		}
 	}
 	return (TERM_EOK);

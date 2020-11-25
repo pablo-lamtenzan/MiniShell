@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 18:53:27 by chamada           #+#    #+#             */
-/*   Updated: 2020/11/24 18:53:52 by chamada          ###   ########lyon.fr   */
+/*   Updated: 2020/11/25 18:25:59 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,23 @@ static bool	load_caps(t_caps *caps)
 
 	a = NULL;
 	caps->mode = (t_modes) {
-		tgetstr("im", &a), tgetstr("ei", &a), tgetstr("cl", &a),
-		tgetstr("so", &a), tgetstr("se", &a),
+		tgetstr("im", &a), tgetstr("ei", &a), tgetstr("dm", &a),
+		tgetstr("ed", &a), tgetstr("cl", &a), tgetstr("so", &a),
+		tgetstr("se", &a),
 	};
 	caps->ctrl = (t_ctrls) {
-		tgetstr("dc", &a), tgetstr("ec", &a), tgetstr("ce", &a),
-		tgetstr("cm", &a), tgetstr("ch", &a), tgetstr("up", &a),
-		tgetstr("do", &a), tgetstr("le", &a), tgetstr("nd", &a),
+		tgetstr("dc", &a), tgetstr("DC", &a), tgetstr("ce", &a),
+		tgetstr("ec", &a), tgetstr("cm", &a), tgetstr("ch", &a),
+		tgetstr("up", &a), tgetstr("do", &a), tgetstr("le", &a),
+		tgetstr("nd", &a),
 	};
 	caps->key = (t_keys) {	
 		tgetstr("ku", &a), tgetstr("kd", &a), tgetstr("kl", &a),
 		tgetstr("kr", &a),
 	};
 	return (caps->mode.insert && caps->mode.insert_end && caps->ctrl.del
-	&& caps->ctrl.del_line && caps->ctrl.move && caps->ctrl.move_h
-	&& caps->ctrl.up && caps->ctrl.down && caps->ctrl.left && caps->ctrl.right
+	&& caps->ctrl.del_line && caps->ctrl.move && caps->ctrl.up
+	&& caps->ctrl.down && caps->ctrl.left && caps->ctrl.right
 	&& caps->key.up && caps->key.down && caps->key.left && caps->key.right);
 }
 

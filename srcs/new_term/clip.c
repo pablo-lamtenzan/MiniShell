@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/18 19:28:58 by chamada           #+#    #+#             */
-/*   Updated: 2020/11/24 18:40:02 by chamada          ###   ########lyon.fr   */
+/*   Updated: 2020/11/25 19:11:33 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,9 @@ t_term_err	clip_cut(t_term *t)
 	{
 		if ((status = clip_copy(t)) != TERM_EOK)
 			return (status);
-		tputs(tgoto(t->caps.ctrl.move_h, 0, t->origin + t->pos), 1, &putc_err);
-		tputs(t->caps.ctrl.del_n, t->clip.line.len, &putc_err);
+		//ft_dprintf(2, "start: %lu len: %lu\n", t->clip.select.start, t->clip.line.len);
+		caps_goto(&t->caps, t->origin + t->pos);
+		caps_delete(&t->caps, t->clip.line.len);
 		// TODO: Fix line_erase with full line (Actually it seems to work...)
 		line_erase(t->line, t->pos, t->clip.line.len);
 		select_clear(t);
@@ -49,7 +50,7 @@ t_term_err	clip_cut(t_term *t)
 	return (TERM_EOK);
 }
 
-t_term_err		clip_paste(t_term *t)
+t_term_err	clip_paste(t_term *t)
 {
 	if (!t->clip.line.len)
 		return (TERM_EOK);

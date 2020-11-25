@@ -107,6 +107,13 @@ t_term_err			term_write(t_term *term, const char *input, size_t length);
 */
 bool				term_init_caps(t_term *term, t_env **env);
 
+
+/*
+**					caps_utils.c
+*/
+void				caps_goto(t_caps *caps, size_t pos);
+void				caps_delete(t_caps *caps, size_t n);
+
 /*
 **					keybind.c
 */
