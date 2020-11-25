@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 22:21:49 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 22:51:51 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,8 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 // DATA-STRUCTURE PROBLEMS:
 // TO DO: [KILL] Update the data-structure well with SIGNALED flags
 // TO DO: [BG] if current is running bg has problems ... (not sure)
+// TO DO: do not delete all history nodes
+
 
 // TO TEST
 // TO DO: [PIPES WITH STOPPED] return (g_session->st) last pipe process ret when theres stopped ? (check things like that for bg, kill...)

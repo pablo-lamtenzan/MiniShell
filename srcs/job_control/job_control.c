@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 22:19:28 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 22:49:08 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -425,7 +425,7 @@ void		remove_exited_zombies()
 			remove_history_node(g_session->groups);
 			if (PRINT_DEBUG)
 				ft_dprintf(2, "[REMOVE EXITED ZOMBIES][REMOVE EXITED ZOMBIE GROUP: %p]\n", g_session->groups);
-			group_remove_v2(&g_session->groups);
+			//group_remove_v2(&g_session->groups);
 		}
 		g_session->groups = next;
 	}

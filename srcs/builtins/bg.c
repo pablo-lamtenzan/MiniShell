@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 23:11:42 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 17:53:44 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 23:22:08 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,12 +91,13 @@ int		ft_bg(t_exec* args, t_term* term)
         ft_dprintf(STDERR_FILENO, "minish: bg: %s: no such job\n", args->ac == 1 ? "current" : args->av[1]);
         return (STD_ERROR);
     }
+	// Sellect the first not alreaddy in background group
 	t_group*	remember;
 	remember = g_session->groups;
 	while (g_session->groups != g_session->nil->prev)
 	{
-    	target = g_session->groups->active_processes == g_session->groups->nil ? &g_session->groups->next->active_processes : &g_session->groups->active_processes;
-		if ((*target)->flags & BACKGROUND)
+    	target = g_session->groups->next != g_session->nil ? &g_session->groups->next->active_processes : &g_session->groups->active_processes;
+		if ((*target)->flags & (BACKGROUND | EXITED))
 			g_session->groups = g_session->groups->next;
 		else
 			break ;

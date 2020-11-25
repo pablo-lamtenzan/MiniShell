@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 22:20:29 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 22:52:10 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,7 @@ t_exec_status			execute_bst(t_bst* root, t_term* term)
 	}
 	}*/
 	group_push_front(group);
-	rm_exited_from_history();
+	//rm_exited_from_history();
 	
 	ft_bzero(&info, sizeof(t_exec));
 	info = (t_exec){.fds[FDS_STDOUT]=FDS_STDOUT, .fds[FDS_AUX]=FDS_AUX};
