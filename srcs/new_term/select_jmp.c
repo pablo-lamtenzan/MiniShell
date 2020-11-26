@@ -18,7 +18,7 @@ t_term_err  select_next_word(t_term *term)
 
 t_term_err  select_prev_word(t_term *term)
 {
-    if (term->pos < term->line->len)
+    if (term->pos > 0)
     {
         if (term->clip.select.start == -1U || term->clip.select.end == -1U)
         {
