@@ -160,6 +160,7 @@ t_term_err			cursor_prev_word(t_term *term);
 /*
 **					select.c
 */
+t_term_err			select_highlight(t_term *t);
 t_term_err			select_left(t_term *t);
 t_term_err			select_right(t_term *t);
 t_term_err			select_clear(t_term *t);
