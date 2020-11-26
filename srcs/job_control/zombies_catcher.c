@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 03:11:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 22:47:47 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/26 02:43:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void			zombies_catcher(int signal)
 							if (PRINT_DEBUG)
 								ft_dprintf(2, "[ZOMBIES CATCHER][PROCESS: \'%p\' EXITS][exit return: %d]\n", g_session->groups->active_processes, WEXITSTATUS(g_session->groups->active_processes->wstatus));
 							g_session->st = WEXITSTATUS(g_session->groups->active_processes->wstatus);
-							g_session->groups->active_processes->flags |= EXITED; // print too
+							g_session->groups->active_processes->flags |= (EXITED | NO_DELETE); // print too
 						}
 						else if (WIFSIGNALED(g_session->groups->active_processes->wstatus))
 						{

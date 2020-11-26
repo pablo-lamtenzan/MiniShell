@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 22:49:08 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/26 03:16:12 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,6 +183,21 @@ t_process**		background_find_leader(t_process* target, const char* search_type, 
 }
 }
 */
+
+bool		protect_process(t_group* target)
+{
+	t_process*	 process;
+	if (group_empty(target))
+		return (false);
+	process = target->nil->next;
+	while (process != target->nil)
+	{
+		if (process->flags & NO_DELETE)
+			return (true);
+		process = process->next;
+	}
+	return (false);
+}
 
 bool		is_active_group(t_group* target)
 {
@@ -416,7 +431,8 @@ void		remove_exited_zombies()
 	while (g_session->groups && g_session->groups != g_session->nil)
 	{
 		next = g_session->groups->next;
-		if (!is_active_group(g_session->groups))
+		
+		if (!is_active_group(g_session->groups) && !protect_process(g_session->groups))
 		{
 			if (g_session->groups == remember)
 				remember = remember->next;
@@ -425,7 +441,7 @@ void		remove_exited_zombies()
 			remove_history_node(g_session->groups);
 			if (PRINT_DEBUG)
 				ft_dprintf(2, "[REMOVE EXITED ZOMBIES][REMOVE EXITED ZOMBIE GROUP: %p]\n", g_session->groups);
-			//group_remove_v2(&g_session->groups);
+			group_remove_v2(&g_session->groups);
 		}
 		g_session->groups = next;
 	}
@@ -472,25 +488,27 @@ void		get_group_return()
 {
 	t_process* remember;
 
-	if (!is_active_group(g_session->groups)) // take care about signaled here too
+	if (is_active_group(g_session->groups)) // take care about signaled here too
 	{
-		if (!(g_session->groups->nil->prev->flags & (STOPPED | BACKGROUND)))
-			g_session->st = g_session->groups->nil->prev->ret;
-		else
-		{
+		//
+		//if (!(g_session->groups->nil->prev->flags & (STOPPED | BACKGROUND)))
+		//	g_session->st = g_session->groups->nil->prev->ret;
+		//else
+		//{
 			remember = g_session->groups->active_processes;
 			while (g_session->groups->active_processes != g_session->groups->nil)
 			{
 				if (g_session->groups->active_processes->flags & (STOPPED | BACKGROUND))
 				{
 					g_session->st = (unsigned char)(SIGNAL_BASE + g_session->groups->active_processes->prev != g_session->groups->nil ? g_session->groups->active_processes->prev->ret : g_session->groups->active_processes->ret);
+					ft_dprintf(2, "[CATCHET GROUP RET IS: %d]\n", g_session->st);
 					g_session->groups->active_processes = remember;
 					return ;
 				}
 				g_session->groups->active_processes = g_session->groups->active_processes->next;
 			}
 			g_session->groups->active_processes = remember;
-		}
+		//}
 	}
 }
 
@@ -525,6 +543,7 @@ void		delete_endzombies()
 	while (g_session->end_zombies)
 	{
 		fill = g_session->end_zombies->next;
+		//ft_dprintf(2, "[DELETE ENDZOMBIES][DELETE NODE: %d]\n", (*g_session->end_zombies->endzombie)->pid);
 		free(g_session->end_zombies);
 		g_session->end_zombies = fill;
 	}
@@ -538,6 +557,7 @@ void		print_endzombies()
 	first = g_session->end_zombies;
 	while (g_session->end_zombies)
 	{
+		(*g_session->end_zombies->endzombie)->flags &= ~NO_DELETE;
 		print_signal(STDERR_FILENO, *g_session->end_zombies->endzombie, 0);
 		g_session->end_zombies = g_session->end_zombies->next;
 	}

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 18:26:31 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/26 01:13:49 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/26 02:32:57 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ t_group			*group_new()
 */
 bool			session_empty()
 {
+	//ft_dprintf(2, "nil: next: %p ---- nil: prev: %p\n", g_session->nil->next, g_session->nil->prev);
 	return (g_session->nil->next == g_session->nil && g_session->nil->prev == g_session->nil);
 }
 
@@ -65,7 +66,7 @@ void			group_remove_v2(t_group** target)
 	if (PRINT_DEBUG)
 		ft_dprintf(2, "REMOVE GROUP: %p\n" ,*target);
 	free(*target);
-	//*target = NULL;
+	*target = NULL;
 }
 void			group_remove(t_group** prev, t_group** next)
 {

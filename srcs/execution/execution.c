@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/26 01:38:10 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/26 03:19:17 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ static t_exec_status	execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
 		{
 			g_session->st = (unsigned char)info->exec(info, term);
 			g_session->groups->active_processes->ret = g_session->groups->active_processes->flags & STOPPED ? -1 : (unsigned char)g_session->st;
+			//ft_dprintf(2, "CATHCHED PROCESS ERROR ST: %d\n", g_session->groups->active_processes->ret);
 		}
 		else
 			destroy_execve_args(info);
@@ -99,7 +100,7 @@ t_exec_status			execute_bst(t_bst* root, t_term* term)
 	// If i forget: next is for sleep 22 + stop + kill % + sleep 22 + stop + jobs + jobs
 	// If i forget: curr is for sleep 22 + stop + kill % + jobs + jobs
 	bool	stop = false;
-	if (!session_empty() && !group_empty(g_session->groups))
+	if (!session_empty() && !group_empty(g_session->groups) && g_session->groups->active_processes)
 	{
 		// Not adding a new background process
 		if (g_session->groups->active_processes->flags & SIGNALED && !(g_session->groups->active_processes->flags & KILLED)) // change buy if group siganled and if not group killed
@@ -118,10 +119,6 @@ t_exec_status			execute_bst(t_bst* root, t_term* term)
 				g_session->groups->next->active_processes->flags &= ~SIGNALED;
 				//ft_dprintf(2, "REMOVE SIGANLED FROM NEXT \'%p\'\n", g_session->groups->next->active_processes);
 				//group_remove_v2(&g_session->groups->next);
-				
-				// TO DO: I ve alreaddy lost enought time (group address in kill != tahn freed addr but process still the same)
-					// I free session nil
-					// wtf wtf wtf how ???????
 					
 				t_group*	fill;
 

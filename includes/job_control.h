@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 23:51:56 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/26 02:49:10 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 #define KILLED			16	
 #define RESTRICT_OP		32
 #define NO_HANGUP		64
+#define NO_DELETE		128
 
 typedef struct 			s_process
 {
@@ -170,6 +171,7 @@ bool					is_not_ambigous(t_process* target);
 bool					is_not_ambigous_v2(const char* niddle);
 void					print_index_args(t_process* target);
 int						matrix_height(char **matrix);
+bool					protect_process(t_group* target);
 bool					ignore_pid(int ac, char*const* av);
 char**					split_separators(char* input, char** separators);
 
