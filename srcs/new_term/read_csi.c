@@ -35,12 +35,33 @@ t_term_err	term_read_mod_shift(t_term *term)
 
 t_term_err	term_read_mod_alt(t_term *term)
 {
+	const t_keybind	keys[] = {
+		{'D', select_prev_word},
+		{'C', select_next_word}
+	};
 	ssize_t			read_st;
 	char			c;
+	t_term_action	action;
 
 	if ((read_st = read(0, &c, 1)) != 1)
 		return ((read_st == 0) ? TERM_EEOF: TERM_EREAD);
-	
+	if ((action = keybind_get(keys, sizeof(keys) / sizeof(*keys), c)))
+		return (action(term));
+	return (TERM_EOK);
+}
+
+t_term_err	term_del(t_term *term)
+{
+	ssize_t	read_st;
+	char	c;
+
+	if ((read_st = read(STDIN_FILENO, &c, 1)) != 1)
+		return ((read_st == 0) ? TERM_EEOF: TERM_EREAD);
+	if (c == '~' && term->pos != term->line->len)
+	{
+		caps_delete(&term->caps, 1);
+		line_erase(term->line, term->pos, 1);
+	}
 	return (TERM_EOK);
 }
 
