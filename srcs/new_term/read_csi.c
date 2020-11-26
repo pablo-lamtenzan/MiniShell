@@ -40,7 +40,21 @@ t_term_err	term_read_mod_alt(t_term *term)
 
 	if ((read_st = read(0, &c, 1)) != 1)
 		return ((read_st == 0) ? TERM_EEOF: TERM_EREAD);
-	
+	return (TERM_EOK);
+}
+
+t_term_err	term_del(t_term *term)
+{
+	ssize_t	read_st;
+	char	c;
+
+	if ((read_st = read(STDIN_FILENO, &c, 1)) != 1)
+		return ((read_st == 0) ? TERM_EEOF: TERM_EREAD);
+	if (c == '~' && term->pos != term->line->len)
+	{
+		caps_delete(&term->caps, 1);
+		line_erase(term->line, term->pos, 1);
+	}
 	return (TERM_EOK);
 }
 
@@ -57,7 +71,8 @@ t_term_err	term_read_csi(t_term *term)
 		{term->caps.key.up[2], &term_prev_line},
 		{term->caps.key.down[2], &term_next_line},
 		{term->caps.key.left[2], &cursor_l},
-		{term->caps.key.right[2], &cursor_r}
+		{term->caps.key.right[2], &cursor_r},
+		{term->caps.key.del[2], &term_del}
 	};
 	ssize_t			read_st;
 	char			c;
