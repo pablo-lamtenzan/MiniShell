@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/26 17:20:07 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/26 18:03:31 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,13 +77,8 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 // TO DO: store a lot stoppe jobs, then bg them like: bg ; bg ; bg ... and jobs (spoiler: somme jobs that stay in runnig state nevers are deleted) WHY ?
 // TO DO: endzombies history (should not print)
 
-// TO DO: SIGANLED AND KILLED only for SIGANLS not stopped or continued processes in KILL
-// TO DO: Skip in specific builtins KILLED AND SIGANLED flags
-
 // TO DO: Norme all (at the end of the end)
 // TO DO: [UNKNOWN] cat | cat -e | echo a resarch (now we have all the job control build, must be easy to fix)
-
-
 
 // UNWORKING STUFF I FOUND
 // echo $? doesnt work

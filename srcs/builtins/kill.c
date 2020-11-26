@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/26 01:27:41 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/26 17:48:25 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,8 +150,9 @@ void		kill_group(t_process* leader, int signal, t_group* itself)
 			remember_leader = g_session->groups->active_processes;
 			while (g_session->groups->active_processes != g_session->groups->nil)
 			{
-				g_session->groups->active_processes->flags |= (SIGNALED | KILLED);
-				//if (PRINT_DEBUG)
+				if (!(signal >= SIGSTOP && signal <= SIGTTOU) && signal != SIGCONT)
+					g_session->groups->active_processes->flags |= (SIGNALED | KILLED);
+				if (PRINT_DEBUG)
 					ft_dprintf(2, "[KILL][KILL (signal=\'%d\') \'%d\'][\'%p\'][group= %p]\n", signal, g_session->groups->active_processes->pid, g_session->groups->active_processes, g_session->groups);
 				kill(g_session->groups->active_processes->pid, signal);
 				kill(g_session->groups->active_processes->pid, SIGCONT);

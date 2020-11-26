@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:20:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 22:43:23 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/26 18:00:21 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,11 @@ int			wait_all_groups(int flags)
 	while (g_session->groups != g_session->nil->next)
 	{
 		prev = g_session->groups->prev;
+		if (g_session->groups->nil->next->flags & (SIGNALED | KILLED))
+		{
+			g_session->groups = prev;
+			continue ;
+		}
 		ret = wait_group(g_session->groups->nil->next, flags, remember);
 		g_session->groups = prev;
 	}
@@ -168,8 +173,10 @@ int			ft_wait(t_exec* args, t_term* term)
 			{
 				if (!(target = jobspec_parser(args->ac, &args->av[nb + i], NULL)))
 				{
-					// TO DO ERROR PID
-					ft_dprintf(STDERR_FILENO, "bash: wait: %s: no such job\n", args->av[nb + i + 1]);
+					if (is_string_digit(args->av[nb + i + 1]))
+						ft_dprintf(STDERR_FILENO, "minsh: wait: pid %s is not a child of this shell\n", args->av[nb + i + 1]);
+					else
+						ft_dprintf(STDERR_FILENO, "minish: wait: %s: no such job\n", args->av[nb + i + 1]);
 					return (CMD_NOT_FOUND);
 				}
 				tmp = last_return;

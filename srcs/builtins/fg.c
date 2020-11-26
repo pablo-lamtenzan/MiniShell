@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 20:39:31 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/26 17:36:37 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,12 @@ int		ft_fg(t_exec* args, t_term* term)
 	{
 		ft_dprintf(STDERR_FILENO, "minish: fg: %s: no such job\n", args->av[1]);
             return (STD_ERROR);
+	}
+	if ((*target)->flags & (SIGNALED | KILLED))
+	{
+		ft_dprintf(STDERR_FILENO, "minish: fg: job has terminated\n");
+		print_signal(STDERR_FILENO, *target, 0);
+		return (STD_ERROR);
 	}
 	//ft_dprintf(2, "target = %p\n", target);
 	//ft_dprintf(2, "*target = %p\n", *target);

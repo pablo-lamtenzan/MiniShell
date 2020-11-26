@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 23:11:42 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 23:29:32 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/26 17:45:56 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,12 @@ int		ft_bg(t_exec* args, t_term* term)
 	{
 		ft_dprintf(STDERR_FILENO, "minish: job %lu already in background\n", get_background_index(g_session->nil, *target));
 		return (SUCCESS);
+	}
+	if ((*target)->flags & (SIGNALED | KILLED))
+	{
+		ft_dprintf(STDERR_FILENO, "minish: bg: job has terminated\n");
+		print_signal(STDERR_FILENO, *target, 0);
+		return (STD_ERROR);
 	}
 	//ft_dprintf(2, "target = %p\n", target);
 	//ft_dprintf(2, "*target = %p\n", *target);
