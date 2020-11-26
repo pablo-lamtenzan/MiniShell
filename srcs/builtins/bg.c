@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 23:11:42 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 23:22:08 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 23:29:32 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,7 @@ int		ft_bg(t_exec* args, t_term* term)
 		ft_dprintf(STDERR_FILENO, "minish: bg: %s: no such job\n", args->av[1]);
             return (STD_ERROR);
 	}
+	// TO DO: bg % ; bg % ; bg %
 	if ((*target)->flags & BACKGROUND)
 	{
 		ft_dprintf(STDERR_FILENO, "minish: job %lu already in background\n", get_background_index(g_session->nil, *target));

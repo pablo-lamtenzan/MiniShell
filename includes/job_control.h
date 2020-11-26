@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 22:20:01 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/25 23:51:56 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,13 @@ void					remove_exited_zombies();
 bool					update_zombies(t_group** update);
 void					remove_zombie_node(t_group* target);
 void					suspend_process(int signal);
+
+
+void					delete_groups();
+void					delete_processes(t_group* group);
+void					delete_zombies();
+void					delete_hist();
+void					delete_input_line();
 
 
 /*

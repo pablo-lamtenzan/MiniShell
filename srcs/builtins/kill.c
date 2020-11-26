@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 20:40:11 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/26 01:27:41 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,6 +156,7 @@ void		kill_group(t_process* leader, int signal, t_group* itself)
 				kill(g_session->groups->active_processes->pid, signal);
 				kill(g_session->groups->active_processes->pid, SIGCONT);
 				update_background(&g_session->groups->active_processes, true /*signal == SIGCONT*/);
+				remove_history_node(g_session->groups);
 				g_session->groups->active_processes = g_session->groups->active_processes->next;
 			}
 			// Remove the group later
@@ -264,6 +265,30 @@ int     	ft_kill(t_exec* args, t_term* term)
 }
 */
 
+int		handle_current(t_process*** target, const char* jobspec)
+{
+	t_group*	remember;
+
+	remember = g_session->groups;
+	if (!ft_strncmp(jobspec, "%", 2) || !ft_strncmp(jobspec, "%+", 3) \
+		|| ft_strncmp(jobspec, "%%", 3) || (g_session->hist \
+		&& !g_session->hist->next && !ft_strncmp(jobspec, "%-", 3)))
+	{
+		while (g_session->groups != g_session->nil->prev)
+		{
+			*target = g_session->groups->next != g_session->nil ? &g_session->groups->next->active_processes : &g_session->groups->active_processes;
+			//ft_dprintf(2, "[KILL][HANDLE CURR][CURR: %p][FLAGS: %d]\n", **target, (**target)->flags);
+			if ((**target)->flags & (KILLED | SIGNALED))
+				g_session->groups = g_session->groups->next;
+			else
+				break ;
+		}
+		g_session->groups = remember;
+		return (true);
+	}
+	return (false);
+}
+
 // DO TO: find: ft_dprintf(STDERR_FILENO, "%s\n", "minish: kill: COT: invalid signal specification");
 	// in true kill
 int			ft_kill(t_exec* args, t_term* term)
@@ -278,6 +303,7 @@ int			ft_kill(t_exec* args, t_term* term)
 
 	signal = 0;
 	i = -1;
+	target = NULL;
 	if (args->ac == 1 || (args->ac == 2 && args->av[1][0] == '-' && ft_strncmp("-l", args->av[1], 3) && ft_strncmp("-L", args->av[1], 3)))
 	{
 		ft_dprintf(STDERR_FILENO, "%s\n", "kill: usage: kill [-s sigspec | -n signum | -sigspec] pid | jobspec ... or kill -l [sigspec]");
@@ -292,12 +318,13 @@ int			ft_kill(t_exec* args, t_term* term)
 	if (args->av[1][0] == '%')
 		signal = 0;
 	// if i have some jobspec o or pid
-	ft_dprintf(2, "[KILL][SIGNAL IS: %d]\nac: %d\niter: %d\n", signal, args->ac, (signal ? 1 : 0));
+	//ft_dprintf(2, "[KILL][SIGNAL IS: %d]\nac: %d\niter: %d\n", signal, args->ac, (signal ? 1 : 0));
 	if (!(signal == 256 && args->ac == 2))
 	{
 		while (++i < args->ac - (signal ? 2 : 1))
 		{
 			ret = SUCCESS;
+			bool flag = true;
 			if (signal == 256)
 			{
 				// catch -l here
@@ -310,8 +337,11 @@ int			ft_kill(t_exec* args, t_term* term)
 				}
 				continue ;
 			}
-			if (!(target = jobspec_parser(args->ac, &args->av[(signal ? 1 : 0) + i], NULL)))
+			if ((flag = handle_current(&target, args->av[(signal ? 1 : 0) + i])))
+				;
+			if (!flag && !(target = jobspec_parser(args->ac, &args->av[(signal ? 1 : 0) + i], NULL)))
 			{
+				flag = false;
 				ret = CMD_BAD_USE;
 				if (args->av[(signal ? 2 : 1) + i][0] == '%')
 					ft_dprintf(STDERR_FILENO, "minish: kill: %s: no such job\n", args->av[(signal ? 2 : 1) + i]);
@@ -320,8 +350,13 @@ int			ft_kill(t_exec* args, t_term* term)
 				else
 					ft_dprintf(2, "minish: kill: %s: arguments must be process or job IDs\n", args->av[(signal ? 2 : 1) + i]);
 			}
-			else
-				kill_group(*target, signal ? signal : SIGTERM, g_session->groups);
+			else if (flag)
+			{
+				if (!target || ((*target)->flags & (SIGNALED | KILLED) && (ret = CMD_NOT_FOUND)))
+					ft_dprintf(STDERR_FILENO, "minish: kill: %s: no such job\n", args->av[(signal ? 2 : 1) + i]);
+				else
+					kill_group(*target, signal ? signal : SIGTERM, g_session->groups);
+			}
 		}
 		return (ret);
 	}
