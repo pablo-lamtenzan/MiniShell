@@ -33,10 +33,11 @@ typedef struct	s_ctrls
 
 typedef struct	s_keys
 {
-	const char	*up;
-	const char	*down;
-	const char	*left;
-	const char	*right;
+	char	*up;
+	char	*down;
+	char	*left;
+	char	*right;
+	char	*del;
 }				t_keys;
 
 typedef struct	s_caps

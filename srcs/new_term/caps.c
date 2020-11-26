@@ -30,7 +30,7 @@ static bool	load_caps(t_caps *caps)
 	};
 	caps->key = (t_keys) {	
 		tgetstr("ku", &a), tgetstr("kd", &a), tgetstr("kl", &a),
-		tgetstr("kr", &a),
+		tgetstr("kr", &a), tgetstr("kD", &a),
 	};
 	return (caps->mode.insert && caps->mode.insert_end && caps->ctrl.del
 	&& caps->ctrl.del_line && caps->ctrl.move && caps->ctrl.up
