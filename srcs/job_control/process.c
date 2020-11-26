@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 21:45:06 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/26 03:21:17 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,7 @@ t_exec_status	wait_processes_v2(t_term* term, t_exec_status st)
 		if (PRINT_DEBUG) {
 		if (g_session->groups && g_session->groups->active_processes)
 			ft_dprintf(2, "[WAIT V2][PREVIOUS GROUP LEADER FLAGS ARE: %d][\'%p\']\n", g_session->groups->active_processes->flags, g_session->groups->active_processes);}
+		print_endzombies();
 		remove_exited_zombies();
 		return (st);
 	}
@@ -187,5 +188,6 @@ t_exec_status	wait_processes_v2(t_term* term, t_exec_status st)
 	if (!is_active_group(g_session->groups))
 		group_pop_front();
 	remove_exited_zombies();
+	ft_dprintf(2, "[GROUP RETURN STATUS IS: %d]\n", g_session->st);
 	return (st);
 }

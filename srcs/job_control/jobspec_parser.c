@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 12:40:22 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 17:58:52 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/26 00:36:14 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,6 +191,7 @@ t_process**		get_process_by_history(t_group* groups, size_t index)
 		hist_addr = g_session->hist;
 	else if (index == 2)
 		hist_addr = g_session->hist->next;
+	ft_dprintf(2, "[GET BY HIST][CURRENT GROUP: %p]\n", hist_addr->group);
 	return (get_process_by_pid(groups, hist_addr->group->nil->next->pid));
 }
 

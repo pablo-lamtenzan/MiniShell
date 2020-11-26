@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:05:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 20:28:46 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/26 02:13:29 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ t_process*		process_new(pid_t pid, int wstatus, char*const* data)
 */
 bool		group_empty(t_group* group)
 {
-	return (group->nil->next == group->nil && group->nil->prev == group->nil);
+	return (group->active_processes && group->nil->next == group->nil && group->nil->prev == group->nil);
 }
 
 /*

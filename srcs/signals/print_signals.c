@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 22:49:41 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/26 02:51:23 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -345,7 +345,7 @@ void	print_signal(int fd, t_process* target, int mode)
 	if (stopped_signal(signal = check_wstatus(target, &exit_status), true))
 		write(fd, "\n", 1);
 	if (PRINT_DEBUG)
-		ft_dprintf(2, "[TEST PRINT SIGNALS][SIGNAL: %d][WSATUS: %d][ret: %d]\n", signal, target->wstatus, target->ret);
+		ft_dprintf(2, "[TEST PRINT SIGNALS][SIGNAL: %d][WSATUS: %d][ret: %d][flags: %d]\n", signal, target->wstatus, target->ret, target->flags);
 	ft_dprintf(fd, "%s%s%s%s%s%s%s%s%s%s %s",
 		(stopped_signal_group(aux, true) || exit_status >= 0) && (!mode || (mode && is__leader)) ? "[" : (mode ? " " : ""),
 		(stopped_signal_group(aux, true) || exit_status >= 0) && (!mode || (mode && is__leader)) ? freed[0] = ft_itoa(get_background_index(g_session->nil, target)) : (mode ? " " : ""),
