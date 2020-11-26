@@ -11,12 +11,12 @@ t_term_err  select_next_word(t_term *term)
         }
         cursor_next_word(term);
         term->clip.select.end = term->pos;
-        highlight(term);
+        select_highlight(term);
     }
     return (TERM_EOK);
 }
 
-t_term_err  select_next_word(t_term *term)
+t_term_err  select_prev_word(t_term *term)
 {
     if (term->pos < term->line->len)
     {
@@ -25,9 +25,9 @@ t_term_err  select_next_word(t_term *term)
             term->clip.select.start = term->pos;
             term->clip.select.end = term->pos;
         }
-        cursor_next_word(term);
-        term->clip.select.end = term->pos;
-        highlight(term);
+        cursor_prev_word(term);
+        term->clip.select.start = term->pos;
+        select_highlight(term);
     }
     return (TERM_EOK);
 }
