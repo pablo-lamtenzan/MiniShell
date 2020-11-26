@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/26 03:16:12 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/26 17:20:56 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -500,8 +500,13 @@ void		get_group_return()
 			{
 				if (g_session->groups->active_processes->flags & (STOPPED | BACKGROUND))
 				{
-					g_session->st = (unsigned char)(SIGNAL_BASE + g_session->groups->active_processes->prev != g_session->groups->nil ? g_session->groups->active_processes->prev->ret : g_session->groups->active_processes->ret);
-					ft_dprintf(2, "[CATCHET GROUP RET IS: %d]\n", g_session->st);
+					// First is stopped return the first return value: 128 + STOPPPED SIG
+					if (g_session->groups->active_processes->prev == g_session->groups->nil)
+						g_session->st = SIGNAL_BASE + WSTOPSIG(g_session->groups->active_processes->wstatus);
+					// Else return 128 + the prev ret
+					else
+						g_session->st = SIGNAL_BASE + g_session->groups->active_processes->prev->ret;
+					//ft_dprintf(2, "[CATCHET GROUP RET IS: %d]\n", g_session->st);
 					g_session->groups->active_processes = remember;
 					return ;
 				}

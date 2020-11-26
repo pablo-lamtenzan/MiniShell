@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/26 03:21:17 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/26 17:20:37 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,6 +180,7 @@ t_exec_status	wait_processes_v2(t_term* term, t_exec_status st)
 	//ft_dprintf(2, "WAIT PROCESSES after nil->prev: %p\n", g_session->groups->nil->prev);
 	//ft_dprintf(2, "NIL = %p\n", g_session->groups->nil);
 
+	//ft_dprintf(2, "[GROUP RETURN STATUS BEFORE IS: %d]\n", g_session->st);
 	get_group_return();
 	print_endzombies();
 	
