@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_helper3.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 04:50:26 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 04:50:52 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 19:34:10 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ bool	group_coredump(t_group* group)
 	leader = group->active_processes;
 	while (leader != group->nil)
 	{
-		if (__WCOREDUMP(leader->wstatus))
+		if (WCOREDUMP(leader->wstatus))
 			return (true);
 		leader = leader->next;
 	}

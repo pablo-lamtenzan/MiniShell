@@ -16,10 +16,18 @@
 */
 # define TERM_LINE_SIZE	8
 
+# define C_D			"\033[39m"
+# define C_GL			"\033[92m"
+# define C_B			"\033[34m"
+# define C_BL			"\033[94m"
+# define C_Y			"\033[33m"
+# define S_D			"\033[0m"
+# define S_B			"\033[1m"
+
 /*
 **	Displayed before reading the first-line of a command.
 */
-# define TERM_PS1		"minish> "
+# define TERM_PS1		C_D"["S_B""C_B"$USER"S_D""C_D"]"C_GL"$"C_D" "
 
 /*
 **	Displayed before reading the second and subsquent lines of a command.
@@ -74,7 +82,8 @@ typedef struct		s_term
 	bool		has_caps;
 	t_hist		hist;
 	t_line		*line;
-	const char	*msg;
+	char		*msg;
+	size_t		msg_len;
 	size_t		origin;
 	size_t		pos;
 	t_clip		clip;
@@ -99,6 +108,7 @@ t_term_err			term_prompt(t_term *term);
 **					write.c
 */
 int					putc_err(int c);
+size_t				strglen(const char *str);
 t_term_err			term_write_msg(t_term *term, const char *msg, size_t length);
 t_term_err			term_write(t_term *term, const char *input, size_t length);
 

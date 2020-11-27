@@ -3,7 +3,8 @@
 t_term_err	cursor_start_line(t_term *term)
 {
 	term->pos = 0;
-	caps_goto(&term->caps, term->origin + term->pos);
+	//ft_dprintf(2, "term->origin: %lu", term->origin);
+	caps_goto(&term->caps, term->origin);
 	return (TERM_EOK);
 }
 

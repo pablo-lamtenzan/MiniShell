@@ -72,9 +72,11 @@ void	term_destroy(t_term *term)
 */
 t_term_err	term_prompt(t_term *term)
 {
+	//ft_dprintf(2, "%s%lu", term->msg, ft_strlen(term->msg));
 	if (term->is_interactive && term->msg
-	&& (term->origin = ft_strlen(term->msg))
-	&& write(STDERR_FILENO, term->msg, term->origin) == -1)
+	&& (term->msg_len = ft_strlen(term->msg))
+	&& (term->origin = strglen(term->msg))
+	&& write(STDERR_FILENO, term->msg, term->msg_len) == -1)
 		return (TERM_EWRITE);
 	if (term->has_caps)
 		return (term_read_caps(term));

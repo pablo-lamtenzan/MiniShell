@@ -51,7 +51,7 @@ static const char	*var_expand(const char **input, t_env *env)
 	{
 		if (!(val = env_get(env, ++(*input), key_len)))
 			val = "";
-		ft_dprintf(2, "[EXP][VAR] key: %.*s, val: %s\n", (int)key_len, (*input), val);
+		//ft_dprintf(2, "[EXP][VAR] key: %.*s, val: %s\n", (int)key_len, (*input), val);
 		(*input) += key_len;
 	}
 	return (val);
@@ -60,14 +60,15 @@ static const char	*var_expand(const char **input, t_env *env)
 /*
 ** Expand a string using tilde and variable expansion.
 **
-** returns the expanded content in a t_line if succesfull or NULL otherwise.
+** returns the expanded c-string's pointer if succesfull or NULL otherwise.
 */
-static t_line		*string_expand(const char *input, t_env *env)
+char				*string_expand(const char *input, t_env *env)
 {
 	t_line		*exp;
 	const char	*i;
 	const char	*n;
 	const char	*val;
+	char		*ret;
 
 	if (!(exp = line_new(4)))
 		return (NULL);
@@ -76,21 +77,23 @@ static t_line		*string_expand(const char *input, t_env *env)
 	{
 		if (!((val = var_expand(&n, env)) || (val = tilde_expand(&n, env))))
 			i++;
+		else if ((input != i && !line_insert(exp, exp->len, input, i - input))
+		|| (*val && !line_insert(exp, exp->len, val, ft_strlen(val))))
+		{
+			line_clear(&exp);
+			return (NULL);
+		}
 		else
 		{
-			if ((input != i && !line_insert(exp, exp->len, input, i - input))
-			|| (*val && !line_insert(exp, exp->len, val, ft_strlen(val))))
-			{
-				line_clear(&exp);
-				return (NULL);
-			}
 			input = n;
 			i = n;
 		}
 	}
 	if (input != i && !line_insert(exp, exp->len, input, i - input))
 		line_clear(&exp);
-	return (exp);
+	ret = exp->data;
+	free(exp);
+	return (ret);
 }
 
 /*
@@ -101,7 +104,7 @@ static t_line		*string_expand(const char *input, t_env *env)
 */
 bool				param_expand(t_tok *parts, t_env *env)
 {
-	t_line		*expanded;
+	char	*expanded;
 
 	while (parts)
 	{
@@ -110,8 +113,7 @@ bool				param_expand(t_tok *parts, t_env *env)
 			if (!(expanded = string_expand(parts->data, env)))
 				return (false);
 			free(parts->data);
-			parts->data = expanded->data;
-			free(expanded);
+			parts->data = expanded;
 		}
 		parts = parts->next;
 	}
