@@ -3,8 +3,9 @@
 t_term_err	term_interrupt(t_term *term)
 {
 	if (term->msg && (write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) -1) == -1
-	|| ((term->origin = ft_strlen(term->msg))
-	&& write(STDERR_FILENO, term->msg, term->origin) == -1)))
+	|| ((term->msg_len = ft_strlen(term->msg))
+	&& (term->origin = strglen(term->msg))
+	&& write(STDERR_FILENO, term->msg, term->msg_len) == -1)))
 		return (TERM_EWRITE);
 	if (term->has_caps)
 		select_clear(term);
