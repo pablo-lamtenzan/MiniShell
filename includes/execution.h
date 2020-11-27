@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:51:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 11:44:25 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 02:22:13 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ t_exec_status			print_redirection_error(t_redir_status rstatus, char** filename,
 ** Execution
 */
 t_exec_status			execute_bst(t_bst* root, t_term* term);
-t_exec_status        	wait_processes(t_term *term, t_exec_status st);
+//t_exec_status        	wait_processes(t_term *term, t_exec_status st);
 t_exec_status			wait_processes_v2(t_term* term, t_exec_status st);
 
 /*
