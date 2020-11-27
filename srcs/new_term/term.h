@@ -109,7 +109,6 @@ t_term_err			term_prompt(t_term *term);
 */
 int					putc_err(int c);
 size_t				strglen(const char *str);
-t_term_err			term_write_msg(t_term *term, const char *msg, size_t length);
 t_term_err			term_write(t_term *term, const char *input, size_t length);
 
 /*
