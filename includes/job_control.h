@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 03:44:55 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 03:51:45 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,62 +35,62 @@ typedef struct 			s_process
 	pid_t				pid;
     int					wstatus;
 	unsigned char		flags;
-	char*const*			data;
-	struct s_process*	next;
-	struct s_process*	prev;
+	char*const			*data;
+	struct s_process	*next;
+	struct s_process	*prev;
 	int					ret;
 }						t_process;
 
 typedef struct			s_group
 {
-	t_process*			active_processes;
-	t_process*			nil;
-	struct s_group*		next;
-	struct s_group*		prev;
+	t_process			*active_processes;
+	t_process			*nil;
+	struct s_group		*next;
+	struct s_group		*prev;
 	char**				input;
 }						t_group;
 
 typedef struct 			s_history
 {
-	t_group*			group; // never operate over this just need it for the address
-	struct s_history*	next;
+	t_group				*group;
+	struct s_history	*next;
 }						t_history;
 
 typedef struct			s_background
 {
-	t_group**			background_group;
-	struct s_background*	next;
+	t_group				**background_group;
+	struct s_background	*next;
 }						t_background;
 
 typedef struct			s_deadzombie
 {
-	t_process**			deadzombie;
+	t_process			**deadzombie;
 	struct s_deadzombie	*next;
 }						t_deadzombie;
 
 typedef struct			s_session
 {
 	int					st;
-	t_group*			groups;
+	t_group				*groups;
 	t_group				*nil;
-	t_history*			hist;
-	t_background*		zombies;
-	t_deadzombie*		dead_zombies;
-	char**				input_line;
+	t_history			*hist;
+	t_background		*zombies;
+	t_deadzombie		*dead_zombies;
+	char				**input_line;
 	size_t				input_line_index;
 	unsigned char		exit_count;
 	bool				open_print;
 
 }						t_session;
 
-t_session*				g_session;
+t_session				*g_session;
 
 t_exec_status			wait_processes(t_exec_status st);
 
 /*
 ** Session
 */
-t_session*				session_start();
+t_session				*session_start();
 void					session_end();
 bool					session_empty();
 
@@ -106,12 +106,12 @@ void					history_session_purge_exited();
 ** Groups
 */
 t_group					*group_new();
-bool					group_empty(t_group* group);
-void					group_insert(t_group* prev, t_group* next, t_group* target);
+bool					group_empty(t_group *group);
+void					group_insert(t_group *prev, t_group *next, t_group* target);
 //void					group_remove(t_group** prev, t_group** next);
-void					group_remove_v2(t_group** target);
-void					group_push_front(t_group* target);
-void					group_push_back(t_group* target);
+void					group_remove_v2(t_group **target);
+void					group_push_front(t_group *target);
+void					group_push_back(t_group *target);
 void					group_pop_front();
 void					group_pop_back();
 bool					group_condition(t_group *target, bool (*condition)(t_process*));
@@ -129,15 +129,15 @@ bool					is_coredump(t_process *target);
 /*
 ** Process
 */
-t_process*				process_new(pid_t pid, int wstatus, char*const* data);
-void					process_insert(t_process* prev, t_process* next, t_process* target);
-void					process_remove(t_process** prev, t_process** next);
-void					process_push_front(t_group** group, t_process* target);
-void					process_push_back(t_group** group, t_process* target);
-void					process_pop_font(t_group** group);
-void					process_pop_back(t_group** group);
-pid_t					process_get_leader_pid(t_group* nil, t_process* target);
-bool					is_leader(t_process* target);
+t_process*				process_new(pid_t pid, int wstatus, char*const *data);
+void					process_insert(t_process *prev, t_process *next, t_process *target);
+void					process_remove(t_process **prev, t_process **next);
+void					process_push_front(t_group **group, t_process *target);
+void					process_push_back(t_group **group, t_process *target);
+void					process_pop_font(t_group **group);
+void					process_pop_back(t_group **group);
+pid_t					process_get_leader_pid(t_group* nil, t_process *target);
+bool					is_leader(t_process *target);
 
 /*
 ** Background
@@ -172,25 +172,25 @@ void					update_exit_count(const char* name);
 /*
 ** Jobspec parser
 */
-t_process**				jobspec_parser(int ac, char*const* av, bool (*fill)(int ac, char*const* av));
-bool					is_not_ambigous(t_process* target);
-bool					is_not_ambigous_v2(const char* niddle);
-size_t					get_search_mode(const char* av);
-size_t					get_history_index(const char* key);
-bool					is_jobspec(const char* string);
+t_process**				jobspec_parser(int ac, char*const *av, bool (*fill)(int ac, char*const *av));
+bool					is_not_ambigous(t_process *target);
+bool					is_not_ambigous_v2(const char *niddle);
+size_t					get_search_mode(const char *av);
+size_t					get_history_index(const char *key);
+bool					is_jobspec(const char *string);
 
 /*
 ** Static destructors
 */
 void					delete_groups();
-void					delete_processes(t_group* group);
+void					delete_processes(t_group *group);
 void					delete_zombies();
 void					delete_hist();
 
 /*
 ** Utils
 */
-bool					is_string_digit(const char* string);
+bool					is_string_digit(const char *string);
 int						matrix_height(char **matrix);
 
 /* ------------------------------OLD ---------------------------------*/
