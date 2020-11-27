@@ -3,7 +3,7 @@
 // TODO: Use line_insert instead of freeing line
 t_term_err	term_prev_line(t_term *t)
 {
-	ft_dprintf(2, "origin: %lu", t->origin);
+	//ft_dprintf(2, "origin: %lu", t->origin);
 	if (t->hist.curr->prev)
 	{
 		if (t->hist.curr != t->hist.next)

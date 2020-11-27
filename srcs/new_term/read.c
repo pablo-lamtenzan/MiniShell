@@ -94,7 +94,7 @@ t_term_err	term_read_caps(t_term *term)
 	ssize_t		read_st;
 	char		c;
 
-	ft_dprintf(2, "origin: %lu", term->origin);
+	//ft_dprintf(2, "origin: %lu", term->origin);
 	status = TERM_EOK;
 	term->line = term->hist.next;
 	term->pos = 0;

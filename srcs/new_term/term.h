@@ -81,6 +81,7 @@ typedef struct		s_term
 	t_hist		hist;
 	t_line		*line;
 	char		*msg;
+	size_t		msg_len;
 	size_t		origin;
 	size_t		pos;
 	t_clip		clip;
