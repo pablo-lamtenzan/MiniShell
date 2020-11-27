@@ -60,6 +60,9 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 					)\
 					$(addprefix signals/,\
 						print_signals.c\
+						print_helper1.c\
+						print_helper2.c\
+						print_helper3.c\
 					)\
 					$(addprefix job_control/,\
 						process_lib.c\
