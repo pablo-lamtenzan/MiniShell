@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 04:56:35 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 05:24:36 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,11 +74,23 @@ int		resume_group(t_process* leader)
 			}
 			if (!is_active_group(g_session->groups))
 			{
-				t_group*	fill = g_session->groups;
-				g_session->groups->prev->next = g_session->groups->next;
-				g_session->groups->next->prev = g_session->groups->prev;
-				free(fill);
-				fill = NULL;
+				//t_group*	fill = g_session->groups;
+				//g_session->groups->prev->next = g_session->groups->next;
+				//g_session->groups->next->prev = g_session->groups->prev;
+				
+				t_group*	next;
+
+				// TO DO: If i don t delet ethe hist group i ve a heap use after free, but now i don't have the hist
+					// test and correct this
+				remove_history_node(g_session->groups);
+				next = g_session->groups->next;
+				g_session->groups->prev->next = next;
+				next->prev = g_session->groups->prev;
+				free(g_session->groups);
+				g_session->groups = next;
+
+
+				//fill = NULL;
 				//group_remove(&g_session, &g_session->groups->prev, &g_session->groups->next);
 			}
 			else

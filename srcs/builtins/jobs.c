@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 12:03:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 04:56:53 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 05:20:09 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,7 +189,10 @@ void			print_all_leaders(int fd, int flags)
 		// TO DO: check in all the list i think
 		if (!(flags & 2 && (WIFEXITED(g_session->groups->nil->next->wstatus) || WIFSTOPPED(g_session->groups->nil->next->wstatus))) 
 				&& !(flags & 4 && (WIFEXITED(g_session->groups->nil->next->wstatus) || !WIFSTOPPED(g_session->groups->nil->next->wstatus))))
+		{
+			//ft_dprintf(2, "%p -------- %p", g_session->groups->nil->next, g_session->groups->active_processes);
 			print_signal(fd, g_session->groups->nil->next, STANDART);
+		}
 		g_session->groups = g_session->groups->prev;
 	}
 	g_session->groups = remember;

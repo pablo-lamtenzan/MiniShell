@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 04:57:42 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 05:38:23 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -354,16 +354,24 @@ bool			is_not_ambigous_v2(const char* niddle)
 void		remove_history_node(t_group* target)
 {
 	t_history*	prev;
+	t_history*	next;
 	t_history*	first;
 
 	first = g_session->hist;
 	prev = NULL;
+	next = NULL;
+	if (g_session->hist)
+		ft_dprintf(2, "[HISTORY NEXT BEGIN IS: %p]\n", g_session->hist->next);
+	if (g_session->hist)
+		next = g_session->hist->next;
 	while (g_session->hist)
 	{
 		if (target->nil->next->pid == g_session->hist->group->nil->next->pid)
 		{
 			if (prev)
 				prev->next = g_session->hist->next;
+			if (first == g_session->hist)
+				first = NULL;
 			if (PRINT_DEBUG)
 				ft_dprintf(2, "[RM HISTORY NODE][\'%p\'][ %d ]\n", g_session->hist, g_session->hist->group->nil->next->pid);
 			free(g_session->hist);
@@ -374,23 +382,27 @@ void		remove_history_node(t_group* target)
 		g_session->hist = g_session->hist->next;
 	}
 	// update first
-	if (g_session->hist && first->group->nil->next->pid == target->nil->next->pid)
+	if (first && first->group && first->group->nil->next->pid \
+			== target->nil->next->pid)
 		g_session->hist = first->next;
-	else if (!g_session->hist)
-		g_session->hist = NULL;
 	else
-		g_session->hist = first;
+		g_session->hist = next;
 	if (PRINT_DEBUG && g_session->hist)
 		ft_dprintf(2, "[RM HISTORY NODE][NOW CURR HISTORY NODE IS][\'%p\'][ %d ]\n", g_session->hist, g_session->hist->group->nil->next->pid);
+	//ft_dprintf(2, "[HISTORY IS: %p]\n", g_session->hist);
 }
 
 void		remove_zombie_node(t_group* target)
 {
 	t_background*	prev;
+	t_background*	next;
 	t_background*	first;
 
 	first = g_session->zombies;
+	next = NULL;
 	prev = NULL;
+	if (g_session->zombies)
+		next = g_session->zombies->next;
 	if (!target)
 		return ;
 	while (g_session->zombies)
@@ -414,7 +426,7 @@ void		remove_zombie_node(t_group* target)
 	if (first && *first->background_group && (*first->background_group)->nil->next->pid == target->nil->next->pid)
 		g_session->zombies = first->next;
 	else
-		g_session->zombies = first;
+		g_session->zombies = next;
 	if (PRINT_DEBUG && g_session->zombies && *g_session->zombies->background_group)
 		ft_dprintf(2, "[RM ZOMBIE NODE][NOW CURR HISTORY NODE IS][\'%p\'][ %d ]\n", g_session->zombies, (*g_session->zombies->background_group)->nil->next->pid);
 	//ft_dprintf(2, "ZOMBIES ARE NOW: %p\n", g_session->zombies);
