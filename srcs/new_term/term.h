@@ -16,10 +16,16 @@
 */
 # define TERM_LINE_SIZE	8
 
+# define C_D			"\033[39m"
+# define C_GL			"\033[92m"
+# define C_B			"\033[34m"
+# define C_BL			"\033[94m"
+# define C_Y			"\033[33m"
+
 /*
 **	Displayed before reading the first-line of a command.
 */
-# define TERM_PS1		"minish> "
+# define TERM_PS1		C_D"["C_B"$USER"C_D"]"C_GL"$"C_D" "
 
 /*
 **	Displayed before reading the second and subsquent lines of a command.
@@ -74,7 +80,7 @@ typedef struct		s_term
 	bool		has_caps;
 	t_hist		hist;
 	t_line		*line;
-	const char	*msg;
+	char		*msg;
 	size_t		origin;
 	size_t		pos;
 	t_clip		clip;
