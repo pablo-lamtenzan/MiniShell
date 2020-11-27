@@ -18,7 +18,5 @@ t_term_err			term_read_esc(t_term *term)
 		return (cursor_prev_word(term));
 	if (c == 'f')
 		return (cursor_next_word(term));
-	ft_dprintf(2, "Unhandled ESC: %c(%2x)!\n",c, c);
-	//ft_dprintf(2, "[PROMPT][ESC][RPT] %d\n", repeat);
 	return (TERM_EOK);
 }
