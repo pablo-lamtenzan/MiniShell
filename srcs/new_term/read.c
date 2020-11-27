@@ -12,6 +12,7 @@ t_term_err	term_cntrl(t_term *term, char c)
 		{CEOF, &term_eof},
 		{CSTOP, &term_stop},
 		{CSUSP, &term_suspend},
+//		{'u' - TERM_CNTRL, &term_clear_line},
 		{'h' - TERM_CNTRL, &term_backspace},
 		{'l' - TERM_CNTRL, &term_clear_screen},
 		{'j' - TERM_CNTRL, &term_new_line},
@@ -54,6 +55,36 @@ int		term_read(t_term *term)
 	return (TERM_EEOF);
 }
 
+t_term_err	term_read_echo(t_term *term, char c)
+{
+	t_term_err	status;
+
+	status = TERM_EOK;
+	if (!line_insert(term->line, term->pos, &c, 1))
+		status = TERM_EALLOC;
+	else if (write(STDERR_FILENO, &c, 1) == -1)
+		status = TERM_EWRITE;
+	else
+		term->pos++;
+	return (status);
+}
+
+/* 
+int			ft_isutf8(unsigned char c)
+{
+	return (c >= 128);
+}
+
+t_term_err	term_read_utf8(t_term *term, char c)
+{
+	t_term_err	status;
+
+	status = TERM_EOK;
+
+	return (status);
+}
+*/
+
 /*
 **	Read and parse an interactive terminal's input.
 */
@@ -63,6 +94,7 @@ t_term_err	term_read_caps(t_term *term)
 	ssize_t		read_st;
 	char		c;
 
+	//ft_dprintf(2, "origin: %lu", term->origin);
 	status = TERM_EOK;
 	term->line = term->hist.next;
 	term->pos = 0;
@@ -75,12 +107,8 @@ t_term_err	term_read_caps(t_term *term)
 			status = term_read_esc(term);
 		else if (ft_iscntrl(c))
 			status = term_cntrl(term, c);
-		else if (!line_insert(term->line, term->pos, &c, 1))
-			status = TERM_EALLOC;
-		else if (write(STDERR_FILENO, &c, 1) == -1)
-			status = TERM_EWRITE;
-		else
-			term->pos++;
+		else if (ft_isascii(c))
+			status = term_read_echo(term, c);
 	}
 	tputs(term->caps.mode.insert_end, 1, ft_putchar);
 	return (status);

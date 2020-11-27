@@ -8,7 +8,7 @@ t_term_err	term_clear_screen(t_term *term)
 	{
 		tputs(term->caps.mode.clear, 1, &putc_err);
 		if ((term->msg
-		&& write(STDERR_FILENO, term->msg, ft_strlen(term->msg)) == -1)
+		&& write(STDERR_FILENO, term->msg, term->origin) == -1)
 		|| write(1, term->line->data, term->line->len) == -1)
 			return (TERM_EWRITE);
 		term->pos = term->line->len;

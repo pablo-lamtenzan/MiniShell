@@ -1,4 +1,14 @@
 #include "term.h"
+#include <expansion.h>
+
+void	env_print(t_env *env)
+{
+	while (env)
+	{
+		ft_dprintf(2, "%s\n", env->key);
+		env = env->next;
+	}
+}
 
 int main(int ac, const char **av, const char **ep)
 {
@@ -17,12 +27,10 @@ int main(int ac, const char **av, const char **ep)
 		env_clr(&env);
 		return (1);
 	}
-	term.msg = TERM_PS1;
 	status = TERM_EOK;
-	while ((status = term_prompt(&term)) == TERM_ENL)
-	{
-		;
-	}
+	while ((term.msg = string_expand(TERM_PS1, env))
+	&& (status = term_prompt(&term)) == TERM_ENL)
+		free(term.msg);
 	term_destroy(&term);
 	env_clr(&env);
 	if (term.is_interactive)
