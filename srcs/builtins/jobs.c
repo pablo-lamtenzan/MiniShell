@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 12:03:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 05:20:09 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 23:21:18 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ static int				parse_flags(int ac, const char* av)
 */
 const char*			is_in_history(t_process* target)
 {
+	//ft_dprintf(2, "[IS IN HISTORY][HEAP USE AFTER FREE: %p]\n", g_session->hist);
 	if (!g_session->hist) // for the momment
 		return (" ");
 	if (background_find(target, "PID", g_session->hist->group) && is_leader(target))

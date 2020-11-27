@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 23:11:42 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 04:56:28 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 00:46:21 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,12 @@ void	resume_background_group(t_process* leader)
 			{
 				if (g_session->groups->active_processes->flags & STOPPED)
 				{
-					if (PRINT_DEBUG)
+					//if (PRINT_DEBUG)
 						ft_dprintf(2, "[BG][KILL -SIGCONT \'%d\'][\'%p\'][\'%p\']\n", g_session->groups->active_processes->pid, g_session->groups->active_processes, g_session->groups);
 					g_session->groups->active_processes->flags &= ~STOPPED;
 					g_session->groups->active_processes->flags |= BACKGROUND;
 					kill(g_session->groups->active_processes->pid, SIGCONT);
-					update_zombies(&g_session->groups);
+					update_zombies(g_session->groups);
 					//ft_dprintf(2, "AFTER UPDATE ZOMBIES: %p\n", g_session->zombies);
 					if (PRINT_DEBUG)
 						ft_dprintf(2, "[BG][TARGET FLAGS: %d][\'%p\']\n", g_session->groups->active_processes->flags, g_session->groups->active_processes);

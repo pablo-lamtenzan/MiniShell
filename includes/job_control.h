@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 03:51:45 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 00:45:40 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,9 @@ typedef struct 			s_history
 
 typedef struct			s_background
 {
-	t_group				**background_group;
+	//t_group				**background_group;
+	t_group				*background_group;
+	bool				exited;
 	struct s_background	*next;
 }						t_background;
 
@@ -80,7 +82,7 @@ typedef struct			s_session
 	size_t				input_line_index;
 	unsigned char		exit_count;
 	bool				open_print;
-
+	bool				restrict_zombies;
 }						t_session;
 
 t_session				*g_session;
@@ -194,6 +196,8 @@ bool					is_string_digit(const char *string);
 int						matrix_height(char **matrix);
 
 /* ------------------------------OLD ---------------------------------*/
+void					rm_end_zombies();
+
 #define PRINT_DEBUG		0
 
 #define PROCESSES_MAX   4096
@@ -224,9 +228,10 @@ void					update_exit_count(const char* name);
 */
 void					zombies_catcher(int signal);
 void					zombie_catcher_v2(int signal);
-bool					update_zombies(t_group** update);
+//bool					update_zombies(t_group** update);
+bool					update_zombies(t_group* update);
 void					remove_exited_zombies();
-bool					update_zombies(t_group** update);
+//bool					update_zombies(t_group** update);
 void					remove_zombie_node(t_group* target);
 void					suspend_process(int signal);
 

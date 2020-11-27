@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 04:58:23 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 05:41:04 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,17 +80,9 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 
 // TO DO: i fucked up the .h have to redo it...
 
-
-// TO DO fg -> head use after free if a fg a lot of stopped and i job after
-	// if (freeed target == nil->next)
-		// active_processes = next
-		// nil->next = next
-		// TRY THIS
-
-// TO DO TODAY
-// .h
-// print norme
-// search fo rbugs
+// CHANGED:
+	// remove zom bie node
+	// remove hist node
 
 // TO DO: megabug ramdom zombies catcher (print remember at the begin and th een dto fin dif you forgot and just bg a lot)
 

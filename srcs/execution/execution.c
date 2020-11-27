@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/26 03:19:17 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 22:36:10 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,10 @@ static t_exec_status	execute_cmd(t_bst* cmd, t_exec* info, t_term* term)
 		update_exit_count(info->av[0]);
 		if ((exec_st = get_exec(info, term)) == SUCCESS)
 		{
+			g_session->restrict_zombies = true;
+			//sleep(1);
+			rm_end_zombies();
+			g_session->restrict_zombies = false;
 			g_session->st = (unsigned char)info->exec(info, term);
 			g_session->groups->active_processes->ret = g_session->groups->active_processes->flags & STOPPED ? -1 : (unsigned char)g_session->st;
 			//ft_dprintf(2, "CATHCHED PROCESS ERROR ST: %d\n", g_session->groups->active_processes->ret);
