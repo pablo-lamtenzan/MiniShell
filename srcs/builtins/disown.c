@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:48:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 17:05:51 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 03:45:22 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 // disown seems not SIGCONT to stopped
 // is just rm from the table so
 
-
+/*
 void			history_pop_front()
 {
 	t_process*	fill;
@@ -49,6 +49,7 @@ void			history_pop_front()
 		g_session->history = fill;
 	}
 }
+*/
 
 void			history_pop_front_v2()
 {

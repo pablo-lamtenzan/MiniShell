@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/26 02:49:10 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 03:44:55 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,7 @@
 
 # include <errors.h>
 
-#define PRINT_DEBUG		0
 
-#define PROCESSES_MAX   4096
-#define MANAGE          0
 
 #define	BACKGROUND		1
 #define STOPPED			2
@@ -65,32 +62,30 @@ typedef struct			s_background
 	struct s_background*	next;
 }						t_background;
 
-typedef struct			s_endzombie
+typedef struct			s_deadzombie
 {
-	t_process**			endzombie;
-	struct s_endzombie*	next;
-}						t_endzombie;
+	t_process**			deadzombie;
+	struct s_deadzombie	*next;
+}						t_deadzombie;
 
 typedef struct			s_session
 {
-	t_group*			groups; // all background processes by group
-	t_process			processes[PROCESSES_MAX + 1]; // not used
-	t_process			*history;// not used
-
-	t_history*			hist; // change it name later
-	t_background*		zombies;
-	t_group				*nil;
-	unsigned char		exit_count;
 	int					st;
+	t_group*			groups;
+	t_group				*nil;
+	t_history*			hist;
+	t_background*		zombies;
+	t_deadzombie*		dead_zombies;
 	char**				input_line;
 	size_t				input_line_index;
+	unsigned char		exit_count;
 	bool				open_print;
-	t_endzombie*		end_zombies;
+
 }						t_session;
 
 t_session*				g_session;
 
-// new stuff i wish is the last time i redo all
+t_exec_status			wait_processes(t_exec_status st);
 
 /*
 ** Session
@@ -100,17 +95,36 @@ void					session_end();
 bool					session_empty();
 
 /*
+** History
+*/
+bool					history_session_update(t_group *update);
+void					history_pop_front();
+void					history_session_remove_node(t_group *target);
+void					history_session_purge_exited();
+
+/*
 ** Groups
 */
 t_group					*group_new();
 bool					group_empty(t_group* group);
 void					group_insert(t_group* prev, t_group* next, t_group* target);
-void					group_remove(t_group** prev, t_group** next);
+//void					group_remove(t_group** prev, t_group** next);
 void					group_remove_v2(t_group** target);
 void					group_push_front(t_group* target);
 void					group_push_back(t_group* target);
 void					group_pop_front();
 void					group_pop_back();
+bool					group_condition(t_group *target, bool (*condition)(t_process*));
+t_group					*group_get(t_process *target);
+void					group_return_handler();
+
+/*
+** Conditions
+*/
+bool					is_active(t_process *target);
+bool					is_exited(t_process *target);
+bool					is_removable(t_process *target);
+bool					is_coredump(t_process *target);
 
 /*
 ** Process
@@ -122,6 +136,68 @@ void					process_push_front(t_group** group, t_process* target);
 void					process_push_back(t_group** group, t_process* target);
 void					process_pop_font(t_group** group);
 void					process_pop_back(t_group** group);
+pid_t					process_get_leader_pid(t_group* nil, t_process* target);
+bool					is_leader(t_process* target);
+
+/*
+** Background
+*/
+void					background_update(t_process **target);
+size_t					background_index_get(t_group *nil, t_process *target);
+void					background_force_exit();
+bool					is_background_active();
+t_process				**background_find(t_process *target, const char *search_type,
+						t_group	*group);
+
+/*
+** Zombies list
+*/
+bool					zombies_list_update(t_group	 **update);
+void					zombies_list_node_remove(t_group *target);
+void					zombies_list_purge_exited();
+
+/*
+** Dead zombies list
+*/
+t_deadzombie			*deadzombie_new(t_process** target);
+void					deadzombie_push_back(t_deadzombie* target);
+void					deadzombies_print();
+
+/*
+** Exit helper
+*/
+void					handle_exit_with_active_background(int exit_status);
+void					update_exit_count(const char* name);
+
+/*
+** Jobspec parser
+*/
+t_process**				jobspec_parser(int ac, char*const* av, bool (*fill)(int ac, char*const* av));
+bool					is_not_ambigous(t_process* target);
+bool					is_not_ambigous_v2(const char* niddle);
+size_t					get_search_mode(const char* av);
+size_t					get_history_index(const char* key);
+bool					is_jobspec(const char* string);
+
+/*
+** Static destructors
+*/
+void					delete_groups();
+void					delete_processes(t_group* group);
+void					delete_zombies();
+void					delete_hist();
+
+/*
+** Utils
+*/
+bool					is_string_digit(const char* string);
+int						matrix_height(char **matrix);
+
+/* ------------------------------OLD ---------------------------------*/
+#define PRINT_DEBUG		0
+
+#define PROCESSES_MAX   4096
+#define MANAGE          0
 
 /*
 ** Job Control
@@ -175,8 +251,8 @@ bool					protect_process(t_group* target);
 bool					ignore_pid(int ac, char*const* av);
 char**					split_separators(char* input, char** separators);
 
-t_endzombie*			endzombie_new(t_process** target);
-void					endzombie_push_back(t_endzombie* target);
+t_deadzombie*			endzombie_new(t_process** target);
+void					endzombie_push_back(t_deadzombie* target);
 void					delete_endzombies();
 void					print_endzombies();
 

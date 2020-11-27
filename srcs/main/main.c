@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/26 18:03:31 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 02:45:39 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,22 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 // TO DO: [OPTIONAL] put color in the prompt
 // TO DO: store a lot stoppe jobs, then bg them like: bg ; bg ; bg ... and jobs (spoiler: somme jobs that stay in runnig state nevers are deleted) WHY ?
 // TO DO: endzombies history (should not print)
+
+// TO DO: i fucked up the .h have to redo it...
+
+
+// TO DO fg -> head use after free if a fg a lot of stopped and i job after
+	// if (freeed target == nil->next)
+		// active_processes = next
+		// nil->next = next
+		// TRY THIS
+
+// TO DO TODAY
+// .h
+// print norme
+// search fo rbugs
+
+// TO DO: megabug ramdom zombies catcher (print remember at the begin and th een dto fin dif you forgot and just bg a lot)
 
 // TO DO: Norme all (at the end of the end)
 // TO DO: [UNKNOWN] cat | cat -e | echo a resarch (now we have all the job control build, must be easy to fix)

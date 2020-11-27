@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 18:26:31 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/26 02:32:57 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 03:46:32 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,8 @@ void			group_remove_v2(t_group** target)
 	free(*target);
 	*target = NULL;
 }
+
+/*
 void			group_remove(t_group** prev, t_group** next)
 {
 	//t_group*	fill;
@@ -96,13 +98,14 @@ void			group_remove(t_group** prev, t_group** next)
 			ft_dprintf(2, "[GROUP REMOVE][REMOVE:\'%p\'] nil= %p prev= %p \n",(*prev)->next, (*prev)->next->nil, *prev);
 		free((*prev)->next->nil);
 		free((*prev)->next); // remove it process too
-			//ft_dprintf(2, " %p ----- %p \n", (*prev), NULL/**next*/);
+			//ft_dprintf(2, " %p ----- %p \n", (*prev), NULL/ *next/);
 		(*prev)->next = NULL;
 		//}
 		//(*prev)->next = *next;
 		//(*next)->prev = *prev;
 	}
 }
+*/
 
 /*
 ** Adds a new group after the head
@@ -171,7 +174,7 @@ void			group_pop_back()
 	if (session_empty())
 		return ;
 	fill = g_session->nil->prev->prev;
-	group_remove(&g_session->nil->prev->prev, &g_session->nil->prev);
+	group_remove_v2(&g_session->groups);
 	g_session->nil->prev = fill;
 	g_session->groups = g_session->nil->next;
 }

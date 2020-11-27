@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/26 17:20:56 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 03:45:36 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ void		update_background(t_process **target, bool wait)
 	//ft_dprintf(2, "[UPDATE V2--2]ACTIVE PROCESSES: %p\n", (*target));
 	//ft_dprintf(2, "------> %d\n", (*target)->flags);
 }
-
+/*
 bool            update_session_history(t_process *update)
 {
     t_process*  cp_update;
@@ -100,6 +100,7 @@ bool            update_session_history(t_process *update)
 		fill->prev = cp_update;
 	return (true);
 }
+*/
 
 bool			update_session_history_v2(t_group* update)
 {
@@ -517,56 +518,56 @@ void		get_group_return()
 	}
 }
 
-t_endzombie*		endzombie_new(t_process** target)
+t_deadzombie*		endzombie_new(t_process** target)
 {
-	t_endzombie*	endzombie;
+	t_deadzombie*	deadzombie;
 	
-	if (!(endzombie = ft_calloc(1, sizeof(t_endzombie))))
+	if (!(deadzombie = ft_calloc(1, sizeof(t_deadzombie))))
 		return (NULL);
-	*endzombie = (t_endzombie){.endzombie=target};
-	return (endzombie);
+	*deadzombie = (t_deadzombie){.deadzombie=target};
+	return (deadzombie);
 }
 
-void		endzombie_push_back(t_endzombie* target)
+void		endzombie_push_back(t_deadzombie* target)
 {
-	t_endzombie*	remember;
+	t_deadzombie*	remember;
 
-	if (!(remember = g_session->end_zombies))
+	if (!(remember = g_session->dead_zombies))
 	{
-		g_session->end_zombies = target;
+		g_session->dead_zombies = target;
 		return ;
 	}
-	while (g_session->end_zombies->next)
-		g_session->end_zombies = g_session->end_zombies->next;
-	g_session->end_zombies->next = target;
+	while (g_session->dead_zombies->next)
+		g_session->dead_zombies = g_session->dead_zombies->next;
+	g_session->dead_zombies->next = target;
 }
 
 void		delete_endzombies()
 {
-	t_endzombie*	fill;
+	t_deadzombie*	fill;
 
-	while (g_session->end_zombies)
+	while (g_session->dead_zombies)
 	{
-		fill = g_session->end_zombies->next;
+		fill = g_session->dead_zombies->next;
 		//ft_dprintf(2, "[DELETE ENDZOMBIES][DELETE NODE: %d]\n", (*g_session->end_zombies->endzombie)->pid);
-		free(g_session->end_zombies);
-		g_session->end_zombies = fill;
+		free(g_session->dead_zombies);
+		g_session->dead_zombies = fill;
 	}
-	g_session->end_zombies = NULL;
+	g_session->dead_zombies = NULL;
 }
 
 void		print_endzombies()
 {
-	t_endzombie*	first;
+	t_deadzombie*	first;
 
-	first = g_session->end_zombies;
-	while (g_session->end_zombies)
+	first = g_session->dead_zombies;
+	while (g_session->dead_zombies)
 	{
-		(*g_session->end_zombies->endzombie)->flags &= ~NO_DELETE;
-		print_signal(STDERR_FILENO, *g_session->end_zombies->endzombie, 0);
-		g_session->end_zombies = g_session->end_zombies->next;
+		(*g_session->dead_zombies->deadzombie)->flags &= ~NO_DELETE;
+		print_signal(STDERR_FILENO, *g_session->dead_zombies->deadzombie, 0);
+		g_session->dead_zombies = g_session->dead_zombies->next;
 	}
-	g_session->end_zombies = first;
+	g_session->dead_zombies = first;
 	delete_endzombies();
 }
 
