@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_helper1.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 04:41:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 04:49:07 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 19:30:20 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	print_coredump(int fd, t_process* target, int mode)
 
 	aux = get_group(target);
 	ft_dprintf(fd, "%s",
-		(mode && __WCOREDUMP(target->wstatus)) \
+		(mode && WCOREDUMP(target->wstatus)) \
 		|| (!mode && group_coredump(aux)) ? "(core dumped)" : "");
 }
 
