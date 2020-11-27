@@ -6,12 +6,13 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:56:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 03:43:45 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 04:58:58 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <job_control.h>
+#include <signals.h>
 
 /*
 replaces wait_processes_v2
@@ -38,7 +39,7 @@ t_exec_status	wait_processes(t_exec_status st)
 		if (WIFSIGNALED(group->active_processes->wstatus) \
 				|| WIFSTOPPED(group->active_processes->wstatus))
 				// TO DO: mode is define
-			print_signal(STDERR_FILENO, group->active_processes, 0);
+			print_signal(STDERR_FILENO, group->active_processes, STANDART);
 		group->active_processes = group->active_processes->next;
 	}
 	group->active_processes = leader;

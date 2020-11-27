@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:20:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/26 18:00:21 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 04:56:58 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int			wait_process(t_process** target, int flags)
 		return (CMD_NOT_FOUND);
 	}
 	// TO DO: PRINTS THE INPUT CMD
-	print_signal(2, *target, 0);
+	print_signal(2, *target, STANDART);
 	return (WEXITSTATUS((*target)->wstatus));
 }
 

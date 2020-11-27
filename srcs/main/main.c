@@ -6,13 +6,14 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 02:45:39 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 04:58:23 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <separators.h>
 #include <builtins.h>
+#include <signals.h>
 
 // TODO: ERROR codes: execution and builtins [error msg] -> [optional help] -> [return]
 /* Errors List:
@@ -124,9 +125,9 @@ void	suspend_process(int signal)
 {
 	(void)signal;
 
-	write(2, "\n", 1);
+	write(STDERR_FILENO, "\n", 1);
 	if (g_session->open_print)
-		print_signal(2, g_session->groups->active_processes, 0);
+		print_signal(STDERR_FILENO, g_session->groups->active_processes, STANDART);
 	
 }
 

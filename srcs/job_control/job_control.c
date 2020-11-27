@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 04:40:08 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 04:57:42 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <sys/wait.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <signals.h>
 
 // for the momment keep them
 
@@ -564,7 +565,7 @@ void		print_endzombies()
 	while (g_session->dead_zombies)
 	{
 		(*g_session->dead_zombies->deadzombie)->flags &= ~NO_DELETE;
-		print_signal(STDERR_FILENO, *g_session->dead_zombies->deadzombie, 0);
+		print_signal(STDERR_FILENO, *g_session->dead_zombies->deadzombie, STANDART);
 		g_session->dead_zombies = g_session->dead_zombies->next;
 	}
 	g_session->dead_zombies = first;

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/26 17:36:37 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 04:56:35 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ int		ft_fg(t_exec* args, t_term* term)
 	if ((*target)->flags & (SIGNALED | KILLED))
 	{
 		ft_dprintf(STDERR_FILENO, "minish: fg: job has terminated\n");
-		print_signal(STDERR_FILENO, *target, 0);
+		print_signal(STDERR_FILENO, *target, STANDART);
 		return (STD_ERROR);
 	}
 	//ft_dprintf(2, "target = %p\n", target);

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/26 17:20:37 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 04:57:49 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static int	handle_wstatus(t_process* target)
 		//target->wstatus = WSTOPSIG(target->wstatus);
 	if (PRINT_DEBUG)
 		ft_dprintf(2, "[HANDLE WSTATUS][PROCESS; \'%d\' IS SIGNALED OR STOPPED]\n", target->pid);
-	print_signal(STDERR_FILENO, target, 0);
+	print_signal(STDERR_FILENO, target, STANDART);
 	return (SIGNAL_BASE + (WIFSTOPPED(target->wstatus) ? WSTOPSIG(target->wstatus) : WTERMSIG(target->wstatus)));
 }
 

@@ -6,11 +6,12 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:19:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 01:40:46 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 04:55:47 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <job_control.h>
+#include <signals.h>
 
 /*
 replaces update_zombies
@@ -112,7 +113,7 @@ void		deadzombies_print()
 		next = g_session->dead_zombies->next;
 		(*g_session->dead_zombies->deadzombie)->flags &= ~NO_DELETE;
 		// TO DO: print_signal define
-		print_signal(STDERR_FILENO, *g_session->dead_zombies->deadzombie, 0);
+		print_signal(STDERR_FILENO, *g_session->dead_zombies->deadzombie, STANDART);
 		free(g_session->dead_zombies);
 		g_session->dead_zombies = next;
 	}

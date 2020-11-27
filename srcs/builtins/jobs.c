@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 12:03:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/25 17:54:22 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/27 04:56:53 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,7 +189,7 @@ void			print_all_leaders(int fd, int flags)
 		// TO DO: check in all the list i think
 		if (!(flags & 2 && (WIFEXITED(g_session->groups->nil->next->wstatus) || WIFSTOPPED(g_session->groups->nil->next->wstatus))) 
 				&& !(flags & 4 && (WIFEXITED(g_session->groups->nil->next->wstatus) || !WIFSTOPPED(g_session->groups->nil->next->wstatus))))
-			print_signal(fd, g_session->groups->nil->next, 0);
+			print_signal(fd, g_session->groups->nil->next, STANDART);
 		g_session->groups = g_session->groups->prev;
 	}
 	g_session->groups = remember;
@@ -262,7 +262,7 @@ int				ft_jobs(t_exec* args, t_term* term)
 					print_group(args->fds[1], *target, flags < 0 ? 0 : flags, g_session->groups);
 				else if (!(flags > 0 && flags & 2 && (WIFEXITED((*target)->wstatus) || WIFSTOPPED((*target)->wstatus))) 
 					&& !(flags > 0 && flags & 4 && (WIFEXITED((*target)->wstatus) || !WIFSTOPPED((*target)->wstatus))))
-					print_signal(args->fds[1], *target, 0);
+					print_signal(args->fds[1], *target, STANDART);
 			}
 			return (SUCCESS);
 		}
