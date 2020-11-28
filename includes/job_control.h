@@ -6,32 +6,44 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 22:02:48 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 22:25:50 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef JOB_CONTROL_H
 # define JOB_CONTROL_H
 
+/*
+** External
+*/
 # include <unistd.h>
 # include <stdbool.h>
-
 # include <sys/types.h>
 
+/*
+** Local
+*/
 # include <env.h>
 # include <errors.h>
 
-#define	BACKGROUND		1
-#define STOPPED			2
-#define EXITED			4
-#define SIGNALED		8
-#define KILLED			16	
-#define RESTRICT_OP		32
-#define NO_HANGUP		64
-#define NO_DELETE		128
+/*
+** Process flags
+*/
+# define BACKGROUND		1
+# define STOPPED		2
+# define EXITED			4
+# define SIGNALED		8
+# define KILLED			16	
+# define RESTRICT_OP	32
+# define NO_HANGUP		64
+# define NO_DELETE		128
 
+/*
+** Session flags
+*/
 #define OPEN_PRINT		1
 #define RESTRICT_CATCH	2
+
 #define ESPACE			' '
 
 typedef struct 			s_process
@@ -211,7 +223,7 @@ bool					is_string_digit(const char *string);
 int						matrix_height(char **matrix);
 bool					ignore_pid(int ac, char*const* av);
 int						parse_flags(int ac, char*const *av, const char* pattern, int *nb_flags);
-const char*				is_in_history(t_process* target);
-char**					split_separators(char *input, char **separators);
+const char				*is_in_history(t_process* target);
+char					**split_separators(char *input, char **separators);
 
 #endif
