@@ -15,13 +15,6 @@
 
 void			print_process(int fd, t_process* target, int flags)
 {
-	char*		itoa1;
-	char*		itoa2;
-	int			i;
-
-	i = -1;
-	itoa1 = NULL;
-	itoa2 = NULL;
 	if (!target)
 		return ;
 	if (flags & 2 && (WIFEXITED(target->wstatus) \
