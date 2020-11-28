@@ -21,13 +21,11 @@ t_process**		get_process_by_name(t_group* groups, const char* av)
 	ft_dprintf(2, "[NAME][name: %s]\n", av);
 	const int	search_mode = get_search_mode(av); // lexer
 	int			match;
-	t_process**	ret;
 	int			count;
 
 	if (search_mode == 0)
 		return (NULL);
 	match = 0;
-	ret = NULL;
 
 	if (0)
 		ft_dprintf(2, "%p ------------ %p\n", g_session->groups, groups);
