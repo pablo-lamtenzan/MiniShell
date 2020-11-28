@@ -30,5 +30,5 @@ bool			is_removable(t_process *target)
 
 bool			is_coredump(t_process *target)
 {
-	return (__WCOREDUMP(target->wstatus));
+	return (WCOREDUMP(target->wstatus));
 }
