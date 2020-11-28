@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 04:41:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 03:24:36 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 22:53:55 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 
-void	print_pid(int fd, t_process *target, int mode)
+void		print_pid(int fd, t_process *target, int mode)
 {
 	char	*freed;
 
@@ -23,17 +23,18 @@ void	print_pid(int fd, t_process *target, int mode)
 	free(freed);
 }
 
-void	print_signal_(int fd, t_process *target, int mode, int signal)
+void			print_signal_(int fd, t_process *target, int mode, int signal)
 {
-	t_group*	aux;
+	t_group		*aux;
 
 	aux = group_get(target);
-	ft_dprintf(fd, "%s", (!mode && stopped_signal_group(aux, false) ? "Stopped" : get_signal(signal)));
+	ft_dprintf(fd, "%s", (!mode && stopped_signal_group(aux, false) \
+	? "Stopped" : get_signal(signal)));
 }
 
-void	print_exit_st(int fd, int exit_st)
+void			print_exit_st(int fd, int exit_st)
 {
-	char	*freed;
+	char		*freed;
 
 	freed = NULL;
 	ft_dprintf(fd, "%s%s",
@@ -41,9 +42,9 @@ void	print_exit_st(int fd, int exit_st)
 	free(freed);
 }
 
-void	print_coredump(int fd, t_process* target, int mode)
+void			print_coredump(int fd, t_process *target, int mode)
 {
-	t_group*	aux;
+	t_group		*aux;
 
 	aux = group_get(target);
 	ft_dprintf(fd, "%s",
@@ -51,10 +52,10 @@ void	print_coredump(int fd, t_process* target, int mode)
 		|| (!mode && group_condition(aux, is_coredump)) ? "(core dumped)" : "");
 }
 
-void	print_sp(int fd, t_process *target, int mode, int exit_st)
+void			print_sp(int fd, t_process *target, int mode, int exit_st)
 {
-	const bool is__leader = is_leader(target);
-	t_group *aux;
+	const bool 	is__leader = is_leader(target);
+	t_group 	*aux;
 
 	aux = group_get(target);
 	ft_dprintf(fd, "%s",

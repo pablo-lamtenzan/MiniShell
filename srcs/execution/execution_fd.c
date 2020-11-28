@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:10:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/17 10:13:43 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/28 22:32:59 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 #include <expansion.h>
 #include <errors.h>
 
-t_exec_status		dup_stdio(int* fds)
+t_exec_status		dup_stdio(int *fds)
 {
-	int		i;
+	int				i;
 
 	i = -1;
 	while (++i < 2)
@@ -31,10 +31,10 @@ t_exec_status		dup_stdio(int* fds)
 }
 
 // TODO: Rename READ to WRITE and WRITE to READ
-t_exec_status		open_pipe_fds(t_exec** info, t_tok_t type)
+t_exec_status		open_pipe_fds(t_exec **info, t_tok_t type)
 {
-	bool	update;
-	int		pipe_fds[2];
+	bool			update;
+	int				pipe_fds[2];
 
 	update = false;
 
@@ -57,9 +57,9 @@ t_exec_status		open_pipe_fds(t_exec** info, t_tok_t type)
 	return (SUCCESS);
 }
 
-t_exec_status		close_pipe_fds(int* fds)
+t_exec_status		close_pipe_fds(int *fds)
 {
-	int		i;
+	int				i;
 
 	i = -1;
 	while (++i < 2)

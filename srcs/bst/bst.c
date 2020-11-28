@@ -6,17 +6,17 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 16:23:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 05:42:20 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 22:46:30 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <bst.h>
 
-static t_bst*	build_job(t_tok* tokens, t_tok* delim)
+static t_bst		*build_job(t_tok *tokens, t_tok *delim)
 {
-	t_tok*	tk1;
-	t_tok*	tk2;
-	t_bst*	node;
+	t_tok			*tk1;
+	t_tok			*tk2;
+	t_bst			*node;
 
 	tk1 = find_last_operator(tokens, delim);
 	node = new_node(NULL, NULL, tk1->type);
@@ -37,11 +37,11 @@ static t_bst*	build_job(t_tok* tokens, t_tok* delim)
 	return (node);
 }
 
-static t_bst*	build_bst(t_tok* tokens)
+static t_bst		*build_bst(t_tok	*tokens)
 {
-	t_tok*	tk1;
-	t_tok*	tk2;
-	t_bst*	node;
+	t_tok			*tk1;
+	t_tok			*tk2;
+	t_bst			*node;
 
 	if ((tk1 = find_next_operator(tokens, PIPE))->type & PIPE)
 		node = new_node(NULL, NULL, tk1->type);
@@ -61,9 +61,9 @@ static t_bst*	build_bst(t_tok* tokens)
 	return (node);
 }
 
-t_bst*			bst(t_tok* tokens)
+t_bst				*bst(t_tok *tokens)
 {
-	t_tok*		last_node;
+	t_tok			*last_node;
 
 	if (!(last_node = is_pipe_cmd(tokens)))
 		return (build_bst(tokens));
@@ -72,7 +72,7 @@ t_bst*			bst(t_tok* tokens)
 	return (build_job(tokens, NULL));
 }
 
-void			free_bst(t_bst* root)
+void				free_bst(t_bst *root)
 {
 	if (!root)
 		return ;

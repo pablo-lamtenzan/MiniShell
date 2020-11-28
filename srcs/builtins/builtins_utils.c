@@ -6,14 +6,15 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 18:03:18 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 06:29:22 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 22:30:38 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <job_control.h>
 
-int				parse_flags(int ac, char*const* av, const char* pattern, int *nb_flags)
+int				parse_flags(int ac, char*const *av, const char *pattern,
+		int *nb_flags)
 {
 	int			cont;
 	int			flags;
@@ -26,7 +27,6 @@ int				parse_flags(int ac, char*const* av, const char* pattern, int *nb_flags)
 	while (++cont < ac - 1)
 	{
 		i = -1;
-		//ft_dprintf(2, "[PARSE FLAGS: %s]\n", av[cont]);
 		while (av[cont][++i])
 		{
 			if (av[cont][i] == '-')
@@ -38,82 +38,14 @@ int				parse_flags(int ac, char*const* av, const char* pattern, int *nb_flags)
 			}
 			prev = flags;
 			if ((flags |= (1 << ft_strpos(pattern, av[cont][i]))) < 0)
-			{
-				//ft_dprintf(2, "[PARSE FLAGS: RESULT ERROR: %d]\n", !*nb_flags ? -1 : -prev);
 				return (!*nb_flags ? -1 : -prev);
-			}
 		}
 		(*nb_flags)++;
 	}
-	//ft_dprintf(2, "[PARSE FLAGS: RESULT SUCESS: %d]\n", flags);
 	return (flags);
 }
 
-/* TO USE WHEN g_session WILL BE GLOBAL IN: fg, bg, kill, disown, jobs */
-
-void				for_each_process_in_group(t_process* target_leader, t_group* itself, int arg, void (*action)(t_group**, t_process**, int))
-{
-	const t_group*	remember = g_session->groups;
-	t_group*		fill;
-	t_process*		remember_leader;
-
-	if (g_session->groups == itself)
-		g_session->groups = g_session->groups->next;
-	while (g_session->groups != g_session->nil)
-	{
-		if (g_session->groups->nil->next->pid == target_leader->pid)
-		{
-			remember_leader = g_session->groups->active_processes;
-			while (g_session->groups->active_processes != g_session->groups->nil)
-			{
-				action(&g_session->groups, &g_session->groups->active_processes, arg);
-				g_session->groups->active_processes = g_session->groups->active_processes->next;
-			}
-			if (!group_condition(g_session->groups, is_active))
-			{
-				fill = g_session->groups;
-				g_session->groups->prev->next = g_session->groups->next;
-				g_session->groups->next->prev = g_session->groups->prev;
-				free(fill);
-				fill = NULL;
-			}
-			else
-				g_session->groups->active_processes = remember_leader;
-			g_session->groups = (t_group*)remember;
-			return ;
-		}
-		g_session->groups = g_session->groups->next;
-	}
-	g_session->groups = (t_group*)remember;
-}
-
-/* SAME */
-
-void			for_each_group(int arg, void (*action)(t_group**, t_process**, int))
-{
-	const t_group*	remember = g_session->groups;
-	
-	g_session->groups = g_session->nil->prev;
-	while (g_session->groups != g_session->nil->next) // != itself
-	{
-		for_each_process_in_group(g_session->groups->nil->next, (t_group*)remember, arg, action);
-		g_session->groups = g_session->groups->prev;
-	}
-	g_session->groups = (t_group*)remember;
-}
-
-int				builtin_error(size_t index, int ret)
-{
-	(void)index;
-	// TO DO: search by index in errors database
-	
-	// AND
-
-	// returns the error
-	return (ret);
-}
-
-bool	ignore_pid(int ac, char*const* av)
+bool			ignore_pid(int ac, char*const *av)
 {
 	(void)ac;
 	if (is_string_digit(av[1]))
@@ -121,7 +53,7 @@ bool	ignore_pid(int ac, char*const* av)
 	return (true);
 }
 
-const char*			is_in_history(t_process* target)
+const char		*is_in_history(t_process* target)
 {
 	if (!g_session->hist)
 		return (" ");

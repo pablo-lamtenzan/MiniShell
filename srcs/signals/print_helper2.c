@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 04:49:24 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 03:24:52 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 22:54:54 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,36 +14,37 @@
 #include <sys/wait.h>
 #include <signal.h>
 
-void	padding_spaces(int fd, size_t alreaddy_written)
+void			padding_spaces(int fd, size_t alreaddy_written)
 {
-	int i;
+	int 	i;
 
 	i = -1;
 	while (++i < SIGNAL_PADDING - (int)alreaddy_written)
 		write(fd, " ", 1);
 }
 
-void	print_group_line(int fd, t_group *group)
+void			print_group_line(int fd, t_group *group)
 {
-	int i;
+	int 	i;
 	
 	i = -1;
 	while (group && group->input && group->input[++i])
 		ft_dprintf(fd, "%s%s", group->input[i], group->input[i + 1] ? " " : "");
 }
 
-char	*ft_norme_makes_my_code_worst(bool condition, char *ret_true, char *ret_false)
+char			*ft_norme_makes_my_code_worst(bool condition, char *ret_true, 
+		char *ret_false)
 {
 	if (condition)
 		return (ret_true);
 	return (ret_false);
 }
 
-void	print_index(int fd, t_process *target, int mode, int exit_st)
+void			print_index(int fd, t_process *target, int mode, int exit_st)
 {
-	const bool is__leader = is_leader(target);
-	t_group *aux;
-	char*	freed;
+	const bool 	is__leader = is_leader(target);
+	t_group 	*aux;
+	char*		freed;
 
 	freed = NULL;
 	aux = group_get(target);
@@ -60,10 +61,10 @@ void	print_index(int fd, t_process *target, int mode, int exit_st)
 	free(freed);
 }
 
-void	print_history(int fd, t_process *target, int mode, int exit_st)
+void			print_history(int fd, t_process *target, int mode, int exit_st)
 {
-	const bool is__leader = is_leader(target);
-	t_group *aux;
+	const bool 	is__leader = is_leader(target);
+	t_group 	*aux;
 	
 	aux = group_get(target);
 	ft_dprintf(fd, "%s",

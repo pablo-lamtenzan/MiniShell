@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 08:08:44 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 22:37:21 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,18 @@
 #include <job_control.h>
 #include <errors.h>
 
-static t_exec_status	get_exec(t_exec* info)
+static t_exec_status	get_exec(t_exec *info)
 {
-	const char	*names[] = {"echo", "cd", "pwd", "export", "unset", "env", \
-			"exit", "fg", "jobs", "kill", "bg", "disown", "wait"};
-	const int	lengths[] = {4, 3, 4, 7, 5, 4, 5, 2, 4, 4, 2, 6, 4};
+	size_t				i;
+	int 				status;
+	const char			*names[] = {"echo", "cd", "pwd", "export", "unset", \
+		"env", "exit", "fg", "jobs", "kill", "bg", "disown", "wait"};
+	const int			lengths[] = {4, 3, 4, 7, 5, 4, 5, 2, 4, 4, 2, 6, 4};
 	const t_executable 	builtins[] = {&ft_echo, &ft_cd, &ft_pwd, &ft_export, \
-			&ft_unset, &ft_env, &ft_exit, &ft_fg, &ft_jobs, &ft_kill, \
-			&ft_bg, &ft_disown, &ft_wait};
-	size_t			i;
+		&ft_unset, &ft_env, &ft_exit, &ft_fg, &ft_jobs, &ft_kill, &ft_bg, \
+		&ft_disown, &ft_wait};
 
-	int status = SUCCESS;
+	status = SUCCESS;
 	i = 0;
 	while (i < sizeof(names) / sizeof(*names) && ft_strncmp(info->av[0], \
 			names[i], lengths[i]))
@@ -55,7 +56,7 @@ void					execute_process(t_exec *info, t_exec_status exec_st)
 		destroy_execve_args(info);
 }
 
-static t_exec_status	execute_cmd(t_bst* cmd, t_exec* info)
+static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
 {
 	char**				filename;
 	t_redir_status		redir_st;
@@ -80,7 +81,7 @@ static t_exec_status	execute_cmd(t_bst* cmd, t_exec* info)
 	return (exec_st == BAD_PATH ? SUCCESS : exec_st);
 }
 
-static t_exec_status	execute_job(t_bst* job, t_exec* info)
+static t_exec_status	execute_job(t_bst *job, t_exec *info)
 {
 	t_exec_status		st;
 
@@ -137,7 +138,7 @@ void					keep_alive_killed_processes()
 	} 
 }
 
-t_exec_status			execute_bst(t_bst* root)
+t_exec_status			execute_bst(t_bst *root)
 {
 	t_exec				info;
 	t_exec_status		st;

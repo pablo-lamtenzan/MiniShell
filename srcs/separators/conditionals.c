@@ -3,22 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   conditionals.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/05 00:01:31 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 01:42:50 by chamada          ###   ########lyon.fr   */
+/*   Updated: 2020/11/28 22:48:57 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <separators.h>
 #include <execution.h>
 
-int	handle_conditionals(int parser_st, int* flags, int parentheses_nb)
+int			handle_conditionals(int parser_st, int *flags, int parentheses_nb)
 {
 	if (parser_st & CLOSE_PAR)
 	{
 		// TO DO: Think about overwrite st is a good idea in all the cases
-		if ((*flags & SKIP && *flags & SKIPED_AND) || (!(*flags & SKIP) && !(*flags & NOT_SKIPED_OR)))
+		if ((*flags & SKIP && *flags & SKIPED_AND) || (!(*flags & SKIP) \
+				&& !(*flags & NOT_SKIPED_OR)))
 			g_session->st = 127;
 		*flags &= ~SKIP;
 	}

@@ -3,25 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   bst_fill.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 16:44:01 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/11 21:52:52 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/28 22:47:27 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <bst.h>
 
-t_tok*		find_next_operator(t_tok* start, t_tok_t type)
+t_tok		*find_next_operator(t_tok *start, t_tok_t type)
 {
 	while (start->next && !(start->type & type))
 		start = start->next ? start->next : start;
 	return (start);
 }
 
-t_tok*		find_last_operator(t_tok* start, t_tok* end)
+t_tok		*find_last_operator(t_tok *start, t_tok *end)
 {
-	t_tok*	last;
+	t_tok	*last;
 
 	if (start->next != end)
 	{
@@ -39,9 +39,9 @@ t_tok*		find_last_operator(t_tok* start, t_tok* end)
 	return (start);
 }
 
-t_bst*		new_node(void* a, void* b, t_tok_t type)
+t_bst		*new_node(void* a, void* b, t_tok_t type)
 {
-    t_bst* 	new_node;
+    t_bst	*new_node;
 
     if (!(new_node = malloc(sizeof(t_bst))))
         return (NULL);
@@ -49,9 +49,9 @@ t_bst*		new_node(void* a, void* b, t_tok_t type)
     return (new_node);
 }
 
-t_tok*		is_pipe_cmd(t_tok* start)
+t_tok		*is_pipe_cmd(t_tok* start)
 {
-	t_tok*	cp;
+	t_tok	*cp;
 
 	cp = start;
 	while (cp->next)

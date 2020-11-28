@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_fill.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 01:55:31 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 22:33:58 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 #include <errors.h>
 #include <errno.h>
 
-static int	ft_fork(t_exec* info) 
+static int			ft_fork(t_exec *info) 
 {
 	int				child_st;
-	t_process*		process;
+	t_process		*process;
 
 	if ((child_st = fork()) > 0)
 	{
@@ -29,7 +29,7 @@ static int	ft_fork(t_exec* info)
 	return (child_st);
 }
 
-int		execute_child(t_exec* info)
+int					execute_child(t_exec *info)
 {
 	int				ret;
 	pid_t			pid;
@@ -41,7 +41,8 @@ int		execute_child(t_exec* info)
 		if ((st = dup_stdio(info->fds)) != SUCCESS)
 			return (st);
 		ret = execve(info->execution_path, info->av, info->ep);
-		ft_dprintf(STDERR_FILENO, "%s: %s: execve returned '%d'!\n", g_session->name, info->av[0], ret);
+		ft_dprintf(STDERR_FILENO, "%s: %s: execve returned '%d'!\n", \
+				g_session->name, info->av[0], ret);
 		exit(EXIT_FAILURE);
 	}
 	else if (pid < 0)
@@ -49,7 +50,7 @@ int		execute_child(t_exec* info)
 	return (ret);
 }
 
-t_exec_status		build_execve_args(t_exec* info)
+t_exec_status		build_execve_args(t_exec *info)
 {
 	if (!(info->execution_path = path_get(info->av[0], env_get(g_session->env, "PATH", 4))))
 	{
@@ -64,7 +65,7 @@ t_exec_status		build_execve_args(t_exec* info)
 	return (SUCCESS);
 }
 
-void		destroy_execve_args(t_exec *info)
+void				destroy_execve_args(t_exec *info)
 {
 	free((char **)info->ep);
 	free((void*)info->execution_path);

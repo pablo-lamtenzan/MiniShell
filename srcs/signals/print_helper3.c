@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 04:50:26 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 03:12:38 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 22:57:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,22 @@
 #include <sys/wait.h>
 #include <signal.h>
 
-const char*	get_signal(int index)
+const char				*get_signal(int index)
 {
-	static const char*		signals[33] = {
-		"Hangup", "", "Quit", "Illegal instruction", "Trace/breakpoint trap", "Aborted", \
-		"Bus error", "Floating point exception", "Killed", "User defined signal 1", \
-		"Segmentation fault", "User defined signal 2","", "Alarm clock", "Terminated", "Stack fault", \
-		"", "", "Stopped", "Stopped", "Stopped", "Stopped", "", "CPU time limit exceeded", \
-		"File size limit exceeded", "Virtual timer expired", "Profiling timer expired", "I/O possible", \
-		"Power failure", "Bad system call", "Done", "Exit", "Running"
+	static const char	*signals[33] = {
+		"Hangup", "", "Quit", "Illegal instruction", "Trace/breakpoint trap", \
+		"Aborted", "Bus error", "Floating point exception", "Killed", \
+		"User defined signal 1", "Segmentation fault", "User defined signal 2", \
+		"", "Alarm clock", "Terminated", "Stack fault", "", "", "Stopped", \
+		"Stopped", "Stopped", "Stopped", "", "CPU time limit exceeded", \
+		"File size limit exceeded", "Virtual timer expired", \
+		"Profiling timer expired", "I/O possible", "Power failure", \
+		"Bad system call", "Done", "Exit", "Running"
 	};
 	return (signals[index - 1]);
 }
 
-int		check_wstatus(t_process* target, int *exit_status)
+int						check_wstatus(t_process *target, int *exit_status)
 {
 	if (target->flags & BACKGROUND)
 		return (33);
@@ -57,14 +59,15 @@ int		check_wstatus(t_process* target, int *exit_status)
 	return (31);
 }
 
-bool	stopped_signal(int signal, bool ignore_tstp)
+bool					stopped_signal(int signal, bool ignore_tstp)
 {
-	return (signal == SIGSTOP || (!ignore_tstp && signal == SIGTSTP) || signal == SIGTTIN || signal == SIGTTOU);
+	return (signal == SIGSTOP || (!ignore_tstp && signal == SIGTSTP) \
+		|| signal == SIGTTIN || signal == SIGTTOU);
 }
 
-bool	stopped_signal_group(t_group* group, bool wcheck)
+bool					stopped_signal_group(t_group* group, bool wcheck)
 {
-	t_process	*leader;
+	t_process			*leader;
 	
 	leader = group->active_processes;
 	while (leader != group->nil)
@@ -75,19 +78,3 @@ bool	stopped_signal_group(t_group* group, bool wcheck)
 	}
 	return (false);
 }
-
-/*
-bool	group_coredump(t_group* group)
-{
-	t_process* leader;
-
-	leader = group->active_processes;
-	while (leader != group->nil)
-	{
-		if (WCOREDUMP(leader->wstatus))
-			return (true);
-		leader = leader->next;
-	}
-	return (false);	
-}
-*/

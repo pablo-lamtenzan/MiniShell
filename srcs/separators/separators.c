@@ -6,14 +6,14 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/05 00:01:43 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/13 04:50:09 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 22:50:00 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <separators.h>
 #include <execution.h>
 
-static void		skip_parentheses(t_tok** tks, int* parentheses_nb, int* saved)
+static void		skip_parentheses(t_tok **tks, int *parentheses_nb, int *saved)
 {
 	if (*saved & CLOSE_PAR)
 	{
@@ -33,7 +33,7 @@ static void		skip_parentheses(t_tok** tks, int* parentheses_nb, int* saved)
 	}
 }
 
-t_tok*			handle_separators(t_tok** tokens, int* status,
+t_tok			*handle_separators(t_tok **tokens, int *status,
 		int* parentheses_nb)
 {
 	t_tok*		tks[4];
