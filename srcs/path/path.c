@@ -37,7 +37,6 @@ char	*path_get(const char *name, const char *path)
 			i = 0;
 			while (paths[i]
 			&& (absolute = path_cat(paths[i], name))
-			&& (ft_dprintf(2, "[PATH] paths[%lu] = '%s'\n", i, paths[i]))
 			&& !(stat(absolute, &s) == 0 && s.st_mode & S_IXUSR))
 			{
 				i++;
