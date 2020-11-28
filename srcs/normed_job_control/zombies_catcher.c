@@ -5,13 +5,13 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/22 03:11:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 01:49:23 by pablo            ###   ########.fr       */
+/*   Created: 2020/11/28 01:45:31 by pablo             #+#    #+#             */
+/*   Updated: 2020/11/28 01:48:28 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
-#include <libft.h>
+#include <job_control.h>
 
 void		handle_wstatus(t_group** group)
 {

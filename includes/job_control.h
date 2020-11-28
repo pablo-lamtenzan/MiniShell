@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 01:37:58 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 01:44:30 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,11 @@ t_exec_status			wait_processes(t_exec_status st);
 t_session				*session_start();
 void					session_end();
 bool					session_empty();
+
+/*
+** Signals interactions
+*/
+void					zombie_catcher(int signal);
 
 /*
 ** History
@@ -227,7 +232,7 @@ void					update_exit_count(const char* name);
 ** Signals catcher
 */
 void					zombies_catcher(int signal);
-void					zombie_catcher(int signal);
+
 //bool					update_zombies(t_group** update);
 bool					update_zombies(t_group* update);
 void					remove_exited_zombies();
