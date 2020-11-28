@@ -46,7 +46,6 @@ bool	term_init_interactive(t_env **env)
 
 bool	term_init(t_env **env)
 {
-	ft_bzero(&g_term, sizeof(g_term));
 	g_term.clip.select = (t_select){-1U, -1U};
 	if (!(g_term.line = line_new(TERM_LINE_SIZE)))
 		return (false);
