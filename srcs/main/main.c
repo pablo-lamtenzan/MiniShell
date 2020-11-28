@@ -188,7 +188,7 @@ int		main(int ac, const char** av, const char** ep)
 		if ((lex_status = lex_tokens(&lex_data)) == LEX_EOK)
 		{
 			g_session->input_line_index = 0;
-			g_session->input_line = split_separators(g_term.line->data, (char**)seps);
+			g_session->input_line = split_separators(g_term.line->data, seps);
 			exec(lex_data.tokens);
 			lex_data.tokens = NULL;
 		}
