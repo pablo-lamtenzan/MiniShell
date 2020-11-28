@@ -6,13 +6,13 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 10:27:06 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 23:02:00 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 23:05:39 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 
-size_t		get_separators_nb(char *input, char **separators)
+size_t		get_separators_nb(char *input, const char **separators)
 {
 	size_t	size;
 	size_t	aux;
@@ -38,7 +38,7 @@ size_t		get_separators_nb(char *input, char **separators)
 	return (size);
 }
 
-size_t		get_elem_size(char *input, int *i, char **separators)
+size_t		get_elem_size(char *input, int *i, const char **separators)
 {
 	int		y;
 	size_t	size;
@@ -58,7 +58,7 @@ size_t		get_elem_size(char *input, int *i, char **separators)
 	return (size);
 }
 
-int			copy_inter_seps(char ***res, char *input, char **separators)
+int			copy_inter_seps(char ***res, char *input, const char **separators)
 {
 	int		y;
 	int		i;
@@ -89,7 +89,7 @@ int			copy_inter_seps(char ***res, char *input, char **separators)
 	return (true);
 }
 
-char		**split_separators(char *input, char **separators)
+char		**split_separators(char *input, const char **separators)
 {
 	char**	res = NULL;
 	size_t	size;
