@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   normed_execution.c                                 :+:      :+:    :+:   */
+/*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 02:39:39 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 08:08:44 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,9 @@ void					execute_process(t_exec *info, t_exec_status exec_st)
 	update_exit_count(info->av[0]);
 	if ((exec_st = get_exec(info)) == SUCCESS)
 	{
-		g_session->restrict_zombies = true;
+		g_session->flags |= RESTRICT_CATCH;
 		zombies_list_purge_exited_zombies();
-		// TO DO: bitwise
-		g_session->restrict_zombies = false;
+		g_session->flags &= ~RESTRICT_CATCH;
 		g_session->st = (unsigned char)info->exec(info);
 		g_session->groups->active_processes->ret = \
 			g_session->groups->active_processes->flags \
@@ -149,9 +148,8 @@ t_exec_status			execute_bst(t_bst* root)
 	keep_alive_killed_processes();
 	if (!(group = group_new()))
 		return (BAD_ALLOC);
-	g_session->open_print = true;
-	// TO DO: Change char by define ESPACE
-	group->input = ft_split(g_session->input_line[g_session->input_line_index++], ' ');
+	g_session->flags |= OPEN_PRINT;
+	group->input = ft_split(g_session->input_line[g_session->input_line_index++], ESPACE);
 	group_push_front(group);
 	ft_bzero(&info, sizeof(t_exec));
 	info = (t_exec){.fds[FDS_STDOUT]=FDS_STDOUT, .fds[FDS_AUX]=FDS_AUX};

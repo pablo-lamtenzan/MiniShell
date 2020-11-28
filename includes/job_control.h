@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 05:43:30 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 08:08:29 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,10 @@
 #define RESTRICT_OP		32
 #define NO_HANGUP		64
 #define NO_DELETE		128
+
+#define OPEN_PRINT		1
+#define RESTRICT_CATCH	2
+#define ESPACE			' '
 
 typedef struct 			s_process
 {
@@ -83,8 +87,7 @@ typedef struct			s_session
 	unsigned char		exit_count;
 	char				*name;
 	t_env				*env;
-	bool				open_print;
-	bool				restrict_zombies;
+	char				flags;
 }						t_session;
 
 t_session				*g_session;

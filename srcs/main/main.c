@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 03:20:50 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 08:05:12 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void	suspend_process(int signal)
 	(void)signal;
 
 	write(STDERR_FILENO, "\n", 1);
-	if (g_session->open_print)
+	if (g_session->flags & OPEN_PRINT)
 		print_signal(STDERR_FILENO, g_session->groups->active_processes, STANDART);
 	
 }

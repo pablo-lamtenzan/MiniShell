@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:56:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 03:25:50 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 08:05:00 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ t_exec_status	wait_processes(t_exec_status st)
 	leader = group->active_processes;
 	while (group->active_processes != group->nil)
 	{
-		g_session->open_print = false;
+		g_session->flags &= ~OPEN_PRINT;
 		background_update(&group->active_processes);
 		if (WIFSIGNALED(group->active_processes->wstatus) \
 				|| WIFSTOPPED(group->active_processes->wstatus))
