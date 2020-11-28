@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:20:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 01:42:24 by chamada          ###   ########lyon.fr   */
+/*   Updated: 2020/11/28 03:22:55 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,13 @@ int			wait_process(t_process** target, int flags)
 		return (WEXITSTATUS((*target)->wstatus));
 	if ((*target)->flags & STOPPED)
 	{
-		ft_dprintf(STDERR_FILENO, "bash: warning: wait_for_job: job %lu[%d] is stopped\n", get_background_index(g_session->nil, *target), (*target)->pid);
+		ft_dprintf(STDERR_FILENO, "bash: warning: wait_for_job: job %lu[%d] is stopped\n", background_index_get(g_session->nil, *target), (*target)->pid);
 		return (148);
 	}
-	update_background(target, true);
+	background_update(target);
 	if ((*target)->flags & STOPPED)
 	{
-		ft_dprintf(STDERR_FILENO, "bash: warning: wait_for_job: job %lu[%d] is stopped\n", get_background_index(g_session->nil, *target), (*target)->pid);
+		ft_dprintf(STDERR_FILENO, "bash: warning: wait_for_job: job %lu[%d] is stopped\n", background_index_get(g_session->nil, *target), (*target)->pid);
 		return (CMD_NOT_FOUND);
 	}
 	// TO DO: PRINTS THE INPUT CMD
@@ -78,8 +78,11 @@ int			wait_group(t_process* leader, int flags, t_group* itself)
 				ret = wait_process(&g_session->groups->active_processes, flags);
 				g_session->groups->active_processes = g_session->groups->active_processes->next;
 			}
-			if (!is_active_group(g_session->groups))
+			if (!group_condition(g_session->groups, is_active))
 			{
+				// TO DO: TEST IT, I ADD IT WITHOUT TEST
+				history_session_remove_node(g_session->groups);
+
 				t_group*	fill = g_session->groups;
 				g_session->groups->prev->next = g_session->groups->next;
 				g_session->groups->next->prev = g_session->groups->prev;

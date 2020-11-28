@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 01:41:26 by chamada          ###   ########lyon.fr   */
+/*   Updated: 2020/11/28 03:17:51 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,13 +66,13 @@ int		resume_group(t_process* leader)
 					kill(g_session->groups->active_processes->pid, SIGCONT);
 					if (PRINT_DEBUG)
 					ft_dprintf(2, "[FG][UPDATE BACKGROUND]\n");
-					update_background(&g_session->groups->active_processes, true);
+					background_update(&g_session->groups->active_processes);
 					if (!(g_session->groups->active_processes->wstatus & STOPPED))
 						ret = g_session->groups->active_processes->ret;
 				}
 				g_session->groups->active_processes = g_session->groups->active_processes->next;
 			}
-			if (!is_active_group(g_session->groups))
+			if (!group_condition(g_session->groups, is_active))
 			{
 				//t_group*	fill = g_session->groups;
 				//g_session->groups->prev->next = g_session->groups->next;
@@ -82,7 +82,7 @@ int		resume_group(t_process* leader)
 
 				// TO DO: If i don t delet ethe hist group i ve a heap use after free, but now i don't have the hist
 					// test and correct this
-				remove_history_node(g_session->groups);
+				history_session_remove_node(g_session->groups);
 				next = g_session->groups->next;
 				g_session->groups->prev->next = next;
 				next->prev = g_session->groups->prev;

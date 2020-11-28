@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 18:03:18 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 15:55:45 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 03:47:55 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void				for_each_process_in_group(t_process* target_leader, t_group* itself, int
 				action(&g_session->groups, &g_session->groups->active_processes, arg);
 				g_session->groups->active_processes = g_session->groups->active_processes->next;
 			}
-			if (!is_active_group(g_session->groups))
+			if (!group_condition(g_session->groups, is_active))
 			{
 				fill = g_session->groups;
 				g_session->groups->prev->next = g_session->groups->next;

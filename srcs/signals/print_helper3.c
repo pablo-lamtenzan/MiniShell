@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_helper3.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 04:50:26 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 19:34:10 by chamada          ###   ########lyon.fr   */
+/*   Updated: 2020/11/28 03:12:38 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ bool	stopped_signal_group(t_group* group, bool wcheck)
 	return (false);
 }
 
+/*
 bool	group_coredump(t_group* group)
 {
 	t_process* leader;
@@ -89,3 +90,4 @@ bool	group_coredump(t_group* group)
 	}
 	return (false);	
 }
+*/

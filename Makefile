@@ -85,15 +85,25 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 						print_helper3.c\
 					)\
 					$(addprefix job_control/,\
-						process_lib.c\
-						resume_suspended_processes.c\
-						jobspec_parser.c\
-						process.c\
-						job_control.c\
-						session.c\
+						allocators.c\
+						background.c\
+						conditions.c\
+						dynamic_group_destructors.c\
+						dynamic_process_destructors.c\
+						exit_helper.c\
+						group_operations.c\
 						group.c\
-						process_____.c\
+						history_session.c\
+						jobspec_parse_name.c\
+						jobspec_parser_utils.c\
+						jobspec_parser.c\
+						process_operations.c\
+						process.c\
+						session.c\
+						static_destructors.c\
+						wait_processes.c\
 						zombies_catcher.c\
+						zombies.c\
 					)\
 					$(addprefix main/,\
 						main.c\

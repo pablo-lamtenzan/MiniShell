@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 03:35:22 by chamada          ###   ########lyon.fr   */
+/*   Updated: 2020/11/28 03:20:50 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,24 +74,10 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st)
 }
 
 // TO DO: [OPTIONAL] put color in the prompt
-// TO DO: store a lot stoppe jobs, then bg them like: bg ; bg ; bg ... and jobs (spoiler: somme jobs that stay in runnig state nevers are deleted) WHY ?
 // TO DO: endzombies history (should not print)
-
-// TO DO: i fucked up the .h have to redo it...
-
-
-// TO DO fg -> head use after free if a fg a lot of stopped and i job after
-	// if (freeed target == nil->next)
-		// active_processes = next
-		// nil->next = next
-		// TRY THIS
-
-// TO DO TODAY
-// .h
-// print norme
-// search fo rbugs
-
-// TO DO: megabug ramdom zombies catcher (print remember at the begin and th een dto fin dif you forgot and just bg a lot)
+// TO DO: do fork for builtins too but empty forks to call SIGCHID if (fork == 0){exit(builting ret value)}
+// TO DO: bg + jobs prints 2 times (mute in jobs the exited nodes in the zombie catcher)
+// TO DO: continious bg % LIKE KILL
 
 // TO DO: Norme all (at the end of the end)
 // TO DO: [UNKNOWN] cat | cat -e | echo a resarch (now we have all the job control build, must be easy to fix)
@@ -188,8 +174,7 @@ int		main(int ac, const char** av, const char** ep)
 	t_lex_st	lex_data;
 
 	signal(SIGTSTP, suspend_process);
-	signal(SIGCHLD, zombie_catcher_v2);
-
+	signal(SIGCHLD, zombie_catcher);
 	//signal(SIGTTIN, test);
 	//signal(SIGTERM, todo); // need documentation about this
 	if (!init(ac, av, ep))

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:19:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 04:55:47 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 03:45:09 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 /*
 replaces update_zombies
 */
-bool				zombies_list_update(t_group	 **update)
+bool				zombies_list_update(t_group	 *update)
 {
 	t_background	*fill;
 	t_background	*zombie;
@@ -32,8 +32,9 @@ bool				zombies_list_update(t_group	 **update)
 
 /*
 replaces
-remove_zombie_node
+remove_zombie_node not used i think
 */
+/*
 void				zombies_list_node_remove(t_group *target)
 {
 	t_background	*prev;
@@ -63,11 +64,12 @@ void				zombies_list_node_remove(t_group *target)
 	else
 		g_session->zombies = first;
 }
+*/
 
 /*
 replaces remove_exited_zombies
 */
-void			zombies_list_purge_exited()
+void			zombies_list_purge_exited_groups()
 {
 	t_group		*first;
 	t_group		*next;
@@ -112,10 +114,42 @@ void		deadzombies_print()
 	{
 		next = g_session->dead_zombies->next;
 		(*g_session->dead_zombies->deadzombie)->flags &= ~NO_DELETE;
-		// TO DO: print_signal define
 		print_signal(STDERR_FILENO, *g_session->dead_zombies->deadzombie, STANDART);
 		free(g_session->dead_zombies);
 		g_session->dead_zombies = next;
 	}
 	g_session->dead_zombies = NULL;
+}
+
+/*
+replaces rm_end_zombies
+*/
+void		zombies_list_purge_exited_zombies()
+{
+	t_background*	next;
+	t_background*	first;
+	t_background*	prev;
+	bool			freed;
+
+	prev = NULL;
+	freed = false;
+	first = g_session->zombies;
+	while (g_session->zombies)
+	{
+		if (g_session->zombies->exited)
+		{
+			if (first && first == g_session->zombies)
+				first = first->next;
+			next = g_session->zombies->next;
+			// TO DO: test remove history node here
+			free(g_session->zombies);
+			g_session->zombies = next;
+			if (prev)
+				prev->next = g_session->zombies;
+		}
+		prev = g_session->zombies;
+		if (!freed && g_session->zombies)
+			g_session->zombies = g_session->zombies->next;
+	}
+	g_session->zombies = first;
 }

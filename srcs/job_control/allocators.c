@@ -6,12 +6,13 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:22:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 01:24:18 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 03:40:48 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <job_control.h>
 #include <libft.h>
+#include <stdlib.h>
 
 t_session			*session_start()
 {

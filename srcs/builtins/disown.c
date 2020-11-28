@@ -6,11 +6,12 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:48:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 01:42:36 by chamada          ###   ########lyon.fr   */
+/*   Updated: 2020/11/28 03:51:14 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
+#include <job_control.h>
 
 /* TESTS
 
@@ -63,25 +64,7 @@ void			history_pop_front_v2()
 	}
 }
 
-void			remove_process(t_process** target)
-{
-	t_process**	next;
-	t_process**	prev;
 
-	next = &(*target)->next;
-	prev = &(*target)->prev;
-	if (PRINT_DEBUG) {
-	ft_dprintf(2, "[REMOVE PROCESS][NEXT = \'%p\']\n", (*next));
-	ft_dprintf(2, "[REMOVE PROCESS][PREV = \'%p\']\n", (*prev));
-	}
-	(*next)->prev = *prev;
-	(*prev)->next = *next;
-	if (PRINT_DEBUG) {
-	ft_dprintf(2, "[REMOVE: \'%p\']\n", *target);
-	}
-	free(*target); // not only free
-	*target = NULL;
-}
 
 void			disown_process(t_process** target, int flags)
 {
@@ -96,7 +79,7 @@ void			disown_process(t_process** target, int flags)
 		(*target)->flags |= RESTRICT_OP;
 		
 		// rm from history (probally this pop front needs a condition for flags + jobspec)
-		history_pop_front_v2();
+		history_pop_front();
 		return ;
 	}
 	if (flags & 4) // -h process doenst recive SIGHUB when the term exits
@@ -108,7 +91,7 @@ void			disown_process(t_process** target, int flags)
 	if (PRINT_DEBUG) {
 	ft_dprintf(2, "[DISOWN][flags: %d][\'%p\']\n", (*target)->flags, *target);}
 	if ((*target)->flags & STOPPED)
-		ft_dprintf(STDERR_FILENO, "minish: warning: deleting stopped job %lu with process group %d\n", get_background_index(g_session->nil, *target), get_process_leader_pid(g_session->nil, *target));
+		ft_dprintf(STDERR_FILENO, "minish: warning: deleting stopped job %lu with process group %d\n", background_index_get(g_session->nil, *target), process_get_leader_pid(g_session->nil, *target));
 	remove_process(target);
 }
 
@@ -157,9 +140,9 @@ void		disown_group(t_process* leader, int flags, t_group* itself)
 				disown_process(&g_session->groups->active_processes, flags);
 				g_session->groups->active_processes = next;
 			}
-			if (!is_active_group(g_session->groups))
+			if (!group_condition(g_session->groups, is_active))
 			{
-				remove_history_node(g_session->groups);
+				history_session_remove_node(g_session->groups);
 				t_group*	fill = g_session->groups;
 				
 				g_session->groups->prev->next = g_session->groups->next;

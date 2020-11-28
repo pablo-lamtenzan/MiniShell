@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:39:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 05:38:23 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 00:59:06 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,18 +119,53 @@ bool			update_session_history_v2(t_group* update)
 	return (true);
 }
 
+/*
 bool			update_zombies(t_group** update)
 {
+	
 	t_background*	fill;
 	t_background*	zombie;
 
 	if (!update || !(zombie = ft_calloc(1, sizeof(t_background))))
 		return (false);
+	ft_dprintf(2, "[UPDATE ZOMBIES AT THE START: %p]\n", g_session->zombies);
+	if (g_session->zombies && *g_session->zombies->background_group)
+		ft_dprintf(2, "[GROUP: %p]\n", *g_session->zombies->background_group);
 	*zombie = (t_background){.background_group=update};
 	fill = g_session->zombies;
 	g_session->zombies = zombie;
 	zombie->next = fill;
 	//ft_dprintf(2, "UPDATE ZOMBIES: NEW NODE IN ZOMBIE LIST CONTANING THE ADDR: %p [\'%p\']\n", g_session->zombies, *update);
+	t_background*	first;
+	
+	ft_dprintf(2, "[UPDATE ZOMBIES][NEXT BEFORE WHILE: %p]\n", g_session->zombies->next);
+	first = g_session->zombies;
+	while (first)
+	{
+		ft_dprintf(2, "UPDATE ZOMBIES: [%p] [flag= %d ] CONTANING THE ADDR: [\'%p\']\n", first, first->exited, *first->background_group);
+		first = first->next;
+	}
+	
+	return (true);
+}
+*/
+
+bool			update_zombies(t_group* update)
+{
+	
+	t_background*	fill;
+	t_background*	zombie;
+
+	if (!update || !(zombie = ft_calloc(1, sizeof(t_background))))
+		return (false);
+	//ft_dprintf(2, "[UPDATE ZOMBIES AT THE START: %p]\n", g_session->zombies);
+	//if (g_session->zombies && g_session->zombies->background_group)
+	//	ft_dprintf(2, "[GROUP: %p]\n", g_session->zombies->background_group);
+	*zombie = (t_background){.background_group=update};
+	fill = g_session->zombies;
+	g_session->zombies = zombie;
+	zombie->next = fill;
+	//ft_dprintf(2, "UPDATE ZOMBIES: NEW NODE IN ZOMBIE LIST CONTANING THE ADDR: %p [\'%p\']\n", g_session->zombies, *update);	
 	return (true);
 }
 
@@ -360,8 +395,8 @@ void		remove_history_node(t_group* target)
 	first = g_session->hist;
 	prev = NULL;
 	next = NULL;
-	if (g_session->hist)
-		ft_dprintf(2, "[HISTORY NEXT BEGIN IS: %p]\n", g_session->hist->next);
+	//if (g_session->hist)
+	//	ft_dprintf(2, "[HISTORY NEXT BEGIN IS: %p]\n", g_session->hist->next);
 	if (g_session->hist)
 		next = g_session->hist->next;
 	while (g_session->hist)
@@ -372,8 +407,10 @@ void		remove_history_node(t_group* target)
 				prev->next = g_session->hist->next;
 			if (first == g_session->hist)
 				first = NULL;
-			if (PRINT_DEBUG)
-				ft_dprintf(2, "[RM HISTORY NODE][\'%p\'][ %d ]\n", g_session->hist, g_session->hist->group->nil->next->pid);
+			if (next == g_session->hist)
+				next = next->next;
+			//if (PRINT_DEBUG)
+			//ft_dprintf(2, "[RM HISTORY NODE][\'%p\'][ %d ]\n", g_session->hist, g_session->hist->group->nil->next->pid);
 			free(g_session->hist);
 			g_session->hist = NULL;
 			break ;
@@ -384,20 +421,26 @@ void		remove_history_node(t_group* target)
 	// update first
 	if (first && first->group && first->group->nil->next->pid \
 			== target->nil->next->pid)
+	{
+	//	ft_dprintf(2, "GOES HERE");
 		g_session->hist = first->next;
+	}
 	else
 		g_session->hist = next;
 	if (PRINT_DEBUG && g_session->hist)
 		ft_dprintf(2, "[RM HISTORY NODE][NOW CURR HISTORY NODE IS][\'%p\'][ %d ]\n", g_session->hist, g_session->hist->group->nil->next->pid);
-	//ft_dprintf(2, "[HISTORY IS: %p]\n", g_session->hist);
+//	ft_dprintf(2, "[HISTORY IS: %p]\n", g_session->hist);
 }
 
+/*
 void		remove_zombie_node(t_group* target)
 {
 	t_background*	prev;
 	t_background*	next;
 	t_background*	first;
 
+	if (g_session->zombies)
+		ft_dprintf(2, "[ZOMBIES LIST NEXT IS: %p]\n", g_session->zombies->next);
 	first = g_session->zombies;
 	next = NULL;
 	prev = NULL;
@@ -412,6 +455,8 @@ void		remove_zombie_node(t_group* target)
 			if (prev)
 				prev->next = g_session->zombies->next;
 			//if (PRINT_DEBUG)
+			if (next == g_session->zombies)
+				next = next->next;
 			if (first == g_session->zombies)
 				first = NULL;
 			//ft_dprintf(2, "[RM ZOMBIE NODE][\'%p\'][GROUP][\'%p\'][ %d ]\n", g_session->zombies, *g_session->zombies->background_group , (*g_session->zombies->background_group)->nil->next->pid);
@@ -427,12 +472,13 @@ void		remove_zombie_node(t_group* target)
 		g_session->zombies = first->next;
 	else
 		g_session->zombies = next;
-	if (PRINT_DEBUG && g_session->zombies && *g_session->zombies->background_group)
+	if ((1||PRINT_DEBUG) && g_session->zombies && *g_session->zombies->background_group)
 		ft_dprintf(2, "[RM ZOMBIE NODE][NOW CURR HISTORY NODE IS][\'%p\'][ %d ]\n", g_session->zombies, (*g_session->zombies->background_group)->nil->next->pid);
-	//ft_dprintf(2, "ZOMBIES ARE NOW: %p\n", g_session->zombies);
+	ft_dprintf(2, "ZOMBIES ARE NOW: %p\n", g_session->zombies);
 	//if (g_session->zombies && g_session->zombies->next)
 	//	ft_dprintf(2, "ZOMBIES THE NEXT: %p\n", g_session->zombies);
 }
+*/
 
 void		remove_exited_zombies()
 {
@@ -538,6 +584,7 @@ t_deadzombie*		endzombie_new(t_process** target)
 	if (!(deadzombie = ft_calloc(1, sizeof(t_deadzombie))))
 		return (NULL);
 	*deadzombie = (t_deadzombie){.deadzombie=target};
+	//ft_dprintf(2, "[NEW DEADZOMBIE %p][group: %p]\n", deadzombie, get_group(*target));
 	return (deadzombie);
 }
 
@@ -617,4 +664,35 @@ void	rm_exited_from_history()
 		g_session->hist = next;
 	}
 	g_session->hist = first;
+}
+
+void			rm_end_zombies()
+{
+	t_background*	next;
+	t_background*	first;
+	t_background*	prev;
+	bool			freed;
+
+	prev = NULL;
+	freed = false;
+	first = g_session->zombies;
+	//ft_dprintf(2, "[RM END ZOMBIES: START: %p][%d]\n", g_session->zombies, g_session->zombies ? g_session->zombies->exited : -9999999);
+	while (g_session->zombies)
+	{
+		if (g_session->zombies->exited)
+		{
+			if (first && first == g_session->zombies)
+				first = first->next;
+			next = g_session->zombies->next;
+			//ft_dprintf(2, "[FREE ZOMBIE][%p][%p]\n", g_session->zombies, (g_session->zombies->background_group));
+			free(g_session->zombies);
+			g_session->zombies = next;
+			if (prev)
+				prev->next = g_session->zombies;
+		}
+		prev = g_session->zombies;
+		if (!freed && g_session->zombies)
+			g_session->zombies = g_session->zombies->next;
+	}
+	g_session->zombies = first;
 }

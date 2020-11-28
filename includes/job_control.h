@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 01:12:54 by chamada          ###   ########lyon.fr   */
+/*   Updated: 2020/11/28 03:46:08 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,9 @@ typedef struct 			s_history
 
 typedef struct			s_background
 {
-	t_group				**background_group;
+	//t_group				**background_group;
+	t_group				*background_group;
+	bool				exited;
 	struct s_background	*next;
 }						t_background;
 
@@ -82,7 +84,7 @@ typedef struct			s_session
 	char				*name;
 	t_env				*env;
 	bool				open_print;
-
+	bool				restrict_zombies;
 }						t_session;
 
 t_session				*g_session;
@@ -95,6 +97,11 @@ t_exec_status			wait_processes(t_exec_status st);
 t_session				*session_start();
 void					session_end();
 bool					session_empty();
+
+/*
+** Signals interactions
+*/
+void					zombie_catcher(int signal);
 
 /*
 ** History
@@ -112,6 +119,7 @@ bool					group_empty(t_group *group);
 void					group_insert(t_group *prev, t_group *next, t_group* target);
 //void					group_remove(t_group** prev, t_group** next);
 void					group_remove_v2(t_group **target);
+void					group_remove(t_group** target);
 void					group_push_front(t_group *target);
 void					group_push_back(t_group *target);
 void					group_pop_front();
@@ -134,6 +142,8 @@ bool					is_coredump(t_process *target);
 t_process*				process_new(pid_t pid, int wstatus, char*const *data);
 void					process_insert(t_process *prev, t_process *next, t_process *target);
 void					process_remove(t_process **prev, t_process **next);
+//void					process_remove(t_process** target);
+void					remove_process(t_process** target);
 void					process_push_front(t_group **group, t_process *target);
 void					process_push_back(t_group **group, t_process *target);
 void					process_pop_font(t_group **group);
@@ -154,9 +164,10 @@ t_process				**background_find(t_process *target, const char *search_type,
 /*
 ** Zombies list
 */
-bool					zombies_list_update(t_group	 **update);
+bool					zombies_list_update(t_group	 *update);
 void					zombies_list_node_remove(t_group *target);
-void					zombies_list_purge_exited();
+void					zombies_list_purge_exited_groups();
+void					zombies_list_purge_exited_zombies();
 
 /*
 ** Dead zombies list
@@ -175,8 +186,10 @@ void					update_exit_count(const char* name);
 ** Jobspec parser
 */
 t_process**				jobspec_parser(int ac, char*const *av, bool (*fill)(int ac, char*const *av));
+t_process**				get_process_by_name(t_group* groups, const char* av);
 bool					is_not_ambigous(t_process *target);
 bool					is_not_ambigous_v2(const char *niddle);
+bool					is_history_process(const char* string);
 size_t					get_search_mode(const char *av);
 size_t					get_history_index(const char *key);
 bool					is_jobspec(const char *string);
@@ -196,6 +209,8 @@ bool					is_string_digit(const char *string);
 int						matrix_height(char **matrix);
 
 /* ------------------------------OLD ---------------------------------*/
+void					rm_end_zombies();
+
 #define PRINT_DEBUG		0
 
 #define PROCESSES_MAX   4096
@@ -225,10 +240,11 @@ void					update_exit_count(const char* name);
 ** Signals catcher
 */
 void					zombies_catcher(int signal);
-void					zombie_catcher_v2(int signal);
-bool					update_zombies(t_group** update);
+
+//bool					update_zombies(t_group** update);
+bool					update_zombies(t_group* update);
 void					remove_exited_zombies();
-bool					update_zombies(t_group** update);
+//bool					update_zombies(t_group** update);
 void					remove_zombie_node(t_group* target);
 void					suspend_process(int signal);
 

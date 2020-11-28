@@ -6,12 +6,13 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:55:48 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 01:34:02 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 03:42:42 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <job_control.h>
 #include <libft.h>
+#include <sys/wait.h>
 
 bool			group_condition(t_group *target, bool (*condition)(t_process*))
 {
