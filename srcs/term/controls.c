@@ -50,7 +50,7 @@ t_term_err	term_new_line()
 		return (TERM_EWRITE);
 	if (g_term.line->len != 0)
 	{
-		ft_dprintf(2, "[PROMPT] result: '%s'\n", g_term.line->data);
+		//ft_dprintf(2, "[PROMPT] result: '%s'\n", g_term.line->data);
 		if ((!g_term.hist.next || g_term.line == g_term.hist.next)
 		&& !(g_term.hist.next = line_new(10)))
 			return (TERM_EALLOC);

@@ -92,7 +92,7 @@ static char		**args_export(t_line **words, int *ac)
 		free(curr);
 	}
 	av[*ac] = NULL;
-	strs_print(av);
+	//strs_print(av);
 	return (av);
 }
 
