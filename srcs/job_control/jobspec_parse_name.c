@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:49:49 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 03:37:38 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 22:00:46 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ t_process**		get_process_by_name(t_group* groups, const char* av)
 	match = 0;
 	ret = NULL;
 
-	if (PRINT_DEBUG)
+	if (0)
 		ft_dprintf(2, "%p ------------ %p\n", g_session->groups, groups);
 	while (groups != g_session->nil)
 	{
@@ -38,11 +38,11 @@ t_process**		get_process_by_name(t_group* groups, const char* av)
 			count = -1;
 			if (search_mode == 1) // %name
 			{
-				if (PRINT_DEBUG)
+				if (0)
 					ft_dprintf(2, "TEST  %s --- %s \n", groups->active_processes->data[0], av);
 				if (!ft_strncmp(groups->active_processes->data[0], av, ft_strlen(groups->active_processes->data[0])) && (++match))
 				{
-					if (PRINT_DEBUG)
+					if (0)
 						ft_dprintf(2, "[DATA][FOUND: %p]\n", groups->active_processes);
 					if (is_leader(groups->active_processes) && is_not_ambigous(groups->active_processes))
 						return(&groups->active_processes);
@@ -54,7 +54,7 @@ t_process**		get_process_by_name(t_group* groups, const char* av)
 				while (++count < matrix_height((char**)groups->active_processes->data)) // change matrix height later
 					if (ft_strnstr(groups->active_processes->data[count], &av[1], ft_strlen(&av[1]) && (++match)))
 					{
-						if (PRINT_DEBUG)
+						if (0)
 							ft_dprintf(2, "[DATA][FOUND: %p]\n", groups->active_processes);
 						if (is_leader(groups->active_processes) && is_not_ambigous_v2(&av[1]))
 						return(&groups->active_processes);
