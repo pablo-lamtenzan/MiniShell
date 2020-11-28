@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   normed_execution.c                                 :+:      :+:    :+:   */
+/*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 02:39:39 by pablo            ###   ########.fr       */
+/*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
+/*   Updated: 2020/11/28 02:22:41 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,7 @@ void					execute_process(t_exec *info, t_term *term,
 	if ((exec_st = get_exec(info, term)) == SUCCESS)
 	{
 		g_session->restrict_zombies = true;
-		zombies_list_purge_exited_zombies();
-		// TO DO: bitwise
+		rm_end_zombies();
 		g_session->restrict_zombies = false;
 		g_session->st = (unsigned char)info->exec(info, term);
 		g_session->groups->active_processes->ret = \
@@ -160,5 +159,5 @@ t_exec_status			execute_bst(t_bst* root, t_term* term)
 		st = execute_job(root, &info, term);
 	else
 		st = execute_cmd(root, &info, term);
-	return (wait_processes(st));
+	return (wait_processes_v2(term, st));
 }

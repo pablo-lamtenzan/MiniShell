@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 23:11:42 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 00:59:44 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 02:58:49 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	resume_background_group(t_process* leader)
 					g_session->groups->active_processes->flags &= ~STOPPED;
 					g_session->groups->active_processes->flags |= BACKGROUND;
 					kill(g_session->groups->active_processes->pid, SIGCONT);
-					update_zombies(g_session->groups);
+					zombies_list_update(g_session->groups);
 					//ft_dprintf(2, "AFTER UPDATE ZOMBIES: %p\n", g_session->zombies);
 					if (PRINT_DEBUG)
 						ft_dprintf(2, "[BG][TARGET FLAGS: %d][\'%p\']\n", g_session->groups->active_processes->flags, g_session->groups->active_processes);
@@ -120,7 +120,7 @@ int		ft_bg(t_exec* args, t_term* term)
 	// TO DO: bg % ; bg % ; bg %
 	if ((*target)->flags & BACKGROUND)
 	{
-		ft_dprintf(STDERR_FILENO, "minish: job %lu already in background\n", get_background_index(g_session->nil, *target));
+		ft_dprintf(STDERR_FILENO, "minish: job %lu already in background\n", background_index_get(g_session->nil, *target));
 		return (SUCCESS);
 	}
 	if ((*target)->flags & (SIGNALED | KILLED))

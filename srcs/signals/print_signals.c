@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 04:51:20 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 03:14:33 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void	print_index_args(t_process* target)
 	index = NULL;
 	ft_dprintf(STDERR_FILENO, "%s%s%s%-2s",
 		leader ? "[" : " ",
-		leader ? index = ft_itoa(get_background_index(g_session->nil, target)) : " ", // print "[ background index ]"
+		leader ? index = ft_itoa(background_index_get(g_session->nil, target)) : " ", // print "[ background index ]"
 		leader ? "]" : " ",
 		is_in_history(target)
 		);
@@ -107,7 +107,7 @@ void	print_signal(int fd, t_process* target, int mode)
 	int		exit_status;
 	t_group*	aux;
 
-	aux = get_group(target);
+	aux = group_get(target);
 	exit_status = -1;
 	if (stopped_signal(signal = check_wstatus(target, &exit_status), true))
 		write(fd, "\n", 1);
@@ -123,7 +123,7 @@ void	print_signal(int fd, t_process* target, int mode)
 	print_coredump(fd, target, mode);
 	if (stopped_signal(signal, false) || signal == 33 || signal == 31 || target->flags & SIGNALED || exit_status > 0)
 	{
-		padding_spaces(fd, ft_strlen((!mode && is_active_group(aux) ? "Stopped" : get_signal(signal))));
+		padding_spaces(fd, ft_strlen((!mode && group_condition(aux, is_active) ? "Stopped" : get_signal(signal))));
 		mode ? print_job_args(fd, target) : print_group_line(fd, aux);
 	}
 	write(fd, "\n", 1);

@@ -5,13 +5,13 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/22 03:11:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 01:49:23 by pablo            ###   ########.fr       */
+/*   Created: 2020/11/28 01:45:31 by pablo             #+#    #+#             */
+/*   Updated: 2020/11/28 02:51:14 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
-#include <libft.h>
+#include <job_control.h>
 
 void		handle_wstatus(t_group** group)
 {
@@ -20,7 +20,7 @@ void		handle_wstatus(t_group** group)
 		(*group)->active_processes->flags |= EXITED;
 		(*group)->active_processes->ret = \
 			WEXITSTATUS((*group)->active_processes->wstatus);
-		endzombie_push_back(endzombie_new(&(*group)->active_processes));
+		deadzombie_push_back(deadzombie_new(&(*group)->active_processes));
 	}
 	else if (WIFSTOPPED((*group)->active_processes->wstatus))
 	{

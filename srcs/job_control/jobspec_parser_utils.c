@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   jobsec_parser_utils.c                              :+:      :+:    :+:   */
+/*   jobspec_parser_utils.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:51:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 01:52:50 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 03:44:01 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,11 @@ size_t			get_search_mode(const char* av)
 		return (2);
 	else
 		return (0);
+}
+
+bool			is_history_process(const char* string)
+{
+	return (string[0] == '%' && (!string[1] || (!string[2] && (string[1] == '+' || string[1] == '-' || string[1] == '%'))));
 }
 
 size_t			get_history_index(const char* key)

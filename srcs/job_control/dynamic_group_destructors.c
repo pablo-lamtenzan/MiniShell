@@ -6,12 +6,13 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:41:09 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 00:51:55 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 03:40:27 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <job_control.h>
 #include <libft.h>
+#include <stdlib.h>
 
 void			group_remove(t_group** target)
 {

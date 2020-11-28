@@ -6,11 +6,13 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:11:48 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 05:37:55 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 03:43:10 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <job_control.h>
+#include <libft.h>
+#include <stdlib.h>
 
 /*
 replaces update_session_history_v2
@@ -49,9 +51,9 @@ replaces remove_history_node
 */
 void				history_session_remove_node(t_group *target)
 {
-	t_history		*prev;
-	t_history		*next;
-	t_history		*first;
+	t_history*	prev;
+	t_history*	next;
+	t_history*	first;
 
 	first = g_session->hist;
 	prev = NULL;
@@ -66,6 +68,8 @@ void				history_session_remove_node(t_group *target)
 				prev->next = g_session->hist->next;
 			if (first == g_session->hist)
 				first = NULL;
+			if (next == g_session->hist)
+				next = next->next;
 			free(g_session->hist);
 			g_session->hist = NULL;
 			break ;
@@ -73,7 +77,6 @@ void				history_session_remove_node(t_group *target)
 		prev = g_session->hist;
 		g_session->hist = g_session->hist->next;
 	}
-	// TO DO: update remove zombie node like this fuct
 	if (first && first->group && first->group->nil->next->pid \
 			== target->nil->next->pid)
 		g_session->hist = first->next;

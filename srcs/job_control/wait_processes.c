@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:56:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 04:58:58 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 03:25:50 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,26 +27,25 @@ t_exec_status	wait_processes(t_exec_status st)
 		// TO DO: Check that condition with more group members
 		if (!(g_session->groups->active_processes->flags & SIGNALED))
 			group_pop_front();
-		print_endzombies();
-		remove_exited_zombies();
+		deadzombies_print();
+		zombies_list_purge_exited_groups();
 		return (st);
 	}
 	leader = group->active_processes;
 	while (group->active_processes != group->nil)
 	{
 		g_session->open_print = false;
-		update_background(&group->active_processes, true);
+		background_update(&group->active_processes);
 		if (WIFSIGNALED(group->active_processes->wstatus) \
 				|| WIFSTOPPED(group->active_processes->wstatus))
-				// TO DO: mode is define
 			print_signal(STDERR_FILENO, group->active_processes, STANDART);
 		group->active_processes = group->active_processes->next;
 	}
 	group->active_processes = leader;
-	get_group_return();
-	print_endzombies();
+	group_return_handler();
+	deadzombies_print();
 	if (!group_condition(g_session->groups, is_active))
 		group_pop_front();
-	remove_exited_zombies();
+	zombies_list_purge_exited_groups();
 	return (st);
 }

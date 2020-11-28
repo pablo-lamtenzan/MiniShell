@@ -1,21 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   destructors.c                                      :+:      :+:    :+:   */
+/*   session.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/27 00:34:43 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 00:38:05 by pablo            ###   ########.fr       */
+/*   Created: 2020/11/20 19:26:18 by pablo             #+#    #+#             */
+/*   Updated: 2020/11/28 03:01:09 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <job_control.h>
 #include <libft.h>
+#include <stdlib.h>
+
+/*
+** Allocates and int a new session
+*/
+
+t_session*		session_start()
+{
+	if (!(g_session = ft_calloc(1, sizeof(t_session)))
+			|| !(g_session->nil = ft_calloc(1, sizeof(t_group))))
+		return (NULL);
+	g_session->nil->next = g_session->nil;
+	g_session->nil->prev = g_session->nil;
+	g_session->groups = g_session->nil;
+	//if (PRINT_DEBUG)
+		ft_dprintf(2, "[NEW SESSION][\'%p\'][NIL=\'%p\']\n", g_session, g_session->nil);
+	return (g_session);
+}
 
 void		session_end()
 {
-	force_exit_background();
+	background_force_exit();
 	delete_groups();
 	delete_endzombies();
 	delete_zombies();
@@ -84,7 +102,6 @@ void		delete_hist()
 	}
 }
 
-/* 6 fcts  put this in session end */
 void		delete_input_line()
 {
 	int		i;

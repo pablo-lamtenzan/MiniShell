@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/26 17:48:25 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 03:07:15 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,8 +156,8 @@ void		kill_group(t_process* leader, int signal, t_group* itself)
 					ft_dprintf(2, "[KILL][KILL (signal=\'%d\') \'%d\'][\'%p\'][group= %p]\n", signal, g_session->groups->active_processes->pid, g_session->groups->active_processes, g_session->groups);
 				kill(g_session->groups->active_processes->pid, signal);
 				kill(g_session->groups->active_processes->pid, SIGCONT);
-				update_background(&g_session->groups->active_processes, true /*signal == SIGCONT*/);
-				remove_history_node(g_session->groups);
+				background_update(&g_session->groups->active_processes);
+				history_session_remove_node(g_session->groups);
 				g_session->groups->active_processes = g_session->groups->active_processes->next;
 			}
 			// Remove the group later
