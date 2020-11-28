@@ -15,9 +15,6 @@
 
 void			disown_process(t_process** target, int flags)
 {
-	int i;
-
-	i = -1;
 	if (flags & 1 && (*target)->flags & STOPPED)
 	{
 		(*target)->flags |= RESTRICT_OP;
