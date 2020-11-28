@@ -35,10 +35,8 @@ t_term_err	term_cntrl(char c)
 */
 int		term_read()
 {
-	t_term_err	status;
 	int			read_st;
 
-	status = TERM_EOK;
 	free(g_term.line->data);
 	g_term.line->data = NULL;
 	g_term.line->len = 0;
