@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 06:01:33 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 23:58:24 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,12 @@
 #include <job_control.h>
 #include <signals.h>
 
-bool	fg_delete()
+bool			fg_delete()
 {
+	t_group		*next;
 	if (!group_condition(g_session->groups, is_active))
 	{
-		t_group*	next;
+		zombies_list_remove_node(g_session->groups);
 		history_session_remove_node(g_session->groups);
 		next = g_session->groups->next;
 		g_session->groups->prev->next = next;
@@ -79,7 +80,7 @@ int		resume_group(t_process* leader)
 
 int		fg_init_exceptions(t_exec *args)
 {
-		if (args->av[1] && args->av[1][0] == '-')
+	if (args->av[1] && args->av[1][0] == '-')
 	{
 		ft_dprintf(STDERR_FILENO, "minish: fg: %s: invalid option\n%s\n", \
 				args->av[1], "fg: usage: fg [job_spec]");
@@ -126,7 +127,7 @@ int		ft_fg(t_exec* args)
 		ft_dprintf(STDERR_FILENO, "minish: fg: %s: no such job\n", args->av[1]);
 		return (STD_ERROR);
     }
-	if ((exept = fg_exeptions(args, target)))
+	if ((exept = fg_exeptions(args, target)) != 42)
 		return (exept);
 	print_job_args(STDERR_FILENO, *target);
 	write(STDERR_FILENO, "\n", 1);

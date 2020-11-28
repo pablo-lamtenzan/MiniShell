@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:20:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 07:35:02 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 23:53:41 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,20 +48,19 @@ int			wait_process(t_process** target, int flags)
 	return (WEXITSTATUS((*target)->wstatus));
 }
 
-bool		wait_delete()
+bool			wait_delete()
 {
-	t_group*	fill;
+	t_group		*next;
 
 	if (!group_condition(g_session->groups, is_active))
 	{
-		// TO DO: TEST IT, I ADD IT WITHOUT TEST
+		zombies_list_remove_node(g_session->groups);
 		history_session_remove_node(g_session->groups);
-
-		fill = g_session->groups;
-		g_session->groups->prev->next = g_session->groups->next;
-		g_session->groups->next->prev = g_session->groups->prev;
-		free(fill);
-		fill = NULL;
+		next = g_session->groups->next;
+		g_session->groups->prev->next = next;
+		next->prev = g_session->groups->prev;
+		free(g_session->groups);
+		g_session->groups = next;
 		return (true);
 	}
 	return (false);
@@ -89,8 +88,7 @@ int			wait_group(t_process* leader, int flags, t_group* itself)
 			}
 			if (!wait_delete())
 				g_session->groups->active_processes = remember_leader;
-			g_session->groups = remember;
-			return (ret);
+			break ;
 		}
 		g_session->groups = g_session->groups->next;
 	}

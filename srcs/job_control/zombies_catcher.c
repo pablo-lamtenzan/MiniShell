@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 01:45:31 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 21:53:56 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 00:04:47 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ void				zombie_catcher(int signal)
 	(void)signal;
 	t_background*	first;
 
-	// TO DO: change bool by bitwise
 	if (!g_session || g_session->flags & RESTRICT_CATCH)
 		return ;
 	first = g_session->zombies;

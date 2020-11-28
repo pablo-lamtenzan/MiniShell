@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 23:04:53 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 00:12:39 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,7 @@ t_process				**background_find(t_process *target, const char *search_type,
 ** Zombies list
 */
 bool					zombies_list_update(t_group	 *update);
-void					zombies_list_node_remove(t_group *target);
+void					zombies_list_remove_node(t_group *target);
 void					zombies_list_purge_exited_groups();
 void					zombies_list_purge_exited_zombies();
 
@@ -189,6 +189,7 @@ void					zombies_list_purge_exited_zombies();
 t_deadzombie			*deadzombie_new(t_process* target);
 void					deadzombie_push_back(t_deadzombie* target);
 void					deadzombies_print();
+void					deadzombie_remove_node(t_process *target);
 
 /*
 ** Exit helper

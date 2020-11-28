@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:19:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 21:55:12 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 00:12:03 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,37 +34,43 @@ bool				zombies_list_update(t_group	 *update)
 replaces
 remove_zombie_node not used i think
 */
-/*
-void				zombies_list_node_remove(t_group *target)
+
+void				zombies_list_remove_node(t_group *target)
 {
-	t_background	*prev;
-	t_background	*first;
+	t_background*	prev;
+	t_background*	next;
+	t_background*	first;
 
 	first = g_session->zombies;
 	prev = NULL;
-	if (!target)
-		return ;
+	next = NULL;
+	if (g_session->zombies)
+		next = g_session->zombies->next;
 	while (g_session->zombies)
 	{
-		if (*g_session->zombies->background_group && target->nil->next->pid \
-				== (*g_session->zombies->background_group)->nil->next->pid)
+		if (target->nil->next->pid == g_session->zombies->background_group->nil->next->pid)
 		{
 			if (prev)
 				prev->next = g_session->zombies->next;
-			first = first == g_session->zombies ? NULL : first;
+			if (first == g_session->zombies)
+				first = NULL;
+			if (next == g_session->zombies)
+				next = next->next;
 			free(g_session->zombies);
+			g_session->zombies = NULL;
 			break ;
 		}
 		prev = g_session->zombies;
 		g_session->zombies = g_session->zombies->next;
 	}
-	if (first && *first->background_group && \
-		(*first->background_group)->nil->next->pid == target->nil->next->pid)
+	if (first && first->background_group && first->background_group->nil->next->pid \
+			== target->nil->next->pid)
 		g_session->zombies = first->next;
 	else
-		g_session->zombies = first;
+		g_session->zombies = next;
 }
-*/
+
+
 
 /*
 replaces remove_exited_zombies
@@ -152,4 +158,39 @@ void		zombies_list_purge_exited_zombies()
 			g_session->zombies = g_session->zombies->next;
 	}
 	g_session->zombies = first;
+}
+
+void				deadzombie_remove_node(t_process *target)
+{
+	t_deadzombie*	prev;
+	t_deadzombie*	next;
+	t_deadzombie*	first;
+
+	first = g_session->dead_zombies;
+	prev = NULL;
+	next = NULL;
+	if (g_session->dead_zombies)
+		next = g_session->dead_zombies->next;
+	while (g_session->dead_zombies)
+	{
+		if (target->pid == g_session->dead_zombies->deadzombie->pid)
+		{
+			if (prev)
+				prev->next = g_session->dead_zombies->next;
+			if (first == g_session->dead_zombies)
+				first = NULL;
+			if (next == g_session->dead_zombies)
+				next = next->next;
+			free(g_session->dead_zombies);
+			g_session->dead_zombies = NULL;
+			break ;
+		}
+		prev = g_session->dead_zombies;
+		g_session->dead_zombies = g_session->dead_zombies->next;
+	}
+	if (first && first->deadzombie && first->deadzombie->pid \
+			== target->pid)
+		g_session->dead_zombies = first->next;
+	else
+		g_session->dead_zombies = next;
 }

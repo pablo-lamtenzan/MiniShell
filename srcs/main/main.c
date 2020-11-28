@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 22:43:54 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 00:27:29 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,19 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st)
 // TO DO: do fork for builtins too but empty forks to call SIGCHID if (fork == 0){exit(builting ret value)}
 // TO DO: bg + jobs prints 2 times (mute in jobs the exited nodes in the zombie catcher)
 // TO DO: continious bg % LIKE KILL
+
+
+// TO DO: [CHILL] kill by index so far kills the last instead of return error
+// TO DO: [CHILL] Zombie cattcher doest rm the last zombie (sleep 2 , sleep 3, bg, bg, jobs)
+	// Test before to call SIGCHLD for every cmd
+
+// builtins check (before end the norme on them)
+	// fg -> all ok
+	// bg -> all ok
+	// wait -> all ok
+	// disown -> all ok
+	
+
 
 // TO DO: [UNKNOWN] cat | cat -e | echo a resarch (now we have all the job control build, must be easy to fix)
 
@@ -165,6 +178,11 @@ void					syntax_error(t_lex_st *st)
 	g_term.pos = 0;
 }
 
+void					quit_process(int signal)
+{
+	(void)signal;
+}
+
 int						main(int ac, const char **av, const char **ep)
 {
 	static const char*	seps[4] = {"||", "&&", ";", NULL};
@@ -174,6 +192,8 @@ int						main(int ac, const char **av, const char **ep)
 
 	signal(SIGTSTP, suspend_process);
 	signal(SIGCHLD, zombie_catcher);
+	// TO DO: Block "^\" printing
+	signal(SIGQUIT, quit_process);
 	//signal(SIGTTIN, test);
 	//signal(SIGTERM, todo); // need documentation about this
 	if (!init(ac, av, ep))

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 07:15:25 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 00:31:08 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,10 +84,12 @@ static void		print_all_signals()
 
 void		kill_core(int signal)
 {
-	if (!(signal >= SIGSTOP && signal <= SIGTTOU) && signal != SIGCONT)
-		g_session->groups->active_processes->flags |= (SIGNALED | KILLED);
 	kill(g_session->groups->active_processes->pid, signal);
-	kill(g_session->groups->active_processes->pid, SIGCONT);
+	if (!(signal >= SIGSTOP && signal <= SIGTTOU) && signal != SIGCONT)
+	{
+		g_session->groups->active_processes->flags |= (SIGNALED | KILLED);
+		kill(g_session->groups->active_processes->pid, SIGCONT);
+	}
 	background_update(&g_session->groups->active_processes);
 	history_session_remove_node(g_session->groups);
 }
@@ -126,9 +128,11 @@ int		handle_current(t_process*** target, const char* jobspec)
 	t_group*	remember;
 
 	remember = g_session->groups;
+	ft_dprintf(2, )
 	if (!ft_strncmp(jobspec, "%", 2) || !ft_strncmp(jobspec, "%+", 3) \
-		|| ft_strncmp(jobspec, "%%", 3) || (g_session->hist \
-		&& !g_session->hist->next && !ft_strncmp(jobspec, "%-", 3)))
+		|| !ft_strncmp(jobspec, "%", 2) || !ft_strncmp(jobspec, "%%", 3) \
+		|| (g_session->hist && !g_session->hist->next \
+		&& !ft_strncmp(jobspec, "%-", 3)))
 	{
 		while (g_session->groups != g_session->nil->prev)
 		{
@@ -141,6 +145,7 @@ int		handle_current(t_process*** target, const char* jobspec)
 				break ;
 		}
 		g_session->groups = remember;
+		ft_dprintf(2, "TEST\n");
 		return (true);
 	}
 	return (false);

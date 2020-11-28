@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:48:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 21:59:55 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 00:13:25 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void			disown_process(t_process** target, int flags)
 		"minish: warning: deleting stopped job %lu with process group %d\n", \
 			background_index_get(g_session->nil, *target), \
 			process_get_leader_pid(g_session->nil, *target));
+	deadzombie_remove_node(*target);
 	remove_process(target);
 }
 
@@ -36,6 +37,7 @@ int		disowm_delete()
 	t_group*	fill;
 	if (!group_condition(g_session->groups, is_active))
 	{
+		zombies_list_remove_node(g_session->groups);
 		history_session_remove_node(g_session->groups);
 		fill = g_session->groups;
 		g_session->groups->prev->next = g_session->groups->next;
