@@ -179,6 +179,7 @@ int		main(int ac, const char** av, const char** ep)
 	//signal(SIGTERM, todo); // need documentation about this
 	if (!init(ac, av, ep))
 		return (1);
+	ft_bzero(&lex_data, sizeof(lex_data));
 	term_status = TERM_EOK;
 	lex_status = LEX_EOK;
 	while ((g_term.msg = string_expand(TERM_PS1, g_session->env))
