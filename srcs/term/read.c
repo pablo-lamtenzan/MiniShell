@@ -48,10 +48,7 @@ int		term_read()
 	g_term.line->len = ft_strlen(g_term.line->data);
 	g_term.line->size = g_term.line->len + 1;
 	if (read_st == 1 || (read_st == 0 && g_term.line->len != 0))
-	{
-		ft_dprintf(2, "[PROMPT][GNL][%3lu] '%s'\n", g_term.line->len, g_term.line->data);
 		return (TERM_ENL);
-	}
 	return (TERM_EEOF);
 }
 
