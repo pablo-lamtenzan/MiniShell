@@ -22,7 +22,7 @@ char	*path_get(const char *name, const char *path)
 	char		**paths;
 	char		*absolute;
 	struct stat	s;
-	int			i;
+	size_t		i;
 
 	absolute = NULL;
 	if (name && *name)
@@ -36,9 +36,12 @@ char	*path_get(const char *name, const char *path)
 		{
 			i = 0;
 			while (paths[i]
-			&& (absolute = path_cat(paths[i++], name))
+			&& (absolute = path_cat(paths[i], name))
 			&& !(stat(absolute, &s) == 0 && s.st_mode & S_IXUSR))
+			{
+				i++;
 				free(absolute);
+			}
 			if (!paths[i])
 				absolute = NULL;
 			strs_unload(paths);
