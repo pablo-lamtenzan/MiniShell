@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 03:28:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 04:50:01 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 21:59:36 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ void					print_signal_(int fd, t_process *target, int mode, int signal);
 void					print_exit_st(int fd, int exit_st);
 void					print_coredump(int fd, t_process* target, int mode);
 
-void	            	print_signals(t_process* target, t_group* group);
-
+void					print_signal(int fd, t_process* target, int mode);
 
 #endif

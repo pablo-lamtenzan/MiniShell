@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:48:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 07:54:05 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 21:59:55 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,6 @@ void			disown_process(t_process** target, int flags)
 	}
 	if (flags & 4 && ((*target)->flags |= NO_HANGUP))
 		return ;
-	if (PRINT_DEBUG) {
-	ft_dprintf(2, "[DISOWN][flags: %d][\'%p\']\n", (*target)->flags, *target);}
 	if ((*target)->flags & STOPPED)
 		ft_dprintf(STDERR_FILENO, \
 		"minish: warning: deleting stopped job %lu with process group %d\n", \

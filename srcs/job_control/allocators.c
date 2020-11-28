@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:22:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 21:53:23 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 22:00:22 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,6 @@ t_process			*process_new(pid_t pid, int wstatus, char*const* data)
 	if (!(process = ft_calloc(1, sizeof(t_process))))
 		return (NULL);
 	*process = (t_process){.pid=pid, .wstatus=wstatus, .data=data, .ret=-1};
-	if (PRINT_DEBUG)
-		ft_dprintf(2, "[NEW PROCESS][\'%p\']\n", process);
 	return (process);
 }
 

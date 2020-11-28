@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 21:54:58 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 22:02:48 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ typedef struct 			s_history
 
 typedef struct			s_background
 {
-	//t_group				**background_group;
 	t_group				*background_group;
 	bool				exited;
 	struct s_background	*next;
@@ -119,10 +118,10 @@ void					history_session_purge_exited();
 */
 t_group					*group_new();
 bool					group_empty(t_group *group);
-void					group_insert(t_group *prev, t_group *next, t_group* target);
+void					group_insert(t_group *prev, t_group *next, t_group *target);
 //void					group_remove(t_group** prev, t_group** next);
 void					group_remove_v2(t_group **target);
-void					group_remove(t_group** target);
+void					group_remove(t_group **target);
 void					group_push_front(t_group *target);
 void					group_push_back(t_group *target);
 void					group_pop_front();
@@ -211,125 +210,8 @@ void					delete_hist();
 bool					is_string_digit(const char *string);
 int						matrix_height(char **matrix);
 bool					ignore_pid(int ac, char*const* av);
-int						parse_flags(int ac, char*const* av, const char* pattern, int *nb_flags);
+int						parse_flags(int ac, char*const *av, const char* pattern, int *nb_flags);
 const char*				is_in_history(t_process* target);
-
-/* ------------------------------OLD ---------------------------------*/
-void					rm_end_zombies();
-
-#define PRINT_DEBUG		0
-
-#define PROCESSES_MAX   4096
-#define MANAGE          0
-
-/*
-** Job Control
-*/
-void					update_background(t_process **target, bool wait);
-bool            		update_session_history(t_process *update);
-void					remove_history_node(t_group* target);
-bool					update_session_history_v2(t_group* update);
-t_process**				background_find(t_process* target, const char* search_type, t_group* group);
-bool					is_active_group(t_group* target);
-pid_t					get_process_leader_pid(t_group* nil, t_process* target);
-size_t					get_background_index(t_group* nil, t_process* target);
-void					force_exit_background();
-bool					is_leader(t_process* target);
-void					get_group_return();
-t_group*				get_group(t_process* target);
-void					rm_exited_from_history();
-void					print_signal(int fd, t_process* target, int mode);
-void					handle_exit_with_active_background(int exit_status);
-void					update_exit_count(const char* name);
-
-/*
-** Signals catcher
-*/
-void					zombies_catcher(int signal);
-
-//bool					update_zombies(t_group** update);
-bool					update_zombies(t_group* update);
-void					remove_exited_zombies();
-//bool					update_zombies(t_group** update);
-void					remove_zombie_node(t_group* target);
-void					suspend_process(int signal);
-
-
-void					delete_groups();
-void					delete_processes(t_group* group);
-void					delete_zombies();
-void					delete_hist();
-void					delete_input_line();
-
-
-/*
-** Utils
-*/
-
-
-bool					is_not_ambigous(t_process* target);
-bool					is_not_ambigous_v2(const char* niddle);
-void					print_index_args(t_process* target);
-int						matrix_height(char **matrix);
-bool					protect_process(t_group* target);
-char**					split_separators(char* input, char** separators);
-
-t_deadzombie*			endzombie_new(t_process** target);
-void					endzombie_push_back(t_deadzombie* target);
-void					delete_endzombies();
-void					print_endzombies();
-
-// old
-/*
-void            		add_process(t_process* target, t_process* prev, t_process* next);
-void            		remove_process(t_process** target);
-void            		process_push_front(t_process* process, t_group** group);
-void					process_push_back(t_group** group, t_process* target);
-t_process*      		new_process(pid_t pid, int wstatus, char*const* data);
-void            		group_push_front(t_session* session, t_group* target);
-void					group_pop_front(t_session* session);
-t_group*        		new_group();
-t_session*      		start_session();
-void            		delete_process(t_process** target);
-void            		delete_group(t_group** target);
-bool					is_leader(t_session* session, t_process* target);
-void            		end_session(t_session* session);
-bool            		update_session_history(t_session* session, t_process* update);
-bool					update_background(t_session* session, t_process** process);
-bool					update_background_v2(t_session* session, t_process **target);
-t_process**				background_find(t_process* target, const char* search_type, t_group* group);
-size_t					background_size(t_group* group);
-size_t					get_background_index(t_group* group, t_process* target);
-pid_t					get_process_leader_pid(t_group* nil, t_process* target);
-bool					is_active_group(t_group* target);
-t_group**				get_group(t_session* session, t_process* leader);
-void					update_groups(t_session* session, t_group** group);
-void					force_exit_background(t_session* session);
-*/
-
-t_process**				jobspec_parser(int ac, char*const* av, bool (*fill)(int ac, char*const* av));
-bool					is_string_digit(const char* string);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// old stuff
-size_t					suspended_process_nb(t_process* suspended);
-bool					is_suspended(int wstatus);
-void            		remove_suspended_process(t_process** suspended);
-void                	resume_suspended_processes(t_process** suspended);
-void					ft_swap(int* a, int* b);
-void					update_used_pids(int new, pid_t** used_pids);
+char**					split_separators(char *input, char **separators);
 
 #endif

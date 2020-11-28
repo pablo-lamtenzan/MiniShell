@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 03:14:33 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 22:00:09 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,8 +111,6 @@ void	print_signal(int fd, t_process* target, int mode)
 	exit_status = -1;
 	if (stopped_signal(signal = check_wstatus(target, &exit_status), true))
 		write(fd, "\n", 1);
-	if (PRINT_DEBUG)
-		ft_dprintf(2, "[TEST PRINT SIGNALS][SIGNAL: %d][WSATUS: %d][ret: %d][flags: %d]\n", signal, target->wstatus, target->ret, target->flags);
 	print_index(fd, target, mode, exit_status);
 	print_history(fd, target, mode, exit_status);
 	print_sp(fd, target, mode, exit_status);
