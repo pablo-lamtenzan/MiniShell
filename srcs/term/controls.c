@@ -1,165 +1,60 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   controls.c                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/08/18 19:29:17 by chamada           #+#    #+#             */
-/*   Updated: 2020/11/24 11:35:38 by pablo            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <term/term.h>
-
-/* static int	parse_line(t_term *t, int status)
+/*
+**	Clear the screen's content, keeping only the current line.
+*/
+t_term_err	term_clear_screen()
 {
-	size_t	i;
-
-	status &= ~TERM_WAITING;
-	i = 0;
-	while (i < t->line->length)
+	if (g_term.caps.mode.clear)
 	{
-		if (status & TERM_B_SLASH)
-			status &= ~TERM_B_SLASH;
-		else if (!(status & TERM_S_QUOTE) && t->line->data[i] == '"')
-			status ^= TERM_D_QUOTE;
-		else if (!(status & TERM_D_QUOTE) && t->line->data[i] == '\'')
-			status ^= TERM_S_QUOTE;
-		else if (!(status & TERM_B_SLASH) && t->line->data[i] == '\\')
-			status |= TERM_B_SLASH;
-		i++;
+		tputs(g_term.caps.mode.clear, 1, &putc_err);
+		if ((g_term.msg
+		&& write(STDERR_FILENO, g_term.msg, g_term.msg_len) == -1)
+		|| write(1, g_term.line->data, g_term.line->len) == -1)
+			return (TERM_EWRITE);
+		g_term.pos = g_term.line->len;
 	}
-	return (status);
-} */
-
-int			term_cancel(t_term *t)
-{
-	if (t->caps.enabled)
-		select_clear(t);
-	*t->line->data = '\0';
-	t->line->len = 0;
-	return (TERM_NEWLINE | TERM_READING);
+	return (TERM_EOK);
 }
 
-void		term_stop(t_term *t)
+/*
+**	Delete one character to the left of the cursor.
+*/
+t_term_err	term_backspace()
 {
-	(void)t;
-	const pid_t	pid
-		= g_session->groups->active_processes->pid;
-
-	if (pid != 0)
-		kill(pid, SIGSTOP);
-}
-
-void		term_suspend(t_term *t)
-{
-	(void)t;
-	const pid_t pid = g_session->groups->active_processes->pid;
-	
-	if (pid != 0)
-		kill(pid, SIGTSTP);
-}
-
-int			term_next_line(t_term *t, int status)
-{
-	// TESTING THIS (is fir job builtin)
-	static const char*	seps[4] = {"||", "&&", ";", NULL};
-	g_session->input_line = split_separators(t->line->data, (char**)seps);
-	g_session->input_line_index = 0;
-
-	
-	// TODO: Check if multi-line crashes (lex_ifs.c:11 heap-use-after-free)
-	if (t->interactive)
-		write(2, "\n", 1);
-	if (!t->line->len)
-		return (status);
-	if (t->interactive)
+	if (g_term.pos > 0)
 	{
-		if (t->caps.enabled)
-		{
-			tputs(t->caps.insert_end, 0, &ft_putchar);
-			if (tcsetattr(0, 0, &t->s_ios_bkp) == -1)
-				return ((status | TERM_ERROR) & ~TERM_READING);
-		}
-		t->exec(t->lex_st.tokens, t); // TODO: t->st = ...
-		if (tcsetattr(0, 0, &t->s_ios) == -1)
-			return ((status | TERM_ERROR) & ~TERM_READING);
+		tputs(g_term.caps.ctrl.left, 1, &putc_err);
+		tputs(g_term.caps.ctrl.del, 1, &putc_err);
+		g_term.pos--;
+		line_erase(g_term.line, g_term.pos, 1);
 	}
-	else
-		t->exec(t->lex_st.tokens, t);
-	t->lex_st.tokens = NULL;
-	if (t->caps.enabled)
-		tputs(t->caps.insert, 0, &ft_putchar);
-	if ((!t->hist.next || t->line == t->hist.next)
-	&& !(t->hist.next = line_new(10)))
-		return ((status | TERM_ERROR) & ~TERM_READING);
-	hist_add(&t->hist, t->line);
-	t->line = t->hist.next;
-	t->cursor.pos.x = 0;
-	t->cursor.pos.y = 0;
-	return (status);
+	return (TERM_EOK);
 }
 
-void		lex_reset(t_lex_st *st)
+/*
+**	Clear the current line visually, without deleting it's content.
+*/
+t_term_err	term_clear_line()
 {
-	token_clr(&st->tokens);
-	st->input = NULL;
-	st->wait = TOK_NONE;
-	st->subshell_level = 0;
+	cursor_start_line();
+	tputs(g_term.caps.ctrl.del_line, 1, &putc_err);
+	return (TERM_EOK);
 }
 
-void		term_lex_error(t_term *t)
+/*
+**	Write the line ending character.
+*/
+t_term_err	term_new_line()
 {
-	const char	*input;
-
-	if (*t->lex_st.input == '\n' || *t->lex_st.input == '\0')
-		input = "newline";
-	else
-		input = t->lex_st.input;
-	ft_dprintf(2, "%s: syntax error near unexpected token `%s'\n",
-		t->name, input);
-	g_session->st = 258;
-	lex_reset(&t->lex_st);
-	*t->line->data = '\0';
-	t->line->len = 0;
-	t->cursor.pos.x = 0;
-	t->cursor.pos.y = 0;
-}
-
-int			term_new_line(t_term *t, int status)
-{
-	t_lex_err	lex_err;
-
-	if (t->caps.enabled)
+	if (write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) - 1) == -1)
+		return (TERM_EWRITE);
+	if (g_term.line->len != 0)
 	{
-		cursor_end_line(&t->caps, &t->cursor, t->line);
-		select_clear(t);
+		ft_dprintf(2, "[PROMPT] result: '%s'\n", g_term.line->data);
+		if ((!g_term.hist.next || g_term.line == g_term.hist.next)
+		&& !(g_term.hist.next = line_new(10)))
+			return (TERM_EALLOC);
+		hist_add(&g_term.hist, g_term.line);
 	}
-	if (!(status & TERM_WAITING))
-		t->lex_st.input = t->line->data;
-	if ((lex_err = lex_tokens(&t->lex_st)) == LEX_EOK)
-		status = term_next_line(t, status & ~TERM_WAITING);
-	else if (lex_err & LEX_EWAIT)
-	{
-		term_write(t, "\n", 1);
-		status |= TERM_WAITING;
-	}
-	else
-		term_lex_error(t);
-	if (status & TERM_READING)
-		term_write_prompt(t, status);
-	return (status & ~TERM_NEWLINE);
-}
-
-int			term_erase(t_term *t, int status)
-{
-	if (t->cursor.pos.x > 0)
-	{
-		tputs(t->caps.c_left, 0, &ft_putchar);
-		tputs(t->caps.c_del, 0, &ft_putchar);
-		t->cursor.pos.x--;
-		line_erase(t->line, t->cursor.pos.x, 1);
-	}
-	return (status);
+	return (TERM_ENL);
 }

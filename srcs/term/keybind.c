@@ -1,4 +1,4 @@
-#include "term.h"
+#include <term/term.h>
 
 t_term_action	keybind_get(const t_keybind *bindings, size_t n, char key)
 {

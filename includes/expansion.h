@@ -1,8 +1,8 @@
 #ifndef EXPANSION_H
 # define EXPANSION_H
 
-# include <term/token.h>
-# include <term/env.h>
+# include <lexer/token.h>
+# include <env.h>
 # include <term/line.h>
 
 # define	EXP_TILDE	"HOME"

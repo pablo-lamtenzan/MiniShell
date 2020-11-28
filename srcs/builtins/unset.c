@@ -1,9 +1,7 @@
 #include <execution.h>
 
-int	ft_unset(t_exec *args, t_term *t)
+int	ft_unset(t_exec *args)
 {
-	// TODO: glob env
-	(void)t;
 	while (args->ac-- > 1)
 	{
 		/* if (!key_check(av[ac]))

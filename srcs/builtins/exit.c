@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:46 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 11:20:15 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 03:39:19 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
+#include <term/term.h>
 
 int					ft_atoi_exit(const char *str, bool *st)
 {
@@ -31,7 +32,7 @@ int					ft_atoi_exit(const char *str, bool *st)
 	return (!st ? 255 : i * factor);
 }
 
-int		ft_exit(t_exec *args, t_term *t) // TODO: Callbacks in ft_term.h
+int		ft_exit(t_exec *args) // TODO: Callbacks in ft_term.h
 {
 	int i;
 	bool st;
@@ -53,12 +54,12 @@ int		ft_exit(t_exec *args, t_term *t) // TODO: Callbacks in ft_term.h
 		i = ft_atoi_exit(args->av[1], &st);
 	}
 	// TODO: resume_suspended_processes(&t->suspended_processes);
-	//term_destroy(t);
-	write(STDERR_FILENO, "exit\n", 5);
+	term_destroy();
+	//write(STDERR_FILENO, "exit\n", 5);
 	// check if is 255
 	if (st == false && (i = INV_EXIT_ARG))
 		ft_dprintf(STDERR_FILENO, "minish: exit: %s%s\n", args->av[1],": numeric argument required");
-	tputs(t->caps.insert_end, 0, &ft_putchar);
+	tputs(g_term.caps.mode.insert_end, 0, &ft_putchar);
 	// debug
 	ft_dprintf(STDERR_FILENO, "[DEBUG]exiting with status code %d\n", (unsigned char)i);
 	handle_exit_with_active_background((unsigned char)i);

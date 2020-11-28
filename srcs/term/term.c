@@ -1,56 +1,94 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   term.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/08/18 19:29:38 by chamada           #+#    #+#             */
-/*   Updated: 2020/11/24 12:44:56 by pablo            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <term/term.h>
 
-static int	handle_status(t_term *t, int status)
+#include <fcntl.h>
+#include <string.h>
+#include <errno.h>
+
+int		ft_isatty(int fd)
 {
-	if (status & TERM_INT)
-		status = term_cancel(t);
-	if (status & TERM_EOF && t->line->len == 0)
-		status &= ~TERM_READING;
-	if (status & TERM_NEWLINE)
-		status = term_new_line(t, status);
-	if (status & TERM_CLEAR)
-		term_clear_screen(t, status);
-	if (status & TERM_STOP)
-		term_stop(t);
-	if (status & TERM_ERASE)
-		status = term_erase(t, status);
-	return ((status & (~TERM_CONSUME & ~TERM_NEWLINE)));
+	struct stat	st;
+	struct stat	null_st;
+	int			null_fd;
+	int			ret;
+
+	ret = 0;
+	if (fstat(fd, &st))
+		ft_dprintf(STDERR_FILENO, "Could not stat fd %d: %s\n",
+			fd, strerror(errno));
+	else if (S_ISCHR(st.st_mode))
+	{
+		if ((null_fd = open(TERM_DEV_NULL, O_RDONLY)) == -1)
+			ft_dprintf(STDERR_FILENO, "Could not open "TERM_DEV_NULL": %s",
+				strerror(errno));
+		else
+		{
+			if (fstat(null_fd, &null_st))
+				ft_dprintf(STDERR_FILENO, "Could not stat fd %d: %s\n",
+					null_fd, strerror(errno));
+			else
+				ret = st.st_ino != null_st.st_ino;
+			close(null_fd);
+		}
+	}
+	return (ret);
 }
 
-int			term_prompt(int ac, const char **av, const char **envp,
-	int (*exec)(t_tok *tokens, t_term *term))
+bool	term_init_interactive(t_env **env)
 {
-	int		status;
-	t_term	term;
+	g_term.is_interactive = ft_isatty(STDIN_FILENO) && ft_isatty(STDERR_FILENO);
+	if (g_term.is_interactive && !term_init_caps(env))
+		ft_dprintf(2, "Failed to retrieve terminfo: %s\n", strerror(errno));
+	return (true);
+}
 
-	(void)ac;
-	status = TERM_READING;
-	if (!term_init(&term, envp, exec) || !(term.name = ft_basename(av[0])))
+bool	term_init(t_env **env)
+{
+	ft_bzero(&g_term, sizeof(g_term));
+	g_term.clip.select = (t_select){-1U, -1U};
+	if (!(g_term.line = line_new(TERM_LINE_SIZE)))
+		return (false);
+	// TODO: Load and save history file
+	g_term.line->prev = g_term.hist.last;
+	*g_term.line->data = '\0';
+	g_term.line->len = 0;
+	g_term.hist.curr = g_term.line;
+	g_term.hist.next = g_term.line;
+	return (term_init_interactive(env));
+}
+
+void	term_destroy(void)
+{
+	if (g_term.hist.next != g_term.line)
+		line_clear(&g_term.hist.next);
+	if (g_term.hist.last != g_term.line)
+		line_clear(&g_term.line);
+	hist_clear(&g_term.hist);
+	clip_clear();
+	if (g_term.is_interactive)
 	{
-		free(term.name);
-		return (-1);
+		write(STDOUT_FILENO, TERM_EXIT, sizeof(TERM_EXIT) - 1);
+		if (g_term.has_caps)
+			tcsetattr(STDIN_FILENO, TCSANOW, &g_term.caps.s_ios_orig);
 	}
-	// JUST FIXING TEMPORALLY SEGFAULT
-	int tmp = g_session->st;
-	term_write_prompt(&term, status);
-	while (status & TERM_READING)
-		status = handle_status(&term, term_read(&term, status));
-	if (term_destroy(&term) == -1)
-		status |= TERM_ERROR;
-	if (term.interactive)
-		write(2, "exit\n", 5);
-	// JUST TEMPORALLY FIXED
-	return ((status & TERM_ERROR) ? -1 : tmp);
+}
+
+/*
+**	Prompt the user of an interactive terminal.
+*/
+t_term_err	term_prompt(const char **dst)
+{
+	t_term_err	status;
+	//ft_dprintf(2, "%s%lu", g_term.msg, ft_strlen(g_term.msg));
+	if (g_term.is_interactive && g_term.msg
+	&& (g_term.msg_len = ft_strlen(g_term.msg))
+	&& (g_term.origin = strglen(g_term.msg))
+	&& write(STDERR_FILENO, g_term.msg, g_term.msg_len) == -1)
+		status = TERM_EWRITE;
+	else if (g_term.has_caps)
+		status = term_read_caps();
+	else
+		status = term_read();
+	if (dst)
+		*dst = g_term.line->data;
+	return(status);
 }

@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 16:45:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/11 21:49:52 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/28 00:20:00 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 
 # include <stdlib.h>
 # include <stdbool.h>
-# include <term/token.h>
+
+# include <lexer/token.h>
 
 # define NONE			TOK_NONE
 # define REDIR_GR		OP_REDIR_WR

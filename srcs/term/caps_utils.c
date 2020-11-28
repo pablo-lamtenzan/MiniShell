@@ -1,4 +1,4 @@
-#include "term.h"
+#include <term/term.h>
 /*
 **	Set the cursor to pos on the horizontal axis.
 */

@@ -1,4 +1,4 @@
-#include <term/token.h>
+#include <lexer/token.h>
 
 size_t		token_len(t_tok *tokens)
 {

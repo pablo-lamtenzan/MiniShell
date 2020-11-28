@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   separators.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/04 23:46:13 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/13 05:37:19 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 01:31:44 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <term/token.h>
+#include <lexer/token.h>
 
 #ifndef SEPARATORS_H
 # define SEPARATORS_H

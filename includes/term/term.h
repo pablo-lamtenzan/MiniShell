@@ -1,148 +1,217 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   term.h                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/08/23 16:00:47 by chamada           #+#    #+#             */
-/*   Updated: 2020/11/24 11:17:04 by pablo            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef TERM_H
 # define TERM_H
 
-# include <signal.h>
-# include <stdbool.h>
-# include <stdlib.h>
+// TODO: Migrate headers
+// TODO: ONOEOT (Discard ^D)
 # include <unistd.h>
-# include <libft.h>
-# include <fcntl.h>
-# include <sys/stat.h>
 
+# include <env.h>
 # include <term/line.h>
-# include <term/cursor.h>
-# include <term/hist.h>
 # include <term/caps.h>
-# include <term/env.h>
-# include <term/lexer.h>
-# include <job_control.h>
+
+# define TERM_DEV_NULL	"/dev/null"
 
 /*
-** Displayed before reading the first-line of a command.
+**	The starting size of a newly allocated empty line.
 */
-# define TERM_PS1		"minish> "
+# define TERM_LINE_SIZE	8
+
+# define C_D			"\033[39m"
+# define C_GL			"\033[92m"
+# define C_B			"\033[34m"
+# define C_BL			"\033[94m"
+# define C_Y			"\033[33m"
+# define S_D			"\033[0m"
+# define S_B			"\033[1m"
 
 /*
-** Displayed before reading the second and subsquent lines of a command.
+**	Displayed before reading the first-line of a command.
+*/
+# define TERM_PS1		C_D"["S_B""C_B"$USER"S_D""C_D"]"C_GL"$"C_D" "
+
+/*
+**	Displayed before reading the second and subsquent lines of a command.
 */
 # define TERM_PS2		"> "
 
-# define TERM_READING	1
-# define TERM_ERROR		2
-# define TERM_WAITING	4
-# define TERM_NEWLINE	8
-# define TERM_INT		16
-# define TERM_ERASE		32
-# define TERM_EOF		64
-# define TERM_STOP		128
-# define TERM_SUSPEND	256
-# define TERM_CLEAR		512
-# define TERM_SELECT	1024
-# define TERM_IGNORE	2048
 
-/*
-**	(TERM_NEWLINE | TERM_CLEAR | TERM_INT | TERM_EOF | TERM_STOP | TERM_ERASE
-**	| TERM_SUSPEND | TERM_IGNORE)
-*/
-# define TERM_CONSUME	3064
+# define TERM_ESC		'\033'
+# define TERM_CSI		'['
+# define TERM_ALTESC	'1'
+# define TERM_SHIFT		'2'
 
-typedef struct	s_select
+# define TERM_CNTRL		'`'
+
+# define TERM_NL		'\n'
+
+# define TERM_ENDL		"\n"
+# define TERM_EXIT		"exit"TERM_ENDL
+
+typedef enum		e_term_err
 {
-	t_pos	start;
-	t_pos	end;
-}				t_select;
+	TERM_EALLOC = -3,
+	TERM_EWRITE = -2,
+	TERM_EREAD = -1,
+	TERM_EEOF = 0,
+	TERM_EOK = 1,
+	TERM_ENL = 2
+}					t_term_err;
 
-typedef struct	s_clip
+typedef struct		s_select
+{
+	size_t	start;
+	size_t	end;
+}					t_select;
+
+typedef struct		s_clip
 {
 	t_line		line;
 	t_select	select;
-}				t_clip;
+}					t_clip;
 
-typedef	struct	s_term
+typedef struct		s_hist
 {
-	t_env			*env;
-	char			*name;
-	bool			interactive;
-	struct termios	s_ios;
-	struct termios	s_ios_bkp;
-	t_lex_st		lex_st;
-	t_line			*line;
-	t_caps			caps;
-	t_cursor		cursor;
-	t_clip			clip;
-	t_hist			hist;
-	int				(*exec)(t_tok *tokens, struct s_term *term);
-}				t_term;
+	t_line	*last;
+	t_line	*curr;
+	t_line	*next;
+}					t_hist;
+
+typedef struct		s_term
+{
+	t_caps		caps;
+	bool		is_interactive;
+	bool		has_caps;
+	t_hist		hist;
+	t_line		*line;
+	char		*msg;
+	size_t		msg_len;
+	size_t		origin;
+	size_t		pos;
+	t_clip		clip;
+}					t_term;
+
+t_term				g_term;
+
+typedef t_term_err	(*t_term_action)(void);
+
+typedef struct		s_keybind
+{
+	char			key;
+	t_term_action	action;
+}					t_keybind;
 
 /*
-**				term.c
+**					term.c
 */
-int				term_prompt(int ac, const char **av, const char **envp,
-	int (*exec)(t_tok *tokens, t_term *term));
+bool				term_init(t_env **env);
+void				term_destroy(void);
+t_term_err			term_prompt(const char **dest);
 
 /*
-**				init.c
+**					write.c
 */
-int				term_init(t_term *t, const char **envp,
-	int (*exec)(t_tok *tokens, t_term *term));
-int				term_destroy(t_term *t);
+int					putc_err(int c);
+size_t				strglen(const char *str);
+t_term_err			term_write(const char *input, size_t length);
 
 /*
-**				read.c
+**					caps.c
 */
-int				term_read(t_term *t, int status);
-int				term_read_control(t_term *t, int status, char c);
-int				term_read_escape(t_term *t, int status);
+bool				term_init_caps(t_env **env);
 
 
 /*
-**				write.c
+**					caps_utils.c
 */
-void			term_write_prompt(t_term *t, int status);
-int				term_prewrite(t_term *t, const char *str, size_t n);
-int				term_write(t_term *t, const char *str, size_t n);
-void			term_clear_line(t_term *t);
-void			term_clear_screen(t_term *t, int status);
+void				caps_goto(t_caps *caps, size_t pos);
+void				caps_delete(t_caps *caps, size_t n);
 
 /*
-**				controls.c
+**					keybind.c
 */
-int				term_cancel(t_term *t);
-void			term_stop(t_term *t);
-int				term_new_line(t_term *t, int status);
-int				term_erase(t_term *t, int status);
+t_term_action		keybind_get(const t_keybind *keybinds, size_t n, char key);
 
 /*
-**				hist_cursor.c
+**					read.c
 */
-void			term_up(t_term *t);
-void			term_down(t_term *t);
+t_term_err			term_read_caps(void);
+t_term_err			term_read(void);
 
 /*
-**				select.c
+**					read_esc.c
 */
-void			select_left(t_term *t);
-void			select_right(t_term *t);
-void			select_clear(t_term *t);
+t_term_err			term_read_esc(void);
 
 /*
-**				clip.c
+**					read_csi.c
 */
-char			*clip_copy(t_term *t);
-char			*clip_cut(t_term *t);
-int				clip_paste(t_term *t);
-void			clip_clear(t_term *t);
+t_term_err			term_read_csi(void);
+
+/*
+**					controls.c
+*/
+t_term_err			term_clear_screen(void);
+t_term_err			term_backspace(void);
+t_term_err			term_clear_line(void);
+t_term_err			term_new_line(void);
+
+/*
+**					cursor.c
+*/
+t_term_err			cursor_l(void);
+t_term_err			cursor_r(void);
+
+/*
+**					cursor_jmp.c
+*/
+t_term_err			cursor_start_line(void);
+t_term_err			cursor_end_line(void);
+t_term_err			cursor_next_word(void);
+t_term_err			cursor_prev_word(void);
+
+/*
+**					select.c
+*/
+t_term_err			select_highlight(void);
+t_term_err			select_left(void);
+t_term_err			select_right(void);
+t_term_err			select_clear(void);
+
+/*
+**					select_jmp.c
+*/
+t_term_err			select_next_word(void);
+t_term_err			select_prev_word(void);
+
+/*
+**					clip.c
+*/
+t_term_err			clip_copy(void);
+t_term_err			clip_cut(void);
+t_term_err			clip_paste(void);
+t_term_err			clip_clear(void);
+
+/*
+**					hist_cursor.c
+*/
+t_term_err			term_prev_line(void);
+t_term_err			term_next_line(void);
+
+
+/*
+**					hist.c
+*/
+void				hist_add(t_hist *hist, t_line *line);
+void				hist_pop(t_hist *hist);
+void				hist_clear(t_hist *hist);
+void				hist_commit(t_hist *hist, t_line *line);
+
+/*
+**					signals.c
+*/
+t_term_err			term_interrupt(void);
+t_term_err			term_eof(void);
+t_term_err			term_stop(void);
+t_term_err			term_suspend(void);
 
 #endif

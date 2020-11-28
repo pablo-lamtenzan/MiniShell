@@ -1,47 +1,21 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   cursor.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/08/18 19:29:29 by chamada           #+#    #+#             */
-/*   Updated: 2020/09/26 15:15:03 by chamada          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include <term/term.h>
 
-#include <term/cursor.h>
-
-void	cursor_l(t_caps *caps, t_cursor *cursor)
+t_term_err	cursor_l(void)
 {
-	if (cursor->pos.x > 0)
+	if (g_term.pos > 0)
 	{
-		cursor->pos.x--;
-		tputs(caps->c_left, 0, &ft_putchar);
+		g_term.pos--;
+		tputs(g_term.caps.ctrl.left, 1, &putc_err);
 	}
+	return (TERM_EOK);
 }
 
-void	cursor_r(t_caps *caps, t_cursor *cursor, t_line *line)
+t_term_err	cursor_r(void)
 {
-	if (cursor->pos.x < line->len)
+	if (g_term.pos < g_term.line->len)
 	{
-		cursor->pos.x++;
-		tputs(caps->c_right, 0, &ft_putchar);
+		g_term.pos++;
+		tputs(g_term.caps.ctrl.right, 1, &putc_err);
 	}
-}
-
-void	cursor_start_line(t_caps *caps, t_cursor *cursor)
-{
-	tputs(tgoto(caps->c_move_h, 0, cursor->origin.x), 0, &ft_putchar);
-	cursor->pos.x = 0;
-}
-
-void	cursor_end_line(t_caps *caps, t_cursor *cursor, t_line *line)
-{
-	if (line && line->len)
-	{
-		cursor->pos.x = line->len;
-		tputs(tgoto(caps->c_move_h, 0, cursor->origin.x + cursor->pos.x),
-			0, &ft_putchar);
-	}
+	return (TERM_EOK);
 }

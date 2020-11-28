@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bg.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 23:11:42 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 04:56:28 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 01:41:34 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,10 +76,9 @@ void	resume_background_group(t_process* leader)
 	g_session->groups = remember;
 }
 
-int		ft_bg(t_exec* args, t_term* term)
+int		ft_bg(t_exec* args)
 {
     t_process**		target;
-	(void)term;
 
 	if (args->av[1] && args->av[1][0] == '-')
 	{

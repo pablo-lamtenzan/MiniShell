@@ -10,18 +10,38 @@ IFLAGS	=		-I$(INCDIR) -I$(LIBFT)/includes
 LFLAGS	=		-L$(LIBFT) -lft -lcurses -ltermcap 
 
 SRCS	=		$(addprefix $(SRCDIR)/,\
-					$(addprefix term/,												\
-						$(addprefix env/env,										\
-							_get.c _set.c .c)										\
-						$(addprefix lexer/,											\
-							$(addprefix lexers/lex_,								\
-								cmd.c ifs.c inline.c param_quoted.c param.c			\
-								subshell.c tokens.c)								\
-								lexer.c token_utils.c token.c)						\
-						clip.c controls.c hist_cursor.c hist.c init.c				\
-						cursor.c line_edit.c line_put.c line.c read_special.c		\
-						read.c select.c												\
-						term.c write.c)												\
+						$(addprefix env/env,\
+							_get.c\
+							_set.c\
+							.c\
+						)\
+						$(addprefix lexer/,\
+							$(addprefix lexers/lex_,\
+								cmd.c\
+								ifs.c\
+								inline.c\
+								param_quoted.c\
+								param.c\
+								subshell.c\
+								tokens.c)\
+								lexer.c\
+								token_utils.c\
+								token.c\
+							)\
+						$(addprefix term/,\
+							caps.c caps_utils.c\
+							clip.c\
+							controls.c\
+							cursor.c cursor_jmp.c\
+							hist.c hist_cursor.c\
+							keybind.c\
+							line.c line_edit.c line_put.c\
+							read.c read_csi.c read_esc.c\
+							select.c select_jmp.c\
+							signals.c\
+							term.c\
+							write.c\
+						)\
 					$(addprefix builtins/,\
 						cd.c\
 						echo.c\
@@ -83,22 +103,6 @@ SRCS	=		$(addprefix $(SRCDIR)/,\
 					)\
 				)
 
-OBJDS	=		$(addprefix $(OBJDIR)/,\
-					builtins\
-					bst\
-					execution\
-					expansion\
-					main\
-					path\
-					separators\
-					signals\
-					job_control\
-					term\
-					term/env\
-					term/lexer\
-					term/lexer/lexers\
-				)
-
 OBJS	=		$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 
 HDRS	=		$(addprefix $(INCDIR)/,\
@@ -110,8 +114,11 @@ HDRS	=		$(addprefix $(INCDIR)/,\
 					signals.h\
 					job_control.h\
 					errors.h\
-					$(addprefix term/, caps.h cursor.h env.h hist.h lexer.h\
-					line.h term.h token.h)\
+					$(addprefix term/,\
+						caps.h\
+						line.h\
+						term.h\
+					)\
 				)
 
 all:			libft $(NAME)
@@ -121,17 +128,15 @@ libft:
 
 $(LIBFT)/libft.a: libft
 
-$(NAME):		$(OBJDS) $(OBJS) $(LIBFT)/libft.a
+$(NAME):		$(OBJS) $(LIBFT)/libft.a
 	@echo LINK $(NAME)
 	$(CC) $(OBJS) $(CFLAGS) $(LFLAGS) -o $(NAME)
 
-prompt:
-	clang -g3 -Wall -Wextra srcs/new_term/*.c srcs/env/*.c srcs/expansion/*.c srcs/lexer/*.c -I includes -Ilibft/includes -Llibft/ -lft -lcurses -o $@ -fsanitize=address -fsanitize=undefined 
-
-$(OBJDS):
+$(OBJDIR):
 	mkdir -p $@
 
-$(OBJDIR)/%.o:	$(SRCDIR)/%.c $(HDRS) Makefile
+$(OBJDIR)/%.o:	$(SRCDIR)/%.c $(HDRS) Makefile | $(OBJDIR)
+	@mkdir -p '$(@D)'
 	@echo CC $<
 	@$(CC) $(CFLAGS) $(IFLAGS) -c -o $@ $<
 

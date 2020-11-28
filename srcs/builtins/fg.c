@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fg.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 05:24:36 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 01:41:26 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,9 +104,8 @@ int		resume_group(t_process* leader)
 	return (ret);
 }
 
-int		ft_fg(t_exec* args, t_term* term)
+int		ft_fg(t_exec* args)
 {
-	(void)term;
     t_process**		target;
 
 	if (args->av[1] && args->av[1][0] == '-')

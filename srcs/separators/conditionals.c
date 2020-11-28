@@ -3,19 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   conditionals.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/05 00:01:31 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 11:22:23 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 01:42:50 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <separators.h>
 #include <execution.h>
 
-int	handle_conditionals(t_term** term, int parser_st, int* flags, int parentheses_nb)
+int	handle_conditionals(int parser_st, int* flags, int parentheses_nb)
 {
-	(void)term;
 	if (parser_st & CLOSE_PAR)
 	{
 		// TO DO: Think about overwrite st is a good idea in all the cases

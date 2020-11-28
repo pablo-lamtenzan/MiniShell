@@ -3,18 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 08:52:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 23:13:37 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 01:29:32 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 
-t_exec_status			print_redirection_error(t_redir_status rstatus, char** filename, t_term* term)
+t_exec_status			print_redirection_error(t_redir_status rstatus, char** filename)
 {
-	(void)term;
 	const char*	error_msg[3] = {
 		"minish: %s: No such file or directory\n",
 		"minish: %s: ambigous redirect\n",
@@ -79,7 +78,7 @@ static t_redir_status	try_catch_out(t_exec** info, t_tok_t type, const char* fil
 	return (tmp >= 0 ? CONTINUE : FILE_NOT_FOUND);
 }
 
-t_redir_status			redirections_handler(t_exec** info, t_bst* cmd, t_term* term, char*** filename)
+t_redir_status			redirections_handler(t_exec** info, t_bst* cmd, char*** filename)
 {
 	int		            tmp;
 	int					height;
@@ -88,7 +87,7 @@ t_redir_status			redirections_handler(t_exec** info, t_bst* cmd, t_term* term, c
 	tmp = -1; // TODO: Init
 	if (!(t_tok*)cmd->b)
 		return (CONTINUE);
-	if (!(*filename = tokens_expand((t_tok**)&cmd->b, &term->env, &height)) || !(t_tok*)cmd->b) // TODO
+	if (!(*filename = tokens_expand((t_tok**)&cmd->b, &g_session->env, &height)) || !(t_tok*)cmd->b) // TODO
 		return (RDR_BAD_ALLOC);
 	if ((redir_st = try_catch_filename(filename, ((t_tok*)cmd->b)->data, height)) != CONTINUE)
         return (redir_st);

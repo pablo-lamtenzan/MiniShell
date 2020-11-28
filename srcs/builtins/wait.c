@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wait.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:20:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 04:56:58 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 01:42:24 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ int			wait_all_groups(int flags)
 	return (ret);
 }
 
-int			ft_wait(t_exec* args, t_term* term)
+int			ft_wait(t_exec* args)
 {
 	/*
 	wait [-fn] [jobspec or pid]:
@@ -135,7 +135,6 @@ int			ft_wait(t_exec* args, t_term* term)
  -> Job not found return 127
  -> At the end when a process exit prints per ex: "[1]-  Done                    sleep 22"
  */
-	(void)term;
 	int flags;
 	int i;
 	static int last_return = SUCCESS;

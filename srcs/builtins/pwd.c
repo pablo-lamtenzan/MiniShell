@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 11:59:05 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 01:40:58 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,9 @@
 
 // TODO: Redirections for STDERR_FILENO
 
-int		ft_pwd(t_exec *args, t_term *t)
+int		ft_pwd(t_exec *args)
 {
 	char			cwd[PATH_MAX];
-
-	(void) t;
 
 	if (args->ac > 1)
 		ft_dprintf(STDERR_FILENO, "%s\n", "pwd: too many arguments");

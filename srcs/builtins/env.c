@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:20:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 11:49:53 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 01:23:09 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 
-void			env_print(int fd, t_map *env)
+void	env_print(int fd, t_map *env)
 {
 	if (env)
 	{
@@ -21,11 +21,11 @@ void			env_print(int fd, t_map *env)
 	}
 }
 
-int	ft_env(t_exec *args, t_term *t)
+int		ft_env(t_exec *args)
 {
 	t_env* 		curr;
 
-	curr = t->env;
+	curr = g_session->env;
 	(void) args;
 	while (curr)
 	{

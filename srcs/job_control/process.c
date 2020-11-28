@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:51:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 04:57:49 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 01:30:50 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,11 +114,10 @@ t_exec_status	wait_processes(t_term* term, t_exec_status st)
 */
 
 
-t_exec_status	wait_processes_v2(t_term* term, t_exec_status st)
+t_exec_status	wait_processes_v2(t_exec_status st)
 {
 	t_group*	group;
 	t_process*	remember;
-	(void)term;
 
 	if (PRINT_DEBUG){
 	ft_dprintf(2, "SESSION GROUPS ACTIVE PROCESSES: %p\n", g_session->groups->active_processes);

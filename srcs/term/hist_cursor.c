@@ -1,47 +1,45 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   hist_cursor.c                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/08/18 19:29:25 by chamada           #+#    #+#             */
-/*   Updated: 2020/11/12 05:27:45 by chamada          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <term/term.h>
 
-void	term_up(t_term *t)
+// TODO: Use line_insert instead of freeing line
+t_term_err	term_prev_line(void)
 {
-	if (t->hist.curr->prev)
+	//ft_dprintf(2, "origin: %lu", g_term.origin);
+	if (g_term.hist.curr->prev)
 	{
-		if (t->hist.curr != t->hist.next && t->line->len)
+		if (g_term.hist.curr != g_term.hist.next)
 		{
-			hist_commit(&t->hist, t->line);
-			free(t->line);
+			hist_commit(&g_term.hist, g_term.line);
+			free(g_term.line);
 		}
-		t->hist.curr = t->hist.curr->prev;
-		term_clear_line(t);
-		write(1, t->hist.curr->data, t->hist.curr->len);
-		t->line = line_dup(t->hist.curr);
-		t->cursor.pos.x = t->hist.curr->len;
+		g_term.hist.curr = g_term.hist.curr->prev;
+		term_clear_line();
+		if (write(1, g_term.hist.curr->data, g_term.hist.curr->len) == -1)
+			return (TERM_EWRITE);
+		if (!(g_term.line = line_dup(g_term.hist.curr)))
+			return (TERM_EALLOC);
+		g_term.pos = g_term.hist.curr->len;
 	}
+	return (TERM_EOK);
 }
 
-void	term_down(t_term *t)
+t_term_err	term_next_line(void)
 {
-	if (t->hist.curr->next)
+	if (g_term.hist.curr->next)
 	{
-		if (t->hist.curr != t->hist.next)
+		if (g_term.hist.curr != g_term.hist.next)
 		{
-			hist_commit(&t->hist, t->line);
-			free(t->line);
+			hist_commit(&g_term.hist, g_term.line);
+			free(g_term.line);
 		}
-		t->hist.curr = t->hist.curr->next;
-		term_clear_line(t);
-		write(1, t->hist.curr->data, t->hist.curr->len);
-		t->line = line_dup(t->hist.curr);
-		t->cursor.pos.x = t->hist.curr->len;
+		g_term.hist.curr = g_term.hist.curr->next;
+		term_clear_line();
+		if (write(1, g_term.hist.curr->data, g_term.hist.curr->len) == -1)
+			return (TERM_EWRITE);
+		if (g_term.hist.curr == g_term.hist.next)
+			g_term.line = g_term.hist.curr;
+		else if (!(g_term.line = line_dup(g_term.hist.curr)))
+			return (TERM_EALLOC);
+		g_term.pos = g_term.hist.curr->len;
 	}
+	return (TERM_EOK);
 }

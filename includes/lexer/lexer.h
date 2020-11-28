@@ -3,8 +3,8 @@
 
 # include <stdbool.h>
 
-# include <term/token.h>
-# include <term/env.h>
+# include <lexer/token.h>
+# include <env.h>
 
 typedef uint16_t	t_tok_t;
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   job_control.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 03:51:45 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 01:12:54 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 
 # include <unistd.h>
 # include <stdbool.h>
+
 # include <sys/types.h>
 
+# include <env.h>
 # include <errors.h>
-
-
 
 #define	BACKGROUND		1
 #define STOPPED			2
@@ -79,6 +79,8 @@ typedef struct			s_session
 	char				**input_line;
 	size_t				input_line_index;
 	unsigned char		exit_count;
+	char				*name;
+	t_env				*env;
 	bool				open_print;
 
 }						t_session;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   disown.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:48:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 03:45:22 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 01:42:36 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,12 +226,11 @@ static int				parse_flags(int ac, const char* av)
 }
 */
 
-int		ft_disown(t_exec* args, t_term* term)
+int		ft_disown(t_exec* args)
 {
 	int	flags;
 	t_process** target;
 	int i;
-	(void)term;
 	int nb;
 
 	flags = 0;

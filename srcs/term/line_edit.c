@@ -6,11 +6,11 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/18 19:30:03 by chamada           #+#    #+#             */
-/*   Updated: 2020/11/12 07:27:45 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/28 00:17:46 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <term/term.h>
+#include <term/line.h>
 
 bool	line_resize(t_line *line, size_t new_size)
 {

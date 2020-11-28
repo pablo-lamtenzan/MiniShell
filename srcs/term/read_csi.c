@@ -1,6 +1,6 @@
-#include "term.h"
+#include <term/term.h>
 
-t_term_err	term_read_mod_none(t_term *term)
+t_term_err	term_read_mod_none(void)
 {
 	ssize_t	read_st;
 	char	c;
@@ -10,17 +10,17 @@ t_term_err	term_read_mod_none(t_term *term)
 	if (c == ';') // TODO: Handle unknown
 	{
 		//ft_dprintf(2, "[PROMPT][ESC][NONE ] Reentering CSI!\n");
-		return (term_read_csi(term));
+		return (term_read_csi());
 	}
 	ft_dprintf(2, "[PROMPT][ESC][NONE ] %hhu\n", c);
 	return (TERM_EOK);
 }
 
-t_term_err	term_read_mod_shift(t_term *term)
+t_term_err	term_read_mod_shift(void)
 {
 	const	t_keybind	keys[] = {
-		{term->caps.key.left[2], &select_left},
-		{term->caps.key.right[2], &select_right}
+		{g_term.caps.key.left[2], &select_left},
+		{g_term.caps.key.right[2], &select_right}
 	};
 	ssize_t				read_st;
 	char				c;
@@ -29,11 +29,11 @@ t_term_err	term_read_mod_shift(t_term *term)
 	if ((read_st = read(STDIN_FILENO, &c, 1)) != 1)
 		return ((read_st == 0) ? TERM_EEOF: TERM_EREAD);
 	if ((action = keybind_get(keys, sizeof(keys) / sizeof(*keys), c)))
-		return (action(term));
+		return (action());
 	return (TERM_EOK);
 }
 
-t_term_err	term_read_mod_alt(t_term *term)
+t_term_err	term_read_mod_alt(void)
 {
 	const t_keybind	keys[] = {
 		{'D', select_prev_word},
@@ -46,26 +46,26 @@ t_term_err	term_read_mod_alt(t_term *term)
 	if ((read_st = read(0, &c, 1)) != 1)
 		return ((read_st == 0) ? TERM_EEOF: TERM_EREAD);
 	if ((action = keybind_get(keys, sizeof(keys) / sizeof(*keys), c)))
-		return (action(term));
+		return (action());
 	return (TERM_EOK);
 }
 
-t_term_err	term_del(t_term *term)
+t_term_err	term_del(void)
 {
 	ssize_t	read_st;
 	char	c;
 
 	if ((read_st = read(STDIN_FILENO, &c, 1)) != 1)
 		return ((read_st == 0) ? TERM_EEOF: TERM_EREAD);
-	if (c == '~' && term->pos != term->line->len)
+	if (c == '~' && g_term.pos != g_term.line->len)
 	{
-		caps_delete(&term->caps, 1);
-		line_erase(term->line, term->pos, 1);
+		caps_delete(&g_term.caps, 1);
+		line_erase(g_term.line, g_term.pos, 1);
 	}
 	return (TERM_EOK);
 }
 
-t_term_err	term_read_csi(t_term *term)
+t_term_err	term_read_csi(void)
 {
 	const t_keybind	mods[] = {
 		{'1', &term_read_mod_none},
@@ -75,11 +75,11 @@ t_term_err	term_read_csi(t_term *term)
 	const t_keybind	keys[] = {
 		{'H', &cursor_start_line}, // TODO: Get in terminfo or remove caps.key
 		{'F', &cursor_end_line},
-		{term->caps.key.up[2], &term_prev_line},
-		{term->caps.key.down[2], &term_next_line},
-		{term->caps.key.left[2], &cursor_l},
-		{term->caps.key.right[2], &cursor_r},
-		{term->caps.key.del[2], &term_del}
+		{g_term.caps.key.up[2], &term_prev_line},
+		{g_term.caps.key.down[2], &term_next_line},
+		{g_term.caps.key.left[2], &cursor_l},
+		{g_term.caps.key.right[2], &cursor_r},
+		{g_term.caps.key.del[2], &term_del}
 	};
 	ssize_t			read_st;
 	char			c;
@@ -90,9 +90,9 @@ t_term_err	term_read_csi(t_term *term)
 	if (c == '\0') // -> Alt-[
 		ft_dprintf(2, "[PROMPT][ESC] Alt + [\n");
 	if ((action = keybind_get(mods, sizeof(mods) / sizeof(*mods), c)))
-		return (action(term));
-	select_clear(term);
+		return (action());
+	select_clear();
 	if ((action = keybind_get(keys, sizeof(keys) / sizeof(*keys), c)))
-		return (action(term));
+		return (action());
 	return (TERM_EOK);
 }

@@ -1,5 +1,5 @@
-#include <term/lexer.h>
-#include <term/env.h>
+#include <lexer/lexer.h>
+#include <env.h>
 
 bool	is_special(char c)
 {

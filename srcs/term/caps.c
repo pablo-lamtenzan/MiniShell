@@ -6,11 +6,11 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 18:53:27 by chamada           #+#    #+#             */
-/*   Updated: 2020/11/25 18:25:59 by chamada          ###   ########lyon.fr   */
+/*   Updated: 2020/11/28 01:50:05 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "term.h"
+#include <term/term.h>
 
 static bool	load_caps(t_caps *caps)
 {
@@ -43,7 +43,7 @@ static bool	load_caps(t_caps *caps)
 **
 **	returns true if successful, or false otherwise.
 */
-bool		term_init_caps(t_term *term, t_env **env)
+bool		term_init_caps(t_env **env)
 {
 	const char	*term_type;
 	char		term_buff[MAX_ENTRY + 1];
@@ -56,13 +56,13 @@ bool		term_init_caps(t_term *term, t_env **env)
 		return (false);
 	if (ent_st == 0)
 		return (true);
-	if (tcgetattr(STDIN_FILENO, &term->caps.s_ios) == -1)
+	if (tcgetattr(STDIN_FILENO, &g_term.caps.s_ios) == -1)
 		return (false);
-	term->caps.s_ios_orig = term->caps.s_ios;
-	term->caps.s_ios.c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG);
-	term->caps.s_ios.c_cflag |= ONLCR;
-	if (tcsetattr(STDIN_FILENO, TCSANOW, &term->caps.s_ios) == -1)
+	g_term.caps.s_ios_orig = g_term.caps.s_ios;
+	g_term.caps.s_ios.c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG);
+	g_term.caps.s_ios.c_cflag |= ONLCR;
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &g_term.caps.s_ios) == -1)
 		return (false);
-	term->has_caps = load_caps(&term->caps);
+	g_term.has_caps = load_caps(&g_term.caps);
 	return (true);
 }

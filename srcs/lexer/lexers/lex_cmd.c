@@ -1,4 +1,4 @@
-#include <term/lexer.h>
+#include <lexer/lexer.h>
 
 /*
 ** CMD_SIMPLE

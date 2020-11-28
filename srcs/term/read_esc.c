@@ -1,9 +1,9 @@
-#include "term.h"
+#include <term/term.h>
 
 /*
 **	Special key-strokes preceded by ANSI escape.
 */
-t_term_err			term_read_esc(t_term *term)
+t_term_err			term_read_esc(void)
 {
 	ssize_t	read_st;
 	char	c;
@@ -13,10 +13,10 @@ t_term_err			term_read_esc(t_term *term)
 	if (c == TERM_ESC || c == '\0') // -> esc
 		return (TERM_EOK);
 	if (c == TERM_CSI)
-		return (term_read_csi(term));
+		return (term_read_csi());
 	if (c == 'b')
-		return (cursor_prev_word(term));
+		return (cursor_prev_word());
 	if (c == 'f')
-		return (cursor_next_word(term));
+		return (cursor_next_word());
 	return (TERM_EOK);
 }

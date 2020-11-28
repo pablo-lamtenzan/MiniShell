@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:52 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/14 11:53:53 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 01:40:47 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,8 @@ int				print_env(int fd, t_map *env)
 	return (SUCCESS);
 }
 
-int	ft_export(t_exec *args, t_term *t)
+int	ft_export(t_exec *args)
 {
-	t_map	*var;
-	(void)var;
-	(void)t;
-
 	if (args->ac == 1)
 	{
 		//map_sort(&t->env, &map_cmp);

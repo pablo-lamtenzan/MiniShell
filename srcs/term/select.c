@@ -6,89 +6,94 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/18 18:57:39 by chamada           #+#    #+#             */
-/*   Updated: 2020/11/12 05:16:15 by chamada          ###   ########.fr       */
+/*   Updated: 2020/11/28 01:55:54 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <term/term.h>
 
-void	highlight(t_term *t)
+t_term_err	select_highlight(void)
 {
-	if (t->clip.select.start.x != -1U && t->clip.select.end.x != -1U)
+	if (g_term.clip.select.start != -1U && g_term.clip.select.end != -1U)
 	{
-		ft_dprintf(2, "[SELECT] start: %d, end: %d\n",
-			t->clip.select.start.x, t->clip.select.end.x);
-		tputs(tgoto(t->caps.c_move_h, 0, t->cursor.origin.x), 0, &ft_putchar);
-		tputs(t->caps.c_del_line, 0, &ft_putchar);
-		write(1, t->line->data, t->clip.select.start.x);
-		tputs(t->caps.standout, 0, &ft_putchar);
-		write(1, t->line->data + t->clip.select.start.x,
-			t->clip.select.end.x - t->clip.select.start.x);
-		tputs(t->caps.standout_end, 0, &ft_putchar);
-		write(1, t->line->data + t->clip.select.end.x,
-			t->line->len - t->clip.select.end.x);
-		tputs(tgoto(t->caps.c_move_h, 0, t->cursor.origin.x + t->cursor.pos.x),
-			0, &ft_putchar);
+		/* ft_dprintf(2, "[SELECT] start: %lu, end: %lu\n",
+			g_term.clip.select.start, g_term.clip.select.end); */
+		caps_goto(&g_term.caps, g_term.origin);
+		tputs(g_term.caps.ctrl.del_line, 1, &putc_err);
+		if (write(STDERR_FILENO, g_term.line->data, g_term.clip.select.start) == -1)
+			return (TERM_EWRITE);
+		tputs(g_term.caps.mode.standout, 1, &putc_err);
+		if (write(STDERR_FILENO, g_term.line->data + g_term.clip.select.start,
+			g_term.clip.select.end - g_term.clip.select.start) == -1)
+			return (TERM_EWRITE);
+		tputs(g_term.caps.mode.standout_end, 1, &putc_err);
+		if (write(STDERR_FILENO, g_term.line->data + g_term.clip.select.end,
+			g_term.line->len - g_term.clip.select.end) == -1)
+			return (TERM_EWRITE);
+		caps_goto(&g_term.caps, g_term.origin + g_term.pos);
 	}
+	return (TERM_EOK);
 }
 
-void	select_left(t_term *t)
+t_term_err	select_left(void)
 {
-	if (t->cursor.pos.x > 0)
+	if (g_term.pos > 0)
 	{
-		if (t->clip.select.start.x == -1U || t->clip.select.end.x == -1U)
+		if (g_term.clip.select.start == -1U || g_term.clip.select.end == -1U)
 		{
-			t->clip.select.start.x = t->cursor.pos.x;
-			t->clip.select.end.x = t->cursor.pos.x;
+			g_term.clip.select.start = g_term.pos;
+			g_term.clip.select.end = g_term.pos;
 		}
 		else
 		{
-			cursor_l(&t->caps, &t->cursor);
-			if (t->clip.select.start.x == t->cursor.pos.x + 1)
-				t->clip.select.start.x = t->cursor.pos.x;
+			cursor_l();
+			if (g_term.clip.select.start == g_term.pos + 1)
+				g_term.clip.select.start = g_term.pos;
 			else
-				t->clip.select.end.x = t->cursor.pos.x;
-			highlight(t);
+				g_term.clip.select.end = g_term.pos;
+			select_highlight();
 		}
 	}
+	return (TERM_EOK);
 }
 
-void	select_right(t_term *t)
+t_term_err	select_right(void)
 {
-	if (t->cursor.pos.x < t->line->len)
+	if (g_term.pos < g_term.line->len)
 	{
-		if (t->clip.select.start.x == -1U || t->clip.select.end.x == -1U)
+		if (g_term.clip.select.start == -1U || g_term.clip.select.end == -1U)
 		{
-			t->clip.select.start.x = t->cursor.pos.x;
-			t->clip.select.end.x = t->cursor.pos.x;
+			g_term.clip.select.start = g_term.pos;
+			g_term.clip.select.end = g_term.pos;
 		}
 		else
 		{
-			cursor_r(&t->caps, &t->cursor, t->line);
-			if (t->clip.select.end.x == t->cursor.pos.x - 1)
-				t->clip.select.end.x = t->cursor.pos.x;
+			cursor_r();
+			if (g_term.clip.select.end == g_term.pos - 1)
+				g_term.clip.select.end = g_term.pos;
 			else
-				t->clip.select.start.x = t->cursor.pos.x;
-			highlight(t);
+				g_term.clip.select.start = g_term.pos;
+			select_highlight();
 		}
 	}
+	return (TERM_EOK);
 }
 
-void	select_clear(t_term *t)
+t_term_err	select_clear(void)
 {
-	if (t->clip.select.start.x != -1U || t->clip.select.end.x != -1U)
+	if (g_term.clip.select.start != -1U || g_term.clip.select.end != -1U)
 	{
-		ft_dprintf(2, "[SELECT] clear\n");
-		t->clip.select.start.x = -1U;
-		t->clip.select.end.x = -1U;
-		if (t->line)
+		/* ft_dprintf(2, "[SELECT] clear\n"); */
+		g_term.clip.select.start = -1U;
+		g_term.clip.select.end = -1U;
+		if (g_term.line)
 		{
-			tputs(tgoto(t->caps.c_move_h, 0, t->cursor.origin.x),
-				0, &ft_putchar);
-			tputs(t->caps.c_del_line, 0, &ft_putchar);
-			write(1, t->line->data, t->line->len);
-			tputs(tgoto(t->caps.c_move_h, 0,
-				t->cursor.origin.x + t->cursor.pos.x), 0, &ft_putchar);
+			caps_goto(&g_term.caps, g_term.origin);
+			tputs(g_term.caps.ctrl.del_line, 1, &putc_err);
+			if (write(STDERR_FILENO, g_term.line->data, g_term.line->len) == -1)
+				return (TERM_EWRITE);
+			caps_goto(&g_term.caps, g_term.origin + g_term.pos);
 		}
 	}
+	return (TERM_EOK);
 }

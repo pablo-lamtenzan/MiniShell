@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kill.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/26 17:48:25 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 01:42:10 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,9 +98,8 @@ static void		print_all_signals()
 	write(STDERR_FILENO, "\n", 1);
 }
 
-int		get_target(t_exec* args, bool sig_spec, t_term* term, t_process*** target)
+int		get_target(t_exec* args, bool sig_spec, t_process*** target)
 {
-	(void)term;
 	if (!(*target = jobspec_parser(args->ac, args->av, NULL)) && !sig_spec)
 	{
 		if (args->av[1][0] == '%')
@@ -292,7 +291,7 @@ int		handle_current(t_process*** target, const char* jobspec)
 
 // DO TO: find: ft_dprintf(STDERR_FILENO, "%s\n", "minish: kill: COT: invalid signal specification");
 	// in true kill
-int			ft_kill(t_exec* args, t_term* term)
+int			ft_kill(t_exec* args)
 {
 	int		signal; // flags
 	int		i;
@@ -300,7 +299,6 @@ int			ft_kill(t_exec* args, t_term* term)
 	char*	numeric;
 	int		tmp;
 	int		ret;
-	(void)term;
 
 	signal = 0;
 	i = -1;

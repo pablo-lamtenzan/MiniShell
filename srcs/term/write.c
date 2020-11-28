@@ -1,62 +1,57 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   write.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/08/18 19:30:06 by chamada           #+#    #+#             */
-/*   Updated: 2020/11/13 07:50:08 by chamada          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <term/term.h>
 
-// TODO: Expand PS1 and PS2 using string_expand.
-void	term_write_prompt(t_term *t, int status)
+/*
+**	Put a character to the standard-error output.
+*/
+int			putc_err(int c)
 {
-	const char	*ps;
+	return (write(STDERR_FILENO, &c, 1));
+}
 
-	if (t->interactive)
+/*
+**	Get a c-string's graphical character count
+*/
+size_t		strglen(const char *str)
+{
+	size_t	len;
+	size_t	glen;
+
+	len = 0;
+	glen = 0;
+	while (str[len])
 	{
-		ps = env_get(t->env, (status & TERM_WAITING) ? "PS2" : "PS1", 3);
-			term_prewrite(t, ps, ft_strlen(ps));
-		if (t->caps.enabled)
-			tputs(t->caps.insert, 0, &ft_putchar);
+		if (str[len] == TERM_ESC && str[++len] == TERM_CSI)
+		{
+			while ((str[++len] & 0xF0) == 0x30) // param
+				;
+			while ((str[len] & 0xF0) == 0x20) // inter
+				len++;
+			if ((str[len] & 0xC0) == 0x40) // final
+				len++;
+		}
+		else if (ft_isprint(str[len++])) // graphical
+			glen++;
 	}
+	return (glen);
 }
 
-int		term_prewrite(t_term *t, const char *str, size_t n)
+/*
+**	Append to an interactive terminal's input line.
+*/
+t_term_err	term_write(const char *input, size_t length)
 {
-	if (write(2, str, n) < 0)
-		return (0);
-	t->cursor.origin.x = n;
-	t->cursor.origin.y = 0;
-	return (n);
-}
+	t_term_err status;
 
-int		term_write(t_term *t, const char *str, size_t n)
-{
-	if ((t->interactive && write(1, str, n) <= 0)
-	|| !line_insert(t->line, t->cursor.pos.x, str, n))
-		return (0);
-	t->cursor.pos.x += n;
-	return (n);
-}
-
-void	term_clear_line(t_term *t)
-{
-	cursor_start_line(&t->caps, &t->cursor);
-	tputs(t->caps.c_del_line, 0, &ft_putchar);
-}
-
-void	term_clear_screen(t_term *t, int status)
-{
-	if (t->caps.clear)
+	status = TERM_EOK;
+	if (length != 0)
 	{
-		tputs(t->caps.clear, 0, &ft_putchar);
-		term_write_prompt(t, status);
-		write(1, t->line->data, t->line->len);
-		t->cursor.pos.x = t->line->len;
+		if (write(STDERR_FILENO, input, length) == -1)
+			status = TERM_EWRITE;
+		else
+		{
+			status = line_insert(g_term.line, g_term.pos, input, length);
+			g_term.pos += length;
+		}
 	}
+	return (status);
 }

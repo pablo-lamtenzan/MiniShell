@@ -1,4 +1,4 @@
-#include <term/token.h>
+#include <lexer/token.h>
 
 t_tok		*token_new(void *data, t_tok_t type)
 {

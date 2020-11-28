@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_fill.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/24 11:10:50 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 01:25:03 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,8 @@
 #include <errors.h>
 #include <errno.h>
 
-static int	ft_fork(t_exec* info, t_term* term) 
+static int	ft_fork(t_exec* info) 
 {
-	(void)term;
 	int		child_st;
 
 	child_st = fork();
@@ -52,19 +51,19 @@ static int	ft_fork(t_exec* info, t_term* term)
 	return (child_st);
 }
 
-int		execute_child(t_exec* info, t_term* term)
+int		execute_child(t_exec* info)
 {
 	int				ret;
 	pid_t			pid;
 	t_exec_status	st;
 
 	ret = 0;
-	if (!(pid = ft_fork(info, term)))
+	if (!(pid = ft_fork(info)))
 	{
 		if ((st = dup_stdio(info->fds)) != SUCCESS)
 			return (st);
 		ret = execve(info->execution_path, info->av, info->ep);
-		ft_dprintf(STDERR_FILENO, "%s: %s: execve returned '%d'!\n", term->name, info->av[0], ret);
+		ft_dprintf(STDERR_FILENO, "%s: %s: execve returned '%d'!\n", g_session->name, info->av[0], ret);
 		exit(EXIT_FAILURE);
 	}
 	else if (pid < 0)
@@ -84,14 +83,14 @@ int		execute_child(t_exec* info, t_term* term)
 	return (ret);
 }
 
-t_exec_status		build_execve_args(t_exec* info, t_term* term)
+t_exec_status		build_execve_args(t_exec* info)
 {
-	if (!(info->execution_path = path_get(info->av[0], env_get(term->env, "PATH", 4))))
+	if (!(info->execution_path = path_get(info->av[0], env_get(g_session->env, "PATH", 4))))
 	{
 		g_session->st = CMD_NOT_FOUND;
 		return (BAD_PATH);
 	}
-	if (!(info->ep = (char*const*)env_export(term->env)))
+	if (!(info->ep = (char*const*)env_export(g_session->env)))
 	{
 		free(info->execution_path);
 		return (RDR_BAD_ALLOC);
