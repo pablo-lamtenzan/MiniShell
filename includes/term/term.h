@@ -49,6 +49,7 @@
 
 typedef enum		e_term_err
 {
+	TERM_ESETATTR = -4,
 	TERM_EALLOC = -3,
 	TERM_EWRITE = -2,
 	TERM_EREAD = -1,

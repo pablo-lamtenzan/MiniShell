@@ -94,10 +94,11 @@ t_term_err	term_read_caps(void)
 	ssize_t		read_st;
 	char		c;
 
-	//ft_dprintf(2, "origin: %lu", g_term.origin);
 	status = TERM_EOK;
 	g_term.line = g_term.hist.next;
 	g_term.pos = 0;
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &g_term.caps.s_ios) == -1)
+		return (TERM_ESETATTR);
 	tputs(g_term.caps.mode.insert, 1, ft_putchar);
 	while (status == TERM_EOK)
 	{
@@ -111,5 +112,8 @@ t_term_err	term_read_caps(void)
 			status = term_read_echo(c);
 	}
 	tputs(g_term.caps.mode.insert_end, 1, ft_putchar);
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &g_term.caps.s_ios_orig) == -1
+	&& status >= 0)
+		status = TERM_ESETATTR;
 	return (status);
 }

@@ -37,7 +37,10 @@ bool	term_init_interactive(t_env **env)
 {
 	g_term.is_interactive = ft_isatty(STDIN_FILENO) && ft_isatty(STDERR_FILENO);
 	if (g_term.is_interactive && !term_init_caps(env))
+	{
 		ft_dprintf(2, "Failed to retrieve terminfo: %s\n", strerror(errno));
+		return (false);
+	}
 	return (true);
 }
 
@@ -65,11 +68,7 @@ void	term_destroy(void)
 	hist_clear(&g_term.hist);
 	clip_clear();
 	if (g_term.is_interactive)
-	{
 		write(STDOUT_FILENO, TERM_EXIT, sizeof(TERM_EXIT) - 1);
-		if (g_term.has_caps)
-			tcsetattr(STDIN_FILENO, TCSANOW, &g_term.caps.s_ios_orig);
-	}
 }
 
 /*
@@ -78,7 +77,7 @@ void	term_destroy(void)
 t_term_err	term_prompt(const char **dst)
 {
 	t_term_err	status;
-	//ft_dprintf(2, "%s%lu", g_term.msg, ft_strlen(g_term.msg));
+
 	if (g_term.is_interactive && g_term.msg
 	&& (g_term.msg_len = ft_strlen(g_term.msg))
 	&& (g_term.origin = strglen(g_term.msg))
