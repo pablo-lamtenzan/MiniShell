@@ -138,7 +138,7 @@ void					keep_alive_killed_processes()
 	} 
 }
 
-t_exec_status			execute_bst(t_bst* root, t_term* term)
+t_exec_status			execute_bst(t_bst* root)
 {
 	t_exec				info;
 	t_exec_status		st;
