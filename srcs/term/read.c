@@ -35,10 +35,8 @@ t_term_err	term_cntrl(char c)
 */
 int		term_read()
 {
-	t_term_err	status;
 	int			read_st;
 
-	status = TERM_EOK;
 	free(g_term.line->data);
 	g_term.line->data = NULL;
 	g_term.line->len = 0;
@@ -96,7 +94,7 @@ t_term_err	term_read_caps(void)
 	g_term.pos = 0;
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &g_term.caps.s_ios) == -1)
 		return (TERM_ESETATTR);
-	tputs(g_term.caps.mode.insert, 1, ft_putchar);
+	tputs(g_term.caps.mode.insert, 1, &putc_err);
 	while (status == TERM_EOK)
 	{
 		if ((read_st = read(STDIN_FILENO, &c, 1)) != 1)
@@ -108,7 +106,7 @@ t_term_err	term_read_caps(void)
 		else if (ft_isascii(c))
 			status = term_read_echo(c);
 	}
-	tputs(g_term.caps.mode.insert_end, 1, ft_putchar);
+	tputs(g_term.caps.mode.insert_end, 1,  &putc_err);
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &g_term.caps.s_ios_orig) == -1
 	&& status >= 0)
 		status = TERM_ESETATTR;

@@ -80,11 +80,10 @@ static t_redir_status	try_catch_out(t_exec** info, t_tok_t type, const char* fil
 
 t_redir_status			redirections_handler(t_exec** info, t_bst* cmd, char*** filename)
 {
-	int		            tmp;
 	int					height;
     t_redir_status      redir_st;
 
-	tmp = -1; // TODO: Init
+	// TODO: Init
 	if (!(t_tok*)cmd->b)
 		return (CONTINUE);
 	if (!(*filename = tokens_expand((t_tok**)&cmd->b, &g_session->env, &height)) || !(t_tok*)cmd->b) // TODO

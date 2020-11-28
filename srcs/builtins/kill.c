@@ -25,9 +25,9 @@
 #endif
 
 // NORME LATER BUT THIS AS GLOBAL... fck norme
-const static char*	get_signal(const char* key, int* res)
+static const char*	get_signal(const char* key, int* res)
 {
-	const char*	signals[31] = {
+	static const char*	signals[31] = {
 		"SIGHUP", "SIGINT", "SIGQUIT", "SIGILL", "SIGTRAP", "SIGABRT",
 		"SIGBUS", "SIGFPE", "SIGKILL", "SIGUSR1", "SIGSEGV", "SIGUSR2",
 		"SIGPIPE", "SIGALRM", "SIGTERM", "SIGSTKFLT", "SIGCHLD", "SIGCONT",
@@ -35,14 +35,14 @@ const static char*	get_signal(const char* key, int* res)
 		"SIGXFSZ", "SIGVALRM", "SIGPROF", "SIGWINCH", "SIGIO", "SIGPWR",
 		"SIGSYS"
 	};
-	const int	values[31] = {
+	static const int	values[31] = {
 		SIGHUP, SIGINT, SIGQUIT, SIGILL, SIGTRAP, SIGABRT, SIGBUS, SIGFPE,
 		SIGKILL, SIGUSR1, SIGSEGV, SIGUSR2, SIGPIPE, SIGALRM, SIGTERM,
 		SIGSTKFLT, SIGCHLD, SIGCONT, SIGSTOP, SIGTSTP, SIGTTIN, SIGTTOU,
 		SIGURG, SIGXCPU, SIGXFSZ, SIGVTALRM, SIGPROF, SIGWINCH,
 		SIGIO, SIGPWR, SIGSYS
 	};
-	const char*	cvalues[31] = { "1", "2", "3", "4", "5", "6", "7", "8", "9",
+	static const char*	cvalues[31] = { "1", "2", "3", "4", "5", "6", "7", "8", "9",
 		 "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21",
 		 "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"
 	};
@@ -171,8 +171,7 @@ int			kill_jobspec(t_exec *args, int vars[5])
 	t_process** target;
 
 	target = NULL;
-	if ((vars[4] = handle_current(&target, args->av[(vars[0] ? 1 : 0) + vars[1]])))
-		;
+	vars[4] = handle_current(&target, args->av[(vars[0] ? 1 : 0) + vars[1]]);
 	if (!vars[4] && !(target = jobspec_parser(args->ac, &args->av[(vars[0] ? 1 : 0) + vars[1]], NULL)))
 	{
 		vars[4] = false;

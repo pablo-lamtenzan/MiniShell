@@ -178,6 +178,7 @@ int						main(int ac, const char **av, const char **ep)
 	//signal(SIGTERM, todo); // need documentation about this
 	if (!init(ac, av, ep))
 		return (1);
+	ft_bzero(&lex_data, sizeof(lex_data));
 	term_status = TERM_EOK;
 	lex_status = LEX_EOK;
 	while ((g_term.msg = string_expand(TERM_PS1, g_session->env))
@@ -186,7 +187,7 @@ int						main(int ac, const char **av, const char **ep)
 		if ((lex_status = lex_tokens(&lex_data)) == LEX_EOK)
 		{
 			g_session->input_line_index = 0;
-			g_session->input_line = split_separators(g_term.line->data, (char**)seps);
+			g_session->input_line = split_separators(g_term.line->data, seps);
 			exec(lex_data.tokens);
 			lex_data.tokens = NULL;
 		}
