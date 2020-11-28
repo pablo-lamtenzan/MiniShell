@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 01:38:12 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 02:24:14 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,11 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st, t_term* term
 }
 
 // TO DO: [OPTIONAL] put color in the prompt
-// TO DO: store a lot stoppe jobs, then bg them like: bg ; bg ; bg ... and jobs (spoiler: somme jobs that stay in runnig state nevers are deleted) WHY ?
 // TO DO: endzombies history (should not print)
 // TO DO: do fork for builtins too but empty forks to call SIGCHID if (fork == 0){exit(builting ret value)}
+// TO DO: bg + job prints 2 times (mute in jobs the exited nodes in the zombie catcher)
 
-// TO DO: i fucked up the .h have to redo it...
+
 
 // CHANGED:
 	// remove zom bie node
