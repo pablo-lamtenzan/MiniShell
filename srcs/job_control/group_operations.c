@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:55:48 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 03:42:42 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 05:15:26 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void			group_return_handler()
 				else
 					g_session->st = SIGNAL_BASE + \
 						g_session->groups->active_processes->prev->ret;
-				return;
+				break ;
 			}
 			g_session->groups->active_processes = \
 				g_session->groups->active_processes->next;

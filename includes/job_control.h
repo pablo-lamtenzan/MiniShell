@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   job_control.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 03:46:08 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 05:43:30 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,6 +207,9 @@ void					delete_hist();
 */
 bool					is_string_digit(const char *string);
 int						matrix_height(char **matrix);
+bool					ignore_pid(int ac, char*const* av);
+int						parse_flags(int ac, char*const* av, const char* pattern, int *nb_flags);
+const char*				is_in_history(t_process* target);
 
 /* ------------------------------OLD ---------------------------------*/
 void					rm_end_zombies();
@@ -259,14 +262,13 @@ void					delete_input_line();
 /*
 ** Utils
 */
-int						parse_flags(int ac, char*const* av, const char* pattern, int *nb_flags);
-const char*				is_in_history(t_process* target);
+
+
 bool					is_not_ambigous(t_process* target);
 bool					is_not_ambigous_v2(const char* niddle);
 void					print_index_args(t_process* target);
 int						matrix_height(char **matrix);
 bool					protect_process(t_group* target);
-bool					ignore_pid(int ac, char*const* av);
 char**					split_separators(char* input, char** separators);
 
 t_deadzombie*			endzombie_new(t_process** target);

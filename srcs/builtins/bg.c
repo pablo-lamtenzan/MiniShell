@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bg.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 23:11:42 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 02:58:49 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 05:40:29 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,80 +17,85 @@
 #include <job_control.h>
 #include <signals.h>
 
+void	bg_core()
+{
+	if (g_session->groups->active_processes->flags & STOPPED)
+	{
+		g_session->groups->active_processes->flags &= ~STOPPED;
+		g_session->groups->active_processes->flags |= BACKGROUND;
+		kill(g_session->groups->active_processes->pid, SIGCONT);
+		zombies_list_update(g_session->groups);
+	}
+}
+
 void	resume_background_group(t_process* leader)
 {
 	t_group*	remember;
 	t_process*	remember_leader;
 
 	remember = g_session->groups;
-
-	// skip itself
-	if (PRINT_DEBUG)
-		ft_dprintf(2, "[BG][SKIPPED ITSELF: %p]\n", remember);
 	g_session->groups = g_session->groups->next;
-	//while (g_session->groups->active_processes->flags & BACKGROUND)
-	//	g_session->groups = g_session->groups->next;
 	while (g_session->groups != g_session->nil)
 	{
-		if (PRINT_DEBUG)
-			ft_dprintf(2, "test:::::: %p [%d] --- %p [%d] \n", g_session->groups->active_processes, g_session->groups->active_processes->pid, leader, leader->pid);
 		if (g_session->groups->active_processes->pid == leader->pid)
 		{
-			if (PRINT_DEBUG)
-				ft_dprintf(2, "[BG][TARGET GROUP: %p][LEADER: %p]\n", g_session->groups, g_session->groups->active_processes);
 			remember_leader = g_session->groups->active_processes;
-			while (g_session->groups->active_processes != g_session->groups->nil)
+			while (g_session->groups->active_processes \
+					!= g_session->groups->nil)
 			{
-				if (g_session->groups->active_processes->flags & STOPPED)
-				{
-					if (PRINT_DEBUG)
-						ft_dprintf(2, "[BG][KILL -SIGCONT \'%d\'][\'%p\'][\'%p\']\n", g_session->groups->active_processes->pid, g_session->groups->active_processes, g_session->groups);
-					g_session->groups->active_processes->flags &= ~STOPPED;
-					g_session->groups->active_processes->flags |= BACKGROUND;
-					kill(g_session->groups->active_processes->pid, SIGCONT);
-					zombies_list_update(g_session->groups);
-					//ft_dprintf(2, "AFTER UPDATE ZOMBIES: %p\n", g_session->zombies);
-					if (PRINT_DEBUG)
-						ft_dprintf(2, "[BG][TARGET FLAGS: %d][\'%p\']\n", g_session->groups->active_processes->flags, g_session->groups->active_processes);
-					//update_background(g_session, &g_session->groups->active_processes, true);
-				}
-				g_session->groups->active_processes = g_session->groups->active_processes->next;
+				bg_core();
+				g_session->groups->active_processes = \
+					g_session->groups->active_processes->next;
 			}
-			/*
-			if (!is_active_group(g_session->groups))
-			{
-				t_group*	fill = g_session->groups;
-				g_session->groups->prev->next = g_session->groups->next;
-				g_session->groups->next->prev = g_session->groups->prev;
-				free(fill);
-				fill = NULL;
-				//group_remove(&g_session, &g_session->groups->prev, &g_session->groups->next);
-			}
-			else*/
-				g_session->groups->active_processes = remember_leader;
-			g_session->groups = remember;
-			return ;
+			g_session->groups->active_processes = remember_leader;
+			break ;
 		}
 		g_session->groups = g_session->groups->next;
 	}
 	g_session->groups = remember;
 }
 
+int		bg_execptions(t_exec *args, t_process **target)
+{
+	if ((*target)->flags & RESTRICT_OP)
+	{
+		ft_dprintf(STDERR_FILENO, "minish: bg: %s: no such job\n", args->av[1]);
+            return (STD_ERROR);
+	}
+	if ((*target)->flags & BACKGROUND)
+	{
+		ft_dprintf(STDERR_FILENO, "minish: job %lu already in background\n", \
+				background_index_get(g_session->nil, *target));
+		return (SUCCESS);
+	}
+	if ((*target)->flags & (SIGNALED | KILLED))
+	{
+		ft_dprintf(STDERR_FILENO, "minish: bg: job has terminated\n");
+		print_signal(STDERR_FILENO, *target, STANDART);
+		return (STD_ERROR);
+	}
+	return (42);
+}
+
 int		ft_bg(t_exec* args)
 {
     t_process**		target;
+	int				exept;
 
 	if (args->av[1] && args->av[1][0] == '-')
 	{
-		ft_dprintf(STDERR_FILENO, "minish: bg: %s: invalid option\n%s\n", args->av[1], "bg: usage: bg [job_spec]");
+		ft_dprintf(STDERR_FILENO, "minish: bg: %s: invalid option\n%s\n", \
+				args->av[1], "bg: usage: bg [job_spec]");
 		return (CMD_BAD_USE);
 	}
     if (session_empty() || g_session->groups->next == g_session->nil)
     {
-        ft_dprintf(STDERR_FILENO, "minish: bg: %s: no such job\n", args->ac == 1 ? "current" : args->av[1]);
+        ft_dprintf(STDERR_FILENO, "minish: bg: %s: no such job\n", \
+				args->ac == 1 ? "current" : args->av[1]);
         return (STD_ERROR);
     }
-	// Sellect the first not alreaddy in background group
+	/* ------------------- another function -------------------------------------- */
+	// TO DO: Change this like i did in kill 
 	t_group*	remember;
 	remember = g_session->groups;
 	while (g_session->groups != g_session->nil->prev)
@@ -102,55 +107,16 @@ int		ft_bg(t_exec* args)
 			break ;
 	}
 	g_session->groups = remember;
-    if (args->ac > 1)
-    {
-		// TO DO: if jobspec is pid has to resume is grou p or just the process ?
-        if (!(target = jobspec_parser(args->ac, args->av, ignore_pid)))
-		{
-            ft_dprintf(STDERR_FILENO, "minish: bg: %s: no such job\n", args->av[1]);
-            return (STD_ERROR);
-        }
-    }
-	if ((*target)->flags & RESTRICT_OP)
+	/* ----------------------- end -------------------------------------------------*/
+    if (args->ac > 1 && !(target = jobspec_parser(args->ac, args->av, ignore_pid)))
 	{
 		ft_dprintf(STDERR_FILENO, "minish: bg: %s: no such job\n", args->av[1]);
-            return (STD_ERROR);
-	}
-	// TO DO: bg % ; bg % ; bg %
-	if ((*target)->flags & BACKGROUND)
-	{
-		ft_dprintf(STDERR_FILENO, "minish: job %lu already in background\n", background_index_get(g_session->nil, *target));
-		return (SUCCESS);
-	}
-	if ((*target)->flags & (SIGNALED | KILLED))
-	{
-		ft_dprintf(STDERR_FILENO, "minish: bg: job has terminated\n");
-		print_signal(STDERR_FILENO, *target, STANDART);
 		return (STD_ERROR);
-	}
-	//ft_dprintf(2, "target = %p\n", target);
-	//ft_dprintf(2, "*target = %p\n", *target);
-	//ft_dprintf(2, "active processes = %p\n", term->session->groups->active_processes == term->session->groups->nil ? term->session->groups->next->active_processes : term->session->groups->active_processes);
-
-	// 
+    }
+	if ((exept = bg_execptions(args, target)) != 42)
+		return (exept);
 	print_index_args(*target);
 	write(STDERR_FILENO, " &\n", 3);
-	if (PRINT_DEBUG)
-		ft_dprintf(2, "[BG] [session->groups before resume][%p]\n", g_session->groups);
-	// termary for skip itself, leader must be next->active_processes
-
 	resume_background_group(*target);
-	if (PRINT_DEBUG) {
-	ft_dprintf(2, "[BG] [session->groups after resume][%p]\n", g_session->groups);
-	ft_dprintf(2, "[BG]ACTIVE PROCESSES AT THE END: \'%p\'\n", g_session->groups->active_processes == g_session->groups->nil ? g_session->groups->next->active_processes : g_session->groups->active_processes);
-	}
-    //update_background(term->session, target);
-	// I haven't to wait but i need the status to know when it finishs (TO THINK ABOUT)
-	// Can use SIGHILD to know when it ends
-	// https://softwareengineering.stackexchange.com/questions/162940/how-do-i-implement-the-bg-and-fg-commands-functionaliity-in-my-custom-unix-s
-	// https://stackoverflow.com/questions/7171722/how-can-i-handle-sigchld (doesn t respect the subject but very interesting)
-	// https://docs.oracle.com/cd/E19455-01/806-4750/signals-7/index.html (this follows the subject)
-
-	// can use command ps ax for get the pid table, then i can split it and rm the i % 2 != 0 of the split
     return (SUCCESS);
 }

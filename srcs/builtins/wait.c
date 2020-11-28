@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wait.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:20:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 03:22:55 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 07:35:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,29 +28,43 @@
 int			wait_process(t_process** target, int flags)
 {
 	(void)flags;
-	// -n RETURN CURR GROUP WAITED EXIT STATUS
-
-	// -f WAIT FOR ALL (ignore -f per the moment)
-
-	// no flag return prev exit status
-
-	// warning if process is stopped
 	if ((*target)->flags & EXITED)
 		return (WEXITSTATUS((*target)->wstatus));
 	if ((*target)->flags & STOPPED)
 	{
-		ft_dprintf(STDERR_FILENO, "bash: warning: wait_for_job: job %lu[%d] is stopped\n", background_index_get(g_session->nil, *target), (*target)->pid);
+		ft_dprintf(STDERR_FILENO, "bash: warning: wait_for_job: job %lu[%d] is stopped\n", \
+				background_index_get(g_session->nil, *target), (*target)->pid);
 		return (148);
 	}
 	background_update(target);
 	if ((*target)->flags & STOPPED)
 	{
-		ft_dprintf(STDERR_FILENO, "bash: warning: wait_for_job: job %lu[%d] is stopped\n", background_index_get(g_session->nil, *target), (*target)->pid);
+		ft_dprintf(STDERR_FILENO, "bash: warning: wait_for_job: job %lu[%d] is stopped\n", \
+				background_index_get(g_session->nil, *target), (*target)->pid);
 		return (CMD_NOT_FOUND);
 	}
 	// TO DO: PRINTS THE INPUT CMD
 	print_signal(2, *target, STANDART);
 	return (WEXITSTATUS((*target)->wstatus));
+}
+
+bool		wait_delete()
+{
+	t_group*	fill;
+
+	if (!group_condition(g_session->groups, is_active))
+	{
+		// TO DO: TEST IT, I ADD IT WITHOUT TEST
+		history_session_remove_node(g_session->groups);
+
+		fill = g_session->groups;
+		g_session->groups->prev->next = g_session->groups->next;
+		g_session->groups->next->prev = g_session->groups->prev;
+		free(fill);
+		fill = NULL;
+		return (true);
+	}
+	return (false);
 }
 
 int			wait_group(t_process* leader, int flags, t_group* itself)
@@ -61,10 +75,8 @@ int			wait_group(t_process* leader, int flags, t_group* itself)
 
 	ret = 0;
 	remember = g_session->groups;
-
 	if (g_session->groups == itself)
 		g_session->groups = g_session->groups->next;
-
 	while (g_session->groups != g_session->nil)
 	{
 		if (g_session->groups->nil->next->pid == leader->pid)
@@ -72,24 +84,10 @@ int			wait_group(t_process* leader, int flags, t_group* itself)
 			remember_leader = g_session->groups->active_processes;
 			while (g_session->groups->active_processes != g_session->groups->nil)
 			{
-				if (PRINT_DEBUG){
-				ft_dprintf(2, "[WAIT][TARGET FLAGS: %d][\'%p\']\n", g_session->groups->active_processes->flags, g_session->groups->active_processes);
-				ft_dprintf(2, "[WAIT][PROCESS: %d][\'%p\']\n", g_session->groups->active_processes->pid, g_session->groups->active_processes);}
 				ret = wait_process(&g_session->groups->active_processes, flags);
 				g_session->groups->active_processes = g_session->groups->active_processes->next;
 			}
-			if (!group_condition(g_session->groups, is_active))
-			{
-				// TO DO: TEST IT, I ADD IT WITHOUT TEST
-				history_session_remove_node(g_session->groups);
-
-				t_group*	fill = g_session->groups;
-				g_session->groups->prev->next = g_session->groups->next;
-				g_session->groups->next->prev = g_session->groups->prev;
-				free(fill);
-				fill = NULL;
-			}
-			else
+			if (!wait_delete())
 				g_session->groups->active_processes = remember_leader;
 			g_session->groups = remember;
 			return (ret);
@@ -125,19 +123,50 @@ int			wait_all_groups(int flags)
 	return (ret);
 }
 
+int			wait_init_exeption(t_exec *args, int *flags, int *nb)
+{
+	if ((*flags = parse_flags(args->ac, &args->av[1], "nf", nb)) < 0 \
+			&& args->av[*nb + 1][0] == '-')
+	{
+		ft_dprintf(STDERR_FILENO, "minish: wait: %s: inalid option\n%s\n", args->av[1], \
+				"wait: usage: wait [-fn] [id ...]");
+		return (CMD_BAD_USE);
+	}
+	if (session_empty() || g_session->groups->next == g_session->nil)
+	{
+		if (args->ac > 1 && *flags < 0)
+		{
+			if (!is_string_digit(args->av[1]))
+				ft_dprintf(2, "bash: wait: `%s\': not a pid or valid job spec\n", \
+						args->av[1]);
+			else
+				ft_dprintf(STDERR_FILENO, "minish: wait: pid %s: is not a child of this shell\n", \
+						args->av[1]);
+			return (STD_ERROR);
+		}
+		return (SUCCESS);
+	}
+	return (42);
+}
+
+int			wait_jobspec(t_exec *args, int nb, int i, t_process*** target)
+{
+	if (!(*target = jobspec_parser(args->ac, &args->av[nb + i], NULL)))
+	{
+		if (is_string_digit(args->av[nb + i + 1]))
+			ft_dprintf(STDERR_FILENO, "minsh: wait: pid %s is not a child of this shell\n", \
+					args->av[nb + i + 1]);
+		else
+			ft_dprintf(STDERR_FILENO, "minish: wait: %s: no such job\n", \
+					args->av[nb + i + 1]);
+		return (CMD_NOT_FOUND);
+	}
+	return (42);
+}
+
+// TO DO RM I WHEN I CAN TEST
 int			ft_wait(t_exec* args)
 {
-	/*
-	wait [-fn] [jobspec or pid]:
- -> Wait until the child process (jobspec or pid) exits
- -> Returns the exit status of the last command waited for
- -> If a jobspec is given, all the processes in the job are waited for
- -> No options, all currently active childs are waited, returns 0
- -> '-n' wait for a single job and return its exit status 
- -> '-f' forces to wait for each job to terminate before returning its status intead of returning when it changes status
- -> Job not found return 127
- -> At the end when a process exit prints per ex: "[1]-  Done                    sleep 22"
- */
 	int flags;
 	int i;
 	static int last_return = SUCCESS;
@@ -146,48 +175,18 @@ int			ft_wait(t_exec* args)
 	int nb;
 
 	flags = 0;
+	if ((i = wait_init_exeption(args, &flags, &nb)) != 42)
+		return (i);
 	i = -1;
-	if ((flags = parse_flags(args->ac, &args->av[1], "nf", &nb)) < 0 && args->av[nb + 1][0] == '-') // lexer error flags
+	flags = flags < 0 ? -flags : flags;
+	if (args->ac > 1 && args->ac > nb + 1 && ++i < args->ac - nb - 1)
 	{
-		ft_dprintf(STDERR_FILENO, "minish: wait: %s: inalid option\n%s\n", args->av[1], "wait: usage: wait [-fn] [id ...]");
-		return (CMD_BAD_USE);
+		if ((tmp = wait_jobspec(args, nb, i, &target)) != 42)
+			return (tmp);
+		tmp = last_return;
+		last_return = wait_group(*target, flags, g_session->groups);
+		return (!flags ? tmp : last_return);
 	}
-	if (session_empty() || g_session->groups->next == g_session->nil)
-	{
-		//ft_dprintf(2, "[WAIT FLAGS][%d]\n", flags);
-		if (args->ac > 1 && flags < 0)
-		{
-			if (!is_string_digit(args->av[1]))
-				ft_dprintf(2, "bash: wait: `%s\': not a pid or valid job spec\n", args->av[1]);
-			else
-				ft_dprintf(STDERR_FILENO, "minish: wait: pid %s: is not a child of this shell\n", args->av[1]);
-			return (STD_ERROR);
-		}
-		return (SUCCESS);
-	}
-	if (args->ac > 1)
-	{
-
-		if (args->ac > nb + 1)
-		{
-			// TO DO: Don t need the whil eonly 1 jobspec possible
-			while (++i < args->ac - nb - 1)
-			{
-				if (!(target = jobspec_parser(args->ac, &args->av[nb + i], NULL)))
-				{
-					if (is_string_digit(args->av[nb + i + 1]))
-						ft_dprintf(STDERR_FILENO, "minsh: wait: pid %s is not a child of this shell\n", args->av[nb + i + 1]);
-					else
-						ft_dprintf(STDERR_FILENO, "minish: wait: %s: no such job\n", args->av[nb + i + 1]);
-					return (CMD_NOT_FOUND);
-				}
-				tmp = last_return;
-				flags = flags < 0 ? -flags : flags;
-				last_return = wait_group(*target, flags < 0 ? 0 : flags, g_session->groups);
-				return (!flags ? tmp : last_return);
-			}
-		}
-	}
-	wait_all_groups(flags < 0 ? 0 : flags);
+	wait_all_groups(flags);
 	return (SUCCESS);
 }

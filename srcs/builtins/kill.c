@@ -3,32 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   kill.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 03:07:15 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 07:15:25 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <job_control.h>
 #include <signal.h>
-
-/* TEST
-
-1) -l flag witout jobspec or sigspec DONE
-2) -l with wrong sigspec DONE
-3) -l with good sigspec DONE
-4) kill no flags wrong jobspec DONE
-5) kill invalid flags with jobspec/no jobspec
-6) kill empty session DONE
-7) Handles n jobspecs or pids with flag
--------------------------------------
-
-9) do in bash kill % 2 times with 1 process in background -> DO TO the error msg
-
-*/
-
 
 // TODO: Cross platform compatibility for missing signals
 // TODO: Test on 42 XUbuntu VM
@@ -40,9 +24,9 @@
 # define SIGPWR -1
 #endif
 
+// NORME LATER BUT THIS AS GLOBAL... fck norme
 const static char*	get_signal(const char* key, int* res)
 {
-	//ft_dprintf(2, "[GET SIGNAL][key is = \'%s\']\n", key);
 	const char*	signals[31] = {
 		"SIGHUP", "SIGINT", "SIGQUIT", "SIGILL", "SIGTRAP", "SIGABRT",
 		"SIGBUS", "SIGFPE", "SIGKILL", "SIGUSR1", "SIGSEGV", "SIGUSR2",
@@ -70,9 +54,9 @@ const static char*	get_signal(const char* key, int* res)
 		*res = 256;
 		return ("");
 	}
-	while (i < 31 && ft_strncmp(signals[i], key, ft_strlen(signals[i])) // signal name
-			&& ft_strncmp(&signals[i][3], key, ft_strlen(signals[i]) - 3) // skip sig from the name
-			&& ft_strncmp(cvalues[i], key, ft_strlen(cvalues[i]) + 1)) // numeric value
+	while (i < 31 && ft_strncmp(signals[i], key, ft_strlen(signals[i])) 
+			&& ft_strncmp(&signals[i][3], key, ft_strlen(signals[i]) - 3)
+			&& ft_strncmp(cvalues[i], key, ft_strlen(cvalues[i]) + 1))
 		i++;
 	if (i == 31 && !(*res = 0))
 		return (NULL);
@@ -98,38 +82,15 @@ static void		print_all_signals()
 	write(STDERR_FILENO, "\n", 1);
 }
 
-int		get_target(t_exec* args, bool sig_spec, t_process*** target)
+void		kill_core(int signal)
 {
-	if (!(*target = jobspec_parser(args->ac, args->av, NULL)) && !sig_spec)
-	{
-		if (args->av[1][0] == '%')
-			ft_dprintf(STDERR_FILENO, "minish: kill: %s: no such job\n", args->av[1]);
-		else if (is_string_digit(args->av[1]))
-			ft_dprintf(2, "minish: kill: (%s) - No such process\n", args->av[1]);
-		else
-			ft_dprintf(2, "minish: kill: %s: arguments must be process or job IDs\n", args->av[1]);
-		return (STD_ERROR);
-	}
-	else if (sig_spec)
-	{
-		ft_dprintf(2, "%s", "minish: kill: invalid signal specification\n");
-		return (STD_ERROR);
-	}
-	return (SUCCESS);
+	if (!(signal >= SIGSTOP && signal <= SIGTTOU) && signal != SIGCONT)
+		g_session->groups->active_processes->flags |= (SIGNALED | KILLED);
+	kill(g_session->groups->active_processes->pid, signal);
+	kill(g_session->groups->active_processes->pid, SIGCONT);
+	background_update(&g_session->groups->active_processes);
+	history_session_remove_node(g_session->groups);
 }
-
-/*
-kill [-s sigspec] [-n signum] [sigspec] jobspec or pid
-kill -l|-L [exit_status]:
- -> Send a signal (sigspec or signum) to the process (job or pid)
- -> SIG prefix is optional
- -> If sigspec and signum are not present: SIGTERM is used
- -> '-l' option lists the signal names
- -> '-l' without option list all avalable options (returns 0)
- -> '-L' is equivalent to -1?? (returns 0)
- -> Returns 0 if at least 1 siganl was succefully sent
- -> Returns !0 if an error occurs ir invalid option
-*/
 
 void		kill_group(t_process* leader, int signal, t_group* itself)
 {
@@ -138,132 +99,27 @@ void		kill_group(t_process* leader, int signal, t_group* itself)
 
 	remember = g_session->groups;
 	
-	// skip itself
 	if (g_session->groups == itself)
 		g_session->groups = g_session->groups->next;
-
 	while (g_session->groups != g_session->nil)
 	{
 		if (g_session->groups->nil->next->pid == leader->pid)
 		{
 			remember_leader = g_session->groups->active_processes;
-			while (g_session->groups->active_processes != g_session->groups->nil)
+			while (g_session->groups->active_processes \
+				!= g_session->groups->nil)
 			{
-				if (!(signal >= SIGSTOP && signal <= SIGTTOU) && signal != SIGCONT)
-					g_session->groups->active_processes->flags |= (SIGNALED | KILLED);
-				if (PRINT_DEBUG)
-					ft_dprintf(2, "[KILL][KILL (signal=\'%d\') \'%d\'][\'%p\'][group= %p]\n", signal, g_session->groups->active_processes->pid, g_session->groups->active_processes, g_session->groups);
-				kill(g_session->groups->active_processes->pid, signal);
-				kill(g_session->groups->active_processes->pid, SIGCONT);
-				background_update(&g_session->groups->active_processes);
-				history_session_remove_node(g_session->groups);
-				g_session->groups->active_processes = g_session->groups->active_processes->next;
+				kill_core(signal);
+				g_session->groups->active_processes = \
+					g_session->groups->active_processes->next;
 			}
-			// Remove the group later
-			/*if (!is_active_group(g_session->groups))
-			{
-				t_group*	fill = g_session->groups;
-				g_session->groups->prev->next = g_session->groups->next;
-				g_session->groups->next->prev = g_session->groups->prev;
-				free(fill);
-				fill = NULL;
-			}
-			*/
-			//else
 				g_session->groups->active_processes = remember_leader;
-			g_session->groups = remember;
-			return ;
+			break ;
 		}
 		g_session->groups = g_session->groups->next;
 	}
 	g_session->groups = remember;
 }
-
-/*
-int     	ft_kill(t_exec* args, t_term* term)
-{
-    int			signal;
-	int			st;
-	char*		test;
-	bool		sig_spec;
-	t_process**	target;
-
-	signal = -1;
-	test = NULL;
-	st = 0;
-	sig_spec = false;
-    if (args->ac <= 1)
-    {
-		// print this if the signals is present too
-        ft_dprintf(STDERR_FILENO, "%s\n", "kill: usage: kill [-s sigspec | -n signum | -sigspec] pid | jobspec ... or kill -l [sigspec]");
-        return (CMD_BAD_USE);
-    }
-	if (args->av[1][0] == '-' && (sig_spec = true))
-		get_signal(&args->av[1][1], &signal); // return 256 with -l
-	if (PRINT_DEBUG) {
-	ft_dprintf(2, "[KILL][SIGNAL FORMAT IS: %d]\n", sig_spec);
-	ft_dprintf(2, "[SIGNAL IS %d]\n", signal);}
-    if (signal == 256)
-    { 
-        if (args->ac == 2)
-			print_all_signals();
-		else if (signal && (test = (char*)get_signal(&args->av[2][0], &signal)))
-			ft_dprintf(STDERR_FILENO, "%d\n", signal);
-		else if (!test)
-		{
-			ft_dprintf(2, "minish: kill: %s: invalid signal specification\n", args->av[2]);
-			return (STD_ERROR);
-		}
-		return (SUCCESS);
-    }
-	if (args->ac < 3)
-	{
-		// TO DO: only the target if pid
-		if ((st = get_target(args, sig_spec, term, &target)) != SUCCESS)
-			return (st);
-		if ((*target)->flags & RESTRICT_OP)
-		{
-			ft_dprintf(STDERR_FILENO, "minish: kill: %s: no such job\n", args->av[1]);
-            	return (STD_ERROR);
-		}
-		kill_group(*target, SIGTERM, g_session->groups);
-		return (st);
-	}
-	if (signal)
-	{
-		// TO DO: only the target if pid
-		int i = -1;
-		while (++i < args->ac - 2)
-		{
-			if (!(target = jobspec_parser(args->ac, &args->av[i + 1], NULL)) && !sig_spec)
-			{
-				// CANT get target here for the comment (av[2] istead of av[1])
-				if (args->av[2][0] == '%')
-					ft_dprintf(STDERR_FILENO, "minish: kill: %s: no such job\n", args->av[2]);
-				else if (is_string_digit(args->av[2]))
-					ft_dprintf(2, "minish: kill: (%s) - No such process\n", args->av[2]);
-				else
-					ft_dprintf(2, "minish: kill: %s: arguments must be process or job IDs\n", args->av[2]);
-				return (STD_ERROR);
-			}
-			else if (!target && sig_spec)
-			{
-				ft_dprintf(2, "%s", "minish: kill: invalid signal specification\n");
-				return (STD_ERROR);
-			}
-			if ((*target)->flags & RESTRICT_OP)
-			{
-				ft_dprintf(STDERR_FILENO, "minish: kill: %s: no such job\n", args->av[1]);
-        	    return (STD_ERROR);
-			}
-			kill_group(*target, signal, g_session->groups);
-		}
-		return (SUCCESS); // check this ret
-	}
-	ft_dprintf(STDERR_FILENO, "%s\n", "minish: kill: COT: invalid signal specification");
-	return (STD_ERROR);
-}
-*/
 
 int		handle_current(t_process*** target, const char* jobspec)
 {
@@ -276,8 +132,9 @@ int		handle_current(t_process*** target, const char* jobspec)
 	{
 		while (g_session->groups != g_session->nil->prev)
 		{
-			*target = g_session->groups->next != g_session->nil ? &g_session->groups->next->active_processes : &g_session->groups->active_processes;
-			//ft_dprintf(2, "[KILL][HANDLE CURR][CURR: %p][FLAGS: %d]\n", **target, (**target)->flags);
+			*target = g_session->groups->next != g_session->nil ? \
+				 &g_session->groups->next->active_processes : \
+			 	&g_session->groups->active_processes;
 			if ((**target)->flags & (KILLED | SIGNALED))
 				g_session->groups = g_session->groups->next;
 			else
@@ -289,41 +146,92 @@ int		handle_current(t_process*** target, const char* jobspec)
 	return (false);
 }
 
-// DO TO: find: ft_dprintf(STDERR_FILENO, "%s\n", "minish: kill: COT: invalid signal specification");
-	// in true kill
-int			ft_kill(t_exec* args)
+int			kill_init_exeption(t_exec *args, int *signal)
 {
-	int		signal; // flags
-	int		i;
-	t_process** target;
-	char*	numeric;
-	int		tmp;
-	int		ret;
-
-	signal = 0;
-	i = -1;
-	target = NULL;
-	if (args->ac == 1 || (args->ac == 2 && args->av[1][0] == '-' && ft_strncmp("-l", args->av[1], 3) && ft_strncmp("-L", args->av[1], 3)))
+	if (args->ac == 1 || (args->ac == 2 && args->av[1][0] == '-' \
+			&& ft_strncmp("-l", args->av[1], 3) \
+			&& ft_strncmp("-L", args->av[1], 3)))
 	{
-		ft_dprintf(STDERR_FILENO, "%s\n", "kill: usage: kill [-s sigspec | -n signum | -sigspec] pid | jobspec ... or kill -l [sigspec]");
+		ft_dprintf(STDERR_FILENO, "%s\n", \
+		"kill: usage: kill [-s sigspec | -n signum | -sigspec] pid | jobspec ... or kill -l [sigspec]");
         return (CMD_BAD_USE);
 	}
-	// signal == 0 -> no signal
-	if (!get_signal(&args->av[1][1], &signal) && (signal == 0) && args->av[1][0] == '-')
+	if (!get_signal(&args->av[1][1], signal) && (*signal == 0) && args->av[1][0] == '-')
 	{
 		ft_dprintf(2, "minish: kill: %s: invalid signal specification\n", args->av[1]);
 		return (CMD_BAD_USE);
 	}
 	if (args->av[1][0] == '%')
-		signal = 0;
-	// if i have some jobspec o or pid
-	//ft_dprintf(2, "[KILL][SIGNAL IS: %d]\nac: %d\niter: %d\n", signal, args->ac, (signal ? 1 : 0));
+		*signal = 0;
+	return (42);
+}
+
+int			kill_jobspec(t_exec *args, int vars[5])
+{
+	t_process** target;
+
+	target = NULL;
+	if ((vars[4] = handle_current(&target, args->av[(vars[0] ? 1 : 0) + vars[1]])))
+		;
+	if (!vars[4] && !(target = jobspec_parser(args->ac, &args->av[(vars[0] ? 1 : 0) + vars[1]], NULL)))
+	{
+		vars[4] = false;
+		vars[3] = CMD_BAD_USE;
+		if (args->av[(vars[0] ? 2 : 1) + vars[1]][0] == '%')
+			ft_dprintf(STDERR_FILENO, "minish: kill: %s: no such job\n", args->av[(vars[0] ? 2 : 1) + vars[1]]);
+		else if (is_string_digit(args->av[(vars[0] ? 2 : 1) + vars[1]]))
+			ft_dprintf(2, "minish: kill: (%s) - No such process\n", args->av[(vars[0] ? 2 : 1) + vars[1]]);
+		else
+			ft_dprintf(2, "minish: kill: %s: arguments must be process or job IDs\n", args->av[(vars[0] ? 2 : 1) + vars[1]]);
+	}
+	else if (vars[4])
+	{
+		if (!target || ((*target)->flags & (SIGNALED | KILLED) && (vars[3] = CMD_NOT_FOUND)))
+			ft_dprintf(STDERR_FILENO, "minish: kill: %s: no such job\n", args->av[(vars[0] ? 2 : 1) + vars[1]]);
+		else
+			kill_group(*target, vars[0] ? vars[0] : SIGTERM, g_session->groups);
+	}
+	return (42);
+}
+
+void			kill_print_signal(t_exec *args, int vars[5])
+{
+	char*	numeric;
+
+	if ((numeric = (char*)get_signal(args->av[2 + vars[1]], &vars[2])))
+		ft_dprintf(args->fds[1], "%s\n", numeric);
+	else
+	{
+		vars[3] = CMD_BAD_USE;
+		ft_dprintf(2, "minish: kill: %s: invalid signal specification\n", args->av[2 + vars[1]]);
+	}
+}
+
+// DO TO: find: ft_dprintf(STDERR_FILENO, "%s\n", "minish: kill: COT: invalid signal specification");
+	// in true kill
+
+/*
+int			ft_kill(t_exec* args)
+{
+	int		signal;
+	int		i;
+	t_process** target;
+	char*	numeric;
+	int		tmp;
+	int		ret;
+	bool 	flag = true;
+
+	signal = 0;
+	i = -1;
+	target = NULL;
+	if ((i = kill_init_execption(args, &signal)) != 42)
+		return (i);
 	if (!(signal == 256 && args->ac == 2))
 	{
 		while (++i < args->ac - (signal ? 2 : 1))
 		{
 			ret = SUCCESS;
-			bool flag = true;
+			flag = true;
 			if (signal == 256)
 			{
 				// catch -l here
@@ -360,9 +268,43 @@ int			ft_kill(t_exec* args)
 		return (ret);
 	}
 	if (signal == 256)
+		print_all_signals();		
+	return (SUCCESS);
+}
+*/
+
+
+int			ft_kill(t_exec* args)
+{
+	int		vars[5];
+	int		exept;
+	// vars 0 -> signal
+	// vars 1 -> i
+	// vars 2 -> tmp
+	// vars 3 -> ret
+	// vars 4 -> flag
+
+	ft_bzero(&vars, sizeof(vars));
+	vars[1] = -1;
+	if ((exept = kill_init_exeption(args, &vars[0])) != 42)
+		return (exept);
+	if (!(vars[0] == 256 && args->ac == 2))
 	{
-		print_all_signals();
-		
+		while (++vars[1] < args->ac - (vars[0] ? 2 : 1))
+		{
+			vars[3] = SUCCESS;
+			vars[4] = true;
+			if (vars[0] == 256)
+			{
+				kill_print_signal(args, vars);
+				continue ;
+			}
+			if ((exept = kill_jobspec(args, vars)) != 42)
+				return (exept);
+		}
+		return (vars[3]);
 	}
+	if (vars[0] == 256)
+		print_all_signals();		
 	return (SUCCESS);
 }
