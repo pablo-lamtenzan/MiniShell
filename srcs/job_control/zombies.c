@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:19:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 03:45:09 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 21:55:12 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,8 +113,8 @@ void		deadzombies_print()
 	while (g_session->dead_zombies)
 	{
 		next = g_session->dead_zombies->next;
-		(*g_session->dead_zombies->deadzombie)->flags &= ~NO_DELETE;
-		print_signal(STDERR_FILENO, *g_session->dead_zombies->deadzombie, STANDART);
+		g_session->dead_zombies->deadzombie->flags &= ~NO_DELETE;
+		print_signal(STDERR_FILENO, g_session->dead_zombies->deadzombie, STANDART);
 		free(g_session->dead_zombies);
 		g_session->dead_zombies = next;
 	}

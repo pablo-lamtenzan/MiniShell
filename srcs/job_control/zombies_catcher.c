@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 01:45:31 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 08:06:20 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 21:53:56 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void		handle_wstatus(t_group** group)
 		(*group)->active_processes->flags |= EXITED;
 		(*group)->active_processes->ret = \
 			WEXITSTATUS((*group)->active_processes->wstatus);
-		deadzombie_push_back(deadzombie_new(&(*group)->active_processes));
+		deadzombie_push_back(deadzombie_new((*group)->active_processes));
 	}
 	else if (WIFSTOPPED((*group)->active_processes->wstatus))
 	{

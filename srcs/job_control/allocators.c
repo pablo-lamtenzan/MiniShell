@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:22:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 03:40:48 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 21:53:23 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ t_process			*process_new(pid_t pid, int wstatus, char*const* data)
 	return (process);
 }
 
-t_deadzombie		*deadzombie_new(t_process** target)
+t_deadzombie		*deadzombie_new(t_process* target)
 {
 	t_deadzombie	*endzombie;
 	

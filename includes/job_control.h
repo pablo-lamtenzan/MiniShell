@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 08:08:29 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/28 21:54:58 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ typedef struct			s_background
 
 typedef struct			s_deadzombie
 {
-	t_process			**deadzombie;
+	t_process			*deadzombie;
 	struct s_deadzombie	*next;
 }						t_deadzombie;
 
@@ -175,7 +175,7 @@ void					zombies_list_purge_exited_zombies();
 /*
 ** Dead zombies list
 */
-t_deadzombie			*deadzombie_new(t_process** target);
+t_deadzombie			*deadzombie_new(t_process* target);
 void					deadzombie_push_back(t_deadzombie* target);
 void					deadzombies_print();
 
