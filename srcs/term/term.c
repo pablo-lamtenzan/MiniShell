@@ -37,10 +37,7 @@ bool	term_init_interactive(t_env **env)
 {
 	g_term.is_interactive = ft_isatty(STDIN_FILENO) && ft_isatty(STDERR_FILENO);
 	if (g_term.is_interactive && !term_init_caps(env))
-	{
 		ft_dprintf(2, "Failed to retrieve terminfo: %s\n", strerror(errno));
-		return (false);
-	}
 	return (true);
 }
 
