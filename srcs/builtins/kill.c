@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 00:31:08 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 01:00:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ void		kill_group(t_process* leader, int signal, t_group* itself)
 				g_session->groups->active_processes = \
 					g_session->groups->active_processes->next;
 			}
-				g_session->groups->active_processes = remember_leader;
+			g_session->groups->active_processes = remember_leader;
 			break ;
 		}
 		g_session->groups = g_session->groups->next;
@@ -128,9 +128,8 @@ int		handle_current(t_process*** target, const char* jobspec)
 	t_group*	remember;
 
 	remember = g_session->groups;
-	ft_dprintf(2, )
 	if (!ft_strncmp(jobspec, "%", 2) || !ft_strncmp(jobspec, "%+", 3) \
-		|| !ft_strncmp(jobspec, "%", 2) || !ft_strncmp(jobspec, "%%", 3) \
+		|| !ft_strncmp(jobspec, "%%", 3) \
 		|| (g_session->hist && !g_session->hist->next \
 		&& !ft_strncmp(jobspec, "%-", 3)))
 	{
@@ -145,7 +144,6 @@ int		handle_current(t_process*** target, const char* jobspec)
 				break ;
 		}
 		g_session->groups = remember;
-		ft_dprintf(2, "TEST\n");
 		return (true);
 	}
 	return (false);
@@ -176,8 +174,9 @@ int			kill_jobspec(t_exec *args, int vars[5])
 	t_process** target;
 
 	target = NULL;
-	vars[4] = handle_current(&target, args->av[(vars[0] ? 1 : 0) + vars[1]]);
-	if (!vars[4] && !(target = jobspec_parser(args->ac, &args->av[(vars[0] ? 1 : 0) + vars[1]], NULL)))
+	vars[4] = handle_current(&target, args->av[(vars[0] ? 2 : 1) + vars[1]]);
+	if (!vars[4]&& (vars[4] = true) \
+		&& !(target = jobspec_parser(args->ac, &args->av[(vars[0] ? 1 : 0) + vars[1]], NULL)))
 	{
 		vars[4] = false;
 		vars[3] = CMD_BAD_USE;

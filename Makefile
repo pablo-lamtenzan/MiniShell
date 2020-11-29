@@ -8,7 +8,7 @@ CFLAGS	=		-Wall -Wextra -Werror -g3 -fsanitize=address
 include srcs.mk
 
 IFLAGS	=		-I$(INCDIR) -I$(LIBFT)/includes
-LFLAGS	=		-L$(LIBFT) -lft -lcurses #-ltermcap
+LFLAGS	=		-L$(LIBFT) -lft -lcurses -ltermcap
 
 OBJS	=		$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 
