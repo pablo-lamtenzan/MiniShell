@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:48:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:05:52 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 08:41:35 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int				disown_jobspec(t_exec *args, int flags, int nb, int i)
 	return (42);
 }
 
-int				ft_disown(t_exec* args)
+int				ft_disown(t_exec *args)
 {
 	int			flags;
 	int			i;

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 02:42:01 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:06:30 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 08:46:27 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <job_control.h>
 #include <signal.h>
 
-const char			*get_signal(const char* key, int* res)
+const char			*get_signal(const char *key, int *res)
 {
 	int				i;
 
@@ -24,7 +24,7 @@ const char			*get_signal(const char* key, int* res)
 		*res = 256;
 		return ("");
 	}
-	while (i < 31 && ft_strncmp(g_signals[i], key, ft_strlen(g_signals[i])) 
+	while (i < 31 && ft_strncmp(g_signals[i], key, ft_strlen(g_signals[i]))
 			&& ft_strncmp(&g_signals[i][3], key, ft_strlen(g_signals[i]) - 3)
 			&& ft_strncmp(g_cvalues[i], key, ft_strlen(g_cvalues[i]) + 1))
 		i++;
@@ -34,7 +34,7 @@ const char			*get_signal(const char* key, int* res)
 	return (g_signals[i]);
 }
 
-void				print_all_signals()
+void				print_all_signals(void)
 {
 	int				i;
 	int				tmp;
@@ -62,7 +62,7 @@ void				kill_core(int signal)
 	history_session_remove_node(g_session.groups);
 }
 
-int					handle_current(t_process ***target, 
+int					handle_current(t_process ***target,
 	const char *jobspec)
 {
 	t_group			*remember;
@@ -76,8 +76,8 @@ int					handle_current(t_process ***target,
 		while (g_session.groups != g_session.nil->prev)
 		{
 			*target = g_session.groups->next != g_session.nil ? \
-				 &g_session.groups->next->active_processes : \
-			 	&g_session.groups->active_processes;
+				&g_session.groups->next->active_processes : \
+				&g_session.groups->active_processes;
 			if ((**target)->flags & (KILLED | SIGNALED))
 				g_session.groups = g_session.groups->next;
 			else
@@ -96,7 +96,6 @@ void				kill_group(t_process *leader, int signal,
 	t_process		*remember_leader;
 
 	remember = g_session.groups;
-	
 	if (g_session.groups == itself)
 		g_session.groups = g_session.groups->next;
 	while (g_session.groups != g_session.nil)

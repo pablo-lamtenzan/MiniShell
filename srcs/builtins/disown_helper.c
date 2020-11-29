@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 02:55:51 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 06:35:45 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 08:38:15 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,9 @@ void			disown_process(t_process **target, int flags)
 	process_remove(target);
 }
 
-void			disown_group(t_process *leader, int flags, t_group* itself)
+void			disown_group(t_process *leader, int flags, t_group *itself)
 {
 	t_group		*remember;
-	
 
 	remember = g_session.groups;
 	if (g_session.groups == itself)
@@ -58,7 +57,6 @@ void			disown_all_groups(int flags)
 	t_group		*prev;
 
 	remember = g_session.groups;
-
 	g_session.groups = g_session.nil->prev;
 	while (g_session.groups != g_session.nil->next)
 	{
@@ -69,9 +67,10 @@ void			disown_all_groups(int flags)
 	g_session.groups = remember;
 }
 
-int				disowm_delete()
+int				disowm_delete(void)
 {
 	t_group		*fill;
+
 	if (!group_condition(g_session.groups, is_active))
 	{
 		zombies_list_remove_node(g_session.groups);

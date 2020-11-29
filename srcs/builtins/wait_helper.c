@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 02:07:01 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 06:35:33 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 08:14:50 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int				wait_process(t_process **target, int flags)
 	return (WEXITSTATUS((*target)->wstatus));
 }
 
-bool			wait_delete()
+bool			wait_delete(void)
 {
 	t_group		*next;
 
@@ -77,7 +77,7 @@ int				wait_group(t_process *leader, int flags, t_group *itself)
 {
 	t_group		*remember;
 	t_process	*remember_leader;
-	int ret;
+	int			ret;
 
 	ret = 0;
 	remember = g_session.groups;
@@ -107,7 +107,6 @@ int				wait_all_groups(int flags)
 
 	ret = 0;
 	remember = g_session.groups;
-
 	g_session.groups = g_session.nil->prev;
 	while (g_session.groups != g_session.nil->next)
 	{

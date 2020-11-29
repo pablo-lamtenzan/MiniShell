@@ -6,14 +6,14 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 01:53:32 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:06:17 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 08:37:59 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <signals.h>
 
-void			print_process(int fd, t_process* target, int flags)
+void			print_process(int fd, t_process *target, int flags)
 {
 	if (!target)
 		return ;
@@ -26,11 +26,11 @@ void			print_process(int fd, t_process* target, int flags)
 	print_signal(fd, target, flags & 8);
 }
 
-void			print_group(int fd, t_process* leader, int flags,
-		t_group* itself)
+void			print_group(int fd, t_process *leader, int flags,
+		t_group *itself)
 {
-	t_group*	remember;
-	t_process*	remember_leader;
+	t_group		*remember;
+	t_process	*remember_leader;
 
 	remember = g_session.groups;
 	if (g_session.groups == itself)

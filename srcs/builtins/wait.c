@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:20:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 08:31:46 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static int			wait_init_exeption(t_exec *args, int *flags, int *nb)
 	return (42);
 }
 
-static int			wait_jobspec(t_exec *args, int nb, int i, 
+static int			wait_jobspec(t_exec *args, int nb, int i,
 	t_process ***target)
 {
 	if (!(*target = jobspec_parser(args->ac, &args->av[nb + i], NULL)))
@@ -58,13 +58,13 @@ static int			wait_jobspec(t_exec *args, int nb, int i,
 	return (42);
 }
 
-int				ft_wait(t_exec* args)
+int					ft_wait(t_exec *args)
 {
-	int flags;
-	static int 	last_return = SUCCESS;
-	int			tmp;
-	t_process	**target;
-	int nb;
+	int				flags;
+	static int		last_return = SUCCESS;
+	int				tmp;
+	t_process		**target;
+	int				nb;
 
 	flags = 0;
 	if ((tmp = wait_init_exeption(args, &flags, &nb)) != 42)

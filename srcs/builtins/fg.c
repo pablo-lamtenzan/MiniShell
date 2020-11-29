@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 06:17:11 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 08:22:28 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <job_control.h>
 #include <signals.h>
 
-static bool		fg_delete()
+static bool		fg_delete(void)
 {
 	t_group		*next;
 	if (!group_condition(g_session.groups, is_active))
@@ -40,7 +40,7 @@ static bool		fg_delete()
 	return (false);
 }
 
-static int 		fg_core()
+static int		fg_core(void)
 {
 	if (g_session.groups->active_processes->flags & (STOPPED | BACKGROUND))
 	{
@@ -60,12 +60,12 @@ static int		fg_init_exceptions(t_exec *args)
 				args->av[1], "fg: usage: fg [job_spec]");
 		return (CMD_BAD_USE);
 	}
-    if (session_empty() || g_session.groups->next == g_session.nil)
-    {
-        ft_dprintf(STDERR_FILENO, "minish: fg: %s: no such job\n", \
+	if (session_empty() || g_session.groups->next == g_session.nil)
+	{
+		ft_dprintf(STDERR_FILENO, "minish: fg: %s: no such job\n", \
 			args->ac == 1 ? "current" : args->av[1]);
-        return (STD_ERROR);
-    }
+		return (STD_ERROR);
+	}
 	return (42);
 }
 
@@ -75,7 +75,7 @@ static int		fg_exeptions(t_exec *args, t_process **target)
 	{
 		ft_dprintf(STDERR_FILENO, "minish: fg: %s: no such job\n", \
 			args->av[1]);
-            return (STD_ERROR);
+		return (STD_ERROR);
 	}
 	if ((*target)->flags & (SIGNALED | KILLED))
 	{
@@ -88,12 +88,12 @@ static int		fg_exeptions(t_exec *args, t_process **target)
 
 int				ft_fg(t_exec *args)
 {
-    t_process	**target;
+	t_process	**target;
 	int			exept;
 
 	if ((exept = fg_init_exceptions(args)) != 42)
 		return (exept);
-    target = g_session.groups->active_processes == g_session.groups->nil \
+	target = g_session.groups->active_processes == g_session.groups->nil \
 		? &g_session.groups->next->active_processes \
 		: &g_session.groups->active_processes;
 	if (args->ac > 1 && !(target = jobspec_parser(args->ac, args->av, \
@@ -102,10 +102,10 @@ int				ft_fg(t_exec *args)
 		ft_dprintf(STDERR_FILENO, "minish: fg: %s: no such job\n", \
 			args->av[1]);
 		return (STD_ERROR);
-    }
+	}
 	if ((exept = fg_exeptions(args, target)) != 42)
 		return (exept);
 	print_job_args(STDERR_FILENO, *target);
 	write(STDERR_FILENO, "\n", 1);
-    return (for_each_in_group(*target, fg_core, fg_delete));
+	return (for_each_in_group(*target, fg_core, fg_delete));
 }

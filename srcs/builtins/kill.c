@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:06:35 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 08:18:27 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 
 void			kill_print_signal(t_exec *args, int vars[5])
 {
-	char*	numeric;
+	char		*numeric;
 
 	if ((numeric = (char*)get_signal(args->av[2 + vars[1]], &vars[2])))
 		ft_dprintf(args->fds[1], "%s\n", numeric);
@@ -48,7 +48,7 @@ int				kill_init_exeption(t_exec *args, int *signal)
 		ft_dprintf(STDERR_FILENO, "%s%s\n", \
 			"kill: usage: kill [-s sigspec | -n signum | -sigspec]", \
 			" pid | jobspec ... or kill -l [sigspec]");
-        return (CMD_BAD_USE);
+		return (CMD_BAD_USE);
 	}
 	if (!get_signal(&args->av[1][1], signal) \
 			&& (*signal == 0) && args->av[1][0] == '-')
@@ -84,7 +84,7 @@ int				kill_jobspec(t_exec *args, int vars[5])
 
 	target = NULL;
 	vars[4] = handle_current(&target, args->av[(vars[0] ? 2 : 1) + vars[1]]);
-	if (!vars[4]&& (vars[4] = true) \
+	if (!vars[4] && (vars[4] = true) \
 			&& !(target = jobspec_parser(args->ac, \
 			&args->av[(vars[0] ? 1 : 0) + vars[1]], NULL)))
 		kill_jobspc_msg(args, vars);
@@ -102,11 +102,10 @@ int				kill_jobspec(t_exec *args, int vars[5])
 	return (42);
 }
 
-
-
 // DO TO: find: ft_dprintf(STDERR_FILENO, "%s\n", "minish: kill: COT: invalid signal specification");
 	// in true kill
-int				ft_kill(t_exec* args)
+
+int				ft_kill(t_exec *args)
 {
 	int			vars[5];
 	int			exept;
@@ -131,7 +130,6 @@ int				ft_kill(t_exec* args)
 		}
 		return (vars[3]);
 	}
-	if (vars[0] == 256)
-		print_all_signals();		
+	print_all_signals();
 	return (SUCCESS);
 }

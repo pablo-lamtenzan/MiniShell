@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 18:03:18 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:05:31 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 08:38:56 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@ int				parse_flags(int ac, char*const *av, const char *pattern,
 {
 	int			cont;
 	int			flags;
-	int 		i;
+	int			i;
 	int			prev;
-	*nb_flags = 0;
 
+	*nb_flags = 0;
 	cont = -1;
 	flags = 0;
 	while (++cont < ac - 1)
@@ -53,7 +53,7 @@ bool			ignore_pid(int ac, char*const *av)
 	return (true);
 }
 
-const char		*is_in_history(t_process* target)
+const char		*is_in_history(t_process *target)
 {
 	if (!g_session.hist)
 		return (" ");
@@ -79,11 +79,11 @@ static void		for_each_process_loop(int *ret, int (*core)())
 	}
 }
 
-int		for_each_in_group(t_process* leader, int (*core)(), bool(*delete)())
+int		for_each_in_group(t_process *leader, int (*core)(), bool (*delete)())
 {
-	t_group*	remember;
-	t_process*	remember_leader;
-	int 		ret;
+	t_group		*remember;
+	t_process	*remember_leader;
+	int			ret;
 
 	ret = SUCCESS;
 	remember = g_session.groups;

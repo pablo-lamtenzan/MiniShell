@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 12:03:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:33:02 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 08:50:22 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,13 @@
 
 static void		print_all_leaders(int fd, int flags)
 {
-	t_group*	remember;
+	t_group		*remember;
 
 	remember = g_session.groups;
-
 	g_session.groups = g_session.nil->prev;
 	while (g_session.groups != g_session.nil->next)
 	{
-		if (!(flags & 2 && group_condition(g_session.groups, is_not_running)) 
+		if (!(flags & 2 && group_condition(g_session.groups, is_not_running))
 				&& !(flags & 4 \
 				&& group_condition(g_session.groups, is_not_stopped))
 				&& !group_condition(g_session.groups, is_exited))
@@ -34,7 +33,7 @@ static void		print_all_leaders(int fd, int flags)
 
 static void		print_all_groups(int fd, int flags)
 {
-	t_group*	remember;
+	t_group		*remember;
 
 	remember = g_session.groups;
 	g_session.groups = g_session.nil->prev;
@@ -53,7 +52,7 @@ static int		jobs_init_exeptions(t_exec *args, int *flags, int *nb)
 			&& args->av[*nb + 1][0] == '-')
 	{
 		ft_dprintf(STDERR_FILENO, "minish: jobs: %s: invalid option\n%s%s", \
-			args->av[1] ,"jobs: usage: jobs: [-lnprs]", \
+			args->av[1], "jobs: usage: jobs: [-lnprs]", \
 			"[jobspec ...] or jobs -x command [args]\n");
 		return (CMD_BAD_USE);
 	}
@@ -95,7 +94,7 @@ static int		jobs_jobspec(t_exec *args, int nb, int flags)
 	return (SUCCESS);
 }
 
-int				ft_jobs(t_exec* args)
+int				ft_jobs(t_exec *args)
 {
 	int			flags;
 	int			exept;
@@ -108,7 +107,7 @@ int				ft_jobs(t_exec* args)
 	if (args->ac > 1 && args->ac > nb + 1)
 		return (jobs_jobspec(args, nb, flags));
 	if (flags & 8)
-		print_all_groups(args->fds[1] ,flags);
+		print_all_groups(args->fds[1], flags);
 	else
 		print_all_leaders(args->fds[1], flags);
 	return (SUCCESS);
