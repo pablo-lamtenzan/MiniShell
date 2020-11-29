@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:06:10 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 06:17:11 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,17 @@ static bool		fg_delete()
 	{
 		zombies_list_remove_node(g_session.groups);
 		history_session_remove_node(g_session.groups);
+		(void)next;
+		/*
 		next = g_session.groups->next;
 		g_session.groups->prev->next = next;
 		next->prev = g_session.groups->prev;
+		delete_group_input(&g_session.groups);
+		delete_processes(g_session.groups);
 		free(g_session.groups);
 		g_session.groups = next;
+		*/
+		group_remove(&g_session.groups);
 		return (true);
 	}
 	return (false);

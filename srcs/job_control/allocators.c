@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:22:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:07:54 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 06:32:48 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 t_session			*session_start()
 {
+	ft_bzero(&g_session, sizeof(t_session));
 	if (!(g_session.nil = ft_calloc(1, sizeof(t_group))))
 		return (NULL);
 	g_session.nil->next = g_session.nil;

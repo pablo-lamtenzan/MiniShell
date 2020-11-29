@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 04:45:29 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 06:43:23 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,9 +211,12 @@ bool					is_jobspec(const char *string);
 ** Static destructors
 */
 void					delete_groups();
-void					delete_processes(t_group *group);
+void					delete_processes(t_group **group);
 void					delete_zombies();
+void					delete_deadzombies();
 void					delete_hist();
+void					delete_input_line();
+void					delete_group_input(t_group **group);
 
 /*
 ** Jobs control builtins utils

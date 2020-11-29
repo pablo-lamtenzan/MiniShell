@@ -116,6 +116,7 @@ SRCS	=	$(addprefix $(SRCDIR)/,\
 		process.c\
 		session.c\
 		static_destructors.c\
+		static_destructors2.c\
 		wait_processes.c\
 		zombies_catcher.c\
 		zombies.c\

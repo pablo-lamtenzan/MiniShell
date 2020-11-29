@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 04:46:49 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 05:46:08 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,7 @@ void					execute_process(t_exec *info, t_exec_status exec_st)
 			g_session.groups->active_processes->flags \
 			& STOPPED ? -1 : (unsigned char)g_session.st;
 	}
-	else
-		destroy_execve_args(info);
+	destroy_execve_args(info);
 }
 
 static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
@@ -70,7 +69,8 @@ static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
     	exec_st = execute_cmd(cmd->a, info);
 	else
 	{
-		if (!(info->av = tokens_expand((t_tok**)&cmd->a, &g_session.env, &info->ac)))
+		if (!(info->av = tokens_expand((t_tok**)&cmd->a, \
+			&g_session.env, &info->ac)))
 			return (RDR_BAD_ALLOC);
 		if (!info->av[0])
 			return (SUCCESS);
@@ -108,7 +108,8 @@ t_exec_status			execute_bst(t_bst *root)
 	if (!(group = group_new()))
 		return (BAD_ALLOC);
 	g_session.flags |= OPEN_PRINT;
-	group->input = ft_split(g_session.input_line[g_session.input_line_index++], ESPACE);
+	group->input = ft_split(g_session.input_line[g_session.input_line_index++],\
+		ESPACE);
 	group_push_front(group);
 	ft_bzero(&info, sizeof(t_exec));
 	info = (t_exec){.fds[FDS_STDOUT]=FDS_STDOUT, .fds[FDS_AUX]=FDS_AUX};

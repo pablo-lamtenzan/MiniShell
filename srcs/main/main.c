@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 04:37:36 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 06:35:12 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,11 @@ void					quit_process(int signal)
 	(void)signal;
 }
 
+void					keyboard_interrupt(int signal)
+{
+	(void)signal;
+}
+
 int						main(int ac, const char **av, const char **ep)
 {
 	static const char*	seps[4] = {"||", "&&", ";", NULL};
@@ -177,6 +182,7 @@ int						main(int ac, const char **av, const char **ep)
 	signal(SIGTSTP, suspend_process);
 	signal(SIGCHLD, zombie_catcher);
 	signal(SIGQUIT, quit_process);
+	signal(SIGINT, keyboard_interrupt);
 	//signal(SIGTTIN, test);
 	//signal(SIGTERM, todo); // need documentation about this
 	if (!init(ac, av, ep))
@@ -190,6 +196,7 @@ int						main(int ac, const char **av, const char **ep)
 		if ((lex_status = lex_tokens(&lex_data)) == LEX_EOK)
 		{
 			g_session.input_line_index = 0;
+			delete_input_line();
 			g_session.input_line = split_separators(g_term.line->data, seps);
 			exec(lex_data.tokens);
 			lex_data.tokens = NULL;

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:41:09 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:37:20 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 06:46:28 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,9 @@ void			group_remove(t_group **target)
 	prev = &(*target)->prev;
 	(*next)->prev = *prev;
 	(*prev)->next = *next;
+	delete_group_input(target);
+	delete_processes(target);
+	free((*target)->nil);
 	free(*target);
 	*target = NULL;
 }

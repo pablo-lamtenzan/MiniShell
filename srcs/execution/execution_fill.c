@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 06:50:22 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ t_exec_status		build_execve_args(t_exec *info)
 	}
 	if (!(info->ep = (char*const*)env_export(g_session.env)))
 	{
-		free(info->execution_path);
+		//free(info->execution_path);
 		return (RDR_BAD_ALLOC);
 	}
 	return (SUCCESS);
@@ -68,6 +68,8 @@ t_exec_status		build_execve_args(t_exec *info)
 void				destroy_execve_args(t_exec *info)
 {
 	free((char **)info->ep);
+	info->ep = NULL;
 	free((void*)info->execution_path);
+	info->execution_path = NULL;
 	info->exec = NULL;
 }

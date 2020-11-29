@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 10:27:06 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 23:05:39 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 07:01:25 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,12 @@ size_t		get_separators_nb(char *input, const char **separators)
 				aux = ft_strlen(separators[y])))
 			{
 				size++;
-				i += (int)aux - 1; // or good or 1 more further
+				i += (int)aux - 1;
 				break ;
 			}
 		}
 	}
-	return (size);
+	return (size + 1);
 }
 
 size_t		get_elem_size(char *input, int *i, const char **separators)
@@ -92,21 +92,20 @@ int			copy_inter_seps(char ***res, char *input, const char **separators)
 char		**split_separators(char *input, const char **separators)
 {
 	char**	res = NULL;
-	size_t	size;
+	char**	freed;
 	
-	size = 0;
-	if (!(res = ft_calloc((size = \
-		get_separators_nb(input, separators)) + 1, sizeof(char*))))
+	if (!(res = ft_calloc(\
+		get_separators_nb(input, separators) + 1, sizeof(char*))))
 		return (NULL);
-	res[size] = NULL;
 	if (!(copy_inter_seps(&res, input, separators)))
-		return (false); // TO DO: free in case of error
-
-	// TESTING
-	/*
-	write(2, "\n", 1);
-	for (size_t i = 0; i < size + 1; i++)
-		ft_dprintf(2, "SLIPT BY SEPARATORS[%lu]: \'%s\'\n", i, res[i]);
-	*/
+	{
+		while (*res)
+		{
+			freed = res;
+			res++;
+			free(freed);
+		}
+		res = NULL;
+	}
 	return (res);
 }
