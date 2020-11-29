@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 16:23:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 22:46:30 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 08:09:48 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static t_bst		*build_job(t_tok *tokens, t_tok *delim)
 	return (node);
 }
 
-static t_bst		*build_bst(t_tok	*tokens)
+static t_bst		*build_bst(t_tok *tokens)
 {
 	t_tok			*tk1;
 	t_tok			*tk2;
@@ -46,7 +46,7 @@ static t_bst		*build_bst(t_tok	*tokens)
 	if ((tk1 = find_next_operator(tokens, PIPE))->type & PIPE)
 		node = new_node(NULL, NULL, tk1->type);
 	else if ((tk2 = find_next_operator(tokens, REDIR_GR | REDIR_LE \
-			 | REDIR_DG))->type & (REDIR_GR | REDIR_LE | REDIR_DG))
+			| REDIR_DG))->type & (REDIR_GR | REDIR_LE | REDIR_DG))
 		node = new_node(NULL, NULL, tk2->type);
 	else
 		node = new_node(NULL, NULL, CMD);
@@ -54,8 +54,8 @@ static t_bst		*build_bst(t_tok	*tokens)
 	if (find_next_operator(tk1->next, PIPE)->type & PIPE)
 		node->b = build_bst(tk1->next);
 	else if (find_next_operator(tk1, REDIR_GR | REDIR_LE \
-			 | REDIR_DG)->type & (REDIR_GR | REDIR_LE | REDIR_DG))
-			node->b = build_job(tk1->next, NULL);
+			| REDIR_DG)->type & (REDIR_GR | REDIR_LE | REDIR_DG))
+		node->b = build_job(tk1->next, NULL);
 	else
 		node->b = build_job(tk1->next, NULL);
 	return (node);

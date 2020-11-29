@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 16:44:01 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 22:47:27 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 08:08:35 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,17 +39,17 @@ t_tok		*find_last_operator(t_tok *start, t_tok *end)
 	return (start);
 }
 
-t_bst		*new_node(void* a, void* b, t_tok_t type)
+t_bst		*new_node(void *a, void *b, t_tok_t type)
 {
-    t_bst	*new_node;
+	t_bst	*new_node;
 
-    if (!(new_node = malloc(sizeof(t_bst))))
-        return (NULL);
-    *new_node = (t_bst){.a=a, .b=b, .type=type};
-    return (new_node);
+	if (!(new_node = malloc(sizeof(t_bst))))
+		return (NULL);
+	*new_node = (t_bst){.a=a, .b=b, .type=type};
+	return (new_node);
 }
 
-t_tok		*is_pipe_cmd(t_tok* start)
+t_tok		*is_pipe_cmd(t_tok *start)
 {
 	t_tok	*cp;
 
