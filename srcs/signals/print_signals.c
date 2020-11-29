@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 09:16:18 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void			print_job_args(int fd, t_process *target)
 			target->data[i + 1] ? " " : "");
 }
 
-void			print_index_args(t_process* target)
+void			print_index_args(t_process *target)
 {
 	const bool	leader = is_leader(target);
 	char		*index;
@@ -35,8 +35,7 @@ void			print_index_args(t_process* target)
 		leader ? index = \
 		ft_itoa(background_index_get(g_session.nil, target)) : " ",
 		leader ? "]" : " ",
-		is_in_history(target)
-		);
+		is_in_history(target));
 	print_job_args(2, target);
 	free(index);
 }
