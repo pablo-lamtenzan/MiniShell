@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 10:27:06 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 07:01:25 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 09:06:32 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,13 @@ size_t		get_elem_size(char *input, int *i, const char **separators)
 	return (size);
 }
 
+// to norme int vars[4]
 int			copy_inter_seps(char ***res, char *input, const char **separators)
 {
 	int		y;
 	int		i;
 	int		z;
+	int		remember;
 	size_t	aux;
 
 	i = 0;
@@ -79,7 +81,7 @@ int			copy_inter_seps(char ***res, char *input, const char **separators)
 				y = -1;
 			}
 		}
-		int remember = i;
+		remember = i;
 		if ((aux = get_elem_size(input, &i, separators)))
 		{
 			if (!((*res)[z++] = ft_strndup(&input[remember], aux)))
@@ -91,9 +93,10 @@ int			copy_inter_seps(char ***res, char *input, const char **separators)
 
 char		**split_separators(char *input, const char **separators)
 {
-	char**	res = NULL;
-	char**	freed;
-	
+	char	**res;
+	char	**freed;
+
+	res = NULL;
 	if (!(res = ft_calloc(\
 		get_separators_nb(input, separators) + 1, sizeof(char*))))
 		return (NULL);
@@ -101,8 +104,7 @@ char		**split_separators(char *input, const char **separators)
 	{
 		while (*res)
 		{
-			freed = res;
-			res++;
+			freed = res++;
 			free(freed);
 		}
 		res = NULL;

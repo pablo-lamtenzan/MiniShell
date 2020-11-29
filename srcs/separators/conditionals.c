@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/05 00:01:31 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 08:58:29 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,16 +27,16 @@ int			handle_conditionals(int parser_st, int *flags, int parentheses_nb)
 		*flags &= ~SKIP;
 	if (*flags & SKIP)
 		return (false);
-	if (parser_st & AND && g_session.st) 
+	if (parser_st & AND && g_session.st)
 		return (!(*flags = SKIP | (parentheses_nb ? SKIPED_AND : 0)));
-	if (parser_st & OR && !g_session.st) 
+	if (parser_st & OR && !g_session.st)
 	{
 		*flags &= ~NOT_SKIPED_OR;
 		return (!(*flags |= SKIP));
 	}
 	else if (parentheses_nb)
 		*flags |= NOT_SKIPED_OR;
-	if (!(*flags & SKIP)) 
+	if (!(*flags & SKIP))
 		*flags = *flags & NOT_SKIPED_OR ? NOT_SKIPED_OR : NONE;
 	return (true);
 }
