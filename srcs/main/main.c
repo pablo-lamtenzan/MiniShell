@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 00:27:29 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 01:17:39 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,12 +83,6 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st)
 // TO DO: [CHILL] kill by index so far kills the last instead of return error
 // TO DO: [CHILL] Zombie cattcher doest rm the last zombie (sleep 2 , sleep 3, bg, bg, jobs)
 	// Test before to call SIGCHLD for every cmd
-
-// builtins check (before end the norme on them)
-	// fg -> all ok
-	// bg -> all ok
-	// wait -> all ok
-	// disown -> all ok
 	
 
 
@@ -192,7 +186,6 @@ int						main(int ac, const char **av, const char **ep)
 
 	signal(SIGTSTP, suspend_process);
 	signal(SIGCHLD, zombie_catcher);
-	// TO DO: Block "^\" printing
 	signal(SIGQUIT, quit_process);
 	//signal(SIGTTIN, test);
 	//signal(SIGTERM, todo); // need documentation about this

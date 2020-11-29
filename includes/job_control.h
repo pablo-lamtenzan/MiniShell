@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 00:12:39 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 01:11:34 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,5 +226,6 @@ bool					ignore_pid(int ac, char*const* av);
 int						parse_flags(int ac, char*const *av, const char* pattern, int *nb_flags);
 const char				*is_in_history(t_process* target);
 char					**split_separators(char *input, const char **separators);
+int						for_each_in_group(t_process* leader, int (*core)(), bool(*delete)());
 
 #endif

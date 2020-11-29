@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 18:03:18 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 22:30:38 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 01:31:46 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,40 @@ const char		*is_in_history(t_process* target)
 		return ("-");
 	else
 		return (" ");
+}
+
+static void		for_each_process_loop(int *ret, int (*core)())
+{
+	while (g_session->groups->active_processes \
+				!= g_session->groups->nil)
+	{
+		*ret = core();
+		g_session->groups->active_processes = \
+		g_session->groups->active_processes->next;
+	}
+}
+
+int		for_each_in_group(t_process* leader, int (*core)(), bool(*delete)())
+{
+	t_group*	remember;
+	t_process*	remember_leader;
+	int 		ret;
+
+	ret = SUCCESS;
+	remember = g_session->groups;
+	g_session->groups = g_session->groups->next;
+	while (g_session->groups != g_session->nil)
+	{
+		if (g_session->groups->active_processes->pid == leader->pid)
+		{
+			remember_leader = g_session->groups->active_processes;
+			for_each_process_loop(&ret, core);
+			if ((delete && !delete()) || !delete)
+				g_session->groups->active_processes = remember_leader;
+			break ;
+		}
+		g_session->groups = g_session->groups->next;
+	}
+	g_session->groups = remember;
+	return (ret);
 }
