@@ -6,17 +6,14 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:19:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 04:24:59 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <job_control.h>
 #include <signals.h>
 
-/*
-replaces update_zombies
-*/
-bool				zombies_list_update(t_group	 *update)
+bool				zombies_list_update(t_group	*update)
 {
 	t_background	*fill;
 	t_background	*zombie;
@@ -30,16 +27,24 @@ bool				zombies_list_update(t_group	 *update)
 	return (true);
 }
 
-/*
-replaces
-remove_zombie_node not used i think
-*/
+static void			remove_zombie_node(t_background **prev, t_background **next,
+		t_background **first)
+{
+	if (*prev)
+		(*prev)->next = g_session.zombies->next;
+	if (*first == g_session.zombies)
+		*first = NULL;
+	if (*next == g_session.zombies)
+		*next = (*next)->next;
+	free(g_session.zombies);
+	g_session.zombies = NULL;
+}
 
 void				zombies_list_remove_node(t_group *target)
 {
-	t_background*	prev;
-	t_background*	next;
-	t_background*	first;
+	t_background	*prev;
+	t_background	*next;
+	t_background	*first;
 
 	first = g_session.zombies;
 	prev = NULL;
@@ -50,14 +55,7 @@ void				zombies_list_remove_node(t_group *target)
 	{
 		if (target->nil->next->pid == g_session.zombies->background_group->nil->next->pid)
 		{
-			if (prev)
-				prev->next = g_session.zombies->next;
-			if (first == g_session.zombies)
-				first = NULL;
-			if (next == g_session.zombies)
-				next = next->next;
-			free(g_session.zombies);
-			g_session.zombies = NULL;
+			remove_zombie_node(&prev, &next, &first);
 			break ;
 		}
 		prev = g_session.zombies;
@@ -70,15 +68,10 @@ void				zombies_list_remove_node(t_group *target)
 		g_session.zombies = next;
 }
 
-
-
-/*
-replaces remove_exited_zombies
-*/
-void			zombies_list_purge_exited_groups()
+void				zombies_list_purge_exited_groups()
 {
-	t_group		*first;
-	t_group		*next;
+	t_group			*first;
+	t_group			*next;
 
 	first = g_session.groups;
 	while (g_session.groups && g_session.groups != g_session.nil)
@@ -98,43 +91,11 @@ void			zombies_list_purge_exited_groups()
 	g_session.groups = first;
 }
 
-void		deadzombie_push_back(t_deadzombie* target)
+void				zombies_list_purge_exited_zombies()
 {
-	t_deadzombie*	remember;
-
-	if (!(remember = g_session.dead_zombies))
-	{
-		g_session.dead_zombies = target;
-		return ;
-	}
-	while (g_session.dead_zombies->next)
-		g_session.dead_zombies = g_session.dead_zombies->next;
-	g_session.dead_zombies->next = target;
-}
-
-void		deadzombies_print()
-{
-	t_deadzombie*	next;
-
-	while (g_session.dead_zombies)
-	{
-		next = g_session.dead_zombies->next;
-		g_session.dead_zombies->deadzombie->flags &= ~NO_DELETE;
-		print_signal(STDERR_FILENO, g_session.dead_zombies->deadzombie, STANDART);
-		free(g_session.dead_zombies);
-		g_session.dead_zombies = next;
-	}
-	g_session.dead_zombies = NULL;
-}
-
-/*
-replaces rm_end_zombies
-*/
-void		zombies_list_purge_exited_zombies()
-{
-	t_background*	next;
-	t_background*	first;
-	t_background*	prev;
+	t_background	*next;
+	t_background	*first;
+	t_background	*prev;
 	bool			freed;
 
 	prev = NULL;
@@ -147,7 +108,6 @@ void		zombies_list_purge_exited_zombies()
 			if (first && first == g_session.zombies)
 				first = first->next;
 			next = g_session.zombies->next;
-			// TO DO: test remove history node here
 			free(g_session.zombies);
 			g_session.zombies = next;
 			if (prev)
@@ -158,39 +118,4 @@ void		zombies_list_purge_exited_zombies()
 			g_session.zombies = g_session.zombies->next;
 	}
 	g_session.zombies = first;
-}
-
-void				deadzombie_remove_node(t_process *target)
-{
-	t_deadzombie*	prev;
-	t_deadzombie*	next;
-	t_deadzombie*	first;
-
-	first = g_session.dead_zombies;
-	prev = NULL;
-	next = NULL;
-	if (g_session.dead_zombies)
-		next = g_session.dead_zombies->next;
-	while (g_session.dead_zombies)
-	{
-		if (target->pid == g_session.dead_zombies->deadzombie->pid)
-		{
-			if (prev)
-				prev->next = g_session.dead_zombies->next;
-			if (first == g_session.dead_zombies)
-				first = NULL;
-			if (next == g_session.dead_zombies)
-				next = next->next;
-			free(g_session.dead_zombies);
-			g_session.dead_zombies = NULL;
-			break ;
-		}
-		prev = g_session.dead_zombies;
-		g_session.dead_zombies = g_session.dead_zombies->next;
-	}
-	if (first && first->deadzombie && first->deadzombie->pid \
-			== target->pid)
-		g_session.dead_zombies = first->next;
-	else
-		g_session.dead_zombies = next;
 }

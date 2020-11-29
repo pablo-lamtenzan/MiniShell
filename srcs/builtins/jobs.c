@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 12:03:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:06:24 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:33:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ static void		print_all_leaders(int fd, int flags)
 	{
 		if (!(flags & 2 && group_condition(g_session.groups, is_not_running)) 
 				&& !(flags & 4 \
-				&& group_condition(g_session.groups, is_not_stopped)))
+				&& group_condition(g_session.groups, is_not_stopped))
+				&& !group_condition(g_session.groups, is_exited))
 			print_signal(fd, g_session.groups->nil->next, STANDART);
 		g_session.groups = g_session.groups->prev;
 	}
@@ -39,7 +40,8 @@ static void		print_all_groups(int fd, int flags)
 	g_session.groups = g_session.nil->prev;
 	while (g_session.groups != g_session.nil->next)
 	{
-		print_group(fd, g_session.groups->nil->next, flags, remember);
+		if (!group_condition(g_session.groups, is_exited))
+			print_group(fd, g_session.groups->nil->next, flags, remember);
 		g_session.groups = g_session.groups->prev;
 	}
 	g_session.groups = remember;
@@ -86,7 +88,8 @@ static int		jobs_jobspec(t_exec *args, int nb, int flags)
 			print_group(args->fds[1], *target, flags, g_session.groups);
 		else if (!(flags & 2 && group_condition(g_session.groups, \
 				is_not_running)) && !(flags & 4 \
-				&& group_condition(g_session.groups, is_not_stopped)))
+				&& group_condition(g_session.groups, is_not_stopped))
+				&& !group_condition(g_session.groups, is_exited))
 			print_signal(args->fds[1], *target, STANDART);
 	}
 	return (SUCCESS);

@@ -100,14 +100,16 @@ SRCS	=	$(addprefix $(SRCDIR)/,\
 		allocators.c\
 		background.c\
 		conditions.c\
+		dead_zombies.c\
 		dynamic_group_destructors.c\
 		dynamic_process_destructors.c\
 		exit_helper.c\
 		group_operations.c\
 		group.c\
 		history_session.c\
-		jobspec_parse_name.c\
+		jobspec_parser_name.c\
 		jobspec_parser_utils.c\
+		jobspec_parser_utils2.c\
 		jobspec_parser.c\
 		process_operations.c\
 		process.c\

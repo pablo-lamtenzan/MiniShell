@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:41:09 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:37:20 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 #include <libft.h>
 #include <stdlib.h>
 
-void			group_remove(t_group** target)
+void			group_remove(t_group **target)
 {
-	t_group**	next;
-	t_group**	prev;
+	t_group		**next;
+	t_group		**prev;
 
 	next = &(*target)->next;
 	prev = &(*target)->prev;
@@ -29,7 +29,7 @@ void			group_remove(t_group** target)
 
 void			group_pop_front()
 {
-	t_group*	fill;
+	t_group		*fill;
 	
 	if (session_empty())
 		return ;
@@ -41,7 +41,7 @@ void			group_pop_front()
 
 void			group_pop_back()
 {
-	t_group*	fill;
+	t_group		*fill;
 
 	if (session_empty())
 		return ;

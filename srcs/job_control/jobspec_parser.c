@@ -6,14 +6,14 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:44:40 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 04:08:34 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <job_control.h>
 #include <libft.h>
 
-t_process		**get_process_by_index(t_group* groups, size_t index)
+t_process		**get_process_by_index(t_group *groups, size_t index)
 {
 	if (!index)
 		return (NULL);
@@ -26,7 +26,7 @@ t_process		**get_process_by_index(t_group* groups, size_t index)
 	return (index ? NULL : &groups->nil->next);
 }
 
-t_process		**get_process_by_pid(t_group* groups, pid_t pid)
+t_process		**get_process_by_pid(t_group *groups, pid_t pid)
 {
 	t_process fill;
 
@@ -40,9 +40,7 @@ t_process		**get_process_by_pid(t_group* groups, pid_t pid)
 	return (NULL);
 }
 
-// get process by name (unfinished) in another .c
-
-t_process		**get_process_by_history(t_group* groups, size_t index)
+t_process		**get_process_by_history(t_group *groups, size_t index)
 {
 	t_history*	hist_addr;
 
@@ -56,7 +54,7 @@ t_process		**get_process_by_history(t_group* groups, size_t index)
 	return (get_process_by_pid(groups, hist_addr->group->nil->next->pid));
 }
 
-t_process		**process_search(char*const* av)
+t_process		**process_search(char*const *av)
 {
 	if (is_jobspec(av[1]))
 	{
@@ -73,7 +71,8 @@ t_process		**process_search(char*const* av)
 		return (NULL);
 }
 
-t_process**		jobspec_parser(int ac, char*const* av, bool (*fill)(int ac, char*const* av))
+t_process**		jobspec_parser(int ac, char*const *av, 
+		bool (*fill)(int ac, char*const *av))
 {
 	if (fill && !fill(ac, av))
 		return (NULL);

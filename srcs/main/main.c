@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 04:37:36 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,20 +74,12 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st)
 	exit(exit_return[exec_st]);
 }
 
-// TO DO: endzombies history (should not print)
-// TO DO: do fork for builtins too but empty forks to call SIGCHID if (fork == 0){exit(builting ret value)}
-// TO DO: bg + jobs prints 2 times (mute in jobs the exited nodes in the zombie catcher)
-
-// TO DO: [CHILL] Zombie cattcher doest rm the last zombie (sleep 2 , sleep 3, bg, bg, jobs)
-	// Test before to call SIGCHLD for every cmd
-	
-
+// TO DO: free all
 
 // TO DO: [UNKNOWN] cat | cat -e | echo a resarch (now we have all the job control build, must be easy to fix)
 
 // UNWORKING STUFF I FOUND
 // echo $? doesnt work
-
 
 void	exec(t_tok* tokens)
 {

@@ -6,13 +6,13 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:11:08 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 04:08:53 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <job_control.h>
 
-pid_t			process_get_leader_pid(t_group* nil, t_process* target)
+pid_t			process_get_leader_pid(t_group *nil, t_process *target)
 {
 	t_group		*groups;
 
@@ -26,7 +26,7 @@ pid_t			process_get_leader_pid(t_group* nil, t_process* target)
 	return (0);
 }
 
-bool			is_leader(t_process* target)
+bool			is_leader(t_process *target)
 {
 	t_group		*groups;
 

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:11:48 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:45:26 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,6 @@
 #include <libft.h>
 #include <stdlib.h>
 
-/*
-replaces update_session_history_v2
-*/
 bool				history_session_update(t_group *update)
 {
 	t_history		*next;
@@ -31,9 +28,6 @@ bool				history_session_update(t_group *update)
 	return (true);
 }
 
-/*
-replaces history pop front v2
-*/
 void				history_pop_front()
 {
 	t_history		*fill;
@@ -46,14 +40,24 @@ void				history_pop_front()
 	}
 }
 
-/*
-replaces remove_history_node
-*/
+static void			remove_hist_node(t_history **prev, t_history **next, 
+	t_history **first)
+{
+	if (*prev)
+		(*prev)->next = g_session.hist->next;
+	if (*first == g_session.hist)
+		*first = NULL;
+	if (*next == g_session.hist)
+		*next = (*next)->next;
+	free(g_session.hist);
+	g_session.hist = NULL;
+}
+
 void				history_session_remove_node(t_group *target)
 {
-	t_history*	prev;
-	t_history*	next;
-	t_history*	first;
+	t_history		*prev;
+	t_history		*next;
+	t_history		*first;
 
 	first = g_session.hist;
 	prev = NULL;
@@ -64,14 +68,7 @@ void				history_session_remove_node(t_group *target)
 	{
 		if (target->nil->next->pid == g_session.hist->group->nil->next->pid)
 		{
-			if (prev)
-				prev->next = g_session.hist->next;
-			if (first == g_session.hist)
-				first = NULL;
-			if (next == g_session.hist)
-				next = next->next;
-			free(g_session.hist);
-			g_session.hist = NULL;
+			remove_hist_node(&prev, &next, &first);
 			break ;
 		}
 		prev = g_session.hist;
@@ -84,9 +81,6 @@ void				history_session_remove_node(t_group *target)
 		g_session.hist = next;
 }
 
-/*
-replaves rm_exited_from_history
-*/
 void				history_session_purge_exited()
 {
 	t_history		*first;

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:03:32 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 04:33:59 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,8 +132,6 @@ void					history_session_purge_exited();
 t_group					*group_new();
 bool					group_empty(t_group *group);
 void					group_insert(t_group *prev, t_group *next, t_group *target);
-//void					group_remove(t_group** prev, t_group** next);
-void					group_remove_v2(t_group **target);
 void					group_remove(t_group **target);
 void					group_push_front(t_group *target);
 void					group_push_back(t_group *target);
@@ -150,15 +148,16 @@ bool					is_active(t_process *target);
 bool					is_exited(t_process *target);
 bool					is_removable(t_process *target);
 bool					is_coredump(t_process *target);
+bool 					is_signaled(t_process *target);
 
 /*
 ** Process
 */
 t_process*				process_new(pid_t pid, int wstatus, char*const *data);
 void					process_insert(t_process *prev, t_process *next, t_process *target);
-void					process_remove(t_process **prev, t_process **next);
-//void					process_remove(t_process** target);
-void					remove_process(t_process** target);
+//void					process_remove(t_process **prev, t_process **next);
+void					process_remove(t_process** target);
+//void					remove_process(t_process** target);
 void					process_push_front(t_group **group, t_process *target);
 void					process_push_back(t_group **group, t_process *target);
 void					process_pop_font(t_group **group);

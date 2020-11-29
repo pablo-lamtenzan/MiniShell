@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:56:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 04:16:42 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,34 @@
 #include <job_control.h>
 #include <signals.h>
 
-/*
-replaces wait_processes_v2
-*/
+static void		end_parent_execs()
+{
+	if (!(group_condition(g_session.groups, is_signaled)))
+		group_pop_front();
+	deadzombies_print();
+	zombies_list_purge_exited_groups();
+	g_session.flags &= ~RESTRICT_CATCH;
+}
+
+static void		end_child_execs()
+{
+	group_return_handler();
+	deadzombies_print();
+	if (!group_condition(g_session.groups, is_active))
+		group_pop_front();
+	zombies_list_purge_exited_groups();
+	g_session.flags &= ~RESTRICT_CATCH;
+}
+
 t_exec_status	wait_processes(t_exec_status st)
 {
-	t_group*	group;
-	t_process*	leader;
+	t_group		*group;
+	t_process	*leader;
 
 	g_session.flags |= RESTRICT_CATCH;
 	if (!(group = g_session.groups) || g_session.groups->active_processes == g_session.groups->nil)
 	{
-		// TO DO: Check that condition with more group members
-		if (!(g_session.groups->active_processes->flags & SIGNALED))
-			group_pop_front();
-		deadzombies_print();
-		zombies_list_purge_exited_groups();
-		g_session.flags &= ~RESTRICT_CATCH;
+		end_parent_execs();
 		return (st);
 	}
 	leader = group->active_processes;
@@ -44,11 +55,6 @@ t_exec_status	wait_processes(t_exec_status st)
 		group->active_processes = group->active_processes->next;
 	}
 	group->active_processes = leader;
-	group_return_handler();
-	deadzombies_print();
-	if (!group_condition(g_session.groups, is_active))
-		group_pop_front();
-	zombies_list_purge_exited_groups();
-	g_session.flags &= ~RESTRICT_CATCH;
+	end_child_execs();
 	return (st);
 }

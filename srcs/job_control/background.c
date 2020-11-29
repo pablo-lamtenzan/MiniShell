@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:30:37 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:45:59 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,6 @@
 #include <job_control.h>
 #include <libft.h>
 
-/*
-replaces update_background
-*/
 void		background_update(t_process **target)
 {
 	(*target)->flags &= ~(BACKGROUND | STOPPED);
@@ -64,9 +61,6 @@ t_process		**background_find(t_process *target, const char *search_type,
 	return (NULL);
 }
 
-/*
-replaces get_background_index
-*/
 size_t			background_index_get(t_group *nil, t_process *target)
 {
 	size_t		index;
@@ -95,8 +89,6 @@ size_t			background_index_get(t_group *nil, t_process *target)
 	return (index);
 }
 
-/*
-replaces force_exit_background*/
 void			background_force_exit()
 {
 	t_group		*curr;
@@ -124,8 +116,6 @@ void			background_force_exit()
 	g_session.groups = curr;
 }
 
-/* replaces is_active_background 
-*/
 bool			is_background_active()
 {
 	t_group		*curr;

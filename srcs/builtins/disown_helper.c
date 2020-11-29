@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 02:55:51 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:05:45 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 04:35:39 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void			disown_process(t_process **target, int flags)
 			background_index_get(g_session.nil, *target), \
 			process_get_leader_pid(g_session.nil, *target));
 	deadzombie_remove_node(*target);
-	remove_process(target);
+	process_remove(target);
 }
 
 void			disown_group(t_process *leader, int flags, t_group* itself)

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:55:48 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:47:05 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,6 @@ bool			group_condition(t_group *target, bool (*condition)(t_process*))
 	return (false);
 }
 
-/*
-replaces get_group
-*/
 t_group			*group_get(t_process *target)
 {
 	t_group		*curr;
@@ -62,9 +59,6 @@ t_group			*group_get(t_process *target)
 	return (NULL);
 }
 
-/*
-replaces get_group_return
-*/
 void			group_return_handler()
 {
 	t_process	*leader;

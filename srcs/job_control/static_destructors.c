@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:34:43 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:08:17 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 04:09:39 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void		delete_groups()
 	}
 }
 
-void		delete_processes(t_group* group)
+void		delete_processes(t_group *group)
 {
 	t_process*	fill;
 	int			i;
