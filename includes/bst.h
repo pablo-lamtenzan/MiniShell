@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 16:45:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 22:24:23 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 09:28:01 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,25 +27,25 @@
 /*
 ** Operators
 */
-# define NONE			TOK_NONE
-# define REDIR_GR		OP_REDIR_WR
-# define REDIR_LE		OP_REDIR_RD
-# define REDIR_DG		OP_REDIR_WA
-# define REDIR_DL		OP_HEREDOC
-# define PIPE			OP_PIPE
-# define CMD			TOK_CMD
+# define NONE		TOK_NONE
+# define REDIR_GR	OP_REDIR_WR
+# define REDIR_LE	OP_REDIR_RD
+# define REDIR_DG	OP_REDIR_WA
+# define REDIR_DL	OP_HEREDOC
+# define PIPE		OP_PIPE
+# define CMD		TOK_CMD
 
-typedef struct      s_bst
+typedef struct		s_bst
 {
 	void			*a;
 	void			*b;
-	t_tok_t         type;
+	t_tok_t			type;
 }                   t_bst;
 
 /*
 ** BST create
 */
-t_bst*				bst(t_tok *tokens);
+t_bst				*bst(t_tok *tokens);
 
 /*
 ** BST destroy

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 11:35:08 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 22:19:42 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 09:45:04 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,13 @@
 */
 typedef enum			e_exec_status
 {
-	SUCCESS				= 0,
-	BAD_ALLOC			= 1,
-	BAD_CLOSE			= 2,
-	BAD_PIPE			= 3,
-	BAD_DUP2			= 4,
-	BAD_FORK			= 5,
-	BAD_PATH			= 6
+	SUCCESS,
+	BAD_ALLOC,
+	BAD_CLOSE,
+	BAD_PIPE,
+	BAD_DUP2,
+	BAD_FORK,
+	BAD_PATH
 }						t_exec_status;
 
 /*

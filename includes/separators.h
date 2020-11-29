@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/04 23:46:13 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 22:12:07 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 09:26:55 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 /*
 ** Local
 */
-#include <lexer/token.h>
+# include <lexer/token.h>
 
 /*
 ** Separators
