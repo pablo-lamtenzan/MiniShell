@@ -6,15 +6,16 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 08:52:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 08:05:31 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 
-t_exec_status			print_redirection_error(t_redir_status rstatus, char** filename)
+t_exec_status			print_redirection_error(t_redir_status rstatus,
+		char **filename)
 {
-	const char*	error_msg[3] = {
+	const char			*error_msg[3] = {
 		"minish: %s: No such file or directory\n",
 		"minish: %s: ambigous redirect\n",
 		"minish: %s: File name too long\n"
@@ -27,7 +28,8 @@ t_exec_status			print_redirection_error(t_redir_status rstatus, char** filename)
 	return (SUCCESS);
 }
 
-static t_redir_status	try_catch_filename(char*** filename, char* var_name, int height)
+static t_redir_status	try_catch_filename(char ***filename, char *var_name,
+		int height)
 {
     if (height != 1)
 	{
@@ -40,7 +42,8 @@ static t_redir_status	try_catch_filename(char*** filename, char* var_name, int h
 }
 
 // TODO: Refactor
-static t_redir_status	try_catch_in(t_exec** info, t_tok_t type, const char* filename)
+static t_redir_status	try_catch_in(t_exec **info, t_tok_t type,
+		const char *filename)
 {
 	int					tmp;
 	(void)type;

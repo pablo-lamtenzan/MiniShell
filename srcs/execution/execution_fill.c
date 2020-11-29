@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 06:50:22 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 08:02:34 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <errors.h>
 #include <errno.h>
 
-static int			ft_fork(t_exec *info) 
+static int			ft_fork(t_exec *info)
 {
 	int				child_st;
 	t_process		*process;
@@ -52,16 +52,14 @@ int					execute_child(t_exec *info)
 
 t_exec_status		build_execve_args(t_exec *info)
 {
-	if (!(info->execution_path = path_get(info->av[0], env_get(g_session.env, "PATH", 4))))
+	if (!(info->execution_path = path_get(info->av[0], \
+		env_get(g_session.env, "PATH", 4))))
 	{
 		g_session.st = CMD_NOT_FOUND;
 		return (BAD_PATH);
 	}
 	if (!(info->ep = (char*const*)env_export(g_session.env)))
-	{
-		//free(info->execution_path);
 		return (RDR_BAD_ALLOC);
-	}
 	return (SUCCESS);
 }
 

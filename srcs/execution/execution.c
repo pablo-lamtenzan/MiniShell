@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 05:46:08 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 08:01:07 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@
 static t_exec_status	get_exec(t_exec *info)
 {
 	size_t				i;
-	int 				status;
+	int					status;
 	const char			*names[] = {"echo", "cd", "pwd", "export", "unset", \
 		"env", "exit", "fg", "jobs", "kill", "bg", "disown", "wait"};
 	const int			lengths[] = {4, 3, 4, 7, 5, 4, 5, 2, 4, 4, 2, 6, 4};
-	const t_executable 	builtins[] = {&ft_echo, &ft_cd, &ft_pwd, &ft_export, \
+	const t_executable	builtins[] = {&ft_echo, &ft_cd, &ft_pwd, &ft_export, \
 		&ft_unset, &ft_env, &ft_exit, &ft_fg, &ft_jobs, &ft_kill, &ft_bg, \
 		&ft_disown, &ft_wait};
 
@@ -57,7 +57,7 @@ void					execute_process(t_exec *info, t_exec_status exec_st)
 
 static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
 {
-	char**				filename;
+	char				**filename;
 	t_redir_status		redir_st;
 	t_exec_status		exec_st;
 
@@ -66,7 +66,7 @@ static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
 		return (print_redirection_error(redir_st, filename));
 	if (!(cmd->type & CMD) || (cmd->type & PIPE \
 			&& !(((t_bst*)cmd->a)->type & CMD)))
-    	exec_st = execute_cmd(cmd->a, info);
+		exec_st = execute_cmd(cmd->a, info);
 	else
 	{
 		if (!(info->av = tokens_expand((t_tok**)&cmd->a, \
@@ -85,15 +85,15 @@ static t_exec_status	execute_job(t_bst *job, t_exec *info)
 {
 	t_exec_status		st;
 
-	st = SUCCESS; // TODO: init
+	st = SUCCESS;
 	info->handle_dup = NONE;
 	if (open_pipe_fds(&info, job->b ? job->type : 0) != SUCCESS)
 		return (BAD_PIPE);
 	if (!(job->type & (CMD | REDIR_DG | REDIR_GR | REDIR_LE)))
-    	st = execute_cmd(job->a, info);
-    if (st == SUCCESS && job->b && job->type & PIPE)
-        st = execute_job(job->b, info);
-	else if (st == SUCCESS) // can i put this else in the second "if" as a ternary ?
+		st = execute_cmd(job->a, info);
+	if (st == SUCCESS && job->b && job->type & PIPE)
+		st = execute_job(job->b, info);
+	else if (st == SUCCESS)
 		st = execute_cmd(job, info);
 	return (st);
 }
@@ -102,7 +102,7 @@ t_exec_status			execute_bst(t_bst *root)
 {
 	t_exec				info;
 	t_exec_status		st;
-	t_group*			group;
+	t_group				*group;
 
 	keep_alive_killed_processes();
 	if (!(group = group_new()))

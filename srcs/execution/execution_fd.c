@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:10:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 22:32:59 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 08:03:51 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,16 @@ t_exec_status		dup_stdio(int *fds)
 	return (SUCCESS);
 }
 
-// TODO: Rename READ to WRITE and WRITE to READ
+/*
+** TODO: Rename READ to WRITE and WRITE to READ
+*/
+
 t_exec_status		open_pipe_fds(t_exec **info, t_tok_t type)
 {
 	bool			update;
 	int				pipe_fds[2];
 
 	update = false;
-
 	if ((*info)->fds[FDS_STDOUT] != FDS_STDOUT && (update = true))
 	{
 		(*info)->fds[FDS_STDOUT] = FDS_STDOUT;
