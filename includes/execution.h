@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:51:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 22:25:18 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 09:49:14 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@
 
 typedef struct s_exec	t_exec;
 
-typedef int	(*t_executable)(t_exec *args);
+typedef int				(*t_executable)(t_exec *args);
 
 typedef struct			s_exec
 {
