@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:49:49 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 07:40:37 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 12:25:44 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ t_process		**get_process_by_name(t_group *groups, const char *av)
 			else
 			{
 				while (++count < \
-						matrix_height((char**)groups->active_processes->data))
+					matrix_height((char**)groups->active_processes->data))
 					if (cond2(groups, av, count))
 						return (&groups->active_processes);
 			}

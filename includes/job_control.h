@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 09:47:14 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 11:26:43 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,8 @@ bool					session_empty();
 /*
 ** Signals interactions
 */
-void					zombie_catcher(int signal);
+void					zombies_catcher(int signal);
+void					signal_handler();
 
 /*
 ** History

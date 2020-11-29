@@ -123,6 +123,7 @@ SRCS	=	$(addprefix $(SRCDIR)/,\
 	)\
 	$(addprefix main/,\
 		main.c\
+		async.c\
 	)\
 	$(addprefix path/,\
 		path.c\

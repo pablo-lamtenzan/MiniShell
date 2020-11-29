@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:44:40 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 07:44:21 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 12:27:11 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ t_process		**get_process_by_index(t_group *groups, size_t index)
 {
 	if (!index)
 		return (NULL);
-	ft_dprintf(2, "[INDEX][index: %lu]\n", index);
 	while (index && groups->next != g_session.nil)
 	{
 		index--;

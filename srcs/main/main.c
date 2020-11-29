@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 06:35:12 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 11:39:20 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,11 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st)
 	exit(exit_return[exec_st]);
 }
 
-// TO DO: free all
+// TO DO: when i have at least 4 background processes and they end if i use jobs inly prints 2 done
+// TO DO: ZOmbies catcher has heap after use one time:
+	// a lot of processes in background and a history node was freed during it execution
+	// more background processes i have this bug is more probable
+	// have to fix it for any number of background processes
 
 // TO DO: [UNKNOWN] cat | cat -e | echo a resarch (now we have all the job control build, must be easy to fix)
 
@@ -98,17 +102,6 @@ void	exec(t_tok* tokens)
 			free_bst(root);
 		}
 	}
-}
-
-void	suspend_process(int signal)
-{
-	(void)signal;
-
-	// TO DO: Block this before free all
-	write(STDERR_FILENO, "\n", 1);
-	if (g_session.flags & OPEN_PRINT)
-		print_signal(STDERR_FILENO, g_session.groups->active_processes, STANDART);
-	
 }
 
 void	test(int signal)
@@ -162,15 +155,7 @@ void					syntax_error(t_lex_st *st)
 	g_term.pos = 0;
 }
 
-void					quit_process(int signal)
-{
-	(void)signal;
-}
 
-void					keyboard_interrupt(int signal)
-{
-	(void)signal;
-}
 
 int						main(int ac, const char **av, const char **ep)
 {
@@ -179,12 +164,7 @@ int						main(int ac, const char **av, const char **ep)
 	t_lex_err			lex_status;
 	t_lex_st			lex_data;
 
-	signal(SIGTSTP, suspend_process);
-	signal(SIGCHLD, zombie_catcher);
-	signal(SIGQUIT, quit_process);
-	signal(SIGINT, keyboard_interrupt);
-	//signal(SIGTTIN, test);
-	//signal(SIGTERM, todo); // need documentation about this
+	signal_handler();
 	if (!init(ac, av, ep))
 		return (1);
 	ft_bzero(&lex_data, sizeof(lex_data));

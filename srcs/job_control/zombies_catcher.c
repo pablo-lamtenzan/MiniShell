@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 01:45:31 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 07:54:24 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 12:15:33 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,12 @@ void				catch_group(t_group **group)
 	(*group)->active_processes = leader;
 }
 
-void				zombie_catcher(int signal)
+void				zombies_catcher(int signal)
 {
 	t_background	*first;
 
 	(void)signal;
+	sleep (1);
 	if (g_session.flags & RESTRICT_CATCH)
 		return ;
 	first = g_session.zombies;
