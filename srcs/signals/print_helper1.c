@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 04:41:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 22:53:55 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 02:50:37 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void			print_signal_(int fd, t_process *target, int mode, int signal)
 
 	aux = group_get(target);
 	ft_dprintf(fd, "%s", (!mode && stopped_signal_group(aux, false) \
-	? "Stopped" : get_signal(signal)));
+	? "Stopped" : get_signal_(signal)));
 }
 
 void			print_exit_st(int fd, int exit_st)

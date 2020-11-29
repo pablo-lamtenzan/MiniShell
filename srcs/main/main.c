@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 01:17:39 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 02:53:06 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,7 @@ void	suspend_process(int signal)
 {
 	(void)signal;
 
+	// TO DO: Block this before free all
 	write(STDERR_FILENO, "\n", 1);
 	if (g_session->flags & OPEN_PRINT)
 		print_signal(STDERR_FILENO, g_session->groups->active_processes, STANDART);

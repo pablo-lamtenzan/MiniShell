@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 02:11:27 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 02:51:49 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <unistd.h>
 # include <stdbool.h>
 # include <sys/types.h>
+# include <signal.h>
 
 /*
 ** Local
@@ -228,6 +229,13 @@ void					print_group(int fd, t_process* leader, int flags,
 int						wait_process(t_process** target, int flags);
 int						wait_group(t_process *leader, int flags, t_group *itself);
 int						wait_all_groups(int flags);
+const char*				get_signal(const char* key, int* res);
+void					kill_core(int signal);
+int						handle_current(t_process ***target, 
+						const char *jobspec);
+void					kill_group(t_process *leader, int signal,
+						t_group *itself);
+void					print_all_signals();
 
 /*
 ** Utils
@@ -239,5 +247,28 @@ int						parse_flags(int ac, char*const *av, const char* pattern, int *nb_flags)
 const char				*is_in_history(t_process* target);
 char					**split_separators(char *input, const char **separators);
 int						for_each_in_group(t_process* leader, int (*core)(), bool(*delete)());
+
+
+static const char*		g_signals[31] = {
+	"SIGHUP", "SIGINT", "SIGQUIT", "SIGILL", "SIGTRAP", "SIGABRT",
+	"SIGBUS", "SIGFPE", "SIGKILL", "SIGUSR1", "SIGSEGV", "SIGUSR2",
+	"SIGPIPE", "SIGALRM", "SIGTERM", "SIGSTKFLT", "SIGCHLD", "SIGCONT",
+	"SIGSTOP", "SIGSTPT", "SIGTTIN", "SIGTTOU", "SIGURG", "SIGXCPU",
+	"SIGXFSZ", "SIGVALRM", "SIGPROF", "SIGWINCH", "SIGIO", "SIGPWR",
+	"SIGSYS"
+};
+
+static const int		g_values[31] = {
+	SIGHUP, SIGINT, SIGQUIT, SIGILL, SIGTRAP, SIGABRT, SIGBUS, SIGFPE,
+	SIGKILL, SIGUSR1, SIGSEGV, SIGUSR2, SIGPIPE, SIGALRM, SIGTERM,
+	SIGSTKFLT, SIGCHLD, SIGCONT, SIGSTOP, SIGTSTP, SIGTTIN, SIGTTOU,
+	SIGURG, SIGXCPU, SIGXFSZ, SIGVTALRM, SIGPROF, SIGWINCH,
+	SIGIO, SIGPWR, SIGSYS
+};
+
+static const char*		g_cvalues[31] = { "1", "2", "3", "4", "5", "6", "7",
+	"8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", 
+	"20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"
+};
 
 #endif

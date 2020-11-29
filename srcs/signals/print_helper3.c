@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 04:50:26 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 22:57:02 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 02:50:45 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 
-const char				*get_signal(int index)
+const char				*get_signal_(int index)
 {
 	static const char	*signals[33] = {
 		"Hangup", "", "Quit", "Illegal instruction", "Trace/breakpoint trap", \

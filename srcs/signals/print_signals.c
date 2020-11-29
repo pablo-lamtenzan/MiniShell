@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 22:59:31 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 02:50:50 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void			print_signal(int fd, t_process *target, int mode)
 			|| target->flags & SIGNALED || exit_status > 0)
 	{
 		padding_spaces(fd, ft_strlen((!mode \
-		&& group_condition(aux, is_active) ? "Stopped" : get_signal(signal))));
+		&& group_condition(aux, is_active) ? "Stopped" : get_signal_(signal))));
 		mode ? print_job_args(fd, target) : print_group_line(fd, aux);
 	}
 	write(fd, "\n", 1);

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 03:28:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 22:26:55 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 02:50:10 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 */
 void					print_index_args(t_process* target);
 void					print_job_args(int fd, t_process* target);
-const char				*get_signal(int index);
+const char				*get_signal_(int index);
 int						check_wstatus(t_process* target, int *exit_status);
 bool					stopped_signal(int signal, bool ignore_tstp);
 bool					stopped_signal_group(t_group *group, bool wcheck);
