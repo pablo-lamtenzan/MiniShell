@@ -63,6 +63,7 @@ SRCS	=	$(addprefix $(SRCDIR)/,\
 		jobs_helper.c\
 		jobs.c\
 		kill.c\
+		wait_helper.c\
 		wait.c\
 		disown.c\
 		builtins_utils.c\

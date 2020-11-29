@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 01:56:26 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 02:11:27 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,7 +224,10 @@ void					print_process(int fd, t_process* target, int flags);
 bool					is_not_running(t_process* target);
 bool					is_not_stopped(t_process* target);
 void					print_group(int fd, t_process* leader, int flags,
-		t_group* itself);
+						t_group* itself);
+int						wait_process(t_process** target, int flags);
+int						wait_group(t_process *leader, int flags, t_group *itself);
+int						wait_all_groups(int flags);
 
 /*
 ** Utils
