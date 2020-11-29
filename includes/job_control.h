@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 04:33:59 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 04:45:29 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,9 +155,7 @@ bool 					is_signaled(t_process *target);
 */
 t_process*				process_new(pid_t pid, int wstatus, char*const *data);
 void					process_insert(t_process *prev, t_process *next, t_process *target);
-//void					process_remove(t_process **prev, t_process **next);
 void					process_remove(t_process** target);
-//void					remove_process(t_process** target);
 void					process_push_front(t_group **group, t_process *target);
 void					process_push_back(t_group **group, t_process *target);
 void					process_pop_font(t_group **group);
@@ -220,6 +218,7 @@ void					delete_hist();
 /*
 ** Jobs control builtins utils
 */
+void					keep_alive_killed_processes();
 void					print_process(int fd, t_process* target, int flags);
 bool					is_not_running(t_process* target);
 bool					is_not_stopped(t_process* target);

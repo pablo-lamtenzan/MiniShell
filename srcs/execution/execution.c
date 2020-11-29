@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:26:52 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 04:46:49 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,54 +98,12 @@ static t_exec_status	execute_job(t_bst *job, t_exec *info)
 	return (st);
 }
 
-void					next_is_killed(bool *stop)
-{
-	t_group*			fill;
-
-	if (g_session.groups->next->active_processes->flags & SIGNALED \
-			&& !(g_session.groups->next->active_processes->flags & KILLED))
-	{
-		g_session.groups->next->active_processes->flags &= ~SIGNALED;
-		fill = g_session.groups->next;
-		g_session.groups->next->next->prev = g_session.groups;
-		g_session.groups->next = g_session.groups->next->next;
-		free(fill);
-		*stop = true;
-	}
-}
-
-void					keep_alive_killed_processes()
-{
-	bool				stop;
-
-	stop = false;
-	// TO DO: This shoulb be applied to all the group no only the leaders
-	if (!session_empty() && !group_empty(g_session.groups) \
-			&& g_session.groups->active_processes)
-	{
-		if (g_session.groups->active_processes->flags & SIGNALED \
-				&& !(g_session.groups->active_processes->flags & KILLED))
-		{
-			g_session.groups->active_processes->flags &= ~SIGNALED;
-			stop = true;
-			group_pop_front();
-		}
-		if (g_session.groups->next && g_session.groups->next != g_session.nil)
-			next_is_killed(&stop);
-		// TO DO: Remember to do it to all memebers
-		if (!stop && g_session.groups->active_processes->flags & KILLED)
-			g_session.groups->active_processes->flags &= ~KILLED;
-	} 
-}
-
 t_exec_status			execute_bst(t_bst *root)
 {
 	t_exec				info;
 	t_exec_status		st;
 	t_group*			group;
 
-
-	// TO DO: This shoulb be applied to all the group no only the leaders
 	keep_alive_killed_processes();
 	if (!(group = group_new()))
 		return (BAD_ALLOC);

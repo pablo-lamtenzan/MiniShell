@@ -111,6 +111,7 @@ SRCS	=	$(addprefix $(SRCDIR)/,\
 		jobspec_parser_utils.c\
 		jobspec_parser_utils2.c\
 		jobspec_parser.c\
+		print_terminated.c\
 		process_operations.c\
 		process.c\
 		session.c\
