@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:41:09 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 06:46:28 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 07:55:23 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ void			group_remove(t_group **target)
 	*target = NULL;
 }
 
-void			group_pop_front()
+void			group_pop_front(void)
 {
 	t_group		*fill;
-	
+
 	if (session_empty())
 		return ;
 	fill = g_session.nil->next->next;
@@ -42,7 +42,7 @@ void			group_pop_front()
 	g_session.groups = g_session.nil->next;
 }
 
-void			group_pop_back()
+void			group_pop_back(void)
 {
 	t_group		*fill;
 
@@ -53,4 +53,3 @@ void			group_pop_back()
 	g_session.nil->prev = fill;
 	g_session.groups = g_session.nil->next;
 }
-

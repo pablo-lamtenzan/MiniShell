@@ -6,15 +6,15 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 04:43:25 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 04:45:10 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 07:45:42 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <job_control.h>
 
-static void				next_is_killed(bool *stop)
+static void		next_is_killed(bool *stop)
 {
-	t_group*			fill;
+	t_group		*fill;
 
 	if (g_session.groups->next->active_processes->flags & SIGNALED \
 			&& !(g_session.groups->next->active_processes->flags & KILLED))
@@ -28,9 +28,9 @@ static void				next_is_killed(bool *stop)
 	}
 }
 
-void					keep_alive_killed_processes()
+void			keep_alive_killed_processes(void)
 {
-	bool				stop;
+	bool		stop;
 
 	stop = false;
 	if (!session_empty() && !group_empty(g_session.groups) \
@@ -47,5 +47,5 @@ void					keep_alive_killed_processes()
 			next_is_killed(&stop);
 		if (!stop && g_session.groups->active_processes->flags & KILLED)
 			g_session.groups->active_processes->flags &= ~KILLED;
-	} 
+	}
 }

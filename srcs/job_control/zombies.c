@@ -6,14 +6,14 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:19:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 04:24:59 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 07:23:45 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <job_control.h>
 #include <signals.h>
 
-bool				zombies_list_update(t_group	*update)
+bool				zombies_list_update(t_group *update)
 {
 	t_background	*fill;
 	t_background	*zombie;
@@ -53,7 +53,8 @@ void				zombies_list_remove_node(t_group *target)
 		next = g_session.zombies->next;
 	while (g_session.zombies)
 	{
-		if (target->nil->next->pid == g_session.zombies->background_group->nil->next->pid)
+		if (target->nil->next->pid \
+			== g_session.zombies->background_group->nil->next->pid)
 		{
 			remove_zombie_node(&prev, &next, &first);
 			break ;
@@ -61,14 +62,14 @@ void				zombies_list_remove_node(t_group *target)
 		prev = g_session.zombies;
 		g_session.zombies = g_session.zombies->next;
 	}
-	if (first && first->background_group && first->background_group->nil->next->pid \
-			== target->nil->next->pid)
+	if (first && first->background_group \
+		&& first->background_group->nil->next->pid == target->nil->next->pid)
 		g_session.zombies = first->next;
 	else
 		g_session.zombies = next;
 }
 
-void				zombies_list_purge_exited_groups()
+void				zombies_list_purge_exited_groups(void)
 {
 	t_group			*first;
 	t_group			*next;
@@ -77,7 +78,6 @@ void				zombies_list_purge_exited_groups()
 	while (g_session.groups && g_session.groups != g_session.nil)
 	{
 		next = g_session.groups->next;
-		
 		if (!group_condition(g_session.groups, is_active) \
 				&& group_condition(g_session.groups, is_removable))
 		{
@@ -91,7 +91,7 @@ void				zombies_list_purge_exited_groups()
 	g_session.groups = first;
 }
 
-void				zombies_list_purge_exited_zombies()
+void				zombies_list_purge_exited_zombies(void)
 {
 	t_background	*next;
 	t_background	*first;

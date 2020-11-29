@@ -6,14 +6,14 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 04:21:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 04:29:38 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 07:50:17 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <job_control.h>
 #include <signals.h>
 
-void				deadzombie_push_back(t_deadzombie* target)
+void				deadzombie_push_back(t_deadzombie *target)
 {
 	t_deadzombie	*remember;
 
@@ -27,7 +27,7 @@ void				deadzombie_push_back(t_deadzombie* target)
 	g_session.dead_zombies->next = target;
 }
 
-void				deadzombies_print()
+void				deadzombies_print(void)
 {
 	t_deadzombie	*next;
 

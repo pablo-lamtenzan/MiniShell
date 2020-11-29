@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:30:21 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 07:03:22 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 07:38:42 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void		handle_exit_with_active_background(int exit_status)
 		write(STDERR_FILENO, "There are stopped jobs.\n", 25);
 }
 
-void		update_exit_count(const char* name)
+void		update_exit_count(const char *name)
 {
 	if (!ft_strncmp(name, "exit", 5) && g_session.exit_count == 1)
 		g_session.exit_count++;

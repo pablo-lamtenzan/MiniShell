@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:56:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 04:16:42 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 07:40:58 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <job_control.h>
 #include <signals.h>
 
-static void		end_parent_execs()
+static void		end_parent_execs(void)
 {
 	if (!(group_condition(g_session.groups, is_signaled)))
 		group_pop_front();
@@ -23,7 +23,7 @@ static void		end_parent_execs()
 	g_session.flags &= ~RESTRICT_CATCH;
 }
 
-static void		end_child_execs()
+static void		end_child_execs(void)
 {
 	group_return_handler();
 	deadzombies_print();
@@ -39,7 +39,8 @@ t_exec_status	wait_processes(t_exec_status st)
 	t_process	*leader;
 
 	g_session.flags |= RESTRICT_CATCH;
-	if (!(group = g_session.groups) || g_session.groups->active_processes == g_session.groups->nil)
+	if (!(group = g_session.groups) \
+		|| g_session.groups->active_processes == g_session.groups->nil)
 	{
 		end_parent_execs();
 		return (st);

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:54:07 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 04:37:14 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 07:37:35 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <libft.h>
 #include <stdlib.h>
 
-void			process_remove(t_process** target)
+void			process_remove(t_process **target)
 {
 	t_process	**next;
 	t_process	**prev;

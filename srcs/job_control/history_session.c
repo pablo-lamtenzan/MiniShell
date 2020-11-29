@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:11:48 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:45:26 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 07:54:49 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ bool				history_session_update(t_group *update)
 	return (true);
 }
 
-void				history_pop_front()
+void				history_pop_front(void)
 {
 	t_history		*fill;
 
@@ -40,7 +40,7 @@ void				history_pop_front()
 	}
 }
 
-static void			remove_hist_node(t_history **prev, t_history **next, 
+static void			remove_hist_node(t_history **prev, t_history **next,
 	t_history **first)
 {
 	if (*prev)
@@ -81,13 +81,12 @@ void				history_session_remove_node(t_group *target)
 		g_session.hist = next;
 }
 
-void				history_session_purge_exited()
+void				history_session_purge_exited(void)
 {
 	t_history		*first;
 	t_history		*next;
 
 	first = g_session.hist;
-
 	while (g_session.hist)
 	{
 		next = g_session.hist->next;
@@ -101,4 +100,3 @@ void				history_session_purge_exited()
 	}
 	g_session.hist = first;
 }
-

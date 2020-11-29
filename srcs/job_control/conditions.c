@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:00:32 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 04:10:57 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 07:49:13 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ bool			is_coredump(t_process *target)
 	return (WCOREDUMP(target->wstatus));
 }
 
-bool 			is_signaled(t_process *target)
+bool			is_signaled(t_process *target)
 {
 	return (target->flags & SIGNALED);
 }

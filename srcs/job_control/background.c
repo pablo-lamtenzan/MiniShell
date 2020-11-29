@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:30:37 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:45:59 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 07:36:58 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,31 +16,32 @@
 #include <job_control.h>
 #include <libft.h>
 
-void		background_update(t_process **target)
+void			background_update(t_process **target)
 {
 	(*target)->flags &= ~(BACKGROUND | STOPPED);
 	while (waitpid((*target)->pid, &(*target)->wstatus, WUNTRACED) <= 0)
-			;
+		;
 	if (WIFEXITED((*target)->wstatus))
 		(*target)->ret = WEXITSTATUS((*target)->wstatus);
-	else if(WIFSIGNALED((*target)->wstatus))
+	else if (WIFSIGNALED((*target)->wstatus))
 		(*target)->ret = SIGNAL_BASE + WTERMSIG((*target)->wstatus);
 	else if (WIFSTOPPED((*target)->wstatus))
 	{
 		(*target)->ret = WSTOPSIG((*target)->wstatus);
 		(*target)->flags |= STOPPED;
 		history_session_update(group_get(*target));
-	}	
+	}
 }
 
 t_process		**background_find(t_process *target, const char *search_type,
-		t_group	*group)
+		t_group *group)
 {
 	const char	*modes[2] = { "PID", "STA" };
-	int 		i;
-	t_process	*remember = group->active_processes;
+	int			i;
+	t_process	*remember;
 
 	i = 0;
+	remember = group->active_processes;
 	while (i < 2 && ft_strncmp(modes[i], search_type, 3))
 		i++;
 	while (group->active_processes != group->nil)
@@ -89,7 +90,7 @@ size_t			background_index_get(t_group *nil, t_process *target)
 	return (index);
 }
 
-void			background_force_exit()
+void			background_force_exit(void)
 {
 	t_group		*curr;
 	t_process	*leader;
@@ -116,7 +117,7 @@ void			background_force_exit()
 	g_session.groups = curr;
 }
 
-bool			is_background_active()
+bool			is_background_active(void)
 {
 	t_group		*curr;
 

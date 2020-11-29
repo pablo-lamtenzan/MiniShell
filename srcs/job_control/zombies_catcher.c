@@ -6,14 +6,14 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 01:45:31 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 04:17:04 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 07:54:24 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <job_control.h>
 
-void		handle_wstatus(t_group **group)
+void				handle_wstatus(t_group **group)
 {
 	if (WIFEXITED((*group)->active_processes->wstatus))
 	{
@@ -34,9 +34,9 @@ void		handle_wstatus(t_group **group)
 			WTERMSIG((*group)->active_processes->wstatus);
 }
 
-void		catch_group(t_group **group)
+void				catch_group(t_group **group)
 {
-	t_process*	leader;
+	t_process		*leader;
 
 	leader = (*group)->active_processes;
 	while ((*group)->active_processes != (*group)->nil)
@@ -58,9 +58,9 @@ void		catch_group(t_group **group)
 
 void				zombie_catcher(int signal)
 {
-	(void)signal;
 	t_background	*first;
 
+	(void)signal;
 	if (g_session.flags & RESTRICT_CATCH)
 		return ;
 	first = g_session.zombies;

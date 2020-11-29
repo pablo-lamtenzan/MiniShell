@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 03:52:48 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 04:06:38 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 07:51:09 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int				matrix_height(char **matrix)
 	return (it - matrix);
 }
 
-bool			is_not_ambigous_v2(const char* niddle)
+bool			is_not_ambigous_v2(const char *niddle)
 {
 	t_group		*groups;
 	int			count;

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:34:43 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 07:11:34 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 07:46:47 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <libft.h>
 #include <stdlib.h>
 
-void				session_end()
+void				session_end(void)
 {
 	g_session.flags = 0;
 	background_force_exit();
@@ -26,7 +26,7 @@ void				session_end()
 	free(g_session.nil);
 }
 
-void				delete_deadzombies()
+void				delete_deadzombies(void)
 {
 	t_deadzombie	*next;
 
@@ -38,9 +38,10 @@ void				delete_deadzombies()
 	}
 }
 
-void				delete_groups()
+void				delete_groups(void)
 {
 	t_group			*fill;
+
 	while (g_session.groups != g_session.nil)
 	{
 		fill = g_session.groups;
@@ -56,7 +57,7 @@ void				delete_groups()
 void				delete_group_input(t_group **group)
 {
 	int				i;
-	
+
 	i = -1;
 	while ((*group)->input && (*group)->input[++i])
 		free((*group)->input[i]);
@@ -73,7 +74,8 @@ void				delete_processes(t_group **group)
 	while ((*group)->active_processes != (*group)->nil)
 	{
 		fill = (*group)->active_processes;
-		while ((*group)->active_processes->data && ++i < matrix_height(((char**)(*group)->active_processes->data)))
+		while ((*group)->active_processes->data && ++i < \
+				matrix_height(((char**)(*group)->active_processes->data)))
 			free((*group)->active_processes->data[i]);
 		free((char**)(*group)->active_processes->data);
 		(*group)->active_processes->data = NULL;

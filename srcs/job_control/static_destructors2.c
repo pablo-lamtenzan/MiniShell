@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 07:09:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 07:10:35 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 07:20:18 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 #include <libft.h>
 #include <stdlib.h>
 
-
-void				delete_zombies()
+void				delete_zombies(void)
 {
 	t_background	*fill;
 
@@ -28,7 +27,7 @@ void				delete_zombies()
 	}
 }
 
-void		delete_hist()
+void				delete_hist(void)
 {
 	t_history		*fill;
 
@@ -41,7 +40,7 @@ void		delete_hist()
 	}
 }
 
-void				delete_input_line()
+void				delete_input_line(void)
 {
 	int				i;
 

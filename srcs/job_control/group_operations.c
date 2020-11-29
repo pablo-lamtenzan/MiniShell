@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:55:48 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:47:05 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 07:55:12 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ t_group			*group_get(t_process *target)
 	return (NULL);
 }
 
-void			group_return_handler()
+void			group_return_handler(void)
 {
 	t_process	*leader;
 

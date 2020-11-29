@@ -6,14 +6,15 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:07:32 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 04:09:23 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 07:53:25 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <job_control.h>
 #include <libft.h>
 
-void		process_insert(t_process *prev, t_process *next, t_process *target)
+void			process_insert(t_process *prev, t_process *next,
+		t_process *target)
 {
 	prev->next = target;
 	next->prev = target;
@@ -21,9 +22,9 @@ void		process_insert(t_process *prev, t_process *next, t_process *target)
 	target->prev = prev;
 }
 
-void		process_push_front(t_group **group, t_process *target)
+void			process_push_front(t_group **group, t_process *target)
 {
-	t_process* fill;
+	t_process	*fill;
 
 	if (group_empty(*group))
 		process_insert((*group)->nil, (*group)->nil, target);
@@ -35,9 +36,9 @@ void		process_push_front(t_group **group, t_process *target)
 	(*group)->active_processes = (*group)->nil->next;
 }
 
-void		process_push_back(t_group **group, t_process *target)
+void			process_push_back(t_group **group, t_process *target)
 {
-	t_process* fill;
+	t_process	*fill;
 
 	if (group_empty(*group))
 		process_insert((*group)->nil, (*group)->nil, target);

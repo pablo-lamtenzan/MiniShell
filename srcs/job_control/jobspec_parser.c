@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:44:40 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 04:08:34 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 07:44:21 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ t_process		**get_process_by_pid(t_group *groups, pid_t pid)
 
 t_process		**get_process_by_history(t_group *groups, size_t index)
 {
-	t_history*	hist_addr;
+	t_history	*hist_addr;
 
 	hist_addr = NULL;
 	if (!g_session.hist || !index)
@@ -61,7 +61,8 @@ t_process		**process_search(char*const *av)
 		if (is_string_digit(&av[1][1]))
 			return (get_process_by_index(g_session.groups, ft_atoi(&av[1][1])));
 		else if (is_history_process(av[1]))
-			return (get_process_by_history(g_session.groups, get_history_index(&av[1][1])));
+			return (get_process_by_history(g_session.groups, \
+				get_history_index(&av[1][1])));
 		else
 			return (get_process_by_name(g_session.groups, &av[1][1]));
 	}
@@ -71,7 +72,7 @@ t_process		**process_search(char*const *av)
 		return (NULL);
 }
 
-t_process**		jobspec_parser(int ac, char*const *av, 
+t_process		**jobspec_parser(int ac, char*const *av,
 		bool (*fill)(int ac, char*const *av))
 {
 	if (fill && !fill(ac, av))

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:22:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 06:32:48 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 07:42:23 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <libft.h>
 #include <stdlib.h>
 
-t_session			*session_start()
+t_session			*session_start(void)
 {
 	ft_bzero(&g_session, sizeof(t_session));
 	if (!(g_session.nil = ft_calloc(1, sizeof(t_group))))
@@ -25,7 +25,7 @@ t_session			*session_start()
 	return (&g_session);
 }
 
-t_group				*group_new()
+t_group				*group_new(void)
 {
 	t_group			*group;
 
@@ -38,7 +38,7 @@ t_group				*group_new()
 	return (group);
 }
 
-t_process			*process_new(pid_t pid, int wstatus, char*const* data)
+t_process			*process_new(pid_t pid, int wstatus, char*const *data)
 {
 	t_process		*process;
 
@@ -48,10 +48,10 @@ t_process			*process_new(pid_t pid, int wstatus, char*const* data)
 	return (process);
 }
 
-t_deadzombie		*deadzombie_new(t_process* target)
+t_deadzombie		*deadzombie_new(t_process *target)
 {
 	t_deadzombie	*endzombie;
-	
+
 	if (!(endzombie = ft_calloc(1, sizeof(t_deadzombie))))
 		return (NULL);
 	*endzombie = (t_deadzombie){.deadzombie=target};
