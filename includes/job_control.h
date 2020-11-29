@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 02:51:49 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 02:59:08 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,6 +236,11 @@ int						handle_current(t_process ***target,
 void					kill_group(t_process *leader, int signal,
 						t_group *itself);
 void					print_all_signals();
+void					disown_process(t_process** target, int flags);
+int						disowm_delete();
+void					disown_core(int flags);
+void					disown_all_groups(int flags);
+void					disown_group(t_process* leader, int flags, t_group* itself);
 
 /*
 ** Utils
