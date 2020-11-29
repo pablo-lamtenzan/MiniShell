@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:57:02 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 01:09:17 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,13 @@ void			group_push_front(t_group* target)
 	t_group*	fill;
 
 	if (session_empty())
-		group_insert(g_session->nil, g_session->nil, target);
+		group_insert(g_session.nil, g_session.nil, target);
 	else
 	{
-		fill = g_session->nil->next;
-		group_insert(g_session->nil, fill, target);
+		fill = g_session.nil->next;
+		group_insert(g_session.nil, fill, target);
 	}
-	g_session->groups = g_session->nil->next;
+	g_session.groups = g_session.nil->next;
 }
 
 void			group_push_back(t_group* target)
@@ -44,11 +44,11 @@ void			group_push_back(t_group* target)
 	t_group*	fill;
 
 	if (session_empty())
-		group_insert(g_session->nil, g_session->nil, target);
+		group_insert(g_session.nil, g_session.nil, target);
 	else
 	{
-		fill = g_session->nil->prev;
-		group_insert(fill, g_session->nil->prev, target);
+		fill = g_session.nil->prev;
+		group_insert(fill, g_session.nil->prev, target);
 	}
-	g_session->groups = g_session->nil->next;
+	g_session.groups = g_session.nil->next;
 }

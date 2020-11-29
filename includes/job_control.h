@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 02:59:08 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:03:32 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ typedef struct			s_session
 	char				flags;
 }						t_session;
 
-t_session				*g_session;
+t_session				g_session;
 
 t_exec_status			wait_processes(t_exec_status st);
 

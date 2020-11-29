@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:34:43 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 03:50:33 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:08:17 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,16 @@ void		session_end()
 	delete_zombies();
 	delete_hist();
 	//delete_input_line();
-	free(g_session->nil);
-	free(g_session);
-	g_session = NULL;
+	free(g_session.nil);
 }
 
 void		delete_groups()
 {
 	t_group*		fill;
-	while (g_session->groups != g_session->nil)
+	while (g_session.groups != g_session.nil)
 	{
-		fill = g_session->groups;
-		g_session->groups = g_session->groups->next;
+		fill = g_session.groups;
+		g_session.groups = g_session.groups->next;
 		delete_processes(fill);
 		free(fill->nil);
 		free(fill);
@@ -63,10 +61,10 @@ void		delete_zombies()
 {
 	t_background*	fill;
 
-	while (g_session->zombies)
+	while (g_session.zombies)
 	{
-		fill = g_session->zombies;
-		g_session->zombies = g_session->zombies->next;
+		fill = g_session.zombies;
+		g_session.zombies = g_session.zombies->next;
 		free(fill);
 		fill = NULL;
 	}
@@ -76,10 +74,10 @@ void		delete_hist()
 {
 	t_history*	fill;
 
-	while (g_session->hist)
+	while (g_session.hist)
 	{
-		fill = g_session->hist;
-		g_session->hist = g_session->hist->next;
+		fill = g_session.hist;
+		g_session.hist = g_session.hist->next;
 		free(fill);
 		fill = NULL;
 	}
@@ -91,8 +89,8 @@ void		delete_input_line()
 	int		i;
 
 	i = -1;
-	while (g_session->input_line && g_session->input_line[++i])
-		free(g_session->input_line[i]);
-	free(g_session->input_line);
-	g_session->input_line = NULL;
+	while (g_session.input_line && g_session.input_line[++i])
+		free(g_session.input_line[i]);
+	free(g_session.input_line);
+	g_session.input_line = NULL;
 }

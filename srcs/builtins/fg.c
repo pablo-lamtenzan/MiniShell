@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 01:33:40 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:06:10 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,15 @@
 static bool		fg_delete()
 {
 	t_group		*next;
-	if (!group_condition(g_session->groups, is_active))
+	if (!group_condition(g_session.groups, is_active))
 	{
-		zombies_list_remove_node(g_session->groups);
-		history_session_remove_node(g_session->groups);
-		next = g_session->groups->next;
-		g_session->groups->prev->next = next;
-		next->prev = g_session->groups->prev;
-		free(g_session->groups);
-		g_session->groups = next;
+		zombies_list_remove_node(g_session.groups);
+		history_session_remove_node(g_session.groups);
+		next = g_session.groups->next;
+		g_session.groups->prev->next = next;
+		next->prev = g_session.groups->prev;
+		free(g_session.groups);
+		g_session.groups = next;
 		return (true);
 	}
 	return (false);
@@ -36,12 +36,12 @@ static bool		fg_delete()
 
 static int 		fg_core()
 {
-	if (g_session->groups->active_processes->flags & (STOPPED | BACKGROUND))
+	if (g_session.groups->active_processes->flags & (STOPPED | BACKGROUND))
 	{
-		kill(g_session->groups->active_processes->pid, SIGCONT);
-		background_update(&g_session->groups->active_processes);
-		if (!(g_session->groups->active_processes->wstatus & STOPPED))
-			return (g_session->groups->active_processes->ret);
+		kill(g_session.groups->active_processes->pid, SIGCONT);
+		background_update(&g_session.groups->active_processes);
+		if (!(g_session.groups->active_processes->wstatus & STOPPED))
+			return (g_session.groups->active_processes->ret);
 	}
 	return (SUCCESS);
 }
@@ -54,7 +54,7 @@ static int		fg_init_exceptions(t_exec *args)
 				args->av[1], "fg: usage: fg [job_spec]");
 		return (CMD_BAD_USE);
 	}
-    if (session_empty() || g_session->groups->next == g_session->nil)
+    if (session_empty() || g_session.groups->next == g_session.nil)
     {
         ft_dprintf(STDERR_FILENO, "minish: fg: %s: no such job\n", \
 			args->ac == 1 ? "current" : args->av[1]);
@@ -87,9 +87,9 @@ int				ft_fg(t_exec *args)
 
 	if ((exept = fg_init_exceptions(args)) != 42)
 		return (exept);
-    target = g_session->groups->active_processes == g_session->groups->nil \
-		? &g_session->groups->next->active_processes \
-		: &g_session->groups->active_processes;
+    target = g_session.groups->active_processes == g_session.groups->nil \
+		? &g_session.groups->next->active_processes \
+		: &g_session.groups->active_processes;
 	if (args->ac > 1 && !(target = jobspec_parser(args->ac, args->av, \
 			ignore_pid)))
 	{

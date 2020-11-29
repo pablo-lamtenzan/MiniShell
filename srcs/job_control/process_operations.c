@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:11:08 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 01:11:25 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ bool			is_leader(t_process* target)
 
 	if (!target)
 		return (false);
-	groups = g_session->groups;
-	while (groups != g_session->nil && groups->nil && groups->nil->next)
+	groups = g_session.groups;
+	while (groups != g_session.nil && groups->nil && groups->nil->next)
 	{
 		if (groups->nil->next && groups->nil->next->pid == target->pid)
 			return (true);

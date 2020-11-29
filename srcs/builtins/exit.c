@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:46 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 03:39:19 by chamada          ###   ########lyon.fr   */
+/*   Updated: 2020/11/29 03:06:05 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int		ft_exit(t_exec *args) // TODO: Callbacks in ft_term.h
 	int i;
 	bool st;
 
-	i = g_session->st;
+	i = g_session.st;
 	st = true;
 	if (args && args->ac > 1)
 	{

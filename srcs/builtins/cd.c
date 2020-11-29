@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 21:57:11 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/11/28 01:20:54 by chamada          ###   ########lyon.fr   */
+/*   Updated: 2020/11/29 03:05:38 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,17 @@ int	ft_cd(t_exec *args)
 
 	if (args->ac == 1)
 	{
-		if (!(home_dir = env_get(g_session->env, "HOME", 4)))
+		if (!(home_dir = env_get(g_session.env, "HOME", 4)))
 		{
-			ft_dprintf(2, "%s: %s: HOME not set\n", g_session->name, args->av[0]);
+			ft_dprintf(2, "%s: %s: HOME not set\n", g_session.name, args->av[0]);
 			return (STD_ERROR);
 		}
 		if (chdir(home_dir))
 		{
-			ft_dprintf(2, "%s: %s: %s\n", g_session->name, args->av[0], strerror(errno));
+			ft_dprintf(2, "%s: %s: %s\n", g_session.name, args->av[0], strerror(errno));
 			return (STD_ERROR);
 		}
-		env_set(&g_session->env, "PWD", home_dir, true);
+		env_set(&g_session.env, "PWD", home_dir, true);
 		return (SUCCESS);
 	}
 	else
@@ -41,7 +41,7 @@ int	ft_cd(t_exec *args)
 		ft_memcpy(path, args->av[1], ft_strlen(args->av[1]));
 		if (path[0] == '/' && chdir(path) == 0)
 		{
-			env_set(&g_session->env, "PWD", path, true);
+			env_set(&g_session.env, "PWD", path, true);
 			return (SUCCESS);
 		}
 		else
@@ -53,7 +53,7 @@ int	ft_cd(t_exec *args)
 			if (chdir(cwd) == 0)
 			{
 				getcwd(cwd, sizeof(cwd));
-				env_set(&g_session->env, "PWD", cwd, true);
+				env_set(&g_session.env, "PWD", cwd, true);
 				return (SUCCESS);
 			}
 			else

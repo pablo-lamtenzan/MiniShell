@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:22:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 22:00:22 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:07:54 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,12 @@
 
 t_session			*session_start()
 {
-	if (!(g_session = ft_calloc(1, sizeof(t_session)))
-			|| !(g_session->nil = ft_calloc(1, sizeof(t_group))))
+	if (!(g_session.nil = ft_calloc(1, sizeof(t_group))))
 		return (NULL);
-	g_session->nil->next = g_session->nil;
-	g_session->nil->prev = g_session->nil;
-	g_session->groups = g_session->nil;
-	return (g_session);
+	g_session.nil->next = g_session.nil;
+	g_session.nil->prev = g_session.nil;
+	g_session.groups = g_session.nil;
+	return (&g_session);
 }
 
 t_group				*group_new()

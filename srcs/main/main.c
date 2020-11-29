@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 02:53:06 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,10 +77,7 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st)
 // TO DO: endzombies history (should not print)
 // TO DO: do fork for builtins too but empty forks to call SIGCHID if (fork == 0){exit(builting ret value)}
 // TO DO: bg + jobs prints 2 times (mute in jobs the exited nodes in the zombie catcher)
-// TO DO: continious bg % LIKE KILL
 
-
-// TO DO: [CHILL] kill by index so far kills the last instead of return error
 // TO DO: [CHILL] Zombie cattcher doest rm the last zombie (sleep 2 , sleep 3, bg, bg, jobs)
 	// Test before to call SIGCHLD for every cmd
 	
@@ -117,8 +114,8 @@ void	suspend_process(int signal)
 
 	// TO DO: Block this before free all
 	write(STDERR_FILENO, "\n", 1);
-	if (g_session->flags & OPEN_PRINT)
-		print_signal(STDERR_FILENO, g_session->groups->active_processes, STANDART);
+	if (g_session.flags & OPEN_PRINT)
+		print_signal(STDERR_FILENO, g_session.groups->active_processes, STANDART);
 	
 }
 
@@ -132,15 +129,15 @@ static bool				init(int ac, const char **av, const char **ep)
 {
 	if (ac > 0 && session_start())
 	{
-		if ((g_session->name = ft_basename(av[0])))
+		if ((g_session.name = ft_basename(av[0])))
 		{
-			if ((g_session->env = env_import(ep)))
+			if ((g_session.env = env_import(ep)))
 			{
-				if (term_init(&g_session->env))
+				if (term_init(&g_session.env))
 					return (true);
-				env_clr(&g_session->env);
+				env_clr(&g_session.env);
 			}			
-			free(g_session->name);
+			free(g_session.name);
 		}
 		session_end();
 	}
@@ -164,8 +161,8 @@ void					syntax_error(t_lex_st *st)
 	else
 		input = st->input;
 	ft_dprintf(2, "%s: syntax error near unexpected token `%s'\n",
-		g_session->name, input);
-	g_session->st = 258;
+		g_session.name, input);
+	g_session.st = 258;
 	lex_reset(st);
 	*g_term.line->data = '\0';
 	g_term.line->len = 0;
@@ -195,13 +192,13 @@ int						main(int ac, const char **av, const char **ep)
 	ft_bzero(&lex_data, sizeof(lex_data));
 	term_status = TERM_EOK;
 	lex_status = LEX_EOK;
-	while ((g_term.msg = string_expand(TERM_PS1, g_session->env))
+	while ((g_term.msg = string_expand(TERM_PS1, g_session.env))
 	&& (term_status = term_prompt(&lex_data.input)) == TERM_ENL)
 	{
 		if ((lex_status = lex_tokens(&lex_data)) == LEX_EOK)
 		{
-			g_session->input_line_index = 0;
-			g_session->input_line = split_separators(g_term.line->data, seps);
+			g_session.input_line_index = 0;
+			g_session.input_line = split_separators(g_term.line->data, seps);
 			exec(lex_data.tokens);
 			lex_data.tokens = NULL;
 		}

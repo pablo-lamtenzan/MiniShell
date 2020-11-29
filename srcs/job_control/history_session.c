@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:11:48 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 03:43:10 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ bool				history_session_update(t_group *update)
 	if (!update || !(hist = ft_calloc(1, sizeof(t_history))))
 		return (false);
 	*hist = (t_history){.group=update};
-	next = g_session->hist;
-	g_session->hist = hist;
+	next = g_session.hist;
+	g_session.hist = hist;
 	hist->next = next;
 	return (true);
 }
@@ -38,11 +38,11 @@ void				history_pop_front()
 {
 	t_history		*fill;
 
-	if (g_session->hist)
+	if (g_session.hist)
 	{
-		fill = g_session->hist->next;
-		free(g_session->hist);
-		g_session->hist = fill;
+		fill = g_session.hist->next;
+		free(g_session.hist);
+		g_session.hist = fill;
 	}
 }
 
@@ -55,33 +55,33 @@ void				history_session_remove_node(t_group *target)
 	t_history*	next;
 	t_history*	first;
 
-	first = g_session->hist;
+	first = g_session.hist;
 	prev = NULL;
 	next = NULL;
-	if (g_session->hist)
-		next = g_session->hist->next;
-	while (g_session->hist)
+	if (g_session.hist)
+		next = g_session.hist->next;
+	while (g_session.hist)
 	{
-		if (target->nil->next->pid == g_session->hist->group->nil->next->pid)
+		if (target->nil->next->pid == g_session.hist->group->nil->next->pid)
 		{
 			if (prev)
-				prev->next = g_session->hist->next;
-			if (first == g_session->hist)
+				prev->next = g_session.hist->next;
+			if (first == g_session.hist)
 				first = NULL;
-			if (next == g_session->hist)
+			if (next == g_session.hist)
 				next = next->next;
-			free(g_session->hist);
-			g_session->hist = NULL;
+			free(g_session.hist);
+			g_session.hist = NULL;
 			break ;
 		}
-		prev = g_session->hist;
-		g_session->hist = g_session->hist->next;
+		prev = g_session.hist;
+		g_session.hist = g_session.hist->next;
 	}
 	if (first && first->group && first->group->nil->next->pid \
 			== target->nil->next->pid)
-		g_session->hist = first->next;
+		g_session.hist = first->next;
 	else
-		g_session->hist = next;
+		g_session.hist = next;
 }
 
 /*
@@ -92,19 +92,19 @@ void				history_session_purge_exited()
 	t_history		*first;
 	t_history		*next;
 
-	first = g_session->hist;
+	first = g_session.hist;
 
-	while (g_session->hist)
+	while (g_session.hist)
 	{
-		next = g_session->hist->next;
-		if (group_condition(g_session->hist->group, is_exited))
+		next = g_session.hist->next;
+		if (group_condition(g_session.hist->group, is_exited))
 		{
-			if (first == g_session->hist)
+			if (first == g_session.hist)
 				first = first->next;
-			free(g_session->hist);
+			free(g_session.hist);
 		}
-		g_session->hist = next;
+		g_session.hist = next;
 	}
-	g_session->hist = first;
+	g_session.hist = first;
 }
 

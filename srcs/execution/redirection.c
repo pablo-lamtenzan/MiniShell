@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 08:52:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 01:29:32 by chamada          ###   ########lyon.fr   */
+/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ t_exec_status			print_redirection_error(t_redir_status rstatus, char** filename)
 	if (rstatus == RDR_BAD_ALLOC)
 		return (RDR_BAD_ALLOC);
 	ft_dprintf(STDERR_FILENO, error_msg[-rstatus - 1], filename);
-	g_session->st = STD_ERROR;
+	g_session.st = STD_ERROR;
 	return (SUCCESS);
 }
 
@@ -86,7 +86,7 @@ t_redir_status			redirections_handler(t_exec** info, t_bst* cmd, char*** filenam
 	// TODO: Init
 	if (!(t_tok*)cmd->b)
 		return (CONTINUE);
-	if (!(*filename = tokens_expand((t_tok**)&cmd->b, &g_session->env, &height)) || !(t_tok*)cmd->b) // TODO
+	if (!(*filename = tokens_expand((t_tok**)&cmd->b, &g_session.env, &height)) || !(t_tok*)cmd->b) // TODO
 		return (RDR_BAD_ALLOC);
 	if ((redir_st = try_catch_filename(filename, ((t_tok*)cmd->b)->data, height)) != CONTINUE)
         return (redir_st);

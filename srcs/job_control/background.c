@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:30:37 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/27 02:01:41 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,26 +102,26 @@ void			background_force_exit()
 	t_group		*curr;
 	t_process	*leader;
 
-	curr = g_session->groups;
-	while (g_session->groups != g_session->nil)
+	curr = g_session.groups;
+	while (g_session.groups != g_session.nil)
 	{
-		leader = g_session->groups->active_processes;
-		while (g_session->groups->active_processes != g_session->groups->nil)
+		leader = g_session.groups->active_processes;
+		while (g_session.groups->active_processes != g_session.groups->nil)
 		{
-			if (!(g_session->groups->active_processes->flags & NO_HANGUP))
-				kill(g_session->groups->active_processes->pid, SIGHUP);
-			kill(g_session->groups->active_processes->pid, SIGCONT);
-			if (!(g_session->groups->active_processes->flags & NO_HANGUP))
-				while (waitpid(g_session->groups->active_processes->pid, \
-						&g_session->groups->active_processes->wstatus, 0) <= 0)
+			if (!(g_session.groups->active_processes->flags & NO_HANGUP))
+				kill(g_session.groups->active_processes->pid, SIGHUP);
+			kill(g_session.groups->active_processes->pid, SIGCONT);
+			if (!(g_session.groups->active_processes->flags & NO_HANGUP))
+				while (waitpid(g_session.groups->active_processes->pid, \
+						&g_session.groups->active_processes->wstatus, 0) <= 0)
 					;
-			g_session->groups->active_processes = \
-				g_session->groups->active_processes->next;
+			g_session.groups->active_processes = \
+				g_session.groups->active_processes->next;
 		}
-		g_session->groups->active_processes = leader;
-		g_session->groups = g_session->groups->next;
+		g_session.groups->active_processes = leader;
+		g_session.groups = g_session.groups->next;
 	}
-	g_session->groups = curr;
+	g_session.groups = curr;
 }
 
 /* replaces is_active_background 
@@ -130,16 +130,16 @@ bool			is_background_active()
 {
 	t_group		*curr;
 
-	curr = g_session->groups;
-	while (g_session->groups != g_session->nil)
+	curr = g_session.groups;
+	while (g_session.groups != g_session.nil)
 	{
-		if (group_condition(g_session->groups, is_active))
+		if (group_condition(g_session.groups, is_active))
 		{
-			g_session->groups = curr;
+			g_session.groups = curr;
 			return (true);
 		}
-		g_session->groups = g_session->groups->next;
+		g_session.groups = g_session.groups->next;
 	}
-	g_session->groups = curr;
+	g_session.groups = curr;
 	return (false);
 }

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 04:49:24 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 22:54:54 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void			print_index(int fd, t_process *target, int mode, int exit_st)
 	|| exit_st >= 0) && (!mode || (mode && is__leader)), "[", mode ? " " : ""), 
 		ft_norme_makes_my_code_worst((stopped_signal_group(aux, true) \
 	|| exit_st >= 0) && (!mode || (mode && is__leader)), \
-	freed = ft_itoa(background_index_get(g_session->nil, target)), mode ? " " : ""), 
+	freed = ft_itoa(background_index_get(g_session.nil, target)), mode ? " " : ""), 
 		ft_norme_makes_my_code_worst((stopped_signal_group(aux, true) \
 	|| exit_st >= 0) && (!mode || (mode && is__leader)), "]", mode ? " " : "")
 		);

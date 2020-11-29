@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:20:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 02:18:58 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static int			wait_init_exeption(t_exec *args, int *flags, int *nb)
 				args->av[1], "wait: usage: wait [-fn] [id ...]");
 		return (CMD_BAD_USE);
 	}
-	if (session_empty() || g_session->groups->next == g_session->nil)
+	if (session_empty() || g_session.groups->next == g_session.nil)
 	{
 		if (args->ac > 1 && *flags < 0)
 		{
@@ -75,7 +75,7 @@ int				ft_wait(t_exec* args)
 		if ((tmp = wait_jobspec(args, nb, 0, &target)) != 42)
 			return (tmp);
 		tmp = last_return;
-		last_return = wait_group(*target, flags, g_session->groups);
+		last_return = wait_group(*target, flags, g_session.groups);
 		return (!flags ? tmp : last_return);
 	}
 	wait_all_groups(flags);

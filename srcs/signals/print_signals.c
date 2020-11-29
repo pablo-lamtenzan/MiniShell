@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 21:45:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 02:50:50 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void			print_index_args(t_process* target)
 	ft_dprintf(STDERR_FILENO, "%s%s%s%-2s",
 		leader ? "[" : " ",
 		leader ? index = \
-		ft_itoa(background_index_get(g_session->nil, target)) : " ",
+		ft_itoa(background_index_get(g_session.nil, target)) : " ",
 		leader ? "]" : " ",
 		is_in_history(target)
 		);

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:52:58 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 02:22:41 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,13 @@ void					execute_process(t_exec *info, t_term *term,
 	update_exit_count(info->av[0]);
 	if ((exec_st = get_exec(info, term)) == SUCCESS)
 	{
-		g_session->restrict_zombies = true;
+		g_session.restrict_zombies = true;
 		rm_end_zombies();
-		g_session->restrict_zombies = false;
-		g_session->st = (unsigned char)info->exec(info, term);
-		g_session->groups->active_processes->ret = \
-			g_session->groups->active_processes->flags \
-			& STOPPED ? -1 : (unsigned char)g_session->st;
+		g_session.restrict_zombies = false;
+		g_session.st = (unsigned char)info->exec(info, term);
+		g_session.groups->active_processes->ret = \
+			g_session.groups->active_processes->flags \
+			& STOPPED ? -1 : (unsigned char)g_session.st;
 	}
 	else
 		destroy_execve_args(info);
@@ -102,13 +102,13 @@ void					next_is_killed(bool *stop)
 {
 	t_group*			fill;
 
-	if (g_session->groups->next->active_processes->flags & SIGNALED \
-			&& !(g_session->groups->next->active_processes->flags & KILLED))
+	if (g_session.groups->next->active_processes->flags & SIGNALED \
+			&& !(g_session.groups->next->active_processes->flags & KILLED))
 	{
-		g_session->groups->next->active_processes->flags &= ~SIGNALED;
-		fill = g_session->groups->next;
-		g_session->groups->next->next->prev = g_session->groups;
-		g_session->groups->next = g_session->groups->next->next;
+		g_session.groups->next->active_processes->flags &= ~SIGNALED;
+		fill = g_session.groups->next;
+		g_session.groups->next->next->prev = g_session.groups;
+		g_session.groups->next = g_session.groups->next->next;
 		free(fill);
 		*stop = true;
 	}
@@ -120,21 +120,21 @@ void					keep_alive_killed_processes()
 
 	stop = false;
 	// TO DO: This shoulb be applied to all the group no only the leaders
-	if (!session_empty() && !group_empty(g_session->groups) \
-			&& g_session->groups->active_processes)
+	if (!session_empty() && !group_empty(g_session.groups) \
+			&& g_session.groups->active_processes)
 	{
-		if (g_session->groups->active_processes->flags & SIGNALED \
-				&& !(g_session->groups->active_processes->flags & KILLED))
+		if (g_session.groups->active_processes->flags & SIGNALED \
+				&& !(g_session.groups->active_processes->flags & KILLED))
 		{
-			g_session->groups->active_processes->flags &= ~SIGNALED;
+			g_session.groups->active_processes->flags &= ~SIGNALED;
 			stop = true;
 			group_pop_front();
 		}
-		if (g_session->groups->next && g_session->groups->next != g_session->nil)
+		if (g_session.groups->next && g_session.groups->next != g_session.nil)
 			next_is_killed(&stop);
 		// TO DO: Remember to do it to all memebers
-		if (!stop && g_session->groups->active_processes->flags & KILLED)
-			g_session->groups->active_processes->flags &= ~KILLED;
+		if (!stop && g_session.groups->active_processes->flags & KILLED)
+			g_session.groups->active_processes->flags &= ~KILLED;
 	} 
 }
 
@@ -149,9 +149,9 @@ t_exec_status			execute_bst(t_bst* root, t_term* term)
 	keep_alive_killed_processes();
 	if (!(group = group_new()))
 		return (BAD_ALLOC);
-	g_session->open_print = true;
+	g_session.open_print = true;
 	// TO DO: Change char by define ESPACE
-	group->input = ft_split(g_session->input_line[g_session->input_line_index++], ' ');
+	group->input = ft_split(g_session.input_line[g_session.input_line_index++], ' ');
 	group_push_front(group);
 	ft_bzero(&info, sizeof(t_exec));
 	info = (t_exec){.fds[FDS_STDOUT]=FDS_STDOUT, .fds[FDS_AUX]=FDS_AUX};

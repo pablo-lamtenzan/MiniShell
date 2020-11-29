@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 19:26:18 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 03:01:09 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,13 @@
 t_session*		session_start()
 {
 	if (!(g_session = ft_calloc(1, sizeof(t_session)))
-			|| !(g_session->nil = ft_calloc(1, sizeof(t_group))))
+			|| !(g_session.nil = ft_calloc(1, sizeof(t_group))))
 		return (NULL);
-	g_session->nil->next = g_session->nil;
-	g_session->nil->prev = g_session->nil;
-	g_session->groups = g_session->nil;
+	g_session.nil->next = g_session.nil;
+	g_session.nil->prev = g_session.nil;
+	g_session.groups = g_session.nil;
 	//if (PRINT_DEBUG)
-		ft_dprintf(2, "[NEW SESSION][\'%p\'][NIL=\'%p\']\n", g_session, g_session->nil);
+		ft_dprintf(2, "[NEW SESSION][\'%p\'][NIL=\'%p\']\n", g_session, g_session.nil);
 	return (g_session);
 }
 
@@ -39,7 +39,7 @@ void		session_end()
 	delete_zombies();
 	delete_hist();
 	//delete_input_line();
-	free(g_session->nil);
+	free(g_session.nil);
 	free(g_session);
 	g_session = NULL;
 }
@@ -47,10 +47,10 @@ void		session_end()
 void		delete_groups()
 {
 	t_group*		fill;
-	while (g_session->groups != g_session->nil)
+	while (g_session.groups != g_session.nil)
 	{
-		fill = g_session->groups;
-		g_session->groups = g_session->groups->next;
+		fill = g_session.groups;
+		g_session.groups = g_session.groups->next;
 		delete_processes(fill);
 		free(fill->nil);
 		free(fill);
@@ -80,10 +80,10 @@ void		delete_zombies()
 {
 	t_background*	fill;
 
-	while (g_session->zombies)
+	while (g_session.zombies)
 	{
-		fill = g_session->zombies;
-		g_session->zombies = g_session->zombies->next;
+		fill = g_session.zombies;
+		g_session.zombies = g_session.zombies->next;
 		free(fill);
 		fill = NULL;
 	}
@@ -93,10 +93,10 @@ void		delete_hist()
 {
 	t_history*	fill;
 
-	while (g_session->hist)
+	while (g_session.hist)
 	{
-		fill = g_session->hist;
-		g_session->hist = g_session->hist->next;
+		fill = g_session.hist;
+		g_session.hist = g_session.hist->next;
 		free(fill);
 		fill = NULL;
 	}
@@ -107,8 +107,8 @@ void		delete_input_line()
 	int		i;
 
 	i = -1;
-	while (g_session->input_line && g_session->input_line[++i])
-		free(g_session->input_line[i]);
-	free(g_session->input_line);
-	g_session->input_line = NULL;
+	while (g_session.input_line && g_session.input_line[++i])
+		free(g_session.input_line[i]);
+	free(g_session.input_line);
+	g_session.input_line = NULL;
 }

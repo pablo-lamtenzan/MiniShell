@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 01:53:32 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 01:54:19 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:06:17 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,27 +32,27 @@ void			print_group(int fd, t_process* leader, int flags,
 	t_group*	remember;
 	t_process*	remember_leader;
 
-	remember = g_session->groups;
-	if (g_session->groups == itself)
-		g_session->groups = g_session->groups->next;
-	while (g_session->groups != g_session->nil)
+	remember = g_session.groups;
+	if (g_session.groups == itself)
+		g_session.groups = g_session.groups->next;
+	while (g_session.groups != g_session.nil)
 	{
-		if (g_session->groups->nil->next->pid == leader->pid)
+		if (g_session.groups->nil->next->pid == leader->pid)
 		{
-			remember_leader = g_session->groups->active_processes;
-			while (g_session->groups->active_processes \
-				!= g_session->groups->nil)
+			remember_leader = g_session.groups->active_processes;
+			while (g_session.groups->active_processes \
+				!= g_session.groups->nil)
 			{
-				print_process(fd, g_session->groups->active_processes, flags);
-				g_session->groups->active_processes = \
-					g_session->groups->active_processes->next;
+				print_process(fd, g_session.groups->active_processes, flags);
+				g_session.groups->active_processes = \
+					g_session.groups->active_processes->next;
 			}
-			g_session->groups->active_processes = remember_leader;
+			g_session.groups->active_processes = remember_leader;
 			break ;
 		}
-		g_session->groups = g_session->groups->next;
+		g_session.groups = g_session.groups->next;
 	}
-	g_session->groups = remember;
+	g_session.groups = remember;
 }
 
 // TO DO: test to exclude all signals exept SIGCONT here

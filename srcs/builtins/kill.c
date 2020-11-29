@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 02:54:22 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:06:35 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ int				kill_jobspec(t_exec *args, int vars[5])
 			args->av[(vars[0] ? 2 : 1) + vars[1]]);
 		else
 			kill_group(*target, vars[0] ? vars[0] : SIGTERM, \
-			g_session->groups);
+			g_session.groups);
 	}
 	return (42);
 }

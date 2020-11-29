@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 12:40:22 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/26 00:36:14 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ t_process**		get_process_by_index(t_group* groups, size_t index)
 	//index++; // skip itself
 	//if (PRINT_DEBUG)
 	ft_dprintf(2, "[INDEX][index: %lu]\n", index);
-	while (index && groups->next != g_session->nil)
+	while (index && groups->next != g_session.nil)
 	{
 		//if (!--index)
 		//	break ;
@@ -108,7 +108,7 @@ t_process**		get_process_by_pid(t_group* groups, pid_t pid)
 	t_process fill;
 
 	fill.pid = pid;
-	while (groups != g_session->nil)
+	while (groups != g_session.nil)
 	{
 		if (background_find(&fill, "PID", groups))
 			return (&groups->active_processes);
@@ -135,8 +135,8 @@ t_process**		get_process_by_name(t_group* groups, const char* av)
 	ret = NULL;
 
 	if (PRINT_DEBUG)
-		ft_dprintf(2, "%p ------------ %p\n", g_session->groups, groups);
-	while (groups != g_session->nil)
+		ft_dprintf(2, "%p ------------ %p\n", g_session.groups, groups);
+	while (groups != g_session.nil)
 	{
 		while (groups->active_processes != groups->nil)
 		{
@@ -185,12 +185,12 @@ t_process**		get_process_by_history(t_group* groups, size_t index)
 	t_history*	hist_addr;
 
 	hist_addr = NULL;
-	if (!g_session->hist || !index)
+	if (!g_session.hist || !index)
 		return (NULL);
-	else if (!g_session->hist->next || index == 1)
-		hist_addr = g_session->hist;
+	else if (!g_session.hist->next || index == 1)
+		hist_addr = g_session.hist;
 	else if (index == 2)
-		hist_addr = g_session->hist->next;
+		hist_addr = g_session.hist->next;
 	ft_dprintf(2, "[GET BY HIST][CURRENT GROUP: %p]\n", hist_addr->group);
 	return (get_process_by_pid(groups, hist_addr->group->nil->next->pid));
 }
@@ -202,14 +202,14 @@ t_process**		process_search(char*const* av)
 	if (is_jobspec(av[1]))
 	{
 		if (is_string_digit(&av[1][1]))
-			return (get_process_by_index(g_session->groups, ft_atoi(&av[1][1])));
+			return (get_process_by_index(g_session.groups, ft_atoi(&av[1][1])));
 		else if (is_history_process(av[1]))
-			return (get_process_by_history(g_session->groups, get_history_index(&av[1][1])));
+			return (get_process_by_history(g_session.groups, get_history_index(&av[1][1])));
 		else
-			return (get_process_by_name(g_session->groups, &av[1][1]));
+			return (get_process_by_name(g_session.groups, &av[1][1]));
 	}
 	else if (is_string_digit(av[1]))
-		return (get_process_by_pid(g_session->groups, ft_atoi(av[1])));
+		return (get_process_by_pid(g_session.groups, ft_atoi(av[1])));
 	else
 		return (NULL);
 }

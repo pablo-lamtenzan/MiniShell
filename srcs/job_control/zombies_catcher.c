@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 01:45:31 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 00:04:47 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:08:28 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,13 @@ void		handle_wstatus(t_group** group)
 	}
 	else if (WIFSTOPPED((*group)->active_processes->wstatus))
 	{
-		g_session->zombies->exited = false;
+		g_session.zombies->exited = false;
 		(*group)->active_processes->flags |= STOPPED;
 		(*group)->active_processes->ret = SIGNAL_BASE + \
 			WSTOPSIG((*group)->active_processes->wstatus);
 	}
 	else if (WIFSIGNALED((*group)->active_processes->wstatus))
-		g_session->st = SIGNAL_BASE + \
+		g_session.st = SIGNAL_BASE + \
 			WTERMSIG((*group)->active_processes->wstatus);
 }
 
@@ -46,7 +46,7 @@ void		catch_group(t_group** group)
 			if (waitpid((*group)->active_processes->pid, \
 				&(*group)->active_processes->wstatus, WNOHANG | WUNTRACED) > 0)
 			{
-				g_session->zombies->exited = true;
+				g_session.zombies->exited = true;
 				(*group)->active_processes->flags &= ~BACKGROUND;
 				handle_wstatus(group);
 			}
@@ -61,14 +61,14 @@ void				zombie_catcher(int signal)
 	(void)signal;
 	t_background*	first;
 
-	if (!g_session || g_session->flags & RESTRICT_CATCH)
+	if (g_session.flags & RESTRICT_CATCH)
 		return ;
-	first = g_session->zombies;
-	while (g_session->zombies)
+	first = g_session.zombies;
+	while (g_session.zombies)
 	{
-		if (g_session->zombies->background_group)
-			catch_group(&g_session->zombies->background_group);
-		g_session->zombies = g_session->zombies->next;
+		if (g_session.zombies->background_group)
+			catch_group(&g_session.zombies->background_group);
+		g_session.zombies = g_session.zombies->next;
 	}
-	g_session->zombies = first;
+	g_session.zombies = first;
 }

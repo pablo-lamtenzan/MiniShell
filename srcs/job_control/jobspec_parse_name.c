@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:49:49 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 22:00:46 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ t_process**		get_process_by_name(t_group* groups, const char* av)
 	match = 0;
 
 	if (0)
-		ft_dprintf(2, "%p ------------ %p\n", g_session->groups, groups);
-	while (groups != g_session->nil)
+		ft_dprintf(2, "%p ------------ %p\n", g_session.groups, groups);
+	while (groups != g_session.nil)
 	{
 		while (groups->active_processes != groups->nil)
 		{
@@ -74,8 +74,8 @@ bool			is_not_ambigous(t_process* target)
 	count = 0;
 	if (!target)
 		return (false);
-	groups = g_session->groups;
-	while (groups != g_session->nil && groups->nil && groups->nil->next)
+	groups = g_session.groups;
+	while (groups != g_session.nil && groups->nil && groups->nil->next)
 	{
 		if (groups->nil->next \
 				&& groups->nil->next->data \
@@ -95,8 +95,8 @@ bool			is_not_ambigous_v2(const char* niddle)
 
 	count = -1;
 	error = 0;
-	groups = g_session->groups;
-	while (groups != g_session->nil && groups->nil && groups->nil->next)
+	groups = g_session.groups;
+	while (groups != g_session.nil && groups->nil && groups->nil->next)
 	{
 		if (groups->nil->next && groups->nil->next->data)
 		{

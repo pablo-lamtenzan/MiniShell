@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 22:33:58 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/29 03:07:02 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static int			ft_fork(t_exec *info)
 	{
 		if (!(process = process_new(child_st, 0, info->av)))
 			return (-1);
-		process_push_back(&g_session->groups, process);
+		process_push_back(&g_session.groups, process);
 	}
 	return (child_st);
 }
@@ -42,7 +42,7 @@ int					execute_child(t_exec *info)
 			return (st);
 		ret = execve(info->execution_path, info->av, info->ep);
 		ft_dprintf(STDERR_FILENO, "%s: %s: execve returned '%d'!\n", \
-				g_session->name, info->av[0], ret);
+				g_session.name, info->av[0], ret);
 		exit(EXIT_FAILURE);
 	}
 	else if (pid < 0)
@@ -52,12 +52,12 @@ int					execute_child(t_exec *info)
 
 t_exec_status		build_execve_args(t_exec *info)
 {
-	if (!(info->execution_path = path_get(info->av[0], env_get(g_session->env, "PATH", 4))))
+	if (!(info->execution_path = path_get(info->av[0], env_get(g_session.env, "PATH", 4))))
 	{
-		g_session->st = CMD_NOT_FOUND;
+		g_session.st = CMD_NOT_FOUND;
 		return (BAD_PATH);
 	}
-	if (!(info->ep = (char*const*)env_export(g_session->env)))
+	if (!(info->ep = (char*const*)env_export(g_session.env)))
 	{
 		free(info->execution_path);
 		return (RDR_BAD_ALLOC);
