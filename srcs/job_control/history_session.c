@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:11:48 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/30 05:51:51 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/30 05:54:10 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void				history_session_remove_node(t_group *target)
 	//if (first && first->group && first->group->nil->next->pid
 	//		== target->nil->next->pid)
 	if (first)
-		g_session.hist = first->next;
+		g_session.hist = first;
 	else
 		g_session.hist = next;
 }
