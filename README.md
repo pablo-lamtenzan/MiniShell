@@ -256,14 +256,14 @@ This is the struct used for handling processes:
 ```
 typedef struct			s_process
 {
-	pid_t				pid; // process ID
-	int					wstatus; // wait status
-	unsigned char		flags; // local status
-	char*const			*data; // name + args
-	struct s_process	*next; // next in lkd-lst
-	struct s_process	*prev; // prev in lkd-lst
-	int					ret; // process return
-}						t_process;
+	pid_t			pid;		// process ID
+	int			wstatus;	// wait status
+	unsigned char		flags;		// local status
+	char*const		*data;		// name + args
+	struct s_process	*next;		// next in lkd-lst
+	struct s_process	*prev;		// prev in lkd-lst
+	int			ret;		// process return
+}				t_process;
 ```
 
 ### II) Process groups
@@ -276,12 +276,12 @@ This is the group structure we used:
 ```
 typedef struct			s_group
 {
-	t_process			*active_processes; // procesess
-	t_process			*nil; // control node (next is head, prev is tail)
-	struct s_group		*next; // next in lkd-lst
-	struct s_group		*prev; // prev in lks-lst
-	char				**input; // input line
-}						t_group;
+	t_process		*active_processes;	// procesess
+	t_process		*nil;			// control node (next is head, prev is tail)
+	struct s_group		*next			// next in lkd-lst
+	struct s_group		*prev;			// prev in lks-lst
+	char			**input;		// input line
+}				t_group;
 ```
 Before continue i want to clarify than background processes can read and write from respectivelly stdin and stdout from the parent. Unfortunaly, tty control requires the use of tcsetpgrp and ioctl to be handled.
 
@@ -293,19 +293,19 @@ This is how all works:
 ```
 typedef struct			s_session
 {
-	int					st; // return status
-	t_group				*groups; // all the groups
-	t_group				*nil; // control node (next is head prev is tail)
-	t_history			*hist; // history lkd-list
-	t_background		*zombies; // background groups
-	t_deadzombie		*dead_zombies; // use for print zombies termination
-	char				**input_line;
-	size_t				input_line_index; 
-	unsigned char		exit_count; // exit control
-	char				*name; // executable name
-	t_env				*env; // local environment
-	char				flags; // local status
-}						t_session;
+	int			st;		// return status
+	t_group			*groups;	// all the groups
+	t_group			*nil;		// control node (next is head prev is tail)
+	t_history		*hist;		// history lkd-list
+	t_background		*zombies;	// background groups
+	t_deadzombie		*dead_zombies; 	// use for print zombies termination
+	char			**input_line;
+	size_t			input_line_index; 
+	unsigned char		exit_count;	// exit control
+	char			*name;		// executable name
+	t_env			*env;		// local environment
+	char			flags;		// local status
+}				t_session;
 ```
 
 The session is global and is defined in all minishell. It uses "groups" to have an index of all the stopped or background groups (other group aren't storred) and "hist", "zombies", and "deadzombie" as support.
@@ -313,26 +313,30 @@ The session is global and is defined in all minishell. It uses "groups" to have 
 There their definitions:
 ```
 /* This is used as a stack and a minimalist list */
+
 typedef struct			s_history
 {
-	t_group				*group; // group reference
+	t_group			*group;	// group reference
 	struct s_history	*next;
-}						t_history;
+}				t_history;
 
-/* This is used as a stack and a minimalist list (used to iterate in asycronous over the background proceses when SIGCHLD is called)*/
+/* This is used as a stack and a minimalist list (used to iterate in asycronous over 
+	the background proceses when SIGCHLD is called)*/
+
 typedef struct			s_background
 {
-	t_group				*background_group; // group reference
-	bool				exited; // status
+	t_group			*background_group;	// group reference
+	bool			exited;			// status
 	struct s_background	*next;
 }						t_background;
 
 /* This is used as a queue and a minimalist list */
+
 typedef struct			s_deadzombie
 {
-	t_process			*deadzombie; // group leader to print reference
+	t_process		*deadzombie;		// group leader to print reference
 	struct s_deadzombie	*next;
-}						t_deadzombie;
+}				t_deadzombie;
 ```
 
 ### IV) Builtins and features
