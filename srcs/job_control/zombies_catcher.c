@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 01:45:31 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/30 02:13:07 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/30 05:02:59 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void				handle_wstatus(t_group **group)
 		(*group)->active_processes->flags |= (EXITED | NO_DELETE);
 		(*group)->active_processes->ret = \
 			WEXITSTATUS((*group)->active_processes->wstatus);
+		ft_dprintf(2, "[ZOMBIE CATCHER][GROUP %p EXITED!]\n", *group);
 		deadzombie_push_back(deadzombie_new((*group)->active_processes));
 	}
 	else if (WIFSTOPPED((*group)->active_processes->wstatus))
@@ -28,10 +29,14 @@ void				handle_wstatus(t_group **group)
 		(*group)->active_processes->flags |= STOPPED;
 		(*group)->active_processes->ret = SIGNAL_BASE + \
 			WSTOPSIG((*group)->active_processes->wstatus);
+		ft_dprintf(2, "[ZOMBIE CATCHER][GROUP %p STOPPED!]\n", *group);
 	}
 	else if (WIFSIGNALED((*group)->active_processes->wstatus))
+	{
 		g_session.st = SIGNAL_BASE + \
 			WTERMSIG((*group)->active_processes->wstatus);
+		ft_dprintf(2, "[ZOMBIE CATCHER][GROUP %p SIGNALED!]\n", *group);
+	}
 }
 
 void				catch_group(t_group **group)
