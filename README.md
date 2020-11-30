@@ -241,7 +241,7 @@ A session contain a number of process groups, and a process group contain a numb
 
 A session can also have a controlling tty but it was not possible to implement it with the allowed fuctions (like the threads).
 
-All these objects have an id: session ID, process group ID, process ID, thread ID. In our case ther are only 1 session who has the process ID of "minishell" but each group and processes ID.
+All these objects have an id: session ID, process group ID, process ID, thread ID. In our case ther are only 1 session who has the process ID of "minishell" but each group and processes has an ID.
 
 ### I) Process
 
