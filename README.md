@@ -233,7 +233,7 @@ TODO
 ## Job Control
 
 Job control is the ability to selectively stop (suspend) the execution of processes and continue (resume) their execution later point.
-First of all i would like to clarify that this part is not part of the subject. However, we have implemented this feature because we found it interesting and above all because the knowledge that implementing it would bring us. And indded it was a great decison. We decided to not use functions that aren't allowed in the suject for this part. We have emulated the behavior of Bash witout using syscalls like: setpgid, killpg, tctgetpgrp, getsid, getpid, tcgetsid, ioctl and (not as useful for our case) clone.
+First of all i would like to clarify that this part is not part of the subject. However, we have implemented this feature because we found it interesting and above all because the knowledge that implementing it would bring us. And indded it was a great decison. We decided to not use functions that aren't allowed in the suject for this part. We have emulated the behavior of Bash without using syscalls like: setpgid, killpg, tctgetpgrp, getsid, getpid, tcgetsid, ioctl and (not as useful for our case) clone.
 
 First of all lets start with a global Unix description of threads, processes, process groups and sessions. 
 
