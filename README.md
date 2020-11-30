@@ -25,9 +25,9 @@
 	- [ ] Document terminal capabilities
 	- [ ] Document execution environment
 	- [ ] Document shell expansion
-	- [https://en.wikipedia.org/wiki/Job_control_(Unix)#Implementation](Document job control)
-	- [https://www.gnu.org/software/bash/manual/html_node/Job-Control.html](Document job control)
-	- [https://www.gnu.org/software/bash/manual/html_node/Job-Control-Builtins.html#Job-Control-Builtins](Document job control)
+	- [Document job control](https://en.wikipedia.org/wiki/Job_control_(Unix)#Implementation)
+	- [https://www.gnu.org/software/bash/manual/html_node/Job-Control.html][Document job control]
+	- [https://www.gnu.org/software/bash/manual/html_node/Job-Control-Builtins.html#Job-Control-Builtins][Document job control]
 	
 	TO DO SUBJECT
 
