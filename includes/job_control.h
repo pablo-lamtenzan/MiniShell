@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/30 01:38:03 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/30 13:20:32 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 */
 # include <env.h>
 # include <errors.h>
+# include <cross_plateform_signals.h>
 
 /*
 ** Process flags

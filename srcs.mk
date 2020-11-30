@@ -8,6 +8,7 @@ HDRS	=	$(addprefix $(INCDIR)/,\
 	separators.h\
 	path.h\
 	signals.h\
+	cross_plateform_signals.h\
 	job_control.h\
 	errors.h\
 	$(addprefix term/,\

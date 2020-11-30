@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 08:18:27 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/30 13:10:13 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,7 @@
 
 // TODO: Cross platform compatibility for missing signals
 // TODO: Test on 42 XUbuntu VM
-#ifndef SIGSTKFLT
-# define SIGSTKFLT -1
-#endif
 
-#ifndef SIGPWR
-# define SIGPWR -1
-#endif
 
 void			kill_print_signal(t_exec *args, int vars[5])
 {
