@@ -4,6 +4,9 @@
 </p>
 
 ---
+
+[suject]() can't acces to intra lol i ve tige // to do
+
 # Table of Contents
 0. [TODO](#todo)
 1. [Usage](#usage)
@@ -26,10 +29,8 @@
 	- [ ] Document execution environment
 	- [ ] Document shell expansion
 	- [Document job control](https://en.wikipedia.org/wiki/Job_control_(Unix)#Implementation)
-	- [https://www.gnu.org/software/bash/manual/html_node/Job-Control.html][Document job control]
-	- [https://www.gnu.org/software/bash/manual/html_node/Job-Control-Builtins.html#Job-Control-Builtins][Document job control]
-	
-	TO DO SUBJECT
+	- [Document job control](https://www.gnu.org/software/bash/manual/html_node/Job-Control.html)
+	- [Document job control](https://www.gnu.org/software/bash/manual/html_node/Job-Control-Builtins.html#Job-Control-Builtins)
 
 # Usage
 ### Dependencies
