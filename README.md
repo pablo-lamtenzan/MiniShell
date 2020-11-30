@@ -287,7 +287,7 @@ Before continue i want to clarify than background processes can read and write f
 
 ### III) Sesions
 
-Each group is member of a unique session. We have a unique session how has the process ID of minishell executable.
+Each group is member of a unique session. We have a unique session who has the process ID of minishell executable.
 
 This is how all works:
 ```
