@@ -328,7 +328,7 @@ typedef struct			s_background
 	t_group			*background_group;	// group reference
 	bool			exited;			// status
 	struct s_background	*next;
-}						t_background;
+}				t_background;
 
 /* This is used as a queue and a minimalist list */
 
