@@ -85,4 +85,6 @@ void			group_return_handler(void)
 		}
 		g_session.groups->active_processes = leader;
 	}
+	else
+		g_session.st = g_session.groups->active_processes->ret;
 }
