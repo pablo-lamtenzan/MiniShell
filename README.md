@@ -231,4 +231,169 @@ TODO
 TODO
 
 ## Job Control
-TODO
+
+Job control is the ability to selectively stop (suspend) the execution of processes and continue (resume) their execution later point.
+First of all i would like to clarify that this part is not part of the subject. However, we have implemented this feature because we found it interesting and above all because the knowledge that implementing it would bring us. And indded it was a great decison. We have decide not to use functions that aren't allowed in the suject for this part. We have emulated the behavior of Bash witout using syscalls like: setpgid, killpg, tctgetpgrp, getsid, getpid, tcgetsid, ioctl and (not as useful for our case) clone.
+
+First of all lets start with a global Unix description of threads, processes, process groups and sessions. 
+
+A session contain a number of process groups, and a process group contain a number of process, and each process contain a number of threads.
+
+A session can also have a controlling tty but it was not possible to implement it with the allowed fuctions (like the threads).
+
+All these objects have an id: session ID, process group ID, process ID, thread ID. In our case ther are only 1 session who has the process ID of "minishell" but each group and processes ID.
+
+### I) Process
+
+A process is traditionally started using fork or clone, this creates a child as a duplicate of its parent. Parent and child are identical in almost all respects. The parent will learn information about its childs like their process ID
+or their termination receiving a SIGCHLD signal (deepened later). A process normal termination is when the process exits or returns in the main.
+
+A process can be run in foreground (having the same group ID of its terminal, in our same processes who are waited when they have a waitable state) or can run in the background (having a diferent group ID of its terminal, in our case processes who aren't waited).
+
+A process that has terminated but has not yet been waited is a zombie process. When a process end its sends a SIGCHLD to its parent who is by default not handled.
+
+This is the struct used for handling processes:
+```
+typedef struct			s_process
+{
+	pid_t				pid; // process ID
+	int					wstatus; // wait status
+	unsigned char		flags; // local status
+	char*const			*data; // name + args
+	struct s_process	*next; // next in lkd-lst
+	struct s_process	*prev; // prev in lkd-lst
+	int					ret; // process return
+}						t_process;
+```
+
+### II) Process groups
+
+Each process is member of a unique process group, like the processes each process group has its group process ID. When the first process is created its process ID becomes the ID of its process group (also know as leader process). Multiples pipes creates multiples processes in the same process group but separators creates multiple process groups.
+
+Using the job control features is possible to stop a process group and resume it later in the background or in the foreground, to send it signals, to wait for it termination, or disown it (will no recive SIGHUP at the shell termination, see later).
+
+This is the group structure we used:
+```
+typedef struct			s_group
+{
+	t_process			*active_processes; // procesess
+	t_process			*nil; // control node (next is head, prev is tail)
+	struct s_group		*next; // next in lkd-lst
+	struct s_group		*prev; // prev in lks-lst
+	char				**input; // input line
+}						t_group;
+```
+Before continue i want to clarify than background processes can read and write from respectivelly stdin and stdout from the parent. Unfortunaly, tty control requires the use of tcsetpgrp and ioctl to be handled.
+
+### III) Sesions
+
+Each group is member of a unique session. We have a unique session how has the process ID of minishell executable.
+
+This is how all works:
+```
+typedef struct			s_session
+{
+	int					st; // return status
+	t_group				*groups; // all the groups
+	t_group				*nil; // control node (next is head prev is tail)
+	t_history			*hist; // history lkd-list
+	t_background		*zombies; // background groups
+	t_deadzombie		*dead_zombies; // use for print zombies termination
+	char				**input_line;
+	size_t				input_line_index; 
+	unsigned char		exit_count; // exit control
+	char				*name; // executable name
+	t_env				*env; // local environment
+	char				flags; // local status
+}						t_session;
+```
+
+The session is global and is defined in all minishell. It uses "groups" to have an index of all the stopped or background groups (other group aren't storred) and "hist", "zombies", and "deadzombie" as support.
+
+There their definitions:
+```
+/* This is used as a stack and a minimalist list */
+typedef struct			s_history
+{
+	t_group				*group; // group reference
+	struct s_history	*next;
+}						t_history;
+
+/* This is used as a stack and a minimalist list (used to iterate in asycronous over the background proceses when SIGCHLD is called)*/
+typedef struct			s_background
+{
+	t_group				*background_group; // group reference
+	bool				exited; // status
+	struct s_background	*next;
+}						t_background;
+
+/* This is used as a queue and a minimalist list */
+typedef struct			s_deadzombie
+{
+	t_process			*deadzombie; // group leader to print reference
+	struct s_deadzombie	*next;
+}						t_deadzombie;
+```
+
+### IV) Builtins and features
+
+To stop a process witout a controlling tty signals SIGSTOP and SIGTSTP can be used. SIGSTOP can be ignored and SIGTSTP and is send when ctrl^Z is typed in the terminal. A process can be resume receiving SIGCONT.
+
+Futhermore, we handle SIGINT (sent when ctrl^C is typed in the terminal), who requires the termination of the current process execution, SIGQUIT (sent when ctrl^\\ is typed on the terminal), who cuases a coredump in the current execution. And of corse, we handle SIGTERM and SIGHUP who makes minishell terminate but with time to free all the ressources and exit clean.
+
+When minishell terminates (if not receives SIGKILL) it will send SIGHUP to all the stopped or running processes and then continue them. This is not applied to disown processes.
+
+Now the core of the job control is explained lets see how to interract with it. Job control builtins has been implemented to allow the user to interact with all the listed before job control features.
+
+
+Note: job specification (jobspec) are explained later, ```"..."``` means any number of arguments and the options and follow the followins formats:```"-srl"``` ```"-s -r -l"```.
+
+#### bg [no args] | [jobspec]
+- Without arguments resumes in the background the current stopped background group process
+- With a jobspec specified resumes the jobspec group of this jobspec.
+- Returns non zero if the jobspec is not found else returns 0.
+
+#### fg [no args] | [jobspec]
+- Without arguments reusmes in the foreground the current stopped or running in the background group process.
+- With a jobspec spefied resumes the josbpec group if is possible.
+- Return what its foreground command returns
+- Return no zero if the jobspec is not found
+
+#### jobs [-lrs...] [jobspec] | [no args]
+- List the active groups witout arguments
+- If jobspecs are given list the targeted jobspecs
+- '-l' gives additional information
+- '-r' list only running groups
+- '-s' list only the stopped groups
+
+#### kill [-sigspec] | [-signum] | [no signum or sigspec] [josbpecs...] | [pid...] or kill -l [signum...]
+- Send a signal (sigspec or signum) to the process group (jobspec or pid)
+- Note: pid is sent to all the group if is sent to a member
+- SIG prefix is optional in sigspec 
+- If signum or sigspec are missing SIGTERM is sent
+- '-l' option without jobspec or pid list all the avalaible signals
+- '-l' option with signum print the correspomdent signal
+- '-L' can be use insted of '-l'
+- return 0 if the signal was sent succesfully
+
+#### wait [-fn...] [jobspec] | [pid] | [no arg]
+- Wait until the process group exits
+- If jobspec, jobspec is the target else the current is waited
+- '-n' wait for a single job and return its return status
+- returns the exit status of the previous group waited
+
+#### disown [-ar...] | [-h...] [jobspecs...] | [pids...]
+- Disown groups will not receive SIGHUB when minishell terminates
+that means they could still run in the backgroud after minishell has exited
+- Disown a process mean delete it form the groups list, no operations can be done to undone that.
+- '-r' remove the running groups and restrict operations in stopped groups
+- '-a' disown all the groups
+- '-h' the exeption, doesn't remove and allow operations to groups but mark them and they will no recive SIGHUB at the termation of minishell
+
+#### Jobspec specification
+- To reffer to the current group use: ```%, %% or %+```
+- To reffer to the previous of the current use ```%-``` (reffers to the current if theres only 1 group)
+- To reffer to a group using its jobspec index use ```%index``` where index is an integer. Index starts with 1
+- To reffer to a group using its name use ```%name``` where name is a string of chars. Return error name if is ambigous.
+- To reffer to a group using a pattern use ```%?pattern``` where pattern is a string of chars, Return error if pattern is ambigous.
+- To reffer to a pid use ```pid```where pip is an integer. Applies to all the memebers of the group of the found process.
