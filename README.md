@@ -353,51 +353,51 @@ Now the core of the job control is explained lets see how to interract with it. 
 Note: job specification (jobspec) are explained later, ```"..."``` means any number of arguments and the options and follow the following formats:```"-srl"``` ```"-s -r -l"```.
 
 #### bg [no args] | [jobspec]
-- Without arguments resumes in the background the current stopped background group process
+- Without arguments resumes in the background the current stopped background group process.
 - With a jobspec specified resumes the jobspec group of this jobspec.
 - Returns non zero if the jobspec is not found else returns 0.
 
 #### fg [no args] | [jobspec]
-- Without arguments reusmes in the foreground the current stopped or running in the background group process.
+- Without arguments resumes in the foreground the current stopped or running in the background group process.
 - With a jobspec spefied resumes the josbpec group if is possible.
-- Return what its foreground command returns
-- Return no zero if the jobspec is not found
+- Return what its foreground command returns.
+- Return no zero if the jobspec is not found.
 
 #### jobs [-lrs...] [jobspec] | [no args]
-- List the active groups witout arguments
-- If jobspecs are given list the targeted jobspecs
-- '-l' gives additional information
-- '-r' list only running groups
-- '-s' list only the stopped groups
+- List the active groups witout arguments.
+- If jobspecs are given list the targeted jobspecs.
+- '-l' gives additional information.
+- '-r' list only running groups.
+- '-s' list only the stopped groups.
 
 #### kill [-sigspec] | [-signum] | [no signum or sigspec] [josbpecs...] | [pid...] or kill -l [signum...]
-- Send a signal (sigspec or signum) to the process group (jobspec or pid)
-- Note: pid is sent to all the group if is sent to a member
-- SIG prefix is optional in sigspec 
-- If signum or sigspec are missing SIGTERM is sent
-- '-l' option without jobspec or pid list all the avalaible signals
-- '-l' option with signum print the correspomdent signal
-- '-L' can be use insted of '-l'
-- return 0 if the signal was sent succesfully
+- Send a signal (sigspec or signum) to the process group (jobspec or pid).
+- Note: pid is sent to all the group if is sent to a member.
+- SIG prefix is optional in sigspec.
+- If signum or sigspec are missing SIGTERM is sent.
+- '-l' option without jobspec or pid list all the avalaible signals.
+- '-l' option with signum print the correspondent signals.
+- '-L' can be use insted of '-l'.
+- return 0 if the signal was sent succesfully.
 
 #### wait [-fn...] [jobspec] | [pid] | [no arg]
-- Wait until the process group exits
-- If jobspec, jobspec is the target else the current is waited
-- '-n' wait for a single job and return its return status
+- Wait until the process group exits.
+- If jobspec, jobspec is the target else the current is waited.
+- '-n' wait for a single job and return its return status..
 - returns the exit status of the previous group waited
 
 #### disown [-ar...] | [-h...] [jobspecs...] | [pids...]
 - Disown groups will not receive SIGHUB when minishell terminates
-that means they could still run in the backgroud after minishell has exited
+that means they could still run in the backgroud after minishell has exited.
 - Disown a process mean delete it form the groups list, no operations can be done to undone that.
-- '-r' remove the running groups and restrict operations in stopped groups
-- '-a' disown all the groups
-- '-h' the exeption, doesn't remove and allow operations to groups but mark them and they will no recive SIGHUB at the termation of minishell
+- '-r' remove the running groups and restrict operations in stopped groups.
+- '-a' disown all the groups.
+- '-h' the exeption, doesn't remove and allow operations to groups but mark them and they will no recive SIGHUB at the termation of minishell.
 
 #### Jobspec specification
-- To reffer to the current group use: ```%, %% or %+```
-- To reffer to the previous of the current use ```%-``` (reffers to the current if theres only 1 group)
-- To reffer to a group using its jobspec index use ```%index``` where index is an integer. Index starts with 1
+- To reffer to the current group use: ```%, %% or %+```.
+- To reffer to the previous of the current use ```%-``` (reffers to the current if theres only 1 group).
+- To reffer to a group using its jobspec index use ```%index``` where index is an integer. Index starts with 1.
 - To reffer to a group using its name use ```%name``` where name is a string of chars. Return error name if is ambigous.
 - To reffer to a group using a pattern use ```%?pattern``` where pattern is a string of chars, Return error if pattern is ambigous.
 - To reffer to a pid use ```pid```where pip is an integer. Applies to all the memebers of the group of the found process.
