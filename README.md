@@ -350,7 +350,7 @@ When minishell terminates (if not receives SIGKILL) it will send SIGHUP to all t
 Now the core of the job control is explained lets see how to interract with it. Job control builtins has been implemented to allow the user to interact with all the listed before job control features.
 
 
-Note: job specification (jobspec) are explained later, ```"..."``` means any number of arguments and the options and follow the followins formats:```"-srl"``` ```"-s -r -l"```.
+Note: job specification (jobspec) are explained later, ```"..."``` means any number of arguments and the options and follow the following formats:```"-srl"``` ```"-s -r -l"```.
 
 #### bg [no args] | [jobspec]
 - Without arguments resumes in the background the current stopped background group process
