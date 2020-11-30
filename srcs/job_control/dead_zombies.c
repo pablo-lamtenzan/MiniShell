@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 04:21:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 07:50:17 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/30 05:12:42 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void				deadzombie_push_back(t_deadzombie *target)
 	while (g_session.dead_zombies->next)
 		g_session.dead_zombies = g_session.dead_zombies->next;
 	g_session.dead_zombies->next = target;
+	g_session.dead_zombies = remember;
 }
 
 void				deadzombies_print(void)

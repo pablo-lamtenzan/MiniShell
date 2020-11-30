@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 23:11:42 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/30 05:06:17 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/30 05:14:23 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static int			bg_core(void)
 		g_session.groups->active_processes->flags &= ~STOPPED;
 		g_session.groups->active_processes->flags |= BACKGROUND;
 		signal(SIGCHLD, SIG_IGN);
-		ft_dprintf(2, "[BG][KILL -SIGCONT to group (\'%p\')]\n", g_session.groups);
+		//ft_dprintf(2, "[BG][KILL -SIGCONT to group (\'%p\')]\n", g_session.groups);
 		kill(g_session.groups->active_processes->pid, SIGCONT);
 		zombies_list_update(g_session.groups);
 		signal(SIGCHLD, zombies_catcher);

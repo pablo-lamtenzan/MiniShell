@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:19:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/30 04:57:35 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/30 05:14:09 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void				zombies_list_purge_exited_groups(void)
 			if (g_session.groups == first)
 				first = first->next;
 			history_session_remove_node(g_session.groups);
-			ft_dprintf(2, "[RM GROUP: %p]\n", g_session.groups);
+			//ft_dprintf(2, "[RM GROUP: %p]\n", g_session.groups);
 			group_remove(&g_session.groups);
 		}
 		g_session.groups = next;
@@ -109,7 +109,7 @@ void				zombies_list_purge_exited_zombies(void)
 			if (first && first == g_session.zombies)
 				first = first->next;
 			next = g_session.zombies->next;
-			ft_dprintf(2, "[ZOMBIE IS DELETED! (%p)]\n", g_session.zombies->background_group);
+			//ft_dprintf(2, "[ZOMBIE IS DELETED! (%p)]\n", g_session.zombies->background_group);
 			free(g_session.zombies);
 			g_session.zombies = next;
 			if (prev)
