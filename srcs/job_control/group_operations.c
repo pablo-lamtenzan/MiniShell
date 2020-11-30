@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:55:48 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/30 02:52:27 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/30 10:05:53 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,5 +86,5 @@ void			group_return_handler(void)
 		g_session.groups->active_processes = leader;
 	}
 	else
-		g_session.st = g_session.groups->active_processes->ret;
+		g_session.st = g_session.groups->nil->prev->ret;
 }

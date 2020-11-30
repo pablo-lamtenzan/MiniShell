@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 11:18:02 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/30 01:37:43 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/30 12:52:18 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 static void		suspend_process(int signal)
 {
 	(void)signal;
-
 	// TO DO: Block this before free all
 	write(STDERR_FILENO, "\n", 1);
 	if (g_session.flags & OPEN_PRINT)
@@ -41,6 +40,7 @@ static void		terminate_minishell(int signal)
 	exit(g_session.st);
 }
 
+/*
 void			ignore_all_signals(void)
 {
 	signal(SIGTSTP, SIG_IGN);
@@ -49,6 +49,7 @@ void			ignore_all_signals(void)
 	signal(SIGINT, SIG_IGN);
 	signal(SIGTERM, SIG_IGN);
 }
+*/
 
 void			init_signal_handler(void)
 {

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 01:45:31 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/30 06:28:15 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/30 12:54:18 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void				handle_wstatus(t_group **group)
 		//ft_dprintf(2, "\n[ZOMBIE CATCHER][GROUP %p EXITED!]\n", *group);
 		deadzombie_push_back(deadzombie_new((*group)->active_processes));
 	}
+	
 	else if (WIFSTOPPED((*group)->active_processes->wstatus))
 	{
 		g_session.zombies->exited = false;
@@ -48,10 +49,11 @@ void				catch_group(t_group **group)
 	{
 		if ((*group)->active_processes->flags & BACKGROUND)
 		{
-			if (waitpid((*group)->active_processes->pid, \
-				&(*group)->active_processes->wstatus, WNOHANG | WUNTRACED) > 0)
+			//(*group)->active_processes->wstatus = 0;
+			int test;
+			if ((test = waitpid((*group)->active_processes->pid, \
+				&(*group)->active_processes->wstatus, WNOHANG | WUNTRACED) > 0))
 			{
-				//ft_dprintf(2, "\n[ZOMBIE (group) \'%p\' IS END]\n", *group);
 				g_session.zombies->exited = true;
 				(*group)->active_processes->flags &= ~BACKGROUND;
 				handle_wstatus(group);

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 23:11:42 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/30 06:45:29 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/30 12:56:01 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,13 @@ static int			bg_core(void)
 {
 	if (g_session.groups->active_processes->flags & STOPPED)
 	{
+		//signal(SIGCHLD, SIG_DFL);
 		g_session.groups->active_processes->flags &= ~STOPPED;
 		g_session.groups->active_processes->flags |= BACKGROUND;
-		signal(SIGCHLD, SIG_IGN);
-		//ft_dprintf(2, "[BG][KILL -SIGCONT to group (\'%p\')]\n", g_session.groups);
+		//ft_dprintf(2, "[BG][KILL -SIGCONT to group (\'%p\')][pid = %d]\n", g_session.groups, g_session.groups->active_processes->pid);
 		kill(g_session.groups->active_processes->pid, SIGCONT);
 		zombies_list_update(g_session.groups);
-		signal(SIGCHLD, zombies_catcher);
+		//signal(SIGCHLD, zombies_catcher);
 	}
 	return (SUCCESS);
 }
