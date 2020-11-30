@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 08:01:07 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/30 01:25:57 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #include <expansion.h>
 #include <job_control.h>
 #include <errors.h>
+
+#include <signal.h>
 
 static t_exec_status	get_exec(t_exec *info)
 {
@@ -44,9 +46,9 @@ void					execute_process(t_exec *info, t_exec_status exec_st)
 	update_exit_count(info->av[0]);
 	if ((exec_st = get_exec(info)) == SUCCESS)
 	{
-		g_session.flags |= RESTRICT_CATCH;
+		signal(SIGCHLD, SIG_IGN);
 		zombies_list_purge_exited_zombies();
-		g_session.flags &= ~RESTRICT_CATCH;
+		signal(SIGCHLD, zombies_catcher);
 		g_session.st = (unsigned char)info->exec(info);
 		g_session.groups->active_processes->ret = \
 			g_session.groups->active_processes->flags \

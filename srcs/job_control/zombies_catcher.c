@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 01:45:31 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 12:15:33 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/30 01:29:45 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ void				handle_wstatus(t_group **group)
 {
 	if (WIFEXITED((*group)->active_processes->wstatus))
 	{
-		(*group)->active_processes->flags |= EXITED;
+		(*group)->active_processes->flags |= (EXITED | NO_DELETE);
+		
 		(*group)->active_processes->ret = \
 			WEXITSTATUS((*group)->active_processes->wstatus);
 		deadzombie_push_back(deadzombie_new((*group)->active_processes));
@@ -61,9 +62,6 @@ void				zombies_catcher(int signal)
 	t_background	*first;
 
 	(void)signal;
-	sleep (1);
-	if (g_session.flags & RESTRICT_CATCH)
-		return ;
 	first = g_session.zombies;
 	while (g_session.zombies)
 	{
