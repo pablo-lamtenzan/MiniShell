@@ -1,7 +1,7 @@
 #include <env.h>
 
 /*
-** returns the character after an assignment's key
+** returns the length of an assignment's key
 */
 size_t	env_key_len(const char *key)
 {
