@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:34:43 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 07:46:47 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/30 01:38:33 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 void				session_end(void)
 {
-	g_session.flags = 0;
+	ignore_all_signals();
 	background_force_exit();
 	delete_groups();
 	delete_deadzombies();
