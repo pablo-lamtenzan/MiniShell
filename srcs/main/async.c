@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 11:18:02 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 11:57:05 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/30 01:37:43 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,7 @@ static void		suspend_process(int signal)
 	
 }
 
-static void		quit_process(int signal)
-{
-	(void)signal;
-}
-
-static void		keyboard_interrupt(int signal)
+static void		do_nothing(int signal)
 {
 	(void)signal;
 }
@@ -46,11 +41,20 @@ static void		terminate_minishell(int signal)
 	exit(g_session.st);
 }
 
-void			signal_handler(void)
+void			ignore_all_signals(void)
+{
+	signal(SIGTSTP, SIG_IGN);
+	signal(SIGCHLD, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, SIG_IGN);
+	signal(SIGTERM, SIG_IGN);
+}
+
+void			init_signal_handler(void)
 {
 	signal(SIGTSTP, suspend_process);
 	signal(SIGCHLD, zombies_catcher);
-	signal(SIGQUIT, quit_process);
-	signal(SIGINT, keyboard_interrupt);
+	signal(SIGQUIT, do_nothing);
+	signal(SIGINT, do_nothing);
 	signal(SIGTERM, terminate_minishell);
 }

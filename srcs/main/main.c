@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 11:39:20 by pablo            ###   ########.fr       */
+/*   Updated: 2020/11/30 01:34:56 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ int						main(int ac, const char **av, const char **ep)
 	t_lex_err			lex_status;
 	t_lex_st			lex_data;
 
-	signal_handler();
+	init_signal_handler();
 	if (!init(ac, av, ep))
 		return (1);
 	ft_bzero(&lex_data, sizeof(lex_data));
