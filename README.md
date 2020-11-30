@@ -341,7 +341,7 @@ typedef struct			s_deadzombie
 
 ### IV) Builtins and features
 
-To stop a process witout a controlling tty signals SIGSTOP and SIGTSTP can be used. SIGSTOP can be ignored and SIGTSTP and is send when ctrl^Z is typed in the terminal. A process can be resume receiving SIGCONT.
+To stop a process witout a controlling tty signals SIGSTOP and SIGTSTP can be used. SIGSTOP can't be ignored and SIGTSTP and is send when ctrl^Z is typed in the terminal. A process can be resume receiving SIGCONT.
 
 Futhermore, we handle SIGINT (sent when ctrl^C is typed in the terminal), who requires the termination of the current process execution, SIGQUIT (sent when ctrl^\\ is typed on the terminal), who cuases a coredump in the current execution. And of corse, we handle SIGTERM and SIGHUP who makes minishell terminate but with time to free all the ressources and exit clean.
 
