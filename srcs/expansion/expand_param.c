@@ -1,5 +1,8 @@
 #include <expansion.h>
 
+// TODO: Put g_session and related files into session.h
+#include <job_control.h>
+
 /*
 ** Expand the ~, ~+ and ~- patterns using the environment.
 **
@@ -43,16 +46,27 @@ static const char	*tilde_expand(const char **input, t_env *env)
 */
 static const char	*var_expand(const char **input, t_env *env)
 {
-	const char	*val;
-	size_t		key_len;
+	static char		conv_buff[4];
+	const char		*val;
+	size_t			key_len;
 
 	val = NULL;
-	if (**input == '$' && (key_len = env_key_len((*input) + 1)))
+	if (**input == '$')
 	{
-		if (!(val = env_get(env, ++(*input), key_len)))
-			val = "";
-		//ft_dprintf(2, "[EXP][VAR] key: %.*s, val: %s\n", (int)key_len, (*input), val);
-		(*input) += key_len;
+		if ((*input)[1] == '?')
+		{
+			ft_snitoa(conv_buff, g_session.st, sizeof(conv_buff));
+			val = conv_buff;
+			//ft_dprintf(2, "%d: %s", g_session.st, val);
+			(*input) += 2;
+		}
+		else if ((key_len = env_key_len((*input) + 1)))
+		{
+			if (!(val = env_get(env, ++(*input), key_len)))
+				val = "";
+			//ft_dprintf(2, "[EXP][VAR] key: %.*s, val: %s\n", (int)key_len, (*input), val);
+			(*input) += key_len;
+		}
 	}
 	return (val);
 }

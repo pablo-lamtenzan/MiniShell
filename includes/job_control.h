@@ -265,6 +265,15 @@ char					**split_separators(char *input,
 int						for_each_in_group(t_process *leader,
 						int (*core)(), bool(*delete)());
 
+
+# ifndef SIGSTKFLT
+#  define SIGSTKFLT -1
+# endif
+
+# ifndef SIGPWR
+#  define SIGPWR -1
+# endif
+
 static const char		*g_signals[31] = {
 	"SIGHUP", "SIGINT", "SIGQUIT", "SIGILL", "SIGTRAP", "SIGABRT",
 	"SIGBUS", "SIGFPE", "SIGKILL", "SIGUSR1", "SIGSEGV", "SIGUSR2",
