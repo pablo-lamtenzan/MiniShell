@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 02:42:01 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 08:46:27 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/01 09:58:10 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ const char			*get_signal(const char *key, int *res)
 	if (i == 31 && !(*res = 0))
 		return (NULL);
 	*res = g_values[i];
-	return (g_signals[i]);
+	return (*res < 0 ? NULL : g_signals[i]);
 }
 
 void				print_all_signals(void)
