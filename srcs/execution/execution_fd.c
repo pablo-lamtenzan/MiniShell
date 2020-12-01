@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 20:10:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 08:03:51 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/01 14:49:56 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ t_exec_status		open_pipe_fds(t_exec **info, t_tok_t type)
 	{
 		if (pipe(pipe_fds) < 0)
 			return (BAD_PIPE);
-		ft_dprintf(2, "[PIPE] Using %d -> %d pipe for stdout!\n",
-			pipe_fds[PIPE_WRITE], pipe_fds[PIPE_READ]);
+		//ft_dprintf(2, "[PIPE] Using %d -> %d pipe for stdout!\n",
+			//pipe_fds[PIPE_WRITE], pipe_fds[PIPE_READ]);
 		(*info)->fds[FDS_STDOUT] = pipe_fds[PIPE_WRITE];
 		(*info)->fds[FDS_AUX] = pipe_fds[PIPE_READ];
 	}
@@ -70,7 +70,7 @@ t_exec_status		close_pipe_fds(int *fds)
 		{
 			if (close(fds[i]) < 0)
 				return (BAD_CLOSE);
-			ft_dprintf(2, "[PIPE] Closed fds[%d] = %d!\n", i, fds[i]);
+			//ft_dprintf(2, "[PIPE] Closed fds[%d] = %d!\n", i, fds[i]);
 		}
 	}
 	return (SUCCESS);

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/01 09:56:20 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/01 14:47:29 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static void		kill_jobspc_msg(t_exec *args, int *vars)
 		ft_dprintf(STDERR_FILENO, "%s: kill: %s: no such job\n", \
 			g_session.name, args->av[(vars[0] ? 2 : 1) + vars[1]]);
 	else if (is_string_digit(args->av[(vars[0] ? 2 : 1) + vars[1]]))
-		ft_dprintf(2, "%s: kill: (%s) - No such process\n", \
+		ft_dprintf(STDERR_FILENO, "%s: kill: (%s) - No such process\n", \
 			g_session.name, args->av[(vars[0] ? 2 : 1) + vars[1]]);
 	else
 		ft_dprintf(STDERR_FILENO, \

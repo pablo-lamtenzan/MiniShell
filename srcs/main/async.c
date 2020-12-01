@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 11:18:02 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/30 12:52:18 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/01 11:43:51 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,4 +58,5 @@ void			init_signal_handler(void)
 	signal(SIGQUIT, do_nothing);
 	signal(SIGINT, do_nothing);
 	signal(SIGTERM, terminate_minishell);
+	signal(SIGHUP, terminate_minishell);
 }

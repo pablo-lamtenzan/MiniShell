@@ -1,0 +1,3872 @@
+[31m[38;5;160mx[0m[31m[38;5;34m.[0m[31m[38;5;160mx[0m[31m[38;5;34m.[0m[31m[38;5;160mx[0m[31m[38;5;34m.[0m[31m[38;5;160mx[0m[31m[38;5;160mx[0m[31m[38;5;34m.[0m[31m[38;5;160mx[0m[31m[38;5;160mx[0m[31m[38;5;160mx[0m[31m[38;5;34m.[0m[31m[38;5;34m.[0m[31m[38;5;34m.[0m[31m[38;5;34m.[0m[31m[38;5;34m.[0m[31m[38;5;160mx[0m[31m[1;33m~[0m[31m[38;5;160mx[0m[31m[38;5;160mx[0m[31m[38;5;160mx[0m[31m[38;5;34m.[0m[31m[38;5;160mx[0m[31m[38;5;160mx[0m[31m[38;5;160mx[0m[31m[38;5;160mx[0m[31m[38;5;34m.[0m[31m[38;5;160mx[0m[31m[38;5;160mx[0m[31m[38;5;34m.[0m[31m[38;5;34m.[0m[31m[38;5;34m.[0m[31m[38;5;160mx[0m[31m[1;33m~[0m[31m[38;5;34m.[0m[31m[1;33m~[0m[31m[1;33m~[0m[31m[38;5;160mx[0m[31m[38;5;160mx[0m[31m[38;5;160mx[0m[31m[38;5;160mx[0m[31m[38;5;34m.[0m[31m[38;5;34m.[0m[31m[38;5;160mx[0m[31m[38;5;160mx[0m[31m[38;5;160mx[0m[31m[38;5;160mx[0m[31m[38;5;34m.[0m[31m[38;5;34m.[0m[31m[38;5;34m.[0m[31m[38;5;34m.[0m[31m[38;5;160mx[0m[31m[38;5;160mx[0m[31m[38;5;34m.[0m                                                                                                              
+
+----------------------------------------------------------------
+
+[37;1mminishell/binary/004-binary-test-empty-path[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that the Shell finds binaries that are located in the current directory when the environment variable PATH is empty.[0m
+
+  Before test:
+[38;5;239m   1: export PATH=""[0m
+
+  STDIN:
+[38;5;239m   1: write_on_stdout "TOKEN202012011718"[0m
+
+  STDOUT:
+[31m[38;5;160m  FAILURE    expected_to match_regex `TOKEN202012011718`[0m
+[38;5;239m  (no output)[0m
+
+  STDERR:
+[31m[38;5;160m  FAILURE    expected_to be_empty[0m
+[38;5;239m   1: minishell: write_on_stdout: command not found[0m
+
+  MISC:
+[31m[38;5;34m  SUCCESS    expected_to exit_with_status `0`[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/binary/001-binary-path-relative[0m [31m[38;5;34m(SUCCESS)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that the Shell correctly finds binaries within the PATH.[0m
+
+  Before test:
+[38;5;239m   1: mkdir -p "./virtual_path/p1" "./virtual_path/p2"
+   2: rm -f "./virtual_path/p1/display_my_name1" "./virtual_path/p2/display_my_name2"
+   3: cp "./display_program_name" "./virtual_path/p1/display_my_name1"
+   4: cp "./display_program_name" "./virtual_path/p2/display_my_name2"
+   5: export PATH="/home/pablo/42ShellTester/tmp/virtual_path/p1:/home/pablo/42ShellTester/tmp/virtual_path/p2"[0m
+
+  STDIN:
+[38;5;239m   1: display_my_name1
+   2: display_my_name2[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_regex `display_my_name1`[0m
+[31m[38;5;34m  SUCCESS    expected_to match_regex `display_my_name2`[0m
+[38;5;239m   1: display_my_name1
+   2: display_my_name2[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to be_empty[0m
+[38;5;239m  (no output)[0m
+
+  MISC:
+[31m[38;5;34m  SUCCESS    expected_to exit_with_status `0`[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/binary/006-binary-undefined-path[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that the Shell retrieves the default value of the environment variable PATH if not set. This test depends on the presence of the UNIX binary `ls`, located in a path within the default environment variable PATH.[0m
+
+  Before test:
+[38;5;239m   1: rm -rf "TOKEN202012011718_006-BINARY-UNDEFINED-PATH"
+   2: touch "TOKEN202012011718_006-BINARY-UNDEFINED-PATH"
+   3: unset PATH[0m
+
+  STDIN:
+[38;5;239m   1: ls[0m
+
+  STDOUT:
+[31m[38;5;160m  FAILURE    expected_to match_regex `TOKEN202012011718_006-BINARY-UNDEFINED-PATH`[0m
+[38;5;239m  (no output)[0m
+
+  STDERR:
+[31m[38;5;160m  FAILURE    expected_to be_empty[0m
+[38;5;239m   1: minishell: ls: command not found[0m
+
+  MISC:
+[31m[38;5;34m  SUCCESS    expected_to exit_with_status `0`[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/binary/003-binary-test-exec-order[0m [31m[38;5;34m(SUCCESS)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that the Shell correctly finds binaries by iterating on paths within the environment variable PATH from left to right.[0m
+
+  Before test:
+[38;5;239m   1: mkdir -p "./virtual_path_1" "./virtual_path_2"
+   2: cp "./write_on_stdout" "./virtual_path_1/fake_echo"
+   3: cp "./write_on_stderr" "./virtual_path_2/fake_echo"
+   4: export PATH="/home/pablo/42ShellTester/tmp/virtual_path_1:/home/pablo/42ShellTester/tmp/virtual_path_2"[0m
+
+  STDIN:
+[38;5;239m   1: fake_echo TOKEN202012011718[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_regex TOKEN202012011718[0m
+[38;5;239m   1: TOKEN202012011718[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to be_empty[0m
+[38;5;239m  (no output)[0m
+
+  MISC:
+[31m[38;5;34m  SUCCESS    expected_to exit_with_status `0`[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/binary/005-binary-test-wrong-path[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  This test purpose is to check if your shell is not able to use binary with a wrong PATH
+  We are changing the actual PATH by PATH=NULL
+  And executing the commande ls[0m
+
+  Before test:
+[38;5;239m   1: export PATH="/"[0m
+
+  STDIN:
+[38;5;239m   1: ls[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    might be_empty[0m
+[38;5;239m  (no output)[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to_not be_empty[0m
+[31m[38;5;34m  SUCCESS    might match_regex `[Cc]ommand not found`[0m
+[38;5;239m   1: minishell: ls: command not found[0m
+
+  MISC:
+[31m[38;5;160m  FAILURE    expected_to_not exit_with_status `0`[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/binary/002-binary-path-absolute[0m [31m[38;5;34m(SUCCESS)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that the Shell correctly finds binaries through their absolute path.[0m
+
+  Before test:
+[38;5;239m   1: mkdir -p "./virtual_path"
+   2: rm -f "./virtual_path/write_on_stdout"
+   3: cp "./write_on_stdout" "./virtual_path/write_on_stdout"
+   4: export PATH=""[0m
+
+  STDIN:
+[38;5;239m   1: /home/pablo/42ShellTester/tmp/write_on_stdout TOKEN202012011718_1
+   2: /home/pablo/42ShellTester/tmp/virtual_path/write_on_stdout TOKEN202012011718_2[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_regex `TOKEN202012011718_1`[0m
+[31m[38;5;34m  SUCCESS    expected_to match_regex `TOKEN202012011718_2`[0m
+[38;5;239m   1: TOKEN202012011718_1
+   2: TOKEN202012011718_2[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to be_empty[0m
+[38;5;239m  (no output)[0m
+
+  MISC:
+[31m[38;5;34m  SUCCESS    expected_to exit_with_status `0`[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/binary/008-binary-too-many-symbolic-links-encountered[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that trying to execute a path that encounters an infinite loop of symbolic link results in an error on standard error and a failure exit status.[0m
+
+  Before test:
+[38;5;239m   1: rm -rf ./symbolic_link1 ./symbolic_link2 ./symbolic_link3
+   2: ln -s ./symbolic_link1 ./symbolic_link2
+   3: ln -s ./symbolic_link2 ./symbolic_link3
+   4: ln -s ./symbolic_link3 ./symbolic_link1[0m
+
+  STDIN:
+[38;5;239m   1: ./symbolic_link1[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    might be_empty[0m
+[38;5;239m  (no output)[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to_not be_empty[0m
+[31m[1;33m  WARNING    might match_regex `[Tt]oo many.*symbolic links`[0m
+[38;5;239m   1: minishell: ./symbolic_link1: command not found[0m
+
+  MISC:
+[31m[38;5;160m  FAILURE    expected_to_not exit_with_status 0[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/binary/007-binary-permission-denied[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that trying to execute a non-permitted binary results in an error on standard error and a failure exit status.[0m
+
+  Before test:
+[38;5;239m   1: rm -rf ./permission_denied
+   2: touch ./permission_denied
+   3: chmod 0 ./permission_denied[0m
+
+  STDIN:
+[38;5;239m   1: ./permission_denied[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    might be_empty[0m
+[38;5;239m  (no output)[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to_not be_empty[0m
+[31m[1;33m  WARNING    might match_regex `[Pp]ermission denied`[0m
+[38;5;239m   1: minishell: ./permission_denied: command not found[0m
+
+  MISC:
+[31m[38;5;160m  FAILURE    expected_to_not exit_with_status 0[0m
+
+  After test:
+[38;5;239m   1: if [ -d "./permission_denied" ]; then chmod 777 "./permission_denied"; fi
+   2: rm -rf "./permission_denied"[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/mixed/001-setenv-unsetenv[0m [31m[38;5;34m(SUCCESS)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that setting and unsetting environment variable with the builtins `setenv` and `unsetenv` (or `export` and `unset`) works together.[0m
+
+  Before test:
+[38;5;239m   1: # unset all environment variables
+   2: for VARIABLE in $(env | awk 'BEGIN {FS="="} {print $1}'); do unset "${VARIABLE}"; done;[0m
+
+  STDIN:
+[38;5;239m   1: setenv TEST1
+   2: setenv TEST2
+   3: unsetenv TEST1
+   4: unsetenv TEST2
+   5: ./display_env
+   6: 
+   7: export TEST1
+   8: export TEST2
+   9: unset TEST1
+  10: unset TEST2
+  11: ./display_env[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to_not match_regex `TEST1=`[0m
+[31m[38;5;34m  SUCCESS    expected_to_not match_regex `TEST2=`[0m
+[38;5;239m   1: ------------------------------
+   2: _=/home/pablo/Documents/42/minishell/minishell
+   3: ------------------------------
+   4: TOTAL ENVIRONMENT VARIABLES: 1
+   5: ------------------------------
+   6: _=/home/pablo/Documents/42/minishell/minishell
+   7: ------------------------------
+   8: TOTAL ENVIRONMENT VARIABLES: 1[0m
+
+  STDERR:
+[38;5;239m   1: minishell: setenv: command not found
+   2: minishell: setenv: command not found
+   3: minishell: unsetenv: command not found
+   4: minishell: unsetenv: command not found[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/unsetenv/003-unsetenv-mult-envp-inline[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  This test was made to check if we can unset multiple arguments INLINE.
+  So we unset all the environment variables inside the tester environment and set a 3 new variables.
+  Thereafter we are unseting all of them INLINE inside the tested shell.[0m
+
+  Before test:
+[38;5;239m   1: # unset all variables
+   2: for VARIABLE in $(env | awk 'BEGIN {FS="="} {print $1}'); do unset "${VARIABLE}"; done;
+   3: 
+   4: export ONE="TOKEN202012011718_1"
+   5: export TWO="TOKEN202012011718_2"
+   6: export THREE="TOKEN202012011718_3"[0m
+
+  STDIN:
+[38;5;239m   1: unsetenv ONE TWO THREE
+   2: unset ONE TWO THREE
+   3: ./display_env[0m
+
+  STDOUT:
+[31m[38;5;160m  FAILURE    expected_to_not match_regex `ONE=`[0m
+[31m[38;5;160m  FAILURE    expected_to_not match_regex `TWO=`[0m
+[31m[38;5;160m  FAILURE    expected_to_not match_regex `THREE=`[0m
+[38;5;239m   1: ------------------------------
+   2: TWO=TOKEN202012011718_2
+   3: THREE=TOKEN202012011718_3
+   4: ONE=TOKEN202012011718_1
+   5: _=/home/pablo/Documents/42/minishell/minishell
+   6: ------------------------------
+   7: TOTAL ENVIRONMENT VARIABLES: 4[0m
+
+  STDERR:
+[38;5;239m   1: minishell: unsetenv: command not found[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/unsetenv/002-unsetenv-mult-envp[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  This test was made to check if we can unset multiple arguments.
+  So we unset all the environment variables inside the tester environment and set a 3 new variables.
+  Thereafter we are unseting all of them inside the tested shell.[0m
+
+  Before test:
+[38;5;239m   1: # unset all environment ariables
+   2: for VARIABLE in $(env | awk 'BEGIN {FS="="} {print $1}'); do unset "${VARIABLE}"; done;
+   3: 
+   4: export ONE="TOKEN202012011718_1"
+   5: export TWO="TOKEN202012011718_2"
+   6: export THREE="TOKEN202012011718_3"[0m
+
+  STDIN:
+[38;5;239m   1: unsetenv ONE
+   2: unsetenv TWO
+   3: unsetenv THREE
+   4: unset ONE
+   5: unset TWO
+   6: unset THREE
+   7: ./display_env[0m
+
+  STDOUT:
+[31m[38;5;160m  FAILURE    expected_to_not match_regex `ONE=`[0m
+[31m[38;5;160m  FAILURE    expected_to_not match_regex `TWO=`[0m
+[31m[38;5;160m  FAILURE    expected_to_not match_regex `THREE=`[0m
+[38;5;239m   1: ------------------------------
+   2: TWO=TOKEN202012011718_2
+   3: THREE=TOKEN202012011718_3
+   4: ONE=TOKEN202012011718_1
+   5: _=/home/pablo/Documents/42/minishell/minishell
+   6: ------------------------------
+   7: TOTAL ENVIRONMENT VARIABLES: 4[0m
+
+  STDERR:
+[38;5;239m   1: minishell: unsetenv: command not found
+   2: minishell: unsetenv: command not found
+   3: minishell: unsetenv: command not found[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/unsetenv/001-unsetenv-first-elem[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  This test was made to control if the Head of the env list was set correctly.
+  So we unset all the environment variables inside the tester environment and set a new one.
+  Thereafter we are unseting inside the tested shell. We are using env to check if the last head was remove correctly.[0m
+
+  Before test:
+[38;5;239m   1: # unset all environment variables
+   2: for VARIABLE in $(env | awk 'BEGIN {FS="="} {print $1}'); do unset "${VARIABLE}"; done;
+   3: 
+   4: export VARTEST="TOKEN202012011718"[0m
+
+  STDIN:
+[38;5;239m   1: unsetenv VARTEST
+   2: unset VARTEST
+   3: ./display_env[0m
+
+  STDOUT:
+[31m[38;5;160m  FAILURE    expected_to_not match_regex `VARTEST=`[0m
+[38;5;239m   1: ------------------------------
+   2: VARTEST=TOKEN202012011718
+   3: _=/home/pablo/Documents/42/minishell/minishell
+   4: ------------------------------
+   5: TOTAL ENVIRONMENT VARIABLES: 2[0m
+
+  STDERR:
+[38;5;239m   1: minishell: unsetenv: command not found[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/exit/003-status-of-last-command[0m [31m[38;5;34m(SUCCESS)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using the builtin `exit` without any argument results in a Shell termination and the exit status of the previous command.[0m
+
+  STDIN:
+[38;5;239m   1: ./exit_with_status 42
+   2: exit[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    might be_empty[0m
+[38;5;239m  (no output)[0m
+
+  STDERR:
+[38;5;239m   1: [DEBUG]exiting with status code 42[0m
+
+  MISC:
+[31m[38;5;34m  SUCCESS    expected_to exit_with_status `42`[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/exit/errors/002-non-numeric-argument[0m [31m[38;5;34m(SUCCESS)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using a non-numeric argument with the builtin `exit` results in the Shell termination and an error on standard error.[0m
+
+  STDIN:
+[38;5;239m   1: exit abc
+   2: ./write_on_stdout TOKEN202012011718[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to_not match_regex `TOKEN202012011718`[0m
+[38;5;239m  (no output)[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    might_not be_empty[0m
+[31m[38;5;34m  SUCCESS    might match_regex `[Nn]umeric argument required`[0m
+[38;5;239m   1: minish: exit: abc: numeric argument required
+   2: [DEBUG]exiting with status code 128[0m
+
+  MISC:
+[31m[38;5;34m  SUCCESS    expected_to_not exit_with_status `0`[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/exit/errors/001-too-many-args[0m [31m[38;5;34m(SUCCESS)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using a wrong number of arguments with the builtin `exit` does not result in the Shell termination but an error on standard error.[0m
+
+  STDIN:
+[38;5;239m   1: exit 21 42
+   2: ./write_on_stdout TOKEN202012011718[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_regex `TOKEN202012011718`[0m
+[38;5;239m   1: TOKEN202012011718[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to_not be_empty[0m
+[31m[38;5;34m  SUCCESS    might match_regex `([Tt]oo many arguments|[Aa]rgument list too long)`[0m
+[38;5;239m   1: exit
+   2: minish: exit: too many arguments[0m
+
+  MISC:
+[31m[38;5;34m  SUCCESS    expected_to exit_with_status `0`[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/exit/001-without-any-argument[0m [31m[38;5;34m(SUCCESS)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that the builtin `exit` works and exit the Shell.[0m
+
+  STDIN:
+[38;5;239m   1: exit
+   2: ./write_on_stdout "TOKEN202012011718"[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to_not match_regex `TOKEN202012011718`[0m
+[38;5;239m  (no output)[0m
+
+  STDERR:
+[38;5;239m   1: [DEBUG]exiting with status code 0[0m
+
+  MISC:
+[31m[38;5;34m  SUCCESS    expected_to exit_with_status `0`[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/exit/002-status-passed-as-argument[0m [31m[38;5;34m(SUCCESS)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using a number as first argument with the builtin `exit` results in the Shell termination with given number as exit status.[0m
+
+  STDIN:
+[38;5;239m   1: exit 42[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    might be_empty[0m
+[38;5;239m  (no output)[0m
+
+  STDERR:
+[38;5;239m   1: [DEBUG]exiting with status code 42[0m
+
+  MISC:
+[31m[38;5;34m  SUCCESS    expected_to exit_with_status `42`[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/setenv/003-set-existing-variable[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that the builtin `setenv` (or `export`) can add a new variable to the environment, either with the syntax `setenv KEY VALUE` or with `setenv KEY=VALUE`.[0m
+
+  Before test:
+[38;5;239m   1: export "TESTVAR1=OLD_TOKEN202012011718"[0m
+
+  STDIN:
+[38;5;239m   1: setenv TESTVAR1 NEW_TOKEN202012011718
+   2: ./display_env
+   3: 
+   4: setenv TESTVAR1=NEW_TOKEN202012011718
+   5: ./display_env
+   6: 
+   7: export TESTVAR1=NEW_TOKEN202012011718
+   8: ./display_env[0m
+
+  STDOUT:
+[31m[38;5;160m  FAILURE    expected_to match_regex `TESTVAR1=NEW_TOKEN202012011718`[0m
+[38;5;239m   1: ------------------------------
+   2: SHELL=/usr/bin/zsh
+   3: LSCOLORS=Gxfxcxdxbxegedabagacad
+   4: WINDOWID=98566151
+   5: KDED_STARTED_BY_KDEINIT=1
+   6: COLORTERM=truecolor
+   7: LESS=-R
+   8: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+   9: CONDA_EXE=/opt/miniconda3/bin/conda
+  10: _CE_M=
+  11: LANGUAGE=
+  12: LC_ADDRESS=fr_FR.UTF-8
+  13: LC_NAME=fr_FR.UTF-8
+  14: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  15: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  16: LC_MONETARY=fr_FR.UTF-8
+  17: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  18: XCURSOR_SIZE=24
+  19: EDITOR=/usr/bin/nano
+  20: GTK_MODULES=canberra-gtk-module
+  21: XDG_SEAT=seat0
+  22: PWD=/home/pablo/42ShellTester/tmp
+  23: XDG_SESSION_DESKTOP=KDE
+  24: LOGNAME=pablo
+  25: XDG_SESSION_TYPE=x11
+  26: XAUTHORITY=/home/pablo/.Xauthority
+  27: MOTD_SHOWN=pam
+  28: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  29: HOME=/home/pablo
+  30: LC_PAPER=fr_FR.UTF-8
+  31: LANG=en_US.UTF-8
+  32: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  33: XDG_CURRENT_DESKTOP=KDE
+  34: KONSOLE_DBUS_SERVICE=:1.3326
+  35: KONSOLE_DBUS_SESSION=/Sessions/1
+  36: PROFILEHOME=
+  37: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  38: KONSOLE_VERSION=200802
+  39: KDE_SESSION_UID=1000
+  40: XDG_SESSION_CLASS=user
+  41: TERM=xterm-256color
+  42: LC_IDENTIFICATION=fr_FR.UTF-8
+  43: ZSH=/usr/share/oh-my-zsh
+  44: _CE_CONDA=
+  45: TESTVAR1=OLD_TOKEN202012011718
+  46: USER=pablo
+  47: CUDA_PATH=/opt/cuda
+  48: COLORFGBG=15;0
+  49: CONDA_SHLVL=0
+  50: KDE_SESSION_VERSION=5
+  51: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  52: DISPLAY=:0
+  53: SHLVL=2
+  54: PAGER=less
+  55: LC_TELEPHONE=fr_FR.UTF-8
+  56: LC_MEASUREMENT=fr_FR.UTF-8
+  57: XDG_VTNR=1
+  58: XDG_SESSION_ID=1
+  59: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  60: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  61: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  62: XDG_RUNTIME_DIR=/run/user/1000
+  63: LC_TIME=fr_FR.UTF-8
+  64: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  65: XCURSOR_THEME=breeze_cursors
+  66: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  67: KDE_FULL_SESSION=true
+  68: BROWSER=/usr/bin/firefox
+  69: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  70: GTK_USE_PORTAL=1
+  71: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  72: KDE_APPLICATIONS_AS_SCOPE=1
+  73: MAIL=/var/spool/mail/pablo
+  74: LC_NUMERIC=fr_FR.UTF-8
+  75: OLDPWD=/home/pablo/42ShellTester
+  76: KONSOLE_DBUS_WINDOW=/Windows/1
+  77: _=/home/pablo/Documents/42/minishell/minishell
+  78: ------------------------------
+  79: TOTAL ENVIRONMENT VARIABLES: 76
+  80: ------------------------------
+  81: SHELL=/usr/bin/zsh
+  82: LSCOLORS=Gxfxcxdxbxegedabagacad
+  83: WINDOWID=98566151
+  84: KDED_STARTED_BY_KDEINIT=1
+  85: COLORTERM=truecolor
+  86: LESS=-R
+  87: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  88: CONDA_EXE=/opt/miniconda3/bin/conda
+  89: _CE_M=
+  90: LANGUAGE=
+  91: LC_ADDRESS=fr_FR.UTF-8
+  92: LC_NAME=fr_FR.UTF-8
+  93: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  94: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  95: LC_MONETARY=fr_FR.UTF-8
+  96: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  97: XCURSOR_SIZE=24
+  98: EDITOR=/usr/bin/nano
+  99: GTK_MODULES=canberra-gtk-module
+  100: XDG_SEAT=seat0
+  101: PWD=/home/pablo/42ShellTester/tmp
+  102: XDG_SESSION_DESKTOP=KDE
+  103: LOGNAME=pablo
+  104: XDG_SESSION_TYPE=x11
+  105: XAUTHORITY=/home/pablo/.Xauthority
+  106: MOTD_SHOWN=pam
+  107: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  108: HOME=/home/pablo
+  109: LC_PAPER=fr_FR.UTF-8
+  110: LANG=en_US.UTF-8
+  111: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  112: XDG_CURRENT_DESKTOP=KDE
+  113: KONSOLE_DBUS_SERVICE=:1.3326
+  114: KONSOLE_DBUS_SESSION=/Sessions/1
+  115: PROFILEHOME=
+  116: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  117: KONSOLE_VERSION=200802
+  118: KDE_SESSION_UID=1000
+  119: XDG_SESSION_CLASS=user
+  120: TERM=xterm-256color
+  121: LC_IDENTIFICATION=fr_FR.UTF-8
+  122: ZSH=/usr/share/oh-my-zsh
+  123: _CE_CONDA=
+  124: TESTVAR1=OLD_TOKEN202012011718
+  125: USER=pablo
+  126: CUDA_PATH=/opt/cuda
+  127: COLORFGBG=15;0
+  128: CONDA_SHLVL=0
+  129: KDE_SESSION_VERSION=5
+  130: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  131: DISPLAY=:0
+  132: SHLVL=2
+  133: PAGER=less
+  134: LC_TELEPHONE=fr_FR.UTF-8
+  135: LC_MEASUREMENT=fr_FR.UTF-8
+  136: XDG_VTNR=1
+  137: XDG_SESSION_ID=1
+  138: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  139: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  140: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  141: XDG_RUNTIME_DIR=/run/user/1000
+  142: LC_TIME=fr_FR.UTF-8
+  143: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  144: XCURSOR_THEME=breeze_cursors
+  145: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  146: KDE_FULL_SESSION=true
+  147: BROWSER=/usr/bin/firefox
+  148: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  149: GTK_USE_PORTAL=1
+  150: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  151: KDE_APPLICATIONS_AS_SCOPE=1
+  152: MAIL=/var/spool/mail/pablo
+  153: LC_NUMERIC=fr_FR.UTF-8
+  154: OLDPWD=/home/pablo/42ShellTester
+  155: KONSOLE_DBUS_WINDOW=/Windows/1
+  156: _=/home/pablo/Documents/42/minishell/minishell
+  157: ------------------------------
+  158: TOTAL ENVIRONMENT VARIABLES: 76
+  159: ------------------------------
+  160: SHELL=/usr/bin/zsh
+  161: LSCOLORS=Gxfxcxdxbxegedabagacad
+  162: WINDOWID=98566151
+  163: KDED_STARTED_BY_KDEINIT=1
+  164: COLORTERM=truecolor
+  165: LESS=-R
+  166: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  167: CONDA_EXE=/opt/miniconda3/bin/conda
+  168: _CE_M=
+  169: LANGUAGE=
+  170: LC_ADDRESS=fr_FR.UTF-8
+  171: LC_NAME=fr_FR.UTF-8
+  172: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  173: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  174: LC_MONETARY=fr_FR.UTF-8
+  175: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  176: XCURSOR_SIZE=24
+  177: EDITOR=/usr/bin/nano
+  178: GTK_MODULES=canberra-gtk-module
+  179: XDG_SEAT=seat0
+  180: PWD=/home/pablo/42ShellTester/tmp
+  181: XDG_SESSION_DESKTOP=KDE
+  182: LOGNAME=pablo
+  183: XDG_SESSION_TYPE=x11
+  184: XAUTHORITY=/home/pablo/.Xauthority
+  185: MOTD_SHOWN=pam
+  186: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  187: HOME=/home/pablo
+  188: LC_PAPER=fr_FR.UTF-8
+  189: LANG=en_US.UTF-8
+  190: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  191: XDG_CURRENT_DESKTOP=KDE
+  192: KONSOLE_DBUS_SERVICE=:1.3326
+  193: KONSOLE_DBUS_SESSION=/Sessions/1
+  194: PROFILEHOME=
+  195: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  196: KONSOLE_VERSION=200802
+  197: KDE_SESSION_UID=1000
+  198: XDG_SESSION_CLASS=user
+  199: TERM=xterm-256color
+  200: LC_IDENTIFICATION=fr_FR.UTF-8
+  201: ZSH=/usr/share/oh-my-zsh
+  202: _CE_CONDA=
+  203: TESTVAR1=OLD_TOKEN202012011718
+  204: USER=pablo
+  205: CUDA_PATH=/opt/cuda
+  206: COLORFGBG=15;0
+  207: CONDA_SHLVL=0
+  208: KDE_SESSION_VERSION=5
+  209: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  210: DISPLAY=:0
+  211: SHLVL=2
+  212: PAGER=less
+  213: LC_TELEPHONE=fr_FR.UTF-8
+  214: LC_MEASUREMENT=fr_FR.UTF-8
+  215: XDG_VTNR=1
+  216: XDG_SESSION_ID=1
+  217: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  218: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  219: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  220: XDG_RUNTIME_DIR=/run/user/1000
+  221: LC_TIME=fr_FR.UTF-8
+  222: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  223: XCURSOR_THEME=breeze_cursors
+  224: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  225: KDE_FULL_SESSION=true
+  226: BROWSER=/usr/bin/firefox
+  227: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  228: GTK_USE_PORTAL=1
+  229: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  230: KDE_APPLICATIONS_AS_SCOPE=1
+  231: MAIL=/var/spool/mail/pablo
+  232: LC_NUMERIC=fr_FR.UTF-8
+  233: OLDPWD=/home/pablo/42ShellTester
+  234: KONSOLE_DBUS_WINDOW=/Windows/1
+  235: _=/home/pablo/Documents/42/minishell/minishell
+  236: ------------------------------
+  237: TOTAL ENVIRONMENT VARIABLES: 76[0m
+
+  STDERR:
+[38;5;239m   1: minishell: setenv: command not found
+   2: minishell: setenv: command not found[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/setenv/004-invalid-identifier[0m [31m[1;33m(WARNING)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using a wrong variable name with the builtin `setenv` (or `export`) results in error.[0m
+
+  STDIN:
+[38;5;239m   1: setenv 42
+   2: export 42[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    might be_empty[0m
+[38;5;239m  (no output)[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to_not be_empty[0m
+[31m[1;33m  WARNING    might match_regex `(not.*identifier|must begin.*letter)`[0m
+[38;5;239m   1: minishell: setenv: command not found[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/setenv/002-add-new-variable[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that the builtin `setenv` (or `export`) can add a new variable to the environment, either with the syntax `setenv KEY VALUE` or with `setenv KEY=VALUE`.[0m
+
+  Before test:
+[38;5;239m   1: unset "TESTVAR1"[0m
+
+  STDIN:
+[38;5;239m   1: setenv TESTVAR1 VALUE_TOKEN202012011718
+   2: ./display_env
+   3: 
+   4: setenv TESTVAR1=VALUE_TOKEN202012011718
+   5: ./display_env
+   6: 
+   7: export TESTVAR1=VALUE_TOKEN202012011718
+   8: ./display_env[0m
+
+  STDOUT:
+[31m[38;5;160m  FAILURE    expected_to match_regex `TESTVAR1=VALUE_TOKEN202012011718`[0m
+[38;5;239m   1: ------------------------------
+   2: SHELL=/usr/bin/zsh
+   3: LSCOLORS=Gxfxcxdxbxegedabagacad
+   4: WINDOWID=98566151
+   5: KDED_STARTED_BY_KDEINIT=1
+   6: COLORTERM=truecolor
+   7: LESS=-R
+   8: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+   9: CONDA_EXE=/opt/miniconda3/bin/conda
+  10: _CE_M=
+  11: LANGUAGE=
+  12: LC_ADDRESS=fr_FR.UTF-8
+  13: LC_NAME=fr_FR.UTF-8
+  14: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  15: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  16: LC_MONETARY=fr_FR.UTF-8
+  17: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  18: XCURSOR_SIZE=24
+  19: EDITOR=/usr/bin/nano
+  20: GTK_MODULES=canberra-gtk-module
+  21: XDG_SEAT=seat0
+  22: PWD=/home/pablo/42ShellTester/tmp
+  23: XDG_SESSION_DESKTOP=KDE
+  24: LOGNAME=pablo
+  25: XDG_SESSION_TYPE=x11
+  26: XAUTHORITY=/home/pablo/.Xauthority
+  27: MOTD_SHOWN=pam
+  28: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  29: HOME=/home/pablo
+  30: LC_PAPER=fr_FR.UTF-8
+  31: LANG=en_US.UTF-8
+  32: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  33: XDG_CURRENT_DESKTOP=KDE
+  34: KONSOLE_DBUS_SERVICE=:1.3326
+  35: KONSOLE_DBUS_SESSION=/Sessions/1
+  36: PROFILEHOME=
+  37: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  38: KONSOLE_VERSION=200802
+  39: KDE_SESSION_UID=1000
+  40: XDG_SESSION_CLASS=user
+  41: TERM=xterm-256color
+  42: LC_IDENTIFICATION=fr_FR.UTF-8
+  43: ZSH=/usr/share/oh-my-zsh
+  44: _CE_CONDA=
+  45: USER=pablo
+  46: CUDA_PATH=/opt/cuda
+  47: COLORFGBG=15;0
+  48: CONDA_SHLVL=0
+  49: KDE_SESSION_VERSION=5
+  50: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  51: DISPLAY=:0
+  52: SHLVL=2
+  53: PAGER=less
+  54: LC_TELEPHONE=fr_FR.UTF-8
+  55: LC_MEASUREMENT=fr_FR.UTF-8
+  56: XDG_VTNR=1
+  57: XDG_SESSION_ID=1
+  58: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  59: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  60: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  61: XDG_RUNTIME_DIR=/run/user/1000
+  62: LC_TIME=fr_FR.UTF-8
+  63: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  64: XCURSOR_THEME=breeze_cursors
+  65: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  66: KDE_FULL_SESSION=true
+  67: BROWSER=/usr/bin/firefox
+  68: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  69: GTK_USE_PORTAL=1
+  70: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  71: KDE_APPLICATIONS_AS_SCOPE=1
+  72: MAIL=/var/spool/mail/pablo
+  73: LC_NUMERIC=fr_FR.UTF-8
+  74: OLDPWD=/home/pablo/42ShellTester
+  75: KONSOLE_DBUS_WINDOW=/Windows/1
+  76: _=/home/pablo/Documents/42/minishell/minishell
+  77: ------------------------------
+  78: TOTAL ENVIRONMENT VARIABLES: 75
+  79: ------------------------------
+  80: SHELL=/usr/bin/zsh
+  81: LSCOLORS=Gxfxcxdxbxegedabagacad
+  82: WINDOWID=98566151
+  83: KDED_STARTED_BY_KDEINIT=1
+  84: COLORTERM=truecolor
+  85: LESS=-R
+  86: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  87: CONDA_EXE=/opt/miniconda3/bin/conda
+  88: _CE_M=
+  89: LANGUAGE=
+  90: LC_ADDRESS=fr_FR.UTF-8
+  91: LC_NAME=fr_FR.UTF-8
+  92: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  93: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  94: LC_MONETARY=fr_FR.UTF-8
+  95: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  96: XCURSOR_SIZE=24
+  97: EDITOR=/usr/bin/nano
+  98: GTK_MODULES=canberra-gtk-module
+  99: XDG_SEAT=seat0
+  100: PWD=/home/pablo/42ShellTester/tmp
+  101: XDG_SESSION_DESKTOP=KDE
+  102: LOGNAME=pablo
+  103: XDG_SESSION_TYPE=x11
+  104: XAUTHORITY=/home/pablo/.Xauthority
+  105: MOTD_SHOWN=pam
+  106: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  107: HOME=/home/pablo
+  108: LC_PAPER=fr_FR.UTF-8
+  109: LANG=en_US.UTF-8
+  110: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  111: XDG_CURRENT_DESKTOP=KDE
+  112: KONSOLE_DBUS_SERVICE=:1.3326
+  113: KONSOLE_DBUS_SESSION=/Sessions/1
+  114: PROFILEHOME=
+  115: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  116: KONSOLE_VERSION=200802
+  117: KDE_SESSION_UID=1000
+  118: XDG_SESSION_CLASS=user
+  119: TERM=xterm-256color
+  120: LC_IDENTIFICATION=fr_FR.UTF-8
+  121: ZSH=/usr/share/oh-my-zsh
+  122: _CE_CONDA=
+  123: USER=pablo
+  124: CUDA_PATH=/opt/cuda
+  125: COLORFGBG=15;0
+  126: CONDA_SHLVL=0
+  127: KDE_SESSION_VERSION=5
+  128: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  129: DISPLAY=:0
+  130: SHLVL=2
+  131: PAGER=less
+  132: LC_TELEPHONE=fr_FR.UTF-8
+  133: LC_MEASUREMENT=fr_FR.UTF-8
+  134: XDG_VTNR=1
+  135: XDG_SESSION_ID=1
+  136: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  137: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  138: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  139: XDG_RUNTIME_DIR=/run/user/1000
+  140: LC_TIME=fr_FR.UTF-8
+  141: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  142: XCURSOR_THEME=breeze_cursors
+  143: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  144: KDE_FULL_SESSION=true
+  145: BROWSER=/usr/bin/firefox
+  146: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  147: GTK_USE_PORTAL=1
+  148: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  149: KDE_APPLICATIONS_AS_SCOPE=1
+  150: MAIL=/var/spool/mail/pablo
+  151: LC_NUMERIC=fr_FR.UTF-8
+  152: OLDPWD=/home/pablo/42ShellTester
+  153: KONSOLE_DBUS_WINDOW=/Windows/1
+  154: _=/home/pablo/Documents/42/minishell/minishell
+  155: ------------------------------
+  156: TOTAL ENVIRONMENT VARIABLES: 75
+  157: ------------------------------
+  158: SHELL=/usr/bin/zsh
+  159: LSCOLORS=Gxfxcxdxbxegedabagacad
+  160: WINDOWID=98566151
+  161: KDED_STARTED_BY_KDEINIT=1
+  162: COLORTERM=truecolor
+  163: LESS=-R
+  164: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  165: CONDA_EXE=/opt/miniconda3/bin/conda
+  166: _CE_M=
+  167: LANGUAGE=
+  168: LC_ADDRESS=fr_FR.UTF-8
+  169: LC_NAME=fr_FR.UTF-8
+  170: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  171: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  172: LC_MONETARY=fr_FR.UTF-8
+  173: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  174: XCURSOR_SIZE=24
+  175: EDITOR=/usr/bin/nano
+  176: GTK_MODULES=canberra-gtk-module
+  177: XDG_SEAT=seat0
+  178: PWD=/home/pablo/42ShellTester/tmp
+  179: XDG_SESSION_DESKTOP=KDE
+  180: LOGNAME=pablo
+  181: XDG_SESSION_TYPE=x11
+  182: XAUTHORITY=/home/pablo/.Xauthority
+  183: MOTD_SHOWN=pam
+  184: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  185: HOME=/home/pablo
+  186: LC_PAPER=fr_FR.UTF-8
+  187: LANG=en_US.UTF-8
+  188: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  189: XDG_CURRENT_DESKTOP=KDE
+  190: KONSOLE_DBUS_SERVICE=:1.3326
+  191: KONSOLE_DBUS_SESSION=/Sessions/1
+  192: PROFILEHOME=
+  193: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  194: KONSOLE_VERSION=200802
+  195: KDE_SESSION_UID=1000
+  196: XDG_SESSION_CLASS=user
+  197: TERM=xterm-256color
+  198: LC_IDENTIFICATION=fr_FR.UTF-8
+  199: ZSH=/usr/share/oh-my-zsh
+  200: _CE_CONDA=
+  201: USER=pablo
+  202: CUDA_PATH=/opt/cuda
+  203: COLORFGBG=15;0
+  204: CONDA_SHLVL=0
+  205: KDE_SESSION_VERSION=5
+  206: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  207: DISPLAY=:0
+  208: SHLVL=2
+  209: PAGER=less
+  210: LC_TELEPHONE=fr_FR.UTF-8
+  211: LC_MEASUREMENT=fr_FR.UTF-8
+  212: XDG_VTNR=1
+  213: XDG_SESSION_ID=1
+  214: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  215: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  216: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  217: XDG_RUNTIME_DIR=/run/user/1000
+  218: LC_TIME=fr_FR.UTF-8
+  219: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  220: XCURSOR_THEME=breeze_cursors
+  221: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  222: KDE_FULL_SESSION=true
+  223: BROWSER=/usr/bin/firefox
+  224: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  225: GTK_USE_PORTAL=1
+  226: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  227: KDE_APPLICATIONS_AS_SCOPE=1
+  228: MAIL=/var/spool/mail/pablo
+  229: LC_NUMERIC=fr_FR.UTF-8
+  230: OLDPWD=/home/pablo/42ShellTester
+  231: KONSOLE_DBUS_WINDOW=/Windows/1
+  232: _=/home/pablo/Documents/42/minishell/minishell
+  233: ------------------------------
+  234: TOTAL ENVIRONMENT VARIABLES: 75[0m
+
+  STDERR:
+[38;5;239m   1: minishell: setenv: command not found
+   2: minishell: setenv: command not found[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/setenv/005-add-and-set-multiple-variables[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that the builtin `setenv` (or `export`) can add multiples variables into the environment, either with the syntax `setenv KEY VALUE` or with `setenv KEY=VALUE`.[0m
+
+  Before test:
+[38;5;239m   1: unset "TESTVAR1"
+   2: unset "TESTVAR2"
+   3: unset "TESTVAR3"
+   4: unset "TESTVAR4"
+   5: unset "TESTVAR5"
+   6: unset "TESTVAR6"
+   7: unset "TESTVAR7"
+   8: unset "TESTVAR8"
+   9: unset "TESTVAR9"
+  10: unset "TESTVAR10"
+  11: 
+  12: export "TEST2VAR1=OLD_TOKEN202012011718_1"
+  13: export "TEST2VAR2=OLD_TOKEN202012011718_2"
+  14: export "TEST2VAR3=OLD_TOKEN202012011718_3"
+  15: export "TEST2VAR4=OLD_TOKEN202012011718_4"
+  16: export "TEST2VAR5=OLD_TOKEN202012011718_5"
+  17: export "TEST2VAR6=OLD_TOKEN202012011718_6"
+  18: export "TEST2VAR7=OLD_TOKEN202012011718_7"
+  19: export "TEST2VAR8=OLD_TOKEN202012011718_8"
+  20: export "TEST2VAR9=OLD_TOKEN202012011718_9"
+  21: export "TEST2VAR10=OLD_TOKEN202012011718_10"[0m
+
+  STDIN:
+[38;5;239m   1: setenv TESTVAR1 VALUE_TOKEN202012011718_1
+   2: setenv TEST2VAR1 VALUE_TOKEN202012011718_1
+   3: setenv TESTVAR2 VALUE_TOKEN202012011718_2
+   4: setenv TEST2VAR2 VALUE_TOKEN202012011718_2
+   5: setenv TESTVAR3 VALUE_TOKEN202012011718_3
+   6: setenv TEST2VAR3 VALUE_TOKEN202012011718_3
+   7: setenv TESTVAR4 VALUE_TOKEN202012011718_4
+   8: setenv TEST2VAR4 VALUE_TOKEN202012011718_4
+   9: setenv TESTVAR5 VALUE_TOKEN202012011718_5
+  10: setenv TEST2VAR5 VALUE_TOKEN202012011718_5
+  11: setenv TESTVAR6 VALUE_TOKEN202012011718_6
+  12: setenv TEST2VAR6 VALUE_TOKEN202012011718_6
+  13: setenv TESTVAR7 VALUE_TOKEN202012011718_7
+  14: setenv TEST2VAR7 VALUE_TOKEN202012011718_7
+  15: setenv TESTVAR8 VALUE_TOKEN202012011718_8
+  16: setenv TEST2VAR8 VALUE_TOKEN202012011718_8
+  17: setenv TESTVAR9 VALUE_TOKEN202012011718_9
+  18: setenv TEST2VAR9 VALUE_TOKEN202012011718_9
+  19: setenv TESTVAR10 VALUE_TOKEN202012011718_10
+  20: setenv TEST2VAR10 VALUE_TOKEN202012011718_10
+  21: ./display_env
+  22: 
+  23: setenv TESTVAR1=VALUE_TOKEN202012011718_1
+  24: setenv TEST2VAR1=VALUE_TOKEN202012011718_1
+  25: setenv TESTVAR2=VALUE_TOKEN202012011718_2
+  26: setenv TEST2VAR2=VALUE_TOKEN202012011718_2
+  27: setenv TESTVAR3=VALUE_TOKEN202012011718_3
+  28: setenv TEST2VAR3=VALUE_TOKEN202012011718_3
+  29: setenv TESTVAR4=VALUE_TOKEN202012011718_4
+  30: setenv TEST2VAR4=VALUE_TOKEN202012011718_4
+  31: setenv TESTVAR5=VALUE_TOKEN202012011718_5
+  32: setenv TEST2VAR5=VALUE_TOKEN202012011718_5
+  33: setenv TESTVAR6=VALUE_TOKEN202012011718_6
+  34: setenv TEST2VAR6=VALUE_TOKEN202012011718_6
+  35: setenv TESTVAR7=VALUE_TOKEN202012011718_7
+  36: setenv TEST2VAR7=VALUE_TOKEN202012011718_7
+  37: setenv TESTVAR8=VALUE_TOKEN202012011718_8
+  38: setenv TEST2VAR8=VALUE_TOKEN202012011718_8
+  39: setenv TESTVAR9=VALUE_TOKEN202012011718_9
+  40: setenv TEST2VAR9=VALUE_TOKEN202012011718_9
+  41: setenv TESTVAR10=VALUE_TOKEN202012011718_10
+  42: setenv TEST2VAR10=VALUE_TOKEN202012011718_10
+  43: ./display_env
+  44: 
+  45: export TESTVAR1=VALUE_TOKEN202012011718_1
+  46: export TEST2VAR1=VALUE_TOKEN202012011718_1
+  47: export TESTVAR2=VALUE_TOKEN202012011718_2
+  48: export TEST2VAR2=VALUE_TOKEN202012011718_2
+  49: export TESTVAR3=VALUE_TOKEN202012011718_3
+  50: export TEST2VAR3=VALUE_TOKEN202012011718_3
+  51: export TESTVAR4=VALUE_TOKEN202012011718_4
+  52: export TEST2VAR4=VALUE_TOKEN202012011718_4
+  53: export TESTVAR5=VALUE_TOKEN202012011718_5
+  54: export TEST2VAR5=VALUE_TOKEN202012011718_5
+  55: export TESTVAR6=VALUE_TOKEN202012011718_6
+  56: export TEST2VAR6=VALUE_TOKEN202012011718_6
+  57: export TESTVAR7=VALUE_TOKEN202012011718_7
+  58: export TEST2VAR7=VALUE_TOKEN202012011718_7
+  59: export TESTVAR8=VALUE_TOKEN202012011718_8
+  60: export TEST2VAR8=VALUE_TOKEN202012011718_8
+  61: export TESTVAR9=VALUE_TOKEN202012011718_9
+  62: export TEST2VAR9=VALUE_TOKEN202012011718_9
+  63: export TESTVAR10=VALUE_TOKEN202012011718_10
+  64: export TEST2VAR10=VALUE_TOKEN202012011718_10
+  65: ./display_env[0m
+
+  STDOUT:
+[31m[38;5;160m  FAILURE    expected_to match_regex `TESTVAR1=VALUE_TOKEN202012011718_1`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `TESTVAR2=VALUE_TOKEN202012011718_2`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `TESTVAR3=VALUE_TOKEN202012011718_3`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `TESTVAR4=VALUE_TOKEN202012011718_4`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `TESTVAR5=VALUE_TOKEN202012011718_5`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `TESTVAR6=VALUE_TOKEN202012011718_6`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `TESTVAR7=VALUE_TOKEN202012011718_7`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `TESTVAR8=VALUE_TOKEN202012011718_8`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `TESTVAR9=VALUE_TOKEN202012011718_9`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `TESTVAR10=VALUE_TOKEN202012011718_10`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `TEST2VAR1=VALUE_TOKEN202012011718_1`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `TEST2VAR2=VALUE_TOKEN202012011718_2`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `TEST2VAR3=VALUE_TOKEN202012011718_3`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `TEST2VAR4=VALUE_TOKEN202012011718_4`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `TEST2VAR5=VALUE_TOKEN202012011718_5`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `TEST2VAR6=VALUE_TOKEN202012011718_6`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `TEST2VAR7=VALUE_TOKEN202012011718_7`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `TEST2VAR8=VALUE_TOKEN202012011718_8`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `TEST2VAR9=VALUE_TOKEN202012011718_9`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `TEST2VAR10=VALUE_TOKEN202012011718_10`[0m
+[38;5;239m   1: ------------------------------
+   2: SHELL=/usr/bin/zsh
+   3: LSCOLORS=Gxfxcxdxbxegedabagacad
+   4: WINDOWID=98566151
+   5: KDED_STARTED_BY_KDEINIT=1
+   6: COLORTERM=truecolor
+   7: LESS=-R
+   8: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+   9: CONDA_EXE=/opt/miniconda3/bin/conda
+  10: _CE_M=
+  11: LANGUAGE=
+  12: LC_ADDRESS=fr_FR.UTF-8
+  13: LC_NAME=fr_FR.UTF-8
+  14: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  15: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  16: LC_MONETARY=fr_FR.UTF-8
+  17: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  18: XCURSOR_SIZE=24
+  19: EDITOR=/usr/bin/nano
+  20: GTK_MODULES=canberra-gtk-module
+  21: XDG_SEAT=seat0
+  22: PWD=/home/pablo/42ShellTester/tmp
+  23: XDG_SESSION_DESKTOP=KDE
+  24: LOGNAME=pablo
+  25: XDG_SESSION_TYPE=x11
+  26: XAUTHORITY=/home/pablo/.Xauthority
+  27: MOTD_SHOWN=pam
+  28: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  29: HOME=/home/pablo
+  30: LC_PAPER=fr_FR.UTF-8
+  31: LANG=en_US.UTF-8
+  32: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  33: XDG_CURRENT_DESKTOP=KDE
+  34: KONSOLE_DBUS_SERVICE=:1.3326
+  35: KONSOLE_DBUS_SESSION=/Sessions/1
+  36: PROFILEHOME=
+  37: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  38: KONSOLE_VERSION=200802
+  39: KDE_SESSION_UID=1000
+  40: XDG_SESSION_CLASS=user
+  41: TERM=xterm-256color
+  42: LC_IDENTIFICATION=fr_FR.UTF-8
+  43: ZSH=/usr/share/oh-my-zsh
+  44: _CE_CONDA=
+  45: USER=pablo
+  46: CUDA_PATH=/opt/cuda
+  47: COLORFGBG=15;0
+  48: CONDA_SHLVL=0
+  49: KDE_SESSION_VERSION=5
+  50: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  51: DISPLAY=:0
+  52: SHLVL=2
+  53: PAGER=less
+  54: LC_TELEPHONE=fr_FR.UTF-8
+  55: LC_MEASUREMENT=fr_FR.UTF-8
+  56: XDG_VTNR=1
+  57: XDG_SESSION_ID=1
+  58: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  59: TEST2VAR10=OLD_TOKEN202012011718_10
+  60: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  61: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  62: XDG_RUNTIME_DIR=/run/user/1000
+  63: LC_TIME=fr_FR.UTF-8
+  64: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  65: XCURSOR_THEME=breeze_cursors
+  66: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  67: KDE_FULL_SESSION=true
+  68: BROWSER=/usr/bin/firefox
+  69: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  70: GTK_USE_PORTAL=1
+  71: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  72: KDE_APPLICATIONS_AS_SCOPE=1
+  73: MAIL=/var/spool/mail/pablo
+  74: TEST2VAR1=OLD_TOKEN202012011718_1
+  75: TEST2VAR2=OLD_TOKEN202012011718_2
+  76: TEST2VAR3=OLD_TOKEN202012011718_3
+  77: TEST2VAR4=OLD_TOKEN202012011718_4
+  78: TEST2VAR5=OLD_TOKEN202012011718_5
+  79: TEST2VAR6=OLD_TOKEN202012011718_6
+  80: TEST2VAR7=OLD_TOKEN202012011718_7
+  81: TEST2VAR8=OLD_TOKEN202012011718_8
+  82: TEST2VAR9=OLD_TOKEN202012011718_9
+  83: LC_NUMERIC=fr_FR.UTF-8
+  84: OLDPWD=/home/pablo/42ShellTester
+  85: KONSOLE_DBUS_WINDOW=/Windows/1
+  86: _=/home/pablo/Documents/42/minishell/minishell
+  87: ------------------------------
+  88: TOTAL ENVIRONMENT VARIABLES: 85
+  89: ------------------------------
+  90: SHELL=/usr/bin/zsh
+  91: LSCOLORS=Gxfxcxdxbxegedabagacad
+  92: WINDOWID=98566151
+  93: KDED_STARTED_BY_KDEINIT=1
+  94: COLORTERM=truecolor
+  95: LESS=-R
+  96: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  97: CONDA_EXE=/opt/miniconda3/bin/conda
+  98: _CE_M=
+  99: LANGUAGE=
+  100: LC_ADDRESS=fr_FR.UTF-8
+  101: LC_NAME=fr_FR.UTF-8
+  102: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  103: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  104: LC_MONETARY=fr_FR.UTF-8
+  105: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  106: XCURSOR_SIZE=24
+  107: EDITOR=/usr/bin/nano
+  108: GTK_MODULES=canberra-gtk-module
+  109: XDG_SEAT=seat0
+  110: PWD=/home/pablo/42ShellTester/tmp
+  111: XDG_SESSION_DESKTOP=KDE
+  112: LOGNAME=pablo
+  113: XDG_SESSION_TYPE=x11
+  114: XAUTHORITY=/home/pablo/.Xauthority
+  115: MOTD_SHOWN=pam
+  116: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  117: HOME=/home/pablo
+  118: LC_PAPER=fr_FR.UTF-8
+  119: LANG=en_US.UTF-8
+  120: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  121: XDG_CURRENT_DESKTOP=KDE
+  122: KONSOLE_DBUS_SERVICE=:1.3326
+  123: KONSOLE_DBUS_SESSION=/Sessions/1
+  124: PROFILEHOME=
+  125: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  126: KONSOLE_VERSION=200802
+  127: KDE_SESSION_UID=1000
+  128: XDG_SESSION_CLASS=user
+  129: TERM=xterm-256color
+  130: LC_IDENTIFICATION=fr_FR.UTF-8
+  131: ZSH=/usr/share/oh-my-zsh
+  132: _CE_CONDA=
+  133: USER=pablo
+  134: CUDA_PATH=/opt/cuda
+  135: COLORFGBG=15;0
+  136: CONDA_SHLVL=0
+  137: KDE_SESSION_VERSION=5
+  138: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  139: DISPLAY=:0
+  140: SHLVL=2
+  141: PAGER=less
+  142: LC_TELEPHONE=fr_FR.UTF-8
+  143: LC_MEASUREMENT=fr_FR.UTF-8
+  144: XDG_VTNR=1
+  145: XDG_SESSION_ID=1
+  146: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  147: TEST2VAR10=OLD_TOKEN202012011718_10
+  148: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  149: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  150: XDG_RUNTIME_DIR=/run/user/1000
+  151: LC_TIME=fr_FR.UTF-8
+  152: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  153: XCURSOR_THEME=breeze_cursors
+  154: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  155: KDE_FULL_SESSION=true
+  156: BROWSER=/usr/bin/firefox
+  157: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  158: GTK_USE_PORTAL=1
+  159: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  160: KDE_APPLICATIONS_AS_SCOPE=1
+  161: MAIL=/var/spool/mail/pablo
+  162: TEST2VAR1=OLD_TOKEN202012011718_1
+  163: TEST2VAR2=OLD_TOKEN202012011718_2
+  164: TEST2VAR3=OLD_TOKEN202012011718_3
+  165: TEST2VAR4=OLD_TOKEN202012011718_4
+  166: TEST2VAR5=OLD_TOKEN202012011718_5
+  167: TEST2VAR6=OLD_TOKEN202012011718_6
+  168: TEST2VAR7=OLD_TOKEN202012011718_7
+  169: TEST2VAR8=OLD_TOKEN202012011718_8
+  170: TEST2VAR9=OLD_TOKEN202012011718_9
+  171: LC_NUMERIC=fr_FR.UTF-8
+  172: OLDPWD=/home/pablo/42ShellTester
+  173: KONSOLE_DBUS_WINDOW=/Windows/1
+  174: _=/home/pablo/Documents/42/minishell/minishell
+  175: ------------------------------
+  176: TOTAL ENVIRONMENT VARIABLES: 85
+  177: ------------------------------
+  178: SHELL=/usr/bin/zsh
+  179: LSCOLORS=Gxfxcxdxbxegedabagacad
+  180: WINDOWID=98566151
+  181: KDED_STARTED_BY_KDEINIT=1
+  182: COLORTERM=truecolor
+  183: LESS=-R
+  184: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  185: CONDA_EXE=/opt/miniconda3/bin/conda
+  186: _CE_M=
+  187: LANGUAGE=
+  188: LC_ADDRESS=fr_FR.UTF-8
+  189: LC_NAME=fr_FR.UTF-8
+  190: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  191: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  192: LC_MONETARY=fr_FR.UTF-8
+  193: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  194: XCURSOR_SIZE=24
+  195: EDITOR=/usr/bin/nano
+  196: GTK_MODULES=canberra-gtk-module
+  197: XDG_SEAT=seat0
+  198: PWD=/home/pablo/42ShellTester/tmp
+  199: XDG_SESSION_DESKTOP=KDE
+  200: LOGNAME=pablo
+  201: XDG_SESSION_TYPE=x11
+  202: XAUTHORITY=/home/pablo/.Xauthority
+  203: MOTD_SHOWN=pam
+  204: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  205: HOME=/home/pablo
+  206: LC_PAPER=fr_FR.UTF-8
+  207: LANG=en_US.UTF-8
+  208: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  209: XDG_CURRENT_DESKTOP=KDE
+  210: KONSOLE_DBUS_SERVICE=:1.3326
+  211: KONSOLE_DBUS_SESSION=/Sessions/1
+  212: PROFILEHOME=
+  213: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  214: KONSOLE_VERSION=200802
+  215: KDE_SESSION_UID=1000
+  216: XDG_SESSION_CLASS=user
+  217: TERM=xterm-256color
+  218: LC_IDENTIFICATION=fr_FR.UTF-8
+  219: ZSH=/usr/share/oh-my-zsh
+  220: _CE_CONDA=
+  221: USER=pablo
+  222: CUDA_PATH=/opt/cuda
+  223: COLORFGBG=15;0
+  224: CONDA_SHLVL=0
+  225: KDE_SESSION_VERSION=5
+  226: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  227: DISPLAY=:0
+  228: SHLVL=2
+  229: PAGER=less
+  230: LC_TELEPHONE=fr_FR.UTF-8
+  231: LC_MEASUREMENT=fr_FR.UTF-8
+  232: XDG_VTNR=1
+  233: XDG_SESSION_ID=1
+  234: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  235: TEST2VAR10=OLD_TOKEN202012011718_10
+  236: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  237: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  238: XDG_RUNTIME_DIR=/run/user/1000
+  239: LC_TIME=fr_FR.UTF-8
+  240: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  241: XCURSOR_THEME=breeze_cursors
+  242: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  243: KDE_FULL_SESSION=true
+  244: BROWSER=/usr/bin/firefox
+  245: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  246: GTK_USE_PORTAL=1
+  247: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  248: KDE_APPLICATIONS_AS_SCOPE=1
+  249: MAIL=/var/spool/mail/pablo
+  250: TEST2VAR1=OLD_TOKEN202012011718_1
+  251: TEST2VAR2=OLD_TOKEN202012011718_2
+  252: TEST2VAR3=OLD_TOKEN202012011718_3
+  253: TEST2VAR4=OLD_TOKEN202012011718_4
+  254: TEST2VAR5=OLD_TOKEN202012011718_5
+  255: TEST2VAR6=OLD_TOKEN202012011718_6
+  256: TEST2VAR7=OLD_TOKEN202012011718_7
+  257: TEST2VAR8=OLD_TOKEN202012011718_8
+  258: TEST2VAR9=OLD_TOKEN202012011718_9
+  259: LC_NUMERIC=fr_FR.UTF-8
+  260: OLDPWD=/home/pablo/42ShellTester
+  261: KONSOLE_DBUS_WINDOW=/Windows/1
+  262: _=/home/pablo/Documents/42/minishell/minishell
+  263: ------------------------------
+  264: TOTAL ENVIRONMENT VARIABLES: 85[0m
+
+  STDERR:
+[38;5;239m   1: minishell: setenv: command not found
+   2: minishell: setenv: command not found
+   3: minishell: setenv: command not found
+   4: minishell: setenv: command not found
+   5: minishell: setenv: command not found
+   6: minishell: setenv: command not found
+   7: minishell: setenv: command not found
+   8: minishell: setenv: command not found
+   9: minishell: setenv: command not found
+  10: minishell: setenv: command not found
+  11: minishell: setenv: command not found
+  12: minishell: setenv: command not found
+  13: minishell: setenv: command not found
+  14: minishell: setenv: command not found
+  15: minishell: setenv: command not found
+  16: minishell: setenv: command not found
+  17: minishell: setenv: command not found
+  18: minishell: setenv: command not found
+  19: minishell: setenv: command not found
+  20: minishell: setenv: command not found
+  21: minishell: setenv: command not found
+  22: minishell: setenv: command not found
+  23: minishell: setenv: command not found
+  24: minishell: setenv: command not found
+  25: minishell: setenv: command not found
+  26: minishell: setenv: command not found
+  27: minishell: setenv: command not found
+  28: minishell: setenv: command not found
+  29: minishell: setenv: command not found
+  30: minishell: setenv: command not found
+  31: minishell: setenv: command not found
+  32: minishell: setenv: command not found
+  33: minishell: setenv: command not found
+  34: minishell: setenv: command not found
+  35: minishell: setenv: command not found
+  36: minishell: setenv: command not found
+  37: minishell: setenv: command not found
+  38: minishell: setenv: command not found
+  39: minishell: setenv: command not found
+  40: minishell: setenv: command not found[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/setenv/001-no-argument[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using the builtin `setenv` (or `export`) without any argument results in the same behavior as `env` (display environment variables).[0m
+
+  Before test:
+[38;5;239m   1: # storing all environment variables except OLDPWD and _
+   2: env | awk 'BEGIN {FS="="} $0 !~ /^(OLDPWD|_)/ {print $1"="}' > "./stored_env"[0m
+
+  STDIN:
+[38;5;239m   1: setenv
+   2: export[0m
+
+  STDOUT:
+[31m[38;5;160m  FAILURE    expected_to match_each_regex_of_file `./stored_env`[0m
+[38;5;239m  (no output)[0m
+
+  STDERR:
+[38;5;239m   1: minishell: setenv: command not found[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/env/002-env-check-usefull-var[0m [31m[38;5;34m(SUCCESS)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that basic environment variables are well stored.
+  We add a special variable to the environment before the execution.[0m
+
+  Before test:
+[38;5;239m   1: export TEST_42SHTEST="TOKEN202012011718"[0m
+
+  STDIN:
+[38;5;239m   1: env[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_regex `PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin`[0m
+[31m[38;5;34m  SUCCESS    expected_to match_regex `PWD=${PWD}`[0m
+[31m[38;5;34m  SUCCESS    expected_to match_regex `HOME=/home/pablo`[0m
+[31m[38;5;34m  SUCCESS    expected_to match_regex `TEST_42SHTEST=TOKEN202012011718`[0m
+[38;5;239m   1: _=/home/pablo/Documents/42/minishell/minishell
+   2: KONSOLE_DBUS_WINDOW=/Windows/1
+   3: OLDPWD=/home/pablo/42ShellTester
+   4: LC_NUMERIC=fr_FR.UTF-8
+   5: MAIL=/var/spool/mail/pablo
+   6: KDE_APPLICATIONS_AS_SCOPE=1
+   7: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+   8: GTK_USE_PORTAL=1
+   9: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  10: BROWSER=/usr/bin/firefox
+  11: KDE_FULL_SESSION=true
+  12: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  13: XCURSOR_THEME=breeze_cursors
+  14: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  15: LC_TIME=fr_FR.UTF-8
+  16: TEST_42SHTEST=TOKEN202012011718
+  17: XDG_RUNTIME_DIR=/run/user/1000
+  18: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  19: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  20: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  21: XDG_SESSION_ID=1
+  22: XDG_VTNR=1
+  23: LC_MEASUREMENT=fr_FR.UTF-8
+  24: LC_TELEPHONE=fr_FR.UTF-8
+  25: PAGER=less
+  26: SHLVL=2
+  27: DISPLAY=:0
+  28: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  29: KDE_SESSION_VERSION=5
+  30: CONDA_SHLVL=0
+  31: COLORFGBG=15;0
+  32: CUDA_PATH=/opt/cuda
+  33: USER=pablo
+  34: _CE_CONDA=
+  35: ZSH=/usr/share/oh-my-zsh
+  36: LC_IDENTIFICATION=fr_FR.UTF-8
+  37: TERM=xterm-256color
+  38: XDG_SESSION_CLASS=user
+  39: KDE_SESSION_UID=1000
+  40: KONSOLE_VERSION=200802
+  41: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  42: PROFILEHOME=
+  43: KONSOLE_DBUS_SESSION=/Sessions/1
+  44: KONSOLE_DBUS_SERVICE=:1.3326
+  45: XDG_CURRENT_DESKTOP=KDE
+  46: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  47: LANG=en_US.UTF-8
+  48: LC_PAPER=fr_FR.UTF-8
+  49: HOME=/home/pablo
+  50: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  51: MOTD_SHOWN=pam
+  52: XAUTHORITY=/home/pablo/.Xauthority
+  53: XDG_SESSION_TYPE=x11
+  54: LOGNAME=pablo
+  55: XDG_SESSION_DESKTOP=KDE
+  56: PWD=/home/pablo/42ShellTester/tmp
+  57: XDG_SEAT=seat0
+  58: GTK_MODULES=canberra-gtk-module
+  59: EDITOR=/usr/bin/nano
+  60: XCURSOR_SIZE=24
+  61: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  62: LC_MONETARY=fr_FR.UTF-8
+  63: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  64: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  65: LC_NAME=fr_FR.UTF-8
+  66: LC_ADDRESS=fr_FR.UTF-8
+  67: LANGUAGE=
+  68: _CE_M=
+  69: CONDA_EXE=/opt/miniconda3/bin/conda
+  70: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  71: LESS=-R
+  72: COLORTERM=truecolor
+  73: KDED_STARTED_BY_KDEINIT=1
+  74: WINDOWID=98566151
+  75: LSCOLORS=Gxfxcxdxbxegedabagacad
+  76: SHELL=/usr/bin/zsh[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to be_empty[0m
+[38;5;239m  (no output)[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/env/errors/002-illegal-option[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using the builtin `env` with an invalid option results in an error and failure exit status.[0m
+
+  Before test:
+[38;5;239m   1: rm -f -- "-w"[0m
+
+  STDIN:
+[38;5;239m   1: env -w[0m
+
+  STDOUT:
+[38;5;239m   1: _=/home/pablo/Documents/42/minishell/minishell
+   2: KONSOLE_DBUS_WINDOW=/Windows/1
+   3: OLDPWD=/home/pablo/42ShellTester
+   4: LC_NUMERIC=fr_FR.UTF-8
+   5: MAIL=/var/spool/mail/pablo
+   6: KDE_APPLICATIONS_AS_SCOPE=1
+   7: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+   8: GTK_USE_PORTAL=1
+   9: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  10: BROWSER=/usr/bin/firefox
+  11: KDE_FULL_SESSION=true
+  12: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  13: XCURSOR_THEME=breeze_cursors
+  14: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  15: LC_TIME=fr_FR.UTF-8
+  16: XDG_RUNTIME_DIR=/run/user/1000
+  17: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  18: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  19: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  20: XDG_SESSION_ID=1
+  21: XDG_VTNR=1
+  22: LC_MEASUREMENT=fr_FR.UTF-8
+  23: LC_TELEPHONE=fr_FR.UTF-8
+  24: PAGER=less
+  25: SHLVL=2
+  26: DISPLAY=:0
+  27: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  28: KDE_SESSION_VERSION=5
+  29: CONDA_SHLVL=0
+  30: COLORFGBG=15;0
+  31: CUDA_PATH=/opt/cuda
+  32: USER=pablo
+  33: _CE_CONDA=
+  34: ZSH=/usr/share/oh-my-zsh
+  35: LC_IDENTIFICATION=fr_FR.UTF-8
+  36: TERM=xterm-256color
+  37: XDG_SESSION_CLASS=user
+  38: KDE_SESSION_UID=1000
+  39: KONSOLE_VERSION=200802
+  40: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  41: PROFILEHOME=
+  42: KONSOLE_DBUS_SESSION=/Sessions/1
+  43: KONSOLE_DBUS_SERVICE=:1.3326
+  44: XDG_CURRENT_DESKTOP=KDE
+  45: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  46: LANG=en_US.UTF-8
+  47: LC_PAPER=fr_FR.UTF-8
+  48: HOME=/home/pablo
+  49: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  50: MOTD_SHOWN=pam
+  51: XAUTHORITY=/home/pablo/.Xauthority
+  52: XDG_SESSION_TYPE=x11
+  53: LOGNAME=pablo
+  54: XDG_SESSION_DESKTOP=KDE
+  55: PWD=/home/pablo/42ShellTester/tmp
+  56: XDG_SEAT=seat0
+  57: GTK_MODULES=canberra-gtk-module
+  58: EDITOR=/usr/bin/nano
+  59: XCURSOR_SIZE=24
+  60: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  61: LC_MONETARY=fr_FR.UTF-8
+  62: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  63: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  64: LC_NAME=fr_FR.UTF-8
+  65: LC_ADDRESS=fr_FR.UTF-8
+  66: LANGUAGE=
+  67: _CE_M=
+  68: CONDA_EXE=/opt/miniconda3/bin/conda
+  69: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  70: LESS=-R
+  71: COLORTERM=truecolor
+  72: KDED_STARTED_BY_KDEINIT=1
+  73: WINDOWID=98566151
+  74: LSCOLORS=Gxfxcxdxbxegedabagacad
+  75: SHELL=/usr/bin/zsh[0m
+
+  STDERR:
+[31m[38;5;160m  FAILURE    expected_to_not be_empty[0m
+[31m[1;33m  WARNING    might match_regex `([Ii]nvalid|[Ii]llegal) (option|argument)`[0m
+[38;5;239m  (no output)[0m
+
+  MISC:
+[31m[38;5;160m  FAILURE    expected_to_not exit_with_status `0`[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/env/errors/001-command-not-found[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using the builtin `env` with an invalid binary as argument results in an error and failure exit status.[0m
+
+  Before test:
+[38;5;239m   1: rm -f "./invalid_binary"[0m
+
+  STDIN:
+[38;5;239m   1: env ./invalid_binary[0m
+
+  STDOUT:
+[38;5;239m   1: _=/home/pablo/Documents/42/minishell/minishell
+   2: KONSOLE_DBUS_WINDOW=/Windows/1
+   3: OLDPWD=/home/pablo/42ShellTester
+   4: LC_NUMERIC=fr_FR.UTF-8
+   5: MAIL=/var/spool/mail/pablo
+   6: KDE_APPLICATIONS_AS_SCOPE=1
+   7: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+   8: GTK_USE_PORTAL=1
+   9: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  10: BROWSER=/usr/bin/firefox
+  11: KDE_FULL_SESSION=true
+  12: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  13: XCURSOR_THEME=breeze_cursors
+  14: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  15: LC_TIME=fr_FR.UTF-8
+  16: XDG_RUNTIME_DIR=/run/user/1000
+  17: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  18: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  19: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  20: XDG_SESSION_ID=1
+  21: XDG_VTNR=1
+  22: LC_MEASUREMENT=fr_FR.UTF-8
+  23: LC_TELEPHONE=fr_FR.UTF-8
+  24: PAGER=less
+  25: SHLVL=2
+  26: DISPLAY=:0
+  27: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  28: KDE_SESSION_VERSION=5
+  29: CONDA_SHLVL=0
+  30: COLORFGBG=15;0
+  31: CUDA_PATH=/opt/cuda
+  32: USER=pablo
+  33: _CE_CONDA=
+  34: ZSH=/usr/share/oh-my-zsh
+  35: LC_IDENTIFICATION=fr_FR.UTF-8
+  36: TERM=xterm-256color
+  37: XDG_SESSION_CLASS=user
+  38: KDE_SESSION_UID=1000
+  39: KONSOLE_VERSION=200802
+  40: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  41: PROFILEHOME=
+  42: KONSOLE_DBUS_SESSION=/Sessions/1
+  43: KONSOLE_DBUS_SERVICE=:1.3326
+  44: XDG_CURRENT_DESKTOP=KDE
+  45: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  46: LANG=en_US.UTF-8
+  47: LC_PAPER=fr_FR.UTF-8
+  48: HOME=/home/pablo
+  49: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  50: MOTD_SHOWN=pam
+  51: XAUTHORITY=/home/pablo/.Xauthority
+  52: XDG_SESSION_TYPE=x11
+  53: LOGNAME=pablo
+  54: XDG_SESSION_DESKTOP=KDE
+  55: PWD=/home/pablo/42ShellTester/tmp
+  56: XDG_SEAT=seat0
+  57: GTK_MODULES=canberra-gtk-module
+  58: EDITOR=/usr/bin/nano
+  59: XCURSOR_SIZE=24
+  60: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  61: LC_MONETARY=fr_FR.UTF-8
+  62: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  63: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  64: LC_NAME=fr_FR.UTF-8
+  65: LC_ADDRESS=fr_FR.UTF-8
+  66: LANGUAGE=
+  67: _CE_M=
+  68: CONDA_EXE=/opt/miniconda3/bin/conda
+  69: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  70: LESS=-R
+  71: COLORTERM=truecolor
+  72: KDED_STARTED_BY_KDEINIT=1
+  73: WINDOWID=98566151
+  74: LSCOLORS=Gxfxcxdxbxegedabagacad
+  75: SHELL=/usr/bin/zsh[0m
+
+  STDERR:
+[38;5;239m  (no output)[0m
+
+  MISC:
+[31m[38;5;160m  FAILURE    expected_to_not exit_with_status `0`[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/env/005-set-variables[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that the builtin `env` can modify or set multiple environment variables before executing the given command.[0m
+
+  Before test:
+[38;5;239m   1: export VARTEST1="OLD_VALUE"[0m
+
+  STDIN:
+[38;5;239m   1: env VARTEST1=TOKEN202012011718_1 VARTEST2=TOKEN202012011718_2 VARTEST3=TOKEN202012011718_3 ./display_env[0m
+
+  STDOUT:
+[31m[38;5;160m  FAILURE    expected_to match_regex `VARTEST1=TOKEN202012011718_1`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `VARTEST2=TOKEN202012011718_2`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `VARTEST3=TOKEN202012011718_3`[0m
+[38;5;239m   1: _=/home/pablo/Documents/42/minishell/minishell
+   2: KONSOLE_DBUS_WINDOW=/Windows/1
+   3: OLDPWD=/home/pablo/42ShellTester
+   4: LC_NUMERIC=fr_FR.UTF-8
+   5: MAIL=/var/spool/mail/pablo
+   6: KDE_APPLICATIONS_AS_SCOPE=1
+   7: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+   8: GTK_USE_PORTAL=1
+   9: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  10: BROWSER=/usr/bin/firefox
+  11: KDE_FULL_SESSION=true
+  12: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  13: XCURSOR_THEME=breeze_cursors
+  14: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  15: LC_TIME=fr_FR.UTF-8
+  16: XDG_RUNTIME_DIR=/run/user/1000
+  17: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  18: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  19: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  20: XDG_SESSION_ID=1
+  21: XDG_VTNR=1
+  22: LC_MEASUREMENT=fr_FR.UTF-8
+  23: LC_TELEPHONE=fr_FR.UTF-8
+  24: PAGER=less
+  25: SHLVL=2
+  26: DISPLAY=:0
+  27: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  28: KDE_SESSION_VERSION=5
+  29: CONDA_SHLVL=0
+  30: COLORFGBG=15;0
+  31: CUDA_PATH=/opt/cuda
+  32: USER=pablo
+  33: _CE_CONDA=
+  34: ZSH=/usr/share/oh-my-zsh
+  35: LC_IDENTIFICATION=fr_FR.UTF-8
+  36: TERM=xterm-256color
+  37: XDG_SESSION_CLASS=user
+  38: KDE_SESSION_UID=1000
+  39: KONSOLE_VERSION=200802
+  40: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  41: PROFILEHOME=
+  42: KONSOLE_DBUS_SESSION=/Sessions/1
+  43: VARTEST1=OLD_VALUE
+  44: KONSOLE_DBUS_SERVICE=:1.3326
+  45: XDG_CURRENT_DESKTOP=KDE
+  46: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  47: LANG=en_US.UTF-8
+  48: LC_PAPER=fr_FR.UTF-8
+  49: HOME=/home/pablo
+  50: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  51: MOTD_SHOWN=pam
+  52: XAUTHORITY=/home/pablo/.Xauthority
+  53: XDG_SESSION_TYPE=x11
+  54: LOGNAME=pablo
+  55: XDG_SESSION_DESKTOP=KDE
+  56: PWD=/home/pablo/42ShellTester/tmp
+  57: XDG_SEAT=seat0
+  58: GTK_MODULES=canberra-gtk-module
+  59: EDITOR=/usr/bin/nano
+  60: XCURSOR_SIZE=24
+  61: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  62: LC_MONETARY=fr_FR.UTF-8
+  63: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  64: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  65: LC_NAME=fr_FR.UTF-8
+  66: LC_ADDRESS=fr_FR.UTF-8
+  67: LANGUAGE=
+  68: _CE_M=
+  69: CONDA_EXE=/opt/miniconda3/bin/conda
+  70: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  71: LESS=-R
+  72: COLORTERM=truecolor
+  73: KDED_STARTED_BY_KDEINIT=1
+  74: WINDOWID=98566151
+  75: LSCOLORS=Gxfxcxdxbxegedabagacad
+  76: SHELL=/usr/bin/zsh[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to be_empty[0m
+[38;5;239m  (no output)[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/env/multiple-options/001-ignore-environment-and-set-variable[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that `env -i` works if we use a second argument to set an environment variable, we are also checking if this command unset environments variables for a given binary.[0m
+
+  STDIN:
+[38;5;239m   1: env -i TESTVARIABLE=TOKEN202012011718 ./display_env[0m
+
+  STDOUT:
+[31m[38;5;160m  FAILURE    expected_to match_regex `TESTVARIABLE=TOKEN202012011718`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `TOTAL ENVIRONMENT VARIABLES: 1`[0m
+[38;5;239m   1: _=/home/pablo/Documents/42/minishell/minishell
+   2: KONSOLE_DBUS_WINDOW=/Windows/1
+   3: OLDPWD=/home/pablo/42ShellTester
+   4: LC_NUMERIC=fr_FR.UTF-8
+   5: MAIL=/var/spool/mail/pablo
+   6: KDE_APPLICATIONS_AS_SCOPE=1
+   7: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+   8: GTK_USE_PORTAL=1
+   9: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  10: BROWSER=/usr/bin/firefox
+  11: KDE_FULL_SESSION=true
+  12: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  13: XCURSOR_THEME=breeze_cursors
+  14: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  15: LC_TIME=fr_FR.UTF-8
+  16: XDG_RUNTIME_DIR=/run/user/1000
+  17: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  18: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  19: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  20: XDG_SESSION_ID=1
+  21: XDG_VTNR=1
+  22: LC_MEASUREMENT=fr_FR.UTF-8
+  23: LC_TELEPHONE=fr_FR.UTF-8
+  24: PAGER=less
+  25: SHLVL=2
+  26: DISPLAY=:0
+  27: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  28: KDE_SESSION_VERSION=5
+  29: CONDA_SHLVL=0
+  30: COLORFGBG=15;0
+  31: CUDA_PATH=/opt/cuda
+  32: USER=pablo
+  33: _CE_CONDA=
+  34: ZSH=/usr/share/oh-my-zsh
+  35: LC_IDENTIFICATION=fr_FR.UTF-8
+  36: TERM=xterm-256color
+  37: XDG_SESSION_CLASS=user
+  38: KDE_SESSION_UID=1000
+  39: KONSOLE_VERSION=200802
+  40: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  41: PROFILEHOME=
+  42: KONSOLE_DBUS_SESSION=/Sessions/1
+  43: KONSOLE_DBUS_SERVICE=:1.3326
+  44: XDG_CURRENT_DESKTOP=KDE
+  45: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  46: LANG=en_US.UTF-8
+  47: LC_PAPER=fr_FR.UTF-8
+  48: HOME=/home/pablo
+  49: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  50: MOTD_SHOWN=pam
+  51: XAUTHORITY=/home/pablo/.Xauthority
+  52: XDG_SESSION_TYPE=x11
+  53: LOGNAME=pablo
+  54: XDG_SESSION_DESKTOP=KDE
+  55: PWD=/home/pablo/42ShellTester/tmp
+  56: XDG_SEAT=seat0
+  57: GTK_MODULES=canberra-gtk-module
+  58: EDITOR=/usr/bin/nano
+  59: XCURSOR_SIZE=24
+  60: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  61: LC_MONETARY=fr_FR.UTF-8
+  62: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  63: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  64: LC_NAME=fr_FR.UTF-8
+  65: LC_ADDRESS=fr_FR.UTF-8
+  66: LANGUAGE=
+  67: _CE_M=
+  68: CONDA_EXE=/opt/miniconda3/bin/conda
+  69: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  70: LESS=-R
+  71: COLORTERM=truecolor
+  72: KDED_STARTED_BY_KDEINIT=1
+  73: WINDOWID=98566151
+  74: LSCOLORS=Gxfxcxdxbxegedabagacad
+  75: SHELL=/usr/bin/zsh[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to be_empty[0m
+[38;5;239m  (no output)[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/env/001-env-same-value-as-parent[0m [31m[38;5;34m(SUCCESS)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check if your shell is using a copy of his parent environment as environment.
+  We are using a copy of the environment variable before starting your shell and the command env from your shell.[0m
+
+  Before test:
+[38;5;239m   1: # storing all environment variables except OLDPWD
+   2: env | awk 'BEGIN {FS="="} $0 !~ /^OLDPWD/ {print $1"="}' > "./stored_env"[0m
+
+  STDIN:
+[38;5;239m   1: env[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_each_regex_of_file `./stored_env`[0m
+[38;5;239m   1: _=/home/pablo/Documents/42/minishell/minishell
+   2: KONSOLE_DBUS_WINDOW=/Windows/1
+   3: OLDPWD=/home/pablo/42ShellTester
+   4: LC_NUMERIC=fr_FR.UTF-8
+   5: MAIL=/var/spool/mail/pablo
+   6: KDE_APPLICATIONS_AS_SCOPE=1
+   7: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+   8: GTK_USE_PORTAL=1
+   9: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  10: BROWSER=/usr/bin/firefox
+  11: KDE_FULL_SESSION=true
+  12: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  13: XCURSOR_THEME=breeze_cursors
+  14: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  15: LC_TIME=fr_FR.UTF-8
+  16: XDG_RUNTIME_DIR=/run/user/1000
+  17: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  18: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  19: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  20: XDG_SESSION_ID=1
+  21: XDG_VTNR=1
+  22: LC_MEASUREMENT=fr_FR.UTF-8
+  23: LC_TELEPHONE=fr_FR.UTF-8
+  24: PAGER=less
+  25: SHLVL=2
+  26: DISPLAY=:0
+  27: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  28: KDE_SESSION_VERSION=5
+  29: CONDA_SHLVL=0
+  30: COLORFGBG=15;0
+  31: CUDA_PATH=/opt/cuda
+  32: USER=pablo
+  33: _CE_CONDA=
+  34: ZSH=/usr/share/oh-my-zsh
+  35: LC_IDENTIFICATION=fr_FR.UTF-8
+  36: TERM=xterm-256color
+  37: XDG_SESSION_CLASS=user
+  38: KDE_SESSION_UID=1000
+  39: KONSOLE_VERSION=200802
+  40: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  41: PROFILEHOME=
+  42: KONSOLE_DBUS_SESSION=/Sessions/1
+  43: KONSOLE_DBUS_SERVICE=:1.3326
+  44: XDG_CURRENT_DESKTOP=KDE
+  45: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  46: LANG=en_US.UTF-8
+  47: LC_PAPER=fr_FR.UTF-8
+  48: HOME=/home/pablo
+  49: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  50: MOTD_SHOWN=pam
+  51: XAUTHORITY=/home/pablo/.Xauthority
+  52: XDG_SESSION_TYPE=x11
+  53: LOGNAME=pablo
+  54: XDG_SESSION_DESKTOP=KDE
+  55: PWD=/home/pablo/42ShellTester/tmp
+  56: XDG_SEAT=seat0
+  57: GTK_MODULES=canberra-gtk-module
+  58: EDITOR=/usr/bin/nano
+  59: XCURSOR_SIZE=24
+  60: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  61: LC_MONETARY=fr_FR.UTF-8
+  62: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  63: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  64: LC_NAME=fr_FR.UTF-8
+  65: LC_ADDRESS=fr_FR.UTF-8
+  66: LANGUAGE=
+  67: _CE_M=
+  68: CONDA_EXE=/opt/miniconda3/bin/conda
+  69: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  70: LESS=-R
+  71: COLORTERM=truecolor
+  72: KDED_STARTED_BY_KDEINIT=1
+  73: WINDOWID=98566151
+  74: LSCOLORS=Gxfxcxdxbxegedabagacad
+  75: SHELL=/usr/bin/zsh[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to be_empty[0m
+[38;5;239m  (no output)[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/env/003-ignore-environment[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using the option `-i` with the builtin `env` results in an empty environment sent to the given command.[0m
+
+  STDIN:
+[38;5;239m   1: env -i ./display_env[0m
+
+  STDOUT:
+[31m[38;5;160m  FAILURE    expected_to match_regex `TOTAL ENVIRONMENT VARIABLES: 0`[0m
+[38;5;239m   1: _=/home/pablo/Documents/42/minishell/minishell
+   2: KONSOLE_DBUS_WINDOW=/Windows/1
+   3: OLDPWD=/home/pablo/42ShellTester
+   4: LC_NUMERIC=fr_FR.UTF-8
+   5: MAIL=/var/spool/mail/pablo
+   6: KDE_APPLICATIONS_AS_SCOPE=1
+   7: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+   8: GTK_USE_PORTAL=1
+   9: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  10: BROWSER=/usr/bin/firefox
+  11: KDE_FULL_SESSION=true
+  12: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  13: XCURSOR_THEME=breeze_cursors
+  14: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  15: LC_TIME=fr_FR.UTF-8
+  16: XDG_RUNTIME_DIR=/run/user/1000
+  17: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  18: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  19: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  20: XDG_SESSION_ID=1
+  21: XDG_VTNR=1
+  22: LC_MEASUREMENT=fr_FR.UTF-8
+  23: LC_TELEPHONE=fr_FR.UTF-8
+  24: PAGER=less
+  25: SHLVL=2
+  26: DISPLAY=:0
+  27: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  28: KDE_SESSION_VERSION=5
+  29: CONDA_SHLVL=0
+  30: COLORFGBG=15;0
+  31: CUDA_PATH=/opt/cuda
+  32: USER=pablo
+  33: _CE_CONDA=
+  34: ZSH=/usr/share/oh-my-zsh
+  35: LC_IDENTIFICATION=fr_FR.UTF-8
+  36: TERM=xterm-256color
+  37: XDG_SESSION_CLASS=user
+  38: KDE_SESSION_UID=1000
+  39: KONSOLE_VERSION=200802
+  40: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  41: PROFILEHOME=
+  42: KONSOLE_DBUS_SESSION=/Sessions/1
+  43: KONSOLE_DBUS_SERVICE=:1.3326
+  44: XDG_CURRENT_DESKTOP=KDE
+  45: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  46: LANG=en_US.UTF-8
+  47: LC_PAPER=fr_FR.UTF-8
+  48: HOME=/home/pablo
+  49: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  50: MOTD_SHOWN=pam
+  51: XAUTHORITY=/home/pablo/.Xauthority
+  52: XDG_SESSION_TYPE=x11
+  53: LOGNAME=pablo
+  54: XDG_SESSION_DESKTOP=KDE
+  55: PWD=/home/pablo/42ShellTester/tmp
+  56: XDG_SEAT=seat0
+  57: GTK_MODULES=canberra-gtk-module
+  58: EDITOR=/usr/bin/nano
+  59: XCURSOR_SIZE=24
+  60: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  61: LC_MONETARY=fr_FR.UTF-8
+  62: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  63: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  64: LC_NAME=fr_FR.UTF-8
+  65: LC_ADDRESS=fr_FR.UTF-8
+  66: LANGUAGE=
+  67: _CE_M=
+  68: CONDA_EXE=/opt/miniconda3/bin/conda
+  69: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  70: LESS=-R
+  71: COLORTERM=truecolor
+  72: KDED_STARTED_BY_KDEINIT=1
+  73: WINDOWID=98566151
+  74: LSCOLORS=Gxfxcxdxbxegedabagacad
+  75: SHELL=/usr/bin/zsh[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to be_empty[0m
+[38;5;239m  (no output)[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/008-symbolic-link-2[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using a symbolic link as first argument with the builtin `cd` results in moving to the linked directory. In this test, the directory is linked with to chained symbolic links.[0m
+
+  Before test:
+[38;5;239m   1: rm -f "./symbolic_link1" "./symbolic_link2"
+   2: mkdir -p "./sub_directory"
+   3: ln -s "./sub_directory" "./symbolic_link1"
+   4: ln -s "./symbolic_link1" "./symbolic_link2"[0m
+
+  STDIN:
+[38;5;239m   1: cd symbolic_link2
+   2: /home/pablo/42ShellTester/tmp/display_pwd
+   3: /home/pablo/42ShellTester/tmp/display_env[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_regex `PWD:/home/pablo/42ShellTester/tmp/sub_directory:PWD$`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `^PWD=/home/pablo/42ShellTester/tmp/symbolic_link2$`[0m
+[38;5;239m   1: PWD:/home/pablo/42ShellTester/tmp/sub_directory:PWD
+   2: ------------------------------
+   3: SHELL=/usr/bin/zsh
+   4: LSCOLORS=Gxfxcxdxbxegedabagacad
+   5: WINDOWID=98566151
+   6: KDED_STARTED_BY_KDEINIT=1
+   7: COLORTERM=truecolor
+   8: LESS=-R
+   9: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  10: CONDA_EXE=/opt/miniconda3/bin/conda
+  11: _CE_M=
+  12: LANGUAGE=
+  13: LC_ADDRESS=fr_FR.UTF-8
+  14: LC_NAME=fr_FR.UTF-8
+  15: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  16: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  17: LC_MONETARY=fr_FR.UTF-8
+  18: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  19: XCURSOR_SIZE=24
+  20: EDITOR=/usr/bin/nano
+  21: GTK_MODULES=canberra-gtk-module
+  22: XDG_SEAT=seat0
+  23: PWD=/home/pablo/42ShellTester/tmp/sub_directory
+  24: XDG_SESSION_DESKTOP=KDE
+  25: LOGNAME=pablo
+  26: XDG_SESSION_TYPE=x11
+  27: XAUTHORITY=/home/pablo/.Xauthority
+  28: MOTD_SHOWN=pam
+  29: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  30: HOME=/home/pablo
+  31: LC_PAPER=fr_FR.UTF-8
+  32: LANG=en_US.UTF-8
+  33: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  34: XDG_CURRENT_DESKTOP=KDE
+  35: KONSOLE_DBUS_SERVICE=:1.3326
+  36: KONSOLE_DBUS_SESSION=/Sessions/1
+  37: PROFILEHOME=
+  38: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  39: KONSOLE_VERSION=200802
+  40: KDE_SESSION_UID=1000
+  41: XDG_SESSION_CLASS=user
+  42: TERM=xterm-256color
+  43: LC_IDENTIFICATION=fr_FR.UTF-8
+  44: ZSH=/usr/share/oh-my-zsh
+  45: _CE_CONDA=
+  46: USER=pablo
+  47: CUDA_PATH=/opt/cuda
+  48: COLORFGBG=15;0
+  49: CONDA_SHLVL=0
+  50: KDE_SESSION_VERSION=5
+  51: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  52: DISPLAY=:0
+  53: SHLVL=2
+  54: PAGER=less
+  55: LC_TELEPHONE=fr_FR.UTF-8
+  56: LC_MEASUREMENT=fr_FR.UTF-8
+  57: XDG_VTNR=1
+  58: XDG_SESSION_ID=1
+  59: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  60: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  61: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  62: XDG_RUNTIME_DIR=/run/user/1000
+  63: LC_TIME=fr_FR.UTF-8
+  64: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  65: XCURSOR_THEME=breeze_cursors
+  66: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  67: KDE_FULL_SESSION=true
+  68: BROWSER=/usr/bin/firefox
+  69: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  70: GTK_USE_PORTAL=1
+  71: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  72: KDE_APPLICATIONS_AS_SCOPE=1
+  73: MAIL=/var/spool/mail/pablo
+  74: LC_NUMERIC=fr_FR.UTF-8
+  75: OLDPWD=/home/pablo/42ShellTester
+  76: KONSOLE_DBUS_WINDOW=/Windows/1
+  77: _=/home/pablo/Documents/42/minishell/minishell
+  78: ------------------------------
+  79: TOTAL ENVIRONMENT VARIABLES: 75[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to be_empty[0m
+[38;5;239m  (no output)[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/002-current-directory[0m [31m[38;5;34m(SUCCESS)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using `.` as first argument with the builtin `cd` results in not changing current directory.[0m
+
+  STDIN:
+[38;5;239m   1: cd .
+   2: /home/pablo/42ShellTester/tmp/display_pwd
+   3: /home/pablo/42ShellTester/tmp/display_env[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_regex `PWD:/home/pablo/42ShellTester/tmp:PWD`[0m
+[31m[38;5;34m  SUCCESS    expected_to match_regex `^PWD=/home/pablo/42ShellTester/tmp$`[0m
+[38;5;239m   1: PWD:/home/pablo/42ShellTester/tmp:PWD
+   2: ------------------------------
+   3: SHELL=/usr/bin/zsh
+   4: LSCOLORS=Gxfxcxdxbxegedabagacad
+   5: WINDOWID=98566151
+   6: KDED_STARTED_BY_KDEINIT=1
+   7: COLORTERM=truecolor
+   8: LESS=-R
+   9: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  10: CONDA_EXE=/opt/miniconda3/bin/conda
+  11: _CE_M=
+  12: LANGUAGE=
+  13: LC_ADDRESS=fr_FR.UTF-8
+  14: LC_NAME=fr_FR.UTF-8
+  15: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  16: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  17: LC_MONETARY=fr_FR.UTF-8
+  18: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  19: XCURSOR_SIZE=24
+  20: EDITOR=/usr/bin/nano
+  21: GTK_MODULES=canberra-gtk-module
+  22: XDG_SEAT=seat0
+  23: PWD=/home/pablo/42ShellTester/tmp
+  24: XDG_SESSION_DESKTOP=KDE
+  25: LOGNAME=pablo
+  26: XDG_SESSION_TYPE=x11
+  27: XAUTHORITY=/home/pablo/.Xauthority
+  28: MOTD_SHOWN=pam
+  29: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  30: HOME=/home/pablo
+  31: LC_PAPER=fr_FR.UTF-8
+  32: LANG=en_US.UTF-8
+  33: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  34: XDG_CURRENT_DESKTOP=KDE
+  35: KONSOLE_DBUS_SERVICE=:1.3326
+  36: KONSOLE_DBUS_SESSION=/Sessions/1
+  37: PROFILEHOME=
+  38: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  39: KONSOLE_VERSION=200802
+  40: KDE_SESSION_UID=1000
+  41: XDG_SESSION_CLASS=user
+  42: TERM=xterm-256color
+  43: LC_IDENTIFICATION=fr_FR.UTF-8
+  44: ZSH=/usr/share/oh-my-zsh
+  45: _CE_CONDA=
+  46: USER=pablo
+  47: CUDA_PATH=/opt/cuda
+  48: COLORFGBG=15;0
+  49: CONDA_SHLVL=0
+  50: KDE_SESSION_VERSION=5
+  51: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  52: DISPLAY=:0
+  53: SHLVL=2
+  54: PAGER=less
+  55: LC_TELEPHONE=fr_FR.UTF-8
+  56: LC_MEASUREMENT=fr_FR.UTF-8
+  57: XDG_VTNR=1
+  58: XDG_SESSION_ID=1
+  59: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  60: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  61: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  62: XDG_RUNTIME_DIR=/run/user/1000
+  63: LC_TIME=fr_FR.UTF-8
+  64: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  65: XCURSOR_THEME=breeze_cursors
+  66: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  67: KDE_FULL_SESSION=true
+  68: BROWSER=/usr/bin/firefox
+  69: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  70: GTK_USE_PORTAL=1
+  71: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  72: KDE_APPLICATIONS_AS_SCOPE=1
+  73: MAIL=/var/spool/mail/pablo
+  74: LC_NUMERIC=fr_FR.UTF-8
+  75: OLDPWD=/home/pablo/42ShellTester
+  76: KONSOLE_DBUS_WINDOW=/Windows/1
+  77: _=/home/pablo/Documents/42/minishell/minishell
+  78: ------------------------------
+  79: TOTAL ENVIRONMENT VARIABLES: 75[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to be_empty[0m
+[38;5;239m  (no output)[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/004-parent-directory[0m [31m[38;5;34m(SUCCESS)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using `..` as first argument with the builtin `cd` results in moving to the parent directory.[0m
+
+  STDIN:
+[38;5;239m   1: cd ..
+   2: /home/pablo/42ShellTester/tmp/display_pwd
+   3: /home/pablo/42ShellTester/tmp/display_env[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_regex `PWD:/home/pablo/42ShellTester:PWD$`[0m
+[31m[38;5;34m  SUCCESS    expected_to match_regex `^PWD=/home/pablo/42ShellTester$`[0m
+[38;5;239m   1: PWD:/home/pablo/42ShellTester:PWD
+   2: ------------------------------
+   3: SHELL=/usr/bin/zsh
+   4: LSCOLORS=Gxfxcxdxbxegedabagacad
+   5: WINDOWID=98566151
+   6: KDED_STARTED_BY_KDEINIT=1
+   7: COLORTERM=truecolor
+   8: LESS=-R
+   9: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  10: CONDA_EXE=/opt/miniconda3/bin/conda
+  11: _CE_M=
+  12: LANGUAGE=
+  13: LC_ADDRESS=fr_FR.UTF-8
+  14: LC_NAME=fr_FR.UTF-8
+  15: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  16: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  17: LC_MONETARY=fr_FR.UTF-8
+  18: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  19: XCURSOR_SIZE=24
+  20: EDITOR=/usr/bin/nano
+  21: GTK_MODULES=canberra-gtk-module
+  22: XDG_SEAT=seat0
+  23: PWD=/home/pablo/42ShellTester
+  24: XDG_SESSION_DESKTOP=KDE
+  25: LOGNAME=pablo
+  26: XDG_SESSION_TYPE=x11
+  27: XAUTHORITY=/home/pablo/.Xauthority
+  28: MOTD_SHOWN=pam
+  29: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  30: HOME=/home/pablo
+  31: LC_PAPER=fr_FR.UTF-8
+  32: LANG=en_US.UTF-8
+  33: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  34: XDG_CURRENT_DESKTOP=KDE
+  35: KONSOLE_DBUS_SERVICE=:1.3326
+  36: KONSOLE_DBUS_SESSION=/Sessions/1
+  37: PROFILEHOME=
+  38: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  39: KONSOLE_VERSION=200802
+  40: KDE_SESSION_UID=1000
+  41: XDG_SESSION_CLASS=user
+  42: TERM=xterm-256color
+  43: LC_IDENTIFICATION=fr_FR.UTF-8
+  44: ZSH=/usr/share/oh-my-zsh
+  45: _CE_CONDA=
+  46: USER=pablo
+  47: CUDA_PATH=/opt/cuda
+  48: COLORFGBG=15;0
+  49: CONDA_SHLVL=0
+  50: KDE_SESSION_VERSION=5
+  51: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  52: DISPLAY=:0
+  53: SHLVL=2
+  54: PAGER=less
+  55: LC_TELEPHONE=fr_FR.UTF-8
+  56: LC_MEASUREMENT=fr_FR.UTF-8
+  57: XDG_VTNR=1
+  58: XDG_SESSION_ID=1
+  59: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  60: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  61: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  62: XDG_RUNTIME_DIR=/run/user/1000
+  63: LC_TIME=fr_FR.UTF-8
+  64: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  65: XCURSOR_THEME=breeze_cursors
+  66: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  67: KDE_FULL_SESSION=true
+  68: BROWSER=/usr/bin/firefox
+  69: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  70: GTK_USE_PORTAL=1
+  71: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  72: KDE_APPLICATIONS_AS_SCOPE=1
+  73: MAIL=/var/spool/mail/pablo
+  74: LC_NUMERIC=fr_FR.UTF-8
+  75: OLDPWD=/home/pablo/42ShellTester
+  76: KONSOLE_DBUS_WINDOW=/Windows/1
+  77: _=/home/pablo/Documents/42/minishell/minishell
+  78: ------------------------------
+  79: TOTAL ENVIRONMENT VARIABLES: 75[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to be_empty[0m
+[38;5;239m  (no output)[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/errors/007-no-such-file-or-directory[0m [31m[38;5;34m(SUCCESS)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using a non-existing path as first argument with the builtin `cd` results in error and not changing current directory.[0m
+
+  Before test:
+[38;5;239m   1: rm -f "./no_such_file_or_directory"[0m
+
+  STDIN:
+[38;5;239m   1: cd no_such_file_or_directory
+   2: /home/pablo/42ShellTester/tmp/display_pwd[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_regex `PWD:/home/pablo/42ShellTester/tmp:PWD`[0m
+[38;5;239m   1: PWD:/home/pablo/42ShellTester/tmp:PWD[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to_not be_empty[0m
+[31m[38;5;34m  SUCCESS    might match_regex `[Nn]o such file or directory`[0m
+[38;5;239m   1: cd: no such file or directory: no_such_file_or_directory[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/errors/006-too-many-symbolic-links-encountered-2[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using a symbolic link resulting in ELOOP error as first argument with the builtin `cd` results in a Shell termination with a failure exit status.[0m
+
+  Before test:
+[38;5;239m   1: rm -f "./symbolic_link1" "./symbolic_link2" "./symbolic_link3"
+   2: ln -s "./symbolic_link1" "./symbolic_link2"
+   3: ln -s "./symbolic_link2" "./symbolic_link3"
+   4: ln -s "./symbolic_link3" "./symbolic_link1"[0m
+
+  STDIN:
+[38;5;239m   1: cd symbolic_link1[0m
+
+  STDOUT:
+[38;5;239m  (no output)[0m
+
+  STDERR:
+[38;5;239m   1: cd: no such file or directory: symbolic_link1[0m
+
+  MISC:
+[31m[38;5;160m  FAILURE    expected_to_not exit_with_status `0`[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/errors/001-not-a-directory[0m [31m[1;33m(WARNING)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using a file name as first argument with the builtin `cd` results in error and not changing current directory.[0m
+
+  Before test:
+[38;5;239m   1: touch "./not_a_directory"[0m
+
+  STDIN:
+[38;5;239m   1: cd not_a_directory
+   2: /home/pablo/42ShellTester/tmp/display_pwd[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_regex `PWD:/home/pablo/42ShellTester/tmp:PWD`[0m
+[38;5;239m   1: PWD:/home/pablo/42ShellTester/tmp:PWD[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to_not be_empty[0m
+[31m[1;33m  WARNING    might match_regex `[Nn]ot a directory`[0m
+[38;5;239m   1: cd: no such file or directory: not_a_directory[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/errors/009-no-such-file-or-directory-symlink[0m [31m[38;5;34m(SUCCESS)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using a symbolic link that targets to a non-existing directory with the builtin `cd`  results in error and not changing current directory.[0m
+
+  Before test:
+[38;5;239m   1: rm -rf "./enoent_symlink" "./enoent_directory"
+   2: ln -s "./enoent_directory" "./enoent_symlink"[0m
+
+  STDIN:
+[38;5;239m   1: cd ./enoent_symlink
+   2: /home/pablo/42ShellTester/tmp/display_pwd[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_regex `PWD:/home/pablo/42ShellTester/tmp:PWD`[0m
+[38;5;239m   1: PWD:/home/pablo/42ShellTester/tmp:PWD[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to_not be_empty[0m
+[31m[38;5;34m  SUCCESS    might match_regex `[Nn]o such file or directory`[0m
+[38;5;239m   1: cd: no such file or directory: ./enoent_symlink[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/errors/005-too-many-symbolic-links-encountered[0m [31m[1;33m(WARNING)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using a symbolic link resulting in ELOOP error as first argument with the builtin `cd` results in error and not changing current directory.[0m
+
+  Before test:
+[38;5;239m   1: rm -f "./symbolic_link1" "./symbolic_link2" "./symbolic_link3"
+   2: ln -s "./symbolic_link1" "./symbolic_link2"
+   3: ln -s "./symbolic_link2" "./symbolic_link3"
+   4: ln -s "./symbolic_link3" "./symbolic_link1"[0m
+
+  STDIN:
+[38;5;239m   1: cd symbolic_link1
+   2: /home/pablo/42ShellTester/tmp/display_pwd[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_regex `PWD:/home/pablo/42ShellTester/tmp:PWD`[0m
+[38;5;239m   1: PWD:/home/pablo/42ShellTester/tmp:PWD[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to_not be_empty[0m
+[31m[1;33m  WARNING    might match_regex `[Tt]oo many.*symbolic links`[0m
+[38;5;239m   1: cd: no such file or directory: symbolic_link1[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/errors/003-permission-denied[0m [31m[1;33m(WARNING)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using a directory without any permission as first argument with the builtin `cd` results in error and not changing current directory.[0m
+
+  Before test:
+[38;5;239m   1: if [ -d "./permission_denied" ]; then chmod 777 "./permission_denied"; fi
+   2: rm -rf "./permission_denied"
+   3: mkdir -m 0 "./permission_denied"[0m
+
+  STDIN:
+[38;5;239m   1: cd permission_denied
+   2: /home/pablo/42ShellTester/tmp/display_pwd[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_regex `PWD:/home/pablo/42ShellTester/tmp:PWD`[0m
+[38;5;239m   1: PWD:/home/pablo/42ShellTester/tmp:PWD[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to_not be_empty[0m
+[31m[1;33m  WARNING    might match_regex `[Pp]ermission denied`[0m
+[38;5;239m   1: cd: no such file or directory: permission_denied[0m
+
+  After test:
+[38;5;239m   1: if [ -d "./permission_denied" ]; then chmod 777 "./permission_denied"; fi
+   2: rm -rf "./permission_denied"[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/errors/004-permission-denied-2[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using a directory without any permission as first argument with the builtin `cd` results in error and not changing current directory.[0m
+
+  Before test:
+[38;5;239m   1: if [ -d "./permission_denied" ]; then chmod 777 "./permission_denied"; fi
+   2: rm -rf "./permission_denied"
+   3: mkdir -m 0 "./permission_denied"[0m
+
+  STDIN:
+[38;5;239m   1: cd permission_denied[0m
+
+  STDOUT:
+[38;5;239m  (no output)[0m
+
+  STDERR:
+[38;5;239m   1: cd: no such file or directory: permission_denied[0m
+
+  MISC:
+[31m[38;5;160m  FAILURE    expected_to_not exit_with_status `0`[0m
+
+  After test:
+[38;5;239m   1: if [ -d "./permission_denied" ]; then chmod 777 "./permission_denied"; fi
+   2: rm -rf "./permission_denied"[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/errors/008-no-such-file-or-directory-2[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using a non-existing path as first argument with the builtin `cd` results in a Shell termination with an error status code.[0m
+
+  Before test:
+[38;5;239m   1: rm -f "./no_such_file_or_directory"[0m
+
+  STDIN:
+[38;5;239m   1: cd no_such_file_or_directory[0m
+
+  STDOUT:
+[38;5;239m  (no output)[0m
+
+  STDERR:
+[38;5;239m   1: cd: no such file or directory: no_such_file_or_directory[0m
+
+  MISC:
+[31m[38;5;160m  FAILURE    expected_to_not exit_with_status `0`[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/errors/002-not-a-directory-2[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using a file name as first argument with the builtin `cd` results in a Shell termination with a failure exit status.[0m
+
+  Before test:
+[38;5;239m   1: touch "./not_a_directory"[0m
+
+  STDIN:
+[38;5;239m   1: cd not_a_directory[0m
+
+  STDOUT:
+[38;5;239m  (no output)[0m
+
+  STDERR:
+[38;5;239m   1: cd: no such file or directory: not_a_directory[0m
+
+  MISC:
+[31m[38;5;160m  FAILURE    expected_to_not exit_with_status `0`[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/errors/010-no-such-file-or-directory-symlink-2[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using a symbolic link that targets to a non-existing directory with the builtin `cd`  results in error and not changing current directory.[0m
+
+  Before test:
+[38;5;239m   1: rm -rf "./enoent_symlink" "./enoent_directory"
+   2: ln -s "./enoent_directory" "./enoent_symlink"[0m
+
+  STDIN:
+[38;5;239m   1: cd ./enoent_symlink[0m
+
+  STDOUT:
+[38;5;239m  (no output)[0m
+
+  STDERR:
+[38;5;239m   1: cd: no such file or directory: ./enoent_symlink[0m
+
+  MISC:
+[31m[38;5;160m  FAILURE    expected_to_not exit_with_status `0`[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/003-current-directory-2[0m [31m[38;5;34m(SUCCESS)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using a relative path to the current directory as argument with the builtin `cd` results in not changing the current directory. The environment variable must not be changed.[0m
+
+  STDIN:
+[38;5;239m   1: cd ../tmp
+   2: /home/pablo/42ShellTester/tmp/display_pwd
+   3: /home/pablo/42ShellTester/tmp/display_env[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_regex `PWD:/home/pablo/42ShellTester/tmp:PWD`[0m
+[31m[38;5;34m  SUCCESS    expected_to match_regex `^PWD=/home/pablo/42ShellTester/tmp$`[0m
+[38;5;239m   1: PWD:/home/pablo/42ShellTester/tmp:PWD
+   2: ------------------------------
+   3: SHELL=/usr/bin/zsh
+   4: LSCOLORS=Gxfxcxdxbxegedabagacad
+   5: WINDOWID=98566151
+   6: KDED_STARTED_BY_KDEINIT=1
+   7: COLORTERM=truecolor
+   8: LESS=-R
+   9: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  10: CONDA_EXE=/opt/miniconda3/bin/conda
+  11: _CE_M=
+  12: LANGUAGE=
+  13: LC_ADDRESS=fr_FR.UTF-8
+  14: LC_NAME=fr_FR.UTF-8
+  15: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  16: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  17: LC_MONETARY=fr_FR.UTF-8
+  18: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  19: XCURSOR_SIZE=24
+  20: EDITOR=/usr/bin/nano
+  21: GTK_MODULES=canberra-gtk-module
+  22: XDG_SEAT=seat0
+  23: PWD=/home/pablo/42ShellTester/tmp
+  24: XDG_SESSION_DESKTOP=KDE
+  25: LOGNAME=pablo
+  26: XDG_SESSION_TYPE=x11
+  27: XAUTHORITY=/home/pablo/.Xauthority
+  28: MOTD_SHOWN=pam
+  29: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  30: HOME=/home/pablo
+  31: LC_PAPER=fr_FR.UTF-8
+  32: LANG=en_US.UTF-8
+  33: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  34: XDG_CURRENT_DESKTOP=KDE
+  35: KONSOLE_DBUS_SERVICE=:1.3326
+  36: KONSOLE_DBUS_SESSION=/Sessions/1
+  37: PROFILEHOME=
+  38: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  39: KONSOLE_VERSION=200802
+  40: KDE_SESSION_UID=1000
+  41: XDG_SESSION_CLASS=user
+  42: TERM=xterm-256color
+  43: LC_IDENTIFICATION=fr_FR.UTF-8
+  44: ZSH=/usr/share/oh-my-zsh
+  45: _CE_CONDA=
+  46: USER=pablo
+  47: CUDA_PATH=/opt/cuda
+  48: COLORFGBG=15;0
+  49: CONDA_SHLVL=0
+  50: KDE_SESSION_VERSION=5
+  51: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  52: DISPLAY=:0
+  53: SHLVL=2
+  54: PAGER=less
+  55: LC_TELEPHONE=fr_FR.UTF-8
+  56: LC_MEASUREMENT=fr_FR.UTF-8
+  57: XDG_VTNR=1
+  58: XDG_SESSION_ID=1
+  59: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  60: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  61: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  62: XDG_RUNTIME_DIR=/run/user/1000
+  63: LC_TIME=fr_FR.UTF-8
+  64: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  65: XCURSOR_THEME=breeze_cursors
+  66: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  67: KDE_FULL_SESSION=true
+  68: BROWSER=/usr/bin/firefox
+  69: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  70: GTK_USE_PORTAL=1
+  71: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  72: KDE_APPLICATIONS_AS_SCOPE=1
+  73: MAIL=/var/spool/mail/pablo
+  74: LC_NUMERIC=fr_FR.UTF-8
+  75: OLDPWD=/home/pablo/42ShellTester
+  76: KONSOLE_DBUS_WINDOW=/Windows/1
+  77: _=/home/pablo/Documents/42/minishell/minishell
+  78: ------------------------------
+  79: TOTAL ENVIRONMENT VARIABLES: 75[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to be_empty[0m
+[38;5;239m  (no output)[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/012-dot[0m [31m[38;5;34m(SUCCESS)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that playing with relative paths to the current directory with the builtin `cd` results in not changing the current directory.[0m
+
+  STDIN:
+[38;5;239m   1: cd .
+   2: cd ./
+   3: cd ./.
+   4: cd ././
+   5: cd ./././././././././.
+   6: /home/pablo/42ShellTester/tmp/display_pwd
+   7: /home/pablo/42ShellTester/tmp/display_env[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_regex `PWD:/home/pablo/42ShellTester/tmp:PWD`[0m
+[31m[38;5;34m  SUCCESS    expected_to match_regex `^PWD=/home/pablo/42ShellTester/tmp$`[0m
+[38;5;239m   1: PWD:/home/pablo/42ShellTester/tmp:PWD
+   2: ------------------------------
+   3: SHELL=/usr/bin/zsh
+   4: LSCOLORS=Gxfxcxdxbxegedabagacad
+   5: WINDOWID=98566151
+   6: KDED_STARTED_BY_KDEINIT=1
+   7: COLORTERM=truecolor
+   8: LESS=-R
+   9: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  10: CONDA_EXE=/opt/miniconda3/bin/conda
+  11: _CE_M=
+  12: LANGUAGE=
+  13: LC_ADDRESS=fr_FR.UTF-8
+  14: LC_NAME=fr_FR.UTF-8
+  15: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  16: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  17: LC_MONETARY=fr_FR.UTF-8
+  18: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  19: XCURSOR_SIZE=24
+  20: EDITOR=/usr/bin/nano
+  21: GTK_MODULES=canberra-gtk-module
+  22: XDG_SEAT=seat0
+  23: PWD=/home/pablo/42ShellTester/tmp
+  24: XDG_SESSION_DESKTOP=KDE
+  25: LOGNAME=pablo
+  26: XDG_SESSION_TYPE=x11
+  27: XAUTHORITY=/home/pablo/.Xauthority
+  28: MOTD_SHOWN=pam
+  29: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  30: HOME=/home/pablo
+  31: LC_PAPER=fr_FR.UTF-8
+  32: LANG=en_US.UTF-8
+  33: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  34: XDG_CURRENT_DESKTOP=KDE
+  35: KONSOLE_DBUS_SERVICE=:1.3326
+  36: KONSOLE_DBUS_SESSION=/Sessions/1
+  37: PROFILEHOME=
+  38: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  39: KONSOLE_VERSION=200802
+  40: KDE_SESSION_UID=1000
+  41: XDG_SESSION_CLASS=user
+  42: TERM=xterm-256color
+  43: LC_IDENTIFICATION=fr_FR.UTF-8
+  44: ZSH=/usr/share/oh-my-zsh
+  45: _CE_CONDA=
+  46: USER=pablo
+  47: CUDA_PATH=/opt/cuda
+  48: COLORFGBG=15;0
+  49: CONDA_SHLVL=0
+  50: KDE_SESSION_VERSION=5
+  51: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  52: DISPLAY=:0
+  53: SHLVL=2
+  54: PAGER=less
+  55: LC_TELEPHONE=fr_FR.UTF-8
+  56: LC_MEASUREMENT=fr_FR.UTF-8
+  57: XDG_VTNR=1
+  58: XDG_SESSION_ID=1
+  59: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  60: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  61: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  62: XDG_RUNTIME_DIR=/run/user/1000
+  63: LC_TIME=fr_FR.UTF-8
+  64: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  65: XCURSOR_THEME=breeze_cursors
+  66: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  67: KDE_FULL_SESSION=true
+  68: BROWSER=/usr/bin/firefox
+  69: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  70: GTK_USE_PORTAL=1
+  71: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  72: KDE_APPLICATIONS_AS_SCOPE=1
+  73: MAIL=/var/spool/mail/pablo
+  74: LC_NUMERIC=fr_FR.UTF-8
+  75: OLDPWD=/home/pablo/42ShellTester
+  76: KONSOLE_DBUS_WINDOW=/Windows/1
+  77: _=/home/pablo/Documents/42/minishell/minishell
+  78: ------------------------------
+  79: TOTAL ENVIRONMENT VARIABLES: 75[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to be_empty[0m
+[38;5;239m  (no output)[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/006-root-path-2[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using the root path as first argument with the builtin `cd` results in moving to the correct directory.[0m
+
+  STDIN:
+[38;5;239m   1: cd /.
+   2: /home/pablo/42ShellTester/tmp/display_pwd
+   3: /home/pablo/42ShellTester/tmp/display_env[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_regex `PWD:/:PWD`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `^PWD=/$`[0m
+[38;5;239m   1: PWD:/:PWD
+   2: ------------------------------
+   3: SHELL=/usr/bin/zsh
+   4: LSCOLORS=Gxfxcxdxbxegedabagacad
+   5: WINDOWID=98566151
+   6: KDED_STARTED_BY_KDEINIT=1
+   7: COLORTERM=truecolor
+   8: LESS=-R
+   9: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  10: CONDA_EXE=/opt/miniconda3/bin/conda
+  11: _CE_M=
+  12: LANGUAGE=
+  13: LC_ADDRESS=fr_FR.UTF-8
+  14: LC_NAME=fr_FR.UTF-8
+  15: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  16: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  17: LC_MONETARY=fr_FR.UTF-8
+  18: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  19: XCURSOR_SIZE=24
+  20: EDITOR=/usr/bin/nano
+  21: GTK_MODULES=canberra-gtk-module
+  22: XDG_SEAT=seat0
+  23: PWD=/.
+  24: XDG_SESSION_DESKTOP=KDE
+  25: LOGNAME=pablo
+  26: XDG_SESSION_TYPE=x11
+  27: XAUTHORITY=/home/pablo/.Xauthority
+  28: MOTD_SHOWN=pam
+  29: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  30: HOME=/home/pablo
+  31: LC_PAPER=fr_FR.UTF-8
+  32: LANG=en_US.UTF-8
+  33: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  34: XDG_CURRENT_DESKTOP=KDE
+  35: KONSOLE_DBUS_SERVICE=:1.3326
+  36: KONSOLE_DBUS_SESSION=/Sessions/1
+  37: PROFILEHOME=
+  38: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  39: KONSOLE_VERSION=200802
+  40: KDE_SESSION_UID=1000
+  41: XDG_SESSION_CLASS=user
+  42: TERM=xterm-256color
+  43: LC_IDENTIFICATION=fr_FR.UTF-8
+  44: ZSH=/usr/share/oh-my-zsh
+  45: _CE_CONDA=
+  46: USER=pablo
+  47: CUDA_PATH=/opt/cuda
+  48: COLORFGBG=15;0
+  49: CONDA_SHLVL=0
+  50: KDE_SESSION_VERSION=5
+  51: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  52: DISPLAY=:0
+  53: SHLVL=2
+  54: PAGER=less
+  55: LC_TELEPHONE=fr_FR.UTF-8
+  56: LC_MEASUREMENT=fr_FR.UTF-8
+  57: XDG_VTNR=1
+  58: XDG_SESSION_ID=1
+  59: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  60: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  61: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  62: XDG_RUNTIME_DIR=/run/user/1000
+  63: LC_TIME=fr_FR.UTF-8
+  64: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  65: XCURSOR_THEME=breeze_cursors
+  66: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  67: KDE_FULL_SESSION=true
+  68: BROWSER=/usr/bin/firefox
+  69: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  70: GTK_USE_PORTAL=1
+  71: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  72: KDE_APPLICATIONS_AS_SCOPE=1
+  73: MAIL=/var/spool/mail/pablo
+  74: LC_NUMERIC=fr_FR.UTF-8
+  75: OLDPWD=/home/pablo/42ShellTester
+  76: KONSOLE_DBUS_WINDOW=/Windows/1
+  77: _=/home/pablo/Documents/42/minishell/minishell
+  78: ------------------------------
+  79: TOTAL ENVIRONMENT VARIABLES: 75[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to be_empty[0m
+[38;5;239m  (no output)[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/007-symbolic-link[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using a symbolic link as first argument with the builtin `cd` results in moving the linked directory.[0m
+
+  Before test:
+[38;5;239m   1: rm -f "./symbolic_link"
+   2: mkdir -p "./sub_directory"
+   3: ln -s "./sub_directory" "./symbolic_link"[0m
+
+  STDIN:
+[38;5;239m   1: cd symbolic_link
+   2: /home/pablo/42ShellTester/tmp/display_pwd
+   3: /home/pablo/42ShellTester/tmp/display_env[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_regex `PWD:/home/pablo/42ShellTester/tmp/sub_directory:PWD$`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `^PWD=/home/pablo/42ShellTester/tmp/symbolic_link$`[0m
+[38;5;239m   1: PWD:/home/pablo/42ShellTester/tmp/sub_directory:PWD
+   2: ------------------------------
+   3: SHELL=/usr/bin/zsh
+   4: LSCOLORS=Gxfxcxdxbxegedabagacad
+   5: WINDOWID=98566151
+   6: KDED_STARTED_BY_KDEINIT=1
+   7: COLORTERM=truecolor
+   8: LESS=-R
+   9: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  10: CONDA_EXE=/opt/miniconda3/bin/conda
+  11: _CE_M=
+  12: LANGUAGE=
+  13: LC_ADDRESS=fr_FR.UTF-8
+  14: LC_NAME=fr_FR.UTF-8
+  15: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  16: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  17: LC_MONETARY=fr_FR.UTF-8
+  18: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  19: XCURSOR_SIZE=24
+  20: EDITOR=/usr/bin/nano
+  21: GTK_MODULES=canberra-gtk-module
+  22: XDG_SEAT=seat0
+  23: PWD=/home/pablo/42ShellTester/tmp/sub_directory
+  24: XDG_SESSION_DESKTOP=KDE
+  25: LOGNAME=pablo
+  26: XDG_SESSION_TYPE=x11
+  27: XAUTHORITY=/home/pablo/.Xauthority
+  28: MOTD_SHOWN=pam
+  29: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  30: HOME=/home/pablo
+  31: LC_PAPER=fr_FR.UTF-8
+  32: LANG=en_US.UTF-8
+  33: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  34: XDG_CURRENT_DESKTOP=KDE
+  35: KONSOLE_DBUS_SERVICE=:1.3326
+  36: KONSOLE_DBUS_SESSION=/Sessions/1
+  37: PROFILEHOME=
+  38: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  39: KONSOLE_VERSION=200802
+  40: KDE_SESSION_UID=1000
+  41: XDG_SESSION_CLASS=user
+  42: TERM=xterm-256color
+  43: LC_IDENTIFICATION=fr_FR.UTF-8
+  44: ZSH=/usr/share/oh-my-zsh
+  45: _CE_CONDA=
+  46: USER=pablo
+  47: CUDA_PATH=/opt/cuda
+  48: COLORFGBG=15;0
+  49: CONDA_SHLVL=0
+  50: KDE_SESSION_VERSION=5
+  51: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  52: DISPLAY=:0
+  53: SHLVL=2
+  54: PAGER=less
+  55: LC_TELEPHONE=fr_FR.UTF-8
+  56: LC_MEASUREMENT=fr_FR.UTF-8
+  57: XDG_VTNR=1
+  58: XDG_SESSION_ID=1
+  59: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  60: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  61: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  62: XDG_RUNTIME_DIR=/run/user/1000
+  63: LC_TIME=fr_FR.UTF-8
+  64: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  65: XCURSOR_THEME=breeze_cursors
+  66: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  67: KDE_FULL_SESSION=true
+  68: BROWSER=/usr/bin/firefox
+  69: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  70: GTK_USE_PORTAL=1
+  71: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  72: KDE_APPLICATIONS_AS_SCOPE=1
+  73: MAIL=/var/spool/mail/pablo
+  74: LC_NUMERIC=fr_FR.UTF-8
+  75: OLDPWD=/home/pablo/42ShellTester
+  76: KONSOLE_DBUS_WINDOW=/Windows/1
+  77: _=/home/pablo/Documents/42/minishell/minishell
+  78: ------------------------------
+  79: TOTAL ENVIRONMENT VARIABLES: 75[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to be_empty[0m
+[38;5;239m  (no output)[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/009-following-links[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using symbolic links twice with the builtin `cd` results in a correct environment variable PWD. By default, the path to the current directory should be a non-resolved symbolic path.[0m
+
+  Before test:
+[38;5;239m   1: rm -rf "./sub_directory_link" "./sub_directory"
+   2: mkdir -p "./sub_directory/sub_sub_directory"
+   3: ln -s "./sub_directory" "./sub_directory_link"
+   4: ln -s "./sub_sub_directory" "./sub_directory/sub_sub_directory_link"[0m
+
+  STDIN:
+[38;5;239m   1: cd sub_directory_link
+   2: cd sub_sub_directory_link
+   3: /home/pablo/42ShellTester/tmp/display_env[0m
+
+  STDOUT:
+[31m[38;5;160m  FAILURE    expected_to match_regex `^PWD=/home/pablo/42ShellTester/tmp/sub_directory_link/sub_sub_directory_link`[0m
+[38;5;239m   1: ------------------------------
+   2: SHELL=/usr/bin/zsh
+   3: LSCOLORS=Gxfxcxdxbxegedabagacad
+   4: WINDOWID=98566151
+   5: KDED_STARTED_BY_KDEINIT=1
+   6: COLORTERM=truecolor
+   7: LESS=-R
+   8: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+   9: CONDA_EXE=/opt/miniconda3/bin/conda
+  10: _CE_M=
+  11: LANGUAGE=
+  12: LC_ADDRESS=fr_FR.UTF-8
+  13: LC_NAME=fr_FR.UTF-8
+  14: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  15: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  16: LC_MONETARY=fr_FR.UTF-8
+  17: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  18: XCURSOR_SIZE=24
+  19: EDITOR=/usr/bin/nano
+  20: GTK_MODULES=canberra-gtk-module
+  21: XDG_SEAT=seat0
+  22: PWD=/home/pablo/42ShellTester/tmp/sub_directory/sub_sub_directory
+  23: XDG_SESSION_DESKTOP=KDE
+  24: LOGNAME=pablo
+  25: XDG_SESSION_TYPE=x11
+  26: XAUTHORITY=/home/pablo/.Xauthority
+  27: MOTD_SHOWN=pam
+  28: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  29: HOME=/home/pablo
+  30: LC_PAPER=fr_FR.UTF-8
+  31: LANG=en_US.UTF-8
+  32: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  33: XDG_CURRENT_DESKTOP=KDE
+  34: KONSOLE_DBUS_SERVICE=:1.3326
+  35: KONSOLE_DBUS_SESSION=/Sessions/1
+  36: PROFILEHOME=
+  37: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  38: KONSOLE_VERSION=200802
+  39: KDE_SESSION_UID=1000
+  40: XDG_SESSION_CLASS=user
+  41: TERM=xterm-256color
+  42: LC_IDENTIFICATION=fr_FR.UTF-8
+  43: ZSH=/usr/share/oh-my-zsh
+  44: _CE_CONDA=
+  45: USER=pablo
+  46: CUDA_PATH=/opt/cuda
+  47: COLORFGBG=15;0
+  48: CONDA_SHLVL=0
+  49: KDE_SESSION_VERSION=5
+  50: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  51: DISPLAY=:0
+  52: SHLVL=2
+  53: PAGER=less
+  54: LC_TELEPHONE=fr_FR.UTF-8
+  55: LC_MEASUREMENT=fr_FR.UTF-8
+  56: XDG_VTNR=1
+  57: XDG_SESSION_ID=1
+  58: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  59: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  60: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  61: XDG_RUNTIME_DIR=/run/user/1000
+  62: LC_TIME=fr_FR.UTF-8
+  63: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  64: XCURSOR_THEME=breeze_cursors
+  65: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  66: KDE_FULL_SESSION=true
+  67: BROWSER=/usr/bin/firefox
+  68: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  69: GTK_USE_PORTAL=1
+  70: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  71: KDE_APPLICATIONS_AS_SCOPE=1
+  72: MAIL=/var/spool/mail/pablo
+  73: LC_NUMERIC=fr_FR.UTF-8
+  74: OLDPWD=/home/pablo/42ShellTester
+  75: KONSOLE_DBUS_WINDOW=/Windows/1
+  76: _=/home/pablo/Documents/42/minishell/minishell
+  77: ------------------------------
+  78: TOTAL ENVIRONMENT VARIABLES: 75[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to be_empty[0m
+[38;5;239m  (no output)[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/010-update-OLDPWD[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using the builtin `cd` results in a modified environment variable `PWD`.[0m
+
+  Before test:
+[38;5;239m   1: rm -rf "TOKEN202012011718"
+   2: mkdir -p "./TOKEN202012011718/TOKEN202012011718"[0m
+
+  STDIN:
+[38;5;239m   1: cd TOKEN202012011718
+   2: cd TOKEN202012011718
+   3: ../../display_env[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_regex `^PWD=/home/pablo/42ShellTester/tmp/TOKEN202012011718/TOKEN202012011718$`[0m
+[31m[38;5;160m  FAILURE    expected_to match_regex `^OLDPWD=/home/pablo/42ShellTester/tmp/TOKEN202012011718$`[0m
+[38;5;239m   1: ------------------------------
+   2: SHELL=/usr/bin/zsh
+   3: LSCOLORS=Gxfxcxdxbxegedabagacad
+   4: WINDOWID=98566151
+   5: KDED_STARTED_BY_KDEINIT=1
+   6: COLORTERM=truecolor
+   7: LESS=-R
+   8: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+   9: CONDA_EXE=/opt/miniconda3/bin/conda
+  10: _CE_M=
+  11: LANGUAGE=
+  12: LC_ADDRESS=fr_FR.UTF-8
+  13: LC_NAME=fr_FR.UTF-8
+  14: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  15: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  16: LC_MONETARY=fr_FR.UTF-8
+  17: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  18: XCURSOR_SIZE=24
+  19: EDITOR=/usr/bin/nano
+  20: GTK_MODULES=canberra-gtk-module
+  21: XDG_SEAT=seat0
+  22: PWD=/home/pablo/42ShellTester/tmp/TOKEN202012011718/TOKEN202012011718
+  23: XDG_SESSION_DESKTOP=KDE
+  24: LOGNAME=pablo
+  25: XDG_SESSION_TYPE=x11
+  26: XAUTHORITY=/home/pablo/.Xauthority
+  27: MOTD_SHOWN=pam
+  28: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  29: HOME=/home/pablo
+  30: LC_PAPER=fr_FR.UTF-8
+  31: LANG=en_US.UTF-8
+  32: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  33: XDG_CURRENT_DESKTOP=KDE
+  34: KONSOLE_DBUS_SERVICE=:1.3326
+  35: KONSOLE_DBUS_SESSION=/Sessions/1
+  36: PROFILEHOME=
+  37: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  38: KONSOLE_VERSION=200802
+  39: KDE_SESSION_UID=1000
+  40: XDG_SESSION_CLASS=user
+  41: TERM=xterm-256color
+  42: LC_IDENTIFICATION=fr_FR.UTF-8
+  43: ZSH=/usr/share/oh-my-zsh
+  44: _CE_CONDA=
+  45: USER=pablo
+  46: CUDA_PATH=/opt/cuda
+  47: COLORFGBG=15;0
+  48: CONDA_SHLVL=0
+  49: KDE_SESSION_VERSION=5
+  50: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  51: DISPLAY=:0
+  52: SHLVL=2
+  53: PAGER=less
+  54: LC_TELEPHONE=fr_FR.UTF-8
+  55: LC_MEASUREMENT=fr_FR.UTF-8
+  56: XDG_VTNR=1
+  57: XDG_SESSION_ID=1
+  58: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  59: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  60: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  61: XDG_RUNTIME_DIR=/run/user/1000
+  62: LC_TIME=fr_FR.UTF-8
+  63: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  64: XCURSOR_THEME=breeze_cursors
+  65: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  66: KDE_FULL_SESSION=true
+  67: BROWSER=/usr/bin/firefox
+  68: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  69: GTK_USE_PORTAL=1
+  70: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  71: KDE_APPLICATIONS_AS_SCOPE=1
+  72: MAIL=/var/spool/mail/pablo
+  73: LC_NUMERIC=fr_FR.UTF-8
+  74: OLDPWD=/home/pablo/42ShellTester
+  75: KONSOLE_DBUS_WINDOW=/Windows/1
+  76: _=/home/pablo/Documents/42/minishell/minishell
+  77: ------------------------------
+  78: TOTAL ENVIRONMENT VARIABLES: 75[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to be_empty[0m
+[38;5;239m  (no output)[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/013-absolute-path[0m [31m[38;5;34m(SUCCESS)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using an absolute path as first argument with the builtin `cd` results in moving to the correct directory.[0m
+
+  Before test:
+[38;5;239m   1: rm -rf "./my_sub_directory"
+   2: mkdir -p "./my_sub_directory/and_another_one/"[0m
+
+  STDIN:
+[38;5;239m   1: cd /home/pablo/42ShellTester/tmp/my_sub_directory/and_another_one
+   2: /home/pablo/42ShellTester/tmp/display_pwd
+   3: /home/pablo/42ShellTester/tmp/display_env[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_regex `PWD:/home/pablo/42ShellTester/tmp/my_sub_directory/and_another_one:PWD`[0m
+[31m[38;5;34m  SUCCESS    expected_to match_regex `^PWD=/home/pablo/42ShellTester/tmp/my_sub_directory/and_another_one$`[0m
+[38;5;239m   1: PWD:/home/pablo/42ShellTester/tmp/my_sub_directory/and_another_one:PWD
+   2: ------------------------------
+   3: SHELL=/usr/bin/zsh
+   4: LSCOLORS=Gxfxcxdxbxegedabagacad
+   5: WINDOWID=98566151
+   6: KDED_STARTED_BY_KDEINIT=1
+   7: COLORTERM=truecolor
+   8: LESS=-R
+   9: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  10: CONDA_EXE=/opt/miniconda3/bin/conda
+  11: _CE_M=
+  12: LANGUAGE=
+  13: LC_ADDRESS=fr_FR.UTF-8
+  14: LC_NAME=fr_FR.UTF-8
+  15: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  16: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  17: LC_MONETARY=fr_FR.UTF-8
+  18: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  19: XCURSOR_SIZE=24
+  20: EDITOR=/usr/bin/nano
+  21: GTK_MODULES=canberra-gtk-module
+  22: XDG_SEAT=seat0
+  23: PWD=/home/pablo/42ShellTester/tmp/my_sub_directory/and_another_one
+  24: XDG_SESSION_DESKTOP=KDE
+  25: LOGNAME=pablo
+  26: XDG_SESSION_TYPE=x11
+  27: XAUTHORITY=/home/pablo/.Xauthority
+  28: MOTD_SHOWN=pam
+  29: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  30: HOME=/home/pablo
+  31: LC_PAPER=fr_FR.UTF-8
+  32: LANG=en_US.UTF-8
+  33: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  34: XDG_CURRENT_DESKTOP=KDE
+  35: KONSOLE_DBUS_SERVICE=:1.3326
+  36: KONSOLE_DBUS_SESSION=/Sessions/1
+  37: PROFILEHOME=
+  38: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  39: KONSOLE_VERSION=200802
+  40: KDE_SESSION_UID=1000
+  41: XDG_SESSION_CLASS=user
+  42: TERM=xterm-256color
+  43: LC_IDENTIFICATION=fr_FR.UTF-8
+  44: ZSH=/usr/share/oh-my-zsh
+  45: _CE_CONDA=
+  46: USER=pablo
+  47: CUDA_PATH=/opt/cuda
+  48: COLORFGBG=15;0
+  49: CONDA_SHLVL=0
+  50: KDE_SESSION_VERSION=5
+  51: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  52: DISPLAY=:0
+  53: SHLVL=2
+  54: PAGER=less
+  55: LC_TELEPHONE=fr_FR.UTF-8
+  56: LC_MEASUREMENT=fr_FR.UTF-8
+  57: XDG_VTNR=1
+  58: XDG_SESSION_ID=1
+  59: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  60: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  61: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  62: XDG_RUNTIME_DIR=/run/user/1000
+  63: LC_TIME=fr_FR.UTF-8
+  64: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  65: XCURSOR_THEME=breeze_cursors
+  66: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  67: KDE_FULL_SESSION=true
+  68: BROWSER=/usr/bin/firefox
+  69: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  70: GTK_USE_PORTAL=1
+  71: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  72: KDE_APPLICATIONS_AS_SCOPE=1
+  73: MAIL=/var/spool/mail/pablo
+  74: LC_NUMERIC=fr_FR.UTF-8
+  75: OLDPWD=/home/pablo/42ShellTester
+  76: KONSOLE_DBUS_WINDOW=/Windows/1
+  77: _=/home/pablo/Documents/42/minishell/minishell
+  78: ------------------------------
+  79: TOTAL ENVIRONMENT VARIABLES: 75[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to be_empty[0m
+[38;5;239m  (no output)[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/001-no-arg[0m [31m[38;5;34m(SUCCESS)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using the builtin `cd` without any argument results in moving to the HOME directory.[0m
+
+  STDIN:
+[38;5;239m   1: cd
+   2: /home/pablo/42ShellTester/tmp/display_pwd[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to_not match_regex `/home/pablo/42ShellTester/tmp$`[0m
+[31m[38;5;34m  SUCCESS    expected_to match_regex `PWD:/home/pablo:PWD`[0m
+[38;5;239m   1: PWD:/home/pablo:PWD[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to be_empty[0m
+[38;5;239m  (no output)[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/005-root-path[0m [31m[38;5;34m(SUCCESS)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using the root path as first argument with the builtin `cd` results in moving to the correct directory.[0m
+
+  STDIN:
+[38;5;239m   1: cd /
+   2: /home/pablo/42ShellTester/tmp/display_pwd
+   3: /home/pablo/42ShellTester/tmp/display_env[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_regex `PWD:/:PWD`[0m
+[31m[38;5;34m  SUCCESS    expected_to match_regex `^PWD=/$`[0m
+[38;5;239m   1: PWD:/:PWD
+   2: ------------------------------
+   3: SHELL=/usr/bin/zsh
+   4: LSCOLORS=Gxfxcxdxbxegedabagacad
+   5: WINDOWID=98566151
+   6: KDED_STARTED_BY_KDEINIT=1
+   7: COLORTERM=truecolor
+   8: LESS=-R
+   9: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  10: CONDA_EXE=/opt/miniconda3/bin/conda
+  11: _CE_M=
+  12: LANGUAGE=
+  13: LC_ADDRESS=fr_FR.UTF-8
+  14: LC_NAME=fr_FR.UTF-8
+  15: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  16: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  17: LC_MONETARY=fr_FR.UTF-8
+  18: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  19: XCURSOR_SIZE=24
+  20: EDITOR=/usr/bin/nano
+  21: GTK_MODULES=canberra-gtk-module
+  22: XDG_SEAT=seat0
+  23: PWD=/
+  24: XDG_SESSION_DESKTOP=KDE
+  25: LOGNAME=pablo
+  26: XDG_SESSION_TYPE=x11
+  27: XAUTHORITY=/home/pablo/.Xauthority
+  28: MOTD_SHOWN=pam
+  29: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  30: HOME=/home/pablo
+  31: LC_PAPER=fr_FR.UTF-8
+  32: LANG=en_US.UTF-8
+  33: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  34: XDG_CURRENT_DESKTOP=KDE
+  35: KONSOLE_DBUS_SERVICE=:1.3326
+  36: KONSOLE_DBUS_SESSION=/Sessions/1
+  37: PROFILEHOME=
+  38: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  39: KONSOLE_VERSION=200802
+  40: KDE_SESSION_UID=1000
+  41: XDG_SESSION_CLASS=user
+  42: TERM=xterm-256color
+  43: LC_IDENTIFICATION=fr_FR.UTF-8
+  44: ZSH=/usr/share/oh-my-zsh
+  45: _CE_CONDA=
+  46: USER=pablo
+  47: CUDA_PATH=/opt/cuda
+  48: COLORFGBG=15;0
+  49: CONDA_SHLVL=0
+  50: KDE_SESSION_VERSION=5
+  51: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  52: DISPLAY=:0
+  53: SHLVL=2
+  54: PAGER=less
+  55: LC_TELEPHONE=fr_FR.UTF-8
+  56: LC_MEASUREMENT=fr_FR.UTF-8
+  57: XDG_VTNR=1
+  58: XDG_SESSION_ID=1
+  59: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  60: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  61: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  62: XDG_RUNTIME_DIR=/run/user/1000
+  63: LC_TIME=fr_FR.UTF-8
+  64: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  65: XCURSOR_THEME=breeze_cursors
+  66: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  67: KDE_FULL_SESSION=true
+  68: BROWSER=/usr/bin/firefox
+  69: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  70: GTK_USE_PORTAL=1
+  71: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  72: KDE_APPLICATIONS_AS_SCOPE=1
+  73: MAIL=/var/spool/mail/pablo
+  74: LC_NUMERIC=fr_FR.UTF-8
+  75: OLDPWD=/home/pablo/42ShellTester
+  76: KONSOLE_DBUS_WINDOW=/Windows/1
+  77: _=/home/pablo/Documents/42/minishell/minishell
+  78: ------------------------------
+  79: TOTAL ENVIRONMENT VARIABLES: 75[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to be_empty[0m
+[38;5;239m  (no output)[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/011-dotdot[0m [31m[38;5;34m(SUCCESS)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that playing with relative paths with the builtin `cd` results in correctly changing the current directory.[0m
+
+  Before test:
+[38;5;239m   1: rm -rf "playing_with_dotdot"
+   2: mkdir -p "playing_with_dotdot/1/2/3/4/5/6/7/8/9/10"[0m
+
+  STDIN:
+[38;5;239m   1: cd playing_with_dotdot
+   2: cd ../playing_with_dotdot
+   3: cd 1/2/3/4/../4/../4/../../3/4/5/6/7/8/9/10
+   4: cd ../../../../../../../../../../1/2/3/4/5
+   5: /home/pablo/42ShellTester/tmp/display_pwd
+   6: /home/pablo/42ShellTester/tmp/display_env[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_regex `PWD:/home/pablo/42ShellTester/tmp/playing_with_dotdot/1/2/3/4/5:PWD`[0m
+[31m[38;5;34m  SUCCESS    expected_to match_regex `^PWD=/home/pablo/42ShellTester/tmp/playing_with_dotdot/1/2/3/4/5$`[0m
+[38;5;239m   1: PWD:/home/pablo/42ShellTester/tmp/playing_with_dotdot/1/2/3/4/5:PWD
+   2: ------------------------------
+   3: SHELL=/usr/bin/zsh
+   4: LSCOLORS=Gxfxcxdxbxegedabagacad
+   5: WINDOWID=98566151
+   6: KDED_STARTED_BY_KDEINIT=1
+   7: COLORTERM=truecolor
+   8: LESS=-R
+   9: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  10: CONDA_EXE=/opt/miniconda3/bin/conda
+  11: _CE_M=
+  12: LANGUAGE=
+  13: LC_ADDRESS=fr_FR.UTF-8
+  14: LC_NAME=fr_FR.UTF-8
+  15: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  16: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  17: LC_MONETARY=fr_FR.UTF-8
+  18: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  19: XCURSOR_SIZE=24
+  20: EDITOR=/usr/bin/nano
+  21: GTK_MODULES=canberra-gtk-module
+  22: XDG_SEAT=seat0
+  23: PWD=/home/pablo/42ShellTester/tmp/playing_with_dotdot/1/2/3/4/5
+  24: XDG_SESSION_DESKTOP=KDE
+  25: LOGNAME=pablo
+  26: XDG_SESSION_TYPE=x11
+  27: XAUTHORITY=/home/pablo/.Xauthority
+  28: MOTD_SHOWN=pam
+  29: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  30: HOME=/home/pablo
+  31: LC_PAPER=fr_FR.UTF-8
+  32: LANG=en_US.UTF-8
+  33: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  34: XDG_CURRENT_DESKTOP=KDE
+  35: KONSOLE_DBUS_SERVICE=:1.3326
+  36: KONSOLE_DBUS_SESSION=/Sessions/1
+  37: PROFILEHOME=
+  38: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  39: KONSOLE_VERSION=200802
+  40: KDE_SESSION_UID=1000
+  41: XDG_SESSION_CLASS=user
+  42: TERM=xterm-256color
+  43: LC_IDENTIFICATION=fr_FR.UTF-8
+  44: ZSH=/usr/share/oh-my-zsh
+  45: _CE_CONDA=
+  46: USER=pablo
+  47: CUDA_PATH=/opt/cuda
+  48: COLORFGBG=15;0
+  49: CONDA_SHLVL=0
+  50: KDE_SESSION_VERSION=5
+  51: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  52: DISPLAY=:0
+  53: SHLVL=2
+  54: PAGER=less
+  55: LC_TELEPHONE=fr_FR.UTF-8
+  56: LC_MEASUREMENT=fr_FR.UTF-8
+  57: XDG_VTNR=1
+  58: XDG_SESSION_ID=1
+  59: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  60: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  61: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  62: XDG_RUNTIME_DIR=/run/user/1000
+  63: LC_TIME=fr_FR.UTF-8
+  64: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  65: XCURSOR_THEME=breeze_cursors
+  66: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  67: KDE_FULL_SESSION=true
+  68: BROWSER=/usr/bin/firefox
+  69: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  70: GTK_USE_PORTAL=1
+  71: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  72: KDE_APPLICATIONS_AS_SCOPE=1
+  73: MAIL=/var/spool/mail/pablo
+  74: LC_NUMERIC=fr_FR.UTF-8
+  75: OLDPWD=/home/pablo/42ShellTester
+  76: KONSOLE_DBUS_WINDOW=/Windows/1
+  77: _=/home/pablo/Documents/42/minishell/minishell
+  78: ------------------------------
+  79: TOTAL ENVIRONMENT VARIABLES: 75[0m
+
+  STDERR:
+[31m[38;5;34m  SUCCESS    expected_to be_empty[0m
+[38;5;239m  (no output)[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/options/002-oldpwd[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using `-` as first argument with the builtin `cd` results in moving the previous current directory.[0m
+
+  STDIN:
+[38;5;239m   1: cd /
+   2: cd -
+   3: /home/pablo/42ShellTester/tmp/display_pwd[0m
+
+  STDOUT:
+[31m[38;5;160m  FAILURE    expected_to match_regex `PWD:/home/pablo/42ShellTester/tmp:PWD`[0m
+[38;5;239m   1: PWD:/:PWD[0m
+
+  STDERR:
+[31m[38;5;160m  FAILURE    expected_to be_empty[0m
+[38;5;239m   1: cd: no such file or directory: -[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/builtins/cd/options/001-not-following-links[0m [31m[38;5;160m(FAILED)[0m
+
+  Description:
+[38;5;239m  The purpose of this test is to check that using symbolic links twice with the builtin `cd` and the option `-P` results in a correct environment variable PWD. The option `-P` makes the Shell to resolve symbolic links.[0m
+
+  Before test:
+[38;5;239m   1: rm -fr "./sub_directory_link" "./sub_directory"
+   2: mkdir -p "./sub_directory/sub_sub_directory"
+   3: ln -s "./sub_directory" "./sub_directory_link"
+   4: ln -s "./sub_sub_directory" "./sub_directory/sub_sub_directory_link"[0m
+
+  STDIN:
+[38;5;239m   1: cd -P sub_directory_link
+   2: cd -P sub_sub_directory_link
+   3: /home/pablo/42ShellTester/tmp/display_env[0m
+
+  STDOUT:
+[31m[38;5;160m  FAILURE    expected_to match_regex `PWD=/home/pablo/42ShellTester/tmp/sub_directory/sub_sub_directory`[0m
+[38;5;239m   1: ------------------------------
+   2: SHELL=/usr/bin/zsh
+   3: LSCOLORS=Gxfxcxdxbxegedabagacad
+   4: WINDOWID=98566151
+   5: KDED_STARTED_BY_KDEINIT=1
+   6: COLORTERM=truecolor
+   7: LESS=-R
+   8: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+   9: CONDA_EXE=/opt/miniconda3/bin/conda
+  10: _CE_M=
+  11: LANGUAGE=
+  12: LC_ADDRESS=fr_FR.UTF-8
+  13: LC_NAME=fr_FR.UTF-8
+  14: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  15: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  16: LC_MONETARY=fr_FR.UTF-8
+  17: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  18: XCURSOR_SIZE=24
+  19: EDITOR=/usr/bin/nano
+  20: GTK_MODULES=canberra-gtk-module
+  21: XDG_SEAT=seat0
+  22: PWD=/home/pablo/42ShellTester/tmp
+  23: XDG_SESSION_DESKTOP=KDE
+  24: LOGNAME=pablo
+  25: XDG_SESSION_TYPE=x11
+  26: XAUTHORITY=/home/pablo/.Xauthority
+  27: MOTD_SHOWN=pam
+  28: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  29: HOME=/home/pablo
+  30: LC_PAPER=fr_FR.UTF-8
+  31: LANG=en_US.UTF-8
+  32: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  33: XDG_CURRENT_DESKTOP=KDE
+  34: KONSOLE_DBUS_SERVICE=:1.3326
+  35: KONSOLE_DBUS_SESSION=/Sessions/1
+  36: PROFILEHOME=
+  37: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  38: KONSOLE_VERSION=200802
+  39: KDE_SESSION_UID=1000
+  40: XDG_SESSION_CLASS=user
+  41: TERM=xterm-256color
+  42: LC_IDENTIFICATION=fr_FR.UTF-8
+  43: ZSH=/usr/share/oh-my-zsh
+  44: _CE_CONDA=
+  45: USER=pablo
+  46: CUDA_PATH=/opt/cuda
+  47: COLORFGBG=15;0
+  48: CONDA_SHLVL=0
+  49: KDE_SESSION_VERSION=5
+  50: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  51: DISPLAY=:0
+  52: SHLVL=2
+  53: PAGER=less
+  54: LC_TELEPHONE=fr_FR.UTF-8
+  55: LC_MEASUREMENT=fr_FR.UTF-8
+  56: XDG_VTNR=1
+  57: XDG_SESSION_ID=1
+  58: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  59: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  60: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  61: XDG_RUNTIME_DIR=/run/user/1000
+  62: LC_TIME=fr_FR.UTF-8
+  63: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  64: XCURSOR_THEME=breeze_cursors
+  65: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  66: KDE_FULL_SESSION=true
+  67: BROWSER=/usr/bin/firefox
+  68: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  69: GTK_USE_PORTAL=1
+  70: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  71: KDE_APPLICATIONS_AS_SCOPE=1
+  72: MAIL=/var/spool/mail/pablo
+  73: LC_NUMERIC=fr_FR.UTF-8
+  74: OLDPWD=/home/pablo/42ShellTester
+  75: KONSOLE_DBUS_WINDOW=/Windows/1
+  76: _=/home/pablo/Documents/42/minishell/minishell
+  77: ------------------------------
+  78: TOTAL ENVIRONMENT VARIABLES: 75[0m
+
+  STDERR:
+[31m[1;33m  WARNING    might be_empty[0m
+[38;5;239m   1: cd: no such file or directory: -P
+   2: cd: no such file or directory: -P[0m
+
+----------------------------------------------------------------
+
+[37;1mminishell/misc/001-copy-of-environment[0m [31m[38;5;34m(SUCCESS)[0m
+
+  Description:
+[38;5;239m  A Shell must send a copy of the environment to its child processes.[0m
+
+  Before test:
+[38;5;239m   1: export COPYENV_VAR1="TOKEN202012011718_VAR1"
+   2: export COPYENV_VAR2="TOKEN202012011718_VAR2"
+   3: export COPYENV_VAR3="TOKEN202012011718_VAR3"[0m
+
+  STDIN:
+[38;5;239m   1: ./display_env[0m
+
+  STDOUT:
+[31m[38;5;34m  SUCCESS    expected_to match_regex `COPYENV_VAR1=TOKEN202012011718_VAR1`[0m
+[31m[38;5;34m  SUCCESS    expected_to match_regex `COPYENV_VAR2=TOKEN202012011718_VAR2`[0m
+[31m[38;5;34m  SUCCESS    expected_to match_regex `COPYENV_VAR3=TOKEN202012011718_VAR3`[0m
+[38;5;239m   1: ------------------------------
+   2: SHELL=/usr/bin/zsh
+   3: LSCOLORS=Gxfxcxdxbxegedabagacad
+   4: WINDOWID=98566151
+   5: KDED_STARTED_BY_KDEINIT=1
+   6: COLORTERM=truecolor
+   7: LESS=-R
+   8: XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+   9: CONDA_EXE=/opt/miniconda3/bin/conda
+  10: _CE_M=
+  11: LANGUAGE=
+  12: LC_ADDRESS=fr_FR.UTF-8
+  13: LC_NAME=fr_FR.UTF-8
+  14: SHELL_SESSION_ID=84dcf0e30b3a48e89e325223d6c333d3
+  15: DESKTOP_SESSION=/usr/share/xsessions/plasma
+  16: LC_MONETARY=fr_FR.UTF-8
+  17: GTK_RC_FILES=/etc/gtk/gtkrc:/home/pablo/.gtkrc:/home/pablo/.config/gtkrc
+  18: XCURSOR_SIZE=24
+  19: EDITOR=/usr/bin/nano
+  20: GTK_MODULES=canberra-gtk-module
+  21: XDG_SEAT=seat0
+  22: PWD=/home/pablo/42ShellTester/tmp
+  23: XDG_SESSION_DESKTOP=KDE
+  24: LOGNAME=pablo
+  25: XDG_SESSION_TYPE=x11
+  26: XAUTHORITY=/home/pablo/.Xauthority
+  27: MOTD_SHOWN=pam
+  28: GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pablo/.gtkrc-2.0:/home/pablo/.config/gtkrc-2.0
+  29: HOME=/home/pablo
+  30: LC_PAPER=fr_FR.UTF-8
+  31: LANG=en_US.UTF-8
+  32: LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  33: XDG_CURRENT_DESKTOP=KDE
+  34: KONSOLE_DBUS_SERVICE=:1.3326
+  35: KONSOLE_DBUS_SESSION=/Sessions/1
+  36: PROFILEHOME=
+  37: XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  38: KONSOLE_VERSION=200802
+  39: KDE_SESSION_UID=1000
+  40: XDG_SESSION_CLASS=user
+  41: TERM=xterm-256color
+  42: LC_IDENTIFICATION=fr_FR.UTF-8
+  43: ZSH=/usr/share/oh-my-zsh
+  44: _CE_CONDA=
+  45: USER=pablo
+  46: CUDA_PATH=/opt/cuda
+  47: COLORFGBG=15;0
+  48: CONDA_SHLVL=0
+  49: KDE_SESSION_VERSION=5
+  50: PAM_KWALLET5_LOGIN=/run/user/1000/kwallet5.socket
+  51: DISPLAY=:0
+  52: SHLVL=2
+  53: PAGER=less
+  54: LC_TELEPHONE=fr_FR.UTF-8
+  55: LC_MEASUREMENT=fr_FR.UTF-8
+  56: XDG_VTNR=1
+  57: XDG_SESSION_ID=1
+  58: QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  59: CONDA_PYTHON_EXE=/opt/miniconda3/bin/python
+  60: MOZ_PLUGIN_PATH=/usr/lib/mozilla/plugins
+  61: XDG_RUNTIME_DIR=/run/user/1000
+  62: LC_TIME=fr_FR.UTF-8
+  63: QT_AUTO_SCREEN_SCALE_FACTOR=0
+  64: XCURSOR_THEME=breeze_cursors
+  65: XDG_DATA_DIRS=/home/pablo/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+  66: KDE_FULL_SESSION=true
+  67: BROWSER=/usr/bin/firefox
+  68: PATH=/home/pablo/.local/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  69: GTK_USE_PORTAL=1
+  70: COPYENV_VAR3=TOKEN202012011718_VAR3
+  71: COPYENV_VAR2=TOKEN202012011718_VAR2
+  72: COPYENV_VAR1=TOKEN202012011718_VAR1
+  73: DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+  74: KDE_APPLICATIONS_AS_SCOPE=1
+  75: MAIL=/var/spool/mail/pablo
+  76: LC_NUMERIC=fr_FR.UTF-8
+  77: OLDPWD=/home/pablo/42ShellTester
+  78: KONSOLE_DBUS_WINDOW=/Windows/1
+  79: _=/home/pablo/Documents/42/minishell/minishell
+  80: ------------------------------
+  81: TOTAL ENVIRONMENT VARIABLES: 78[0m
+
+  STDERR:
+[38;5;239m  (no output)[0m
+
+Total tests: 55
+Total failed tests: 29
+Total pending tests: 0

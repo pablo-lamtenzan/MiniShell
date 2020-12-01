@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 21:57:11 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/11/29 03:05:38 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/01 14:47:10 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,12 @@ int	b_cd(t_exec *args)
 	{
 		if (!(home_dir = env_get(g_session.env, "HOME", 4)))
 		{
-			ft_dprintf(2, "%s: %s: HOME not set\n", g_session.name, args->av[0]);
+			ft_dprintf(STDERR_FILENO, "%s: %s: HOME not set\n", g_session.name, args->av[0]);
 			return (STD_ERROR);
 		}
 		if (chdir(home_dir))
 		{
-			ft_dprintf(2, "%s: %s: %s\n", g_session.name, args->av[0], strerror(errno));
+			ft_dprintf(STDERR_FILENO, "%s: %s: %s\n", g_session.name, args->av[0], strerror(errno));
 			return (STD_ERROR);
 		}
 		env_set(&g_session.env, "PWD", home_dir, true);
@@ -57,7 +57,7 @@ int	b_cd(t_exec *args)
 				return (SUCCESS);
 			}
 			else
-				ft_dprintf(2, "cd: no such file or directory: %s\n", args->av[1]);
+				ft_dprintf(STDERR_FILENO, "cd: no such file or directory: %s\n", args->av[1]);
 		}
 	}
 	return (STD_ERROR);

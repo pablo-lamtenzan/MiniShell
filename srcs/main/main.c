@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/01 09:31:51 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/01 11:20:14 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,10 +89,6 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st)
 }
 
 // TO DO: Norme
-
-// Kill -l cross-plateform
-// Excution some non senses
-// Perhabs redo the fct
 
 void	exec(t_tok* tokens)
 {
