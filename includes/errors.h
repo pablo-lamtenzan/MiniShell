@@ -32,13 +32,13 @@
 */
 typedef enum			e_exec_status
 {
-	SUCCESS,
-	BAD_ALLOC,
-	BAD_CLOSE,
-	BAD_PIPE,
-	BAD_DUP2,
-	BAD_FORK,
-	BAD_PATH
+	SUCCESS = 0,
+	BAD_ALLOC = 1,
+	BAD_CLOSE = 2,
+	BAD_PIPE = 3,
+	BAD_DUP2 = 4,
+	BAD_FORK = 5,
+	BAD_PATH = 6
 }						t_exec_status;
 
 /*

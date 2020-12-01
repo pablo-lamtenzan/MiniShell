@@ -53,25 +53,38 @@ void	token_print(t_tok *tokens, const char *prefix)
 static void			handle_exec_error(t_bst* root, t_exec_status exec_st)
 {
 	// TO DO: TEST the display of thease error msg
-	const char*		error_msg[5] = {
-		"[%d] minish: Fatal error: Not enought memory room, can't allocate memory blocks\n"
-		"[%d] minish: Fatal error: Syscall: close: invalid return\n"
-		"[%d] minish: Fatal error: Syscall: pipe: invalid return\n"
-		"[%d] minish: Fatal error: Syscall: dup2: invalid return\n"
-		"[%d] minish: Fatal error: Syscall: fork: invalid return\n" // fork probally never used
+	static const char*		labels[] = {
+		"malloc",
+		"close",
+		"pipe",
+		"dup2",
+		"fork" // probably never used
 	};
-	const int		exit_return[5] = {
+	const int				exit_vals[] = {
 		SIGNAL_BASE + SIGABRT, 
 		SIGNAL_BASE + SIGSYS,
 		SIGNAL_BASE + SIGSYS,
 		SIGNAL_BASE + SIGSYS,
 		SIGNAL_BASE + SIGSYS
 	};
-	ft_dprintf(STDERR_FILENO, error_msg[exec_st], exit_return[exec_st]);
+	int						exit_val;
+
+	if (exec_st < sizeof(labels) / sizeof(*labels))
+	{
+		exit_val = exit_vals[exec_st];
+		ft_dprintf(STDERR_FILENO, "[%d] %s: %s: %s\n",
+			exit_val, g_session.name, labels[exec_st], strerror(errno));
+	}
+	else
+	{
+		exit_val = exec_st;
+		ft_dprintf(STDERR_FILENO, "%s: unknown fatal error: %d!\n",
+			g_session.name, exit_val);
+	}
 	free_bst(root);
 	term_destroy();
 	session_end();
-	exit(exit_return[exec_st]);
+	exit(exit_val);
 }
 
 // TO DO: when i have at least 4 background processes and they end if i use jobs inly prints 2 done
