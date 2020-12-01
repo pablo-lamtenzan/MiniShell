@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/30 01:34:56 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/01 08:47:40 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <separators.h>
 #include <builtins.h>
 #include <signals.h>
+#include <string.h>
 
 // TODO: ERROR codes: execution and builtins [error msg] -> [optional help] -> [return]
 /* Errors List:
@@ -87,16 +88,9 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st)
 	exit(exit_val);
 }
 
-// TO DO: when i have at least 4 background processes and they end if i use jobs inly prints 2 done
-// TO DO: ZOmbies catcher has heap after use one time:
-	// a lot of processes in background and a history node was freed during it execution
-	// more background processes i have this bug is more probable
-	// have to fix it for any number of background processes
+// TO DO: Norme
 
-// TO DO: [UNKNOWN] cat | cat -e | echo a resarch (now we have all the job control build, must be easy to fix)
-
-// UNWORKING STUFF I FOUND
-// echo $? doesnt work
+// Kill -l cross-plateform
 
 void	exec(t_tok* tokens)
 {

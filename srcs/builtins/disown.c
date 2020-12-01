@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:48:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 08:41:35 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/01 09:24:00 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,16 @@ int			disown_init_exeption(t_exec *args, int *flags, int *nb)
 	if ((*flags = parse_flags(args->ac, &args->av[1], "rah", nb)) < 0 \
 			&& args->av[*nb + 1][0] == '-')
 	{
-		ft_dprintf(STDERR_FILENO, "%s", \
-			"minish: usage: disown: [-h] [-ar] [jobspec ... | pid ...]\n");
+		ft_dprintf(STDERR_FILENO, "%s%s", \
+	g_session.name, ": usage: disown: [-h] [-ar] [jobspec ... | pid ...]\n");
 		return (CMD_BAD_USE);
 	}
 	if (session_empty() || g_session.groups->next == g_session.nil)
 	{
 		if (args->ac > 1 && *flags < 0)
 		{
-			ft_dprintf(STDERR_FILENO, "minish: jobs: %s: no such job\n",\
-				args->av[1]);
+			ft_dprintf(STDERR_FILENO, "%s: jobs: %s: no such job\n",\
+				g_session.name ,args->av[1]);
 			return (STD_ERROR);
 		}
 		return (SUCCESS);
@@ -43,8 +43,8 @@ int				disown_jobspec(t_exec *args, int flags, int nb, int i)
 	{
 		if (!(target = jobspec_parser(args->ac, &args->av[nb + i], NULL)))
 		{
-			ft_dprintf(STDERR_FILENO, "minish: disown: %s: no such job\n", \
-				args->av[nb + i + 1]);
+			ft_dprintf(STDERR_FILENO, "%s: disown: %s: no such job\n", \
+				g_session.name, args->av[nb + i + 1]);
 			return (STD_ERROR);
 		}
 		disown_group(*target, flags, g_session.groups);

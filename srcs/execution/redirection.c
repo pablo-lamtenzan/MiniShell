@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 08:52:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 08:05:31 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/01 08:47:23 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static t_redir_status	try_catch_out(t_exec** info, t_tok_t type, const char* fil
 	if (type & REDIR_GR)
 	{
 		// This is literally the same
-		tmp = open(filename, O_WRONLY | O_CREAT | O_TRUNC, umask);
+		tmp = open(filename, O_WRONLY | O_CREAT | O_TRUNC, UMASK);
 		if (!((*info)->handle_dup & REDIR_OUT))
 			(*info)->fds[FDS_STDOUT] = tmp;
 		(*info)->handle_dup |= REDIR_OUT;
@@ -73,7 +73,7 @@ static t_redir_status	try_catch_out(t_exec** info, t_tok_t type, const char* fil
 	else if (type & REDIR_DG)
 	{
 		// As this but with different options
-		tmp = open(filename, O_WRONLY | O_CREAT | O_APPEND, umask);
+		tmp = open(filename, O_WRONLY | O_CREAT | O_APPEND, UMASK);
 		if (!((*info)->handle_dup & REDIR_OUT))
 			(*info)->fds[FDS_STDOUT] = tmp;
 		(*info)->handle_dup |= REDIR_OUT;
@@ -85,13 +85,14 @@ t_redir_status			redirections_handler(t_exec** info, t_bst* cmd, char*** filenam
 {
 	int					height;
     t_redir_status      redir_st;
+	char				*aux;
 
-	// TODO: Init
 	if (!(t_tok*)cmd->b)
 		return (CONTINUE);
-	if (!(*filename = tokens_expand((t_tok**)&cmd->b, &g_session.env, &height)) || !(t_tok*)cmd->b) // TODO
+	aux = (char*)((t_tok*)cmd->b)->data;
+	if (!(*filename = tokens_expand((t_tok**)&cmd->b, &g_session.env, &height)))
 		return (RDR_BAD_ALLOC);
-	if ((redir_st = try_catch_filename(filename, ((t_tok*)cmd->b)->data, height)) != CONTINUE)
+	if ((redir_st = try_catch_filename(filename, aux, height)) != CONTINUE)
         return (redir_st);
 	if (cmd->type & REDIR_GR || cmd->type & REDIR_DG)
 		redir_st = try_catch_out(info, cmd->type, (*filename)[0]);

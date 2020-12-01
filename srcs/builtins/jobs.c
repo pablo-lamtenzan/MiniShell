@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 12:03:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 08:50:22 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/01 09:27:03 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ static int		jobs_init_exeptions(t_exec *args, int *flags, int *nb)
 	if ((*flags = parse_flags(args->ac, &args->av[1], "nrsl", nb)) < 0 \
 			&& args->av[*nb + 1][0] == '-')
 	{
-		ft_dprintf(STDERR_FILENO, "minish: jobs: %s: invalid option\n%s%s", \
-			args->av[1], "jobs: usage: jobs: [-lnprs]", \
+		ft_dprintf(STDERR_FILENO, "%s: jobs: %s: invalid option\n%s%s", \
+			g_session.name, args->av[1], "jobs: usage: jobs: [-lnprs]", \
 			"[jobspec ...] or jobs -x command [args]\n");
 		return (CMD_BAD_USE);
 	}
@@ -60,8 +60,8 @@ static int		jobs_init_exeptions(t_exec *args, int *flags, int *nb)
 	{
 		if (args->ac > 1 && *flags < 0)
 		{
-			ft_dprintf(STDERR_FILENO, "minish: jobs: %s: no such job\n", \
-				args->av[args->ac]);
+			ft_dprintf(STDERR_FILENO, "%s: jobs: %s: no such job\n", \
+				g_session.name, args->av[args->ac]);
 			return (STD_ERROR);
 		}
 		return (SUCCESS);
@@ -79,8 +79,8 @@ static int		jobs_jobspec(t_exec *args, int nb, int flags)
 	{
 		if (!(target = jobspec_parser(args->ac, &args->av[nb + i], ignore_pid)))
 		{
-			ft_dprintf(STDERR_FILENO, "minish: jobs: %s: no such job\n", \
-					args->av[nb + i + 1]);
+			ft_dprintf(STDERR_FILENO, "%s: jobs: %s: no such job\n", \
+				g_session.name, args->av[nb + i + 1]);
 			return (STD_ERROR);
 		}
 		if (flags & 8)

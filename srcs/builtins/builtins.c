@@ -24,5 +24,5 @@ t_executable	builtin_get(const char *name)
 	while (i < sizeof(map) / sizeof(*map)
 	&& ft_strcmp(name, map[i].name))
 		i++;
-	return ((i < sizeof(map) / sizeof(*map))? map[i].exec : NULL);
+	return ((i < sizeof(map) / sizeof(*map)) ? map[i].exec : NULL);
 }

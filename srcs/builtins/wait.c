@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:20:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 08:31:46 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/01 09:29:42 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ static int			wait_init_exeption(t_exec *args, int *flags, int *nb)
 	if ((*flags = parse_flags(args->ac, &args->av[1], "nf", nb)) < 0 \
 			&& args->av[*nb + 1][0] == '-')
 	{
-		ft_dprintf(STDERR_FILENO, "minish: wait: %s: inalid option\n%s\n", \
-				args->av[1], "wait: usage: wait [-fn] [id ...]");
+		ft_dprintf(STDERR_FILENO, "%s: wait: %s: inalid option\n%s\n", \
+			g_session.name, args->av[1], "wait: usage: wait [-fn] [id ...]");
 		return (CMD_BAD_USE);
 	}
 	if (session_empty() || g_session.groups->next == g_session.nil)
@@ -29,11 +29,12 @@ static int			wait_init_exeption(t_exec *args, int *flags, int *nb)
 		{
 			if (!is_string_digit(args->av[1]))
 				ft_dprintf(STDERR_FILENO, \
-			"bash: wait: `%s\': not a pid or valid job spec\n", args->av[1]);
+			"%s: wait: `%s\': not a pid or valid job spec\n", \
+				g_session.name, args->av[1]);
 			else
 				ft_dprintf(STDERR_FILENO, \
-					"minish: wait: pid %s: is not a child of this shell\n", \
-						args->av[1]);
+					"%s: wait: pid %s: is not a child of this shell\n", \
+						g_session.name, args->av[1]);
 			return (STD_ERROR);
 		}
 		return (SUCCESS);
@@ -48,11 +49,11 @@ static int			wait_jobspec(t_exec *args, int nb, int i,
 	{
 		if (is_string_digit(args->av[nb + i + 1]))
 			ft_dprintf(STDERR_FILENO, \
-				"minsh: wait: pid %s is not a child of this shell\n", \
-					args->av[nb + i + 1]);
+				"%s: wait: pid %s is not a child of this shell\n", \
+					g_session.name, args->av[nb + i + 1]);
 		else
-			ft_dprintf(STDERR_FILENO, "minish: wait: %s: no such job\n", \
-					args->av[nb + i + 1]);
+			ft_dprintf(STDERR_FILENO, "%s: wait: %s: no such job\n", \
+					g_session.name, args->av[nb + i + 1]);
 		return (CMD_NOT_FOUND);
 	}
 	return (42);

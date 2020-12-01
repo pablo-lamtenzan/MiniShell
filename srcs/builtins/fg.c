@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 08:22:28 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/01 09:26:12 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,14 +56,14 @@ static int		fg_init_exceptions(t_exec *args)
 {
 	if (args->av[1] && args->av[1][0] == '-')
 	{
-		ft_dprintf(STDERR_FILENO, "minish: fg: %s: invalid option\n%s\n", \
-				args->av[1], "fg: usage: fg [job_spec]");
+		ft_dprintf(STDERR_FILENO, "%s: fg: %s: invalid option\n%s\n", \
+			g_session.name, args->av[1], "fg: usage: fg [job_spec]");
 		return (CMD_BAD_USE);
 	}
 	if (session_empty() || g_session.groups->next == g_session.nil)
 	{
-		ft_dprintf(STDERR_FILENO, "minish: fg: %s: no such job\n", \
-			args->ac == 1 ? "current" : args->av[1]);
+		ft_dprintf(STDERR_FILENO, "%s: fg: %s: no such job\n", \
+		g_session.name, args->ac == 1 ? "current" : args->av[1]);
 		return (STD_ERROR);
 	}
 	return (42);
@@ -75,13 +75,14 @@ static int		fg_exeptions(t_exec *args, t_process **target)
 {
 	if ((*target)->flags & RESTRICT_OP)
 	{
-		ft_dprintf(STDERR_FILENO, "minish: fg: %s: no such job\n", \
-			args->av[1]);
+		ft_dprintf(STDERR_FILENO, "%s: fg: %s: no such job\n", \
+			g_session.name, args->av[1]);
 		return (STD_ERROR);
 	}
 	if ((*target)->flags & (SIGNALED | KILLED))
 	{
-		ft_dprintf(STDERR_FILENO, "minish: fg: job has terminated\n");
+		ft_dprintf(STDERR_FILENO, "%s: fg: job has terminated\n", \
+			g_session.name);
 		print_signal(STDERR_FILENO, *target, STANDART);
 		return (STD_ERROR);
 	}
@@ -101,8 +102,8 @@ int				b_fg(t_exec *args)
 	if (args->ac > 1 && !(target = jobspec_parser(args->ac, args->av, \
 			ignore_pid)))
 	{
-		ft_dprintf(STDERR_FILENO, "minish: fg: %s: no such job\n", \
-			args->av[1]);
+		ft_dprintf(STDERR_FILENO, "%s: fg: %s: no such job\n", \
+			g_session.name, args->av[1]);
 		return (STD_ERROR);
 	}
 	if ((exept = fg_exeptions(args, target)) != 42)

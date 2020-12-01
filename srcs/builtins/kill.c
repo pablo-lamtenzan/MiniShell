@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/30 13:10:13 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/01 09:28:21 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ void			kill_print_signal(t_exec *args, int vars[5])
 	{
 		vars[3] = CMD_BAD_USE;
 		ft_dprintf(STDERR_FILENO, \
-			"minish: kill: %s: invalid signal specification\n", \
-			args->av[2 + vars[1]]);
+			"%s: kill: %s: invalid signal specification\n", \
+			g_session.name, args->av[2 + vars[1]]);
 	}
 }
 
@@ -48,7 +48,8 @@ int				kill_init_exeption(t_exec *args, int *signal)
 			&& (*signal == 0) && args->av[1][0] == '-')
 	{
 		ft_dprintf(STDERR_FILENO,\
-		"minish: kill: %s: invalid signal specification\n", args->av[1]);
+		"%s: kill: %s: invalid signal specification\n", \
+			g_session.name, args->av[1]);
 		return (CMD_BAD_USE);
 	}
 	if (args->av[1][0] == '%')
@@ -61,11 +62,11 @@ static void		kill_jobspc_msg(t_exec *args, int *vars)
 	vars[4] = false;
 	vars[3] = CMD_BAD_USE;
 	if (args->av[(vars[0] ? 2 : 1) + vars[1]][0] == '%')
-		ft_dprintf(STDERR_FILENO, "minish: kill: %s: no such job\n", \
-				args->av[(vars[0] ? 2 : 1) + vars[1]]);
+		ft_dprintf(STDERR_FILENO, "%s: kill: %s: no such job\n", \
+			g_session.name, args->av[(vars[0] ? 2 : 1) + vars[1]]);
 	else if (is_string_digit(args->av[(vars[0] ? 2 : 1) + vars[1]]))
-		ft_dprintf(2, "minish: kill: (%s) - No such process\n", \
-				args->av[(vars[0] ? 2 : 1) + vars[1]]);
+		ft_dprintf(2, "%s: kill: (%s) - No such process\n", \
+			g_session.name, args->av[(vars[0] ? 2 : 1) + vars[1]]);
 	else
 		ft_dprintf(STDERR_FILENO, \
 		"minish: kill: %s: arguments must be process or job IDs\n", \
@@ -87,8 +88,8 @@ int				kill_jobspec(t_exec *args, int vars[5])
 		if (!target || ((*target)->flags & (SIGNALED | KILLED) \
 			&& (vars[3] = CMD_NOT_FOUND)))
 			ft_dprintf(STDERR_FILENO, \
-			"minish: kill: %s: no such job\n", \
-			args->av[(vars[0] ? 2 : 1) + vars[1]]);
+			"%s: kill: %s: no such job\n", \
+			g_session.name, args->av[(vars[0] ? 2 : 1) + vars[1]]);
 		else
 			kill_group(*target, vars[0] ? vars[0] : SIGTERM, \
 			g_session.groups);

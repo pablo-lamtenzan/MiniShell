@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 02:55:51 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 08:38:15 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/01 09:19:17 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ void			disown_process(t_process **target, int flags)
 		return ;
 	if ((*target)->flags & STOPPED)
 		ft_dprintf(STDERR_FILENO, \
-		"minish: warning: deleting stopped job %lu with process group %d\n", \
+		"%s: warning: deleting stopped job %lu with process group %d\n", \
+			g_session.name,
 			background_index_get(g_session.nil, *target), \
 			process_get_leader_pid(g_session.nil, *target));
 	deadzombie_remove_node(*target);
