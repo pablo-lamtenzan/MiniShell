@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/30 01:25:57 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/01 09:36:04 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,10 @@ static t_exec_status	get_exec(t_exec *info)
 	return (status);
 }
 
-// TODO: dead exec_st (should probably be returned)
-void					execute_process(t_exec *info, t_exec_status exec_st)
+static t_exec_status	execute_process(t_exec *info)
 {
+	t_exec_status		exec_st;
+
 	update_exit_count(info->av[0]);
 	if ((exec_st = get_exec(info)) == SUCCESS)
 	{
@@ -60,6 +61,7 @@ void					execute_process(t_exec *info, t_exec_status exec_st)
 		ft_dprintf(2, "%s: %s: command not found\n",
 			g_session.name, info->av[0]);
 	destroy_execve_args(info);
+	return (exec_st);
 }
 
 static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
@@ -81,7 +83,7 @@ static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
 			return (RDR_BAD_ALLOC);
 		if (!info->av[0])
 			return (SUCCESS);
-		execute_process(info, exec_st);
+		exec_st = execute_process(info);
 		if (close_pipe_fds(info->fds) != SUCCESS)
 			return (BAD_CLOSE);
 	}

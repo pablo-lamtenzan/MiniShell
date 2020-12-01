@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 08:52:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/01 08:47:23 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/01 09:36:56 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ t_redir_status			redirections_handler(t_exec** info, t_bst* cmd, char*** filenam
         return (redir_st);
 	if (cmd->type & REDIR_GR || cmd->type & REDIR_DG)
 		redir_st = try_catch_out(info, cmd->type, (*filename)[0]);
-	else if (cmd->type & REDIR_DG)
+	else if (cmd->type & REDIR_LE)
 		redir_st = try_catch_in(info, cmd->type, (*filename)[0]);
 	return (redir_st);
 }
