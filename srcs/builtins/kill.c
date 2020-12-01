@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/01 09:28:21 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/01 09:56:20 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int				kill_init_exeption(t_exec *args, int *signal)
 		return (CMD_BAD_USE);
 	}
 	if (!get_signal(&args->av[1][1], signal) \
-			&& (*signal == 0) && args->av[1][0] == '-')
+			&& (*signal <= 0) && args->av[1][0] == '-')
 	{
 		ft_dprintf(STDERR_FILENO,\
 		"%s: kill: %s: invalid signal specification\n", \
