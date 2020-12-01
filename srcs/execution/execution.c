@@ -23,11 +23,11 @@ static t_exec_status	get_exec(t_exec *info)
 	size_t				i;
 	int					status;
 	const char			*names[] = {"echo", "cd", "pwd", "export", "unset", \
-		"env", "exit", "fg", "jobs", "kill", "bg", "disown", "wait"};
-	const int			lengths[] = {4, 3, 4, 7, 5, 4, 5, 2, 4, 4, 2, 6, 4};
+		"env", "exit", "fg", "jobs", "kill", "bg", "disown", "wait", "history"};
+	const int			lengths[] = {4, 3, 4, 7, 5, 4, 5, 2, 4, 4, 2, 6, 4, 7};
 	const t_executable	builtins[] = {&ft_echo, &ft_cd, &ft_pwd, &ft_export, \
 		&ft_unset, &ft_env, &ft_exit, &ft_fg, &ft_jobs, &ft_kill, &ft_bg, \
-		&ft_disown, &ft_wait};
+		&ft_disown, &ft_wait, &ft_history};
 
 	status = SUCCESS;
 	i = 0;
@@ -54,6 +54,9 @@ void					execute_process(t_exec *info, t_exec_status exec_st)
 			g_session.groups->active_processes->flags \
 			& STOPPED ? -1 : (unsigned char)g_session.st;
 	}
+	else
+		ft_dprintf(2, "%s: %s: command not found\n",
+			g_session.name, info->av[0]);
 	destroy_execve_args(info);
 }
 

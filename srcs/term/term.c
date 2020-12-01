@@ -52,6 +52,7 @@ bool	term_init(t_env **env)
 	g_term.line->len = 0;
 	g_term.hist.curr = g_term.line;
 	g_term.hist.next = g_term.line;
+	g_term.hist.head = g_term.line;
 	return (term_init_interactive(env));
 }
 

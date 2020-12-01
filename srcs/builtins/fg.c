@@ -69,6 +69,8 @@ static int		fg_init_exceptions(t_exec *args)
 	return (42);
 }
 
+// TODO: Use g_session name for minish
+
 static int		fg_exeptions(t_exec *args, t_process **target)
 {
 	if ((*target)->flags & RESTRICT_OP)

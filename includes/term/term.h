@@ -72,6 +72,7 @@ typedef struct		s_clip
 
 typedef struct		s_hist
 {
+	t_line	*head;
 	t_line	*last;
 	t_line	*curr;
 	t_line	*next;

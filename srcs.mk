@@ -60,6 +60,7 @@ SRCS	=	$(addprefix $(SRCDIR)/,\
 		pwd.c\
 		unset.c\
 		fg.c\
+		history.c\
 		bg.c\
 		jobs_helper.c\
 		jobs.c\
