@@ -99,7 +99,7 @@ int				kill_jobspec(t_exec *args, int vars[5])
 // DO TO: find: ft_dprintf(STDERR_FILENO, "%s\n", "minish: kill: COT: invalid signal specification");
 	// in true kill
 
-int				ft_kill(t_exec *args)
+int				b_kill(t_exec *args)
 {
 	int			vars[5];
 	int			exept;

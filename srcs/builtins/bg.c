@@ -74,7 +74,7 @@ static int			bg_skip(t_process ***target)
 }
 
 // 26 lines
-int					ft_bg(t_exec *args)
+int					b_bg(t_exec *args)
 {
     t_process		**target;
 	int				exept;

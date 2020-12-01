@@ -14,7 +14,7 @@
 
 // TODO: Redirections for STDERR_FILENO
 
-int		ft_pwd(t_exec *args)
+int		b_pwd(t_exec *args)
 {
 	char			cwd[PATH_MAX];
 

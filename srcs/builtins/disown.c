@@ -52,7 +52,7 @@ int				disown_jobspec(t_exec *args, int flags, int nb, int i)
 	return (42);
 }
 
-int				ft_disown(t_exec *args)
+int				b_disown(t_exec *args)
 {
 	int			flags;
 	int			i;

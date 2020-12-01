@@ -12,30 +12,38 @@
 # include <term/term.h>
 # include <execution.h>
 
+typedef		struct		s_builtin
+{
+	const char			*name;
+	t_executable		exec;
+}						t_builtin;
+
 /*
 **	Subject builtins
 */
-int			ft_cd(t_exec *args);
-int			ft_echo(t_exec *args);
-int			ft_env(t_exec *args);
-int			ft_exit(t_exec *args);
-int			ft_export(t_exec *args);
-int			ft_pwd(t_exec *args);
-int			ft_unset(t_exec *args);
+int						b_cd(t_exec *args);
+int						b_echo(t_exec *args);
+int						b_env(t_exec *args);
+int						b_exit(t_exec *args);
+int						b_export(t_exec *args);
+int						b_pwd(t_exec *args);
+int						b_unset(t_exec *args);
 
 /*
 **  Job control builtins
 */
-int			ft_fg(t_exec *args);
-int			ft_bg(t_exec *args);
-int			ft_kill(t_exec *args);
-int			ft_jobs(t_exec *args);
-int			ft_disown(t_exec *args);
-int			ft_wait(t_exec *args);
+int						b_fg(t_exec *args);
+int						b_bg(t_exec *args);
+int						b_kill(t_exec *args);
+int						b_jobs(t_exec *args);
+int						b_disown(t_exec *args);
+int						b_wait(t_exec *args);
 
 /*
 **	Other builtins
 */
-int			ft_history(t_exec *args);
+int						b_history(t_exec *args);
+
+t_executable			builtin_get(const char *name);
 
 #endif

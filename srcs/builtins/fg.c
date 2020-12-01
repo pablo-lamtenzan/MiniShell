@@ -88,7 +88,7 @@ static int		fg_exeptions(t_exec *args, t_process **target)
 	return (42);
 }
 
-int				ft_fg(t_exec *args)
+int				b_fg(t_exec *args)
 {
 	t_process	**target;
 	int			exept;

@@ -70,6 +70,7 @@ SRCS	=	$(addprefix $(SRCDIR)/,\
 		wait.c\
 		disown_helper.c\
 		disown.c\
+		builtins.c\
 		builtins_utils.c\
 	)\
 	$(addprefix bst/,\

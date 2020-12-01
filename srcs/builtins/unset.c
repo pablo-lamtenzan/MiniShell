@@ -1,6 +1,6 @@
 #include <execution.h>
 
-int	ft_unset(t_exec *args)
+int	b_unset(t_exec *args)
 {
 	while (args->ac-- > 1)
 	{

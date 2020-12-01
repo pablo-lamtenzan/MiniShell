@@ -12,7 +12,7 @@
 
 #include <execution.h>
 
-int	ft_echo(t_exec *args)
+int	b_echo(t_exec *args)
 {
 	char		opt;
 	short		arg;

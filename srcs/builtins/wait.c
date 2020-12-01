@@ -58,7 +58,7 @@ static int			wait_jobspec(t_exec *args, int nb, int i,
 	return (42);
 }
 
-int					ft_wait(t_exec *args)
+int					b_wait(t_exec *args)
 {
 	int				flags;
 	static int		last_return = SUCCESS;

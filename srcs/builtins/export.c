@@ -25,7 +25,7 @@ int				print_env(int fd, t_map *env)
 	return (SUCCESS);
 }
 
-int	ft_export(t_exec *args)
+int	b_export(t_exec *args)
 {
 	if (args->ac == 1)
 	{

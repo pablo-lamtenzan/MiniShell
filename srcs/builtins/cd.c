@@ -14,7 +14,7 @@
 #include <string.h>
 // TODO: Check allocation errors on map_set
 
-int	ft_cd(t_exec *args)
+int	b_cd(t_exec *args)
 {
 	const char	*home_dir;
 	char		path[PATH_MAX];

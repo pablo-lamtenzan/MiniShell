@@ -10,37 +10,39 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <signal.h>
+
 #include <execution.h>
 #include <builtins.h>
 #include <expansion.h>
 #include <job_control.h>
 #include <errors.h>
 
-#include <signal.h>
+#include <path.h>
 
+// TODO: Handle path concatenation alloc error
 static t_exec_status	get_exec(t_exec *info)
 {
-	size_t				i;
-	int					status;
-	const char			*names[] = {"echo", "cd", "pwd", "export", "unset", \
-		"env", "exit", "fg", "jobs", "kill", "bg", "disown", "wait", "history"};
-	const int			lengths[] = {4, 3, 4, 7, 5, 4, 5, 2, 4, 4, 2, 6, 4, 7};
-	const t_executable	builtins[] = {&ft_echo, &ft_cd, &ft_pwd, &ft_export, \
-		&ft_unset, &ft_env, &ft_exit, &ft_fg, &ft_jobs, &ft_kill, &ft_bg, \
-		&ft_disown, &ft_wait, &ft_history};
+	t_exec_status	status;
 
 	status = SUCCESS;
-	i = 0;
-	while (i < sizeof(names) / sizeof(*names) && ft_strncmp(info->av[0], \
-			names[i], lengths[i]))
-		i++;
-	if (i < sizeof(names) / sizeof(*names))
-		info->exec = builtins[i];
-	else if ((status = build_execve_args(info)) == SUCCESS)
-		info->exec = &execute_child;
+	if (!(info->exec = builtin_get(info->av[0])))
+	{
+		if (!(info->file_path =
+			path_get(info->av[0], env_get(g_session.env, "PATH", 4))))
+		{
+			g_session.st = CMD_NOT_FOUND;
+			status = BAD_PATH;
+		}
+		else if (!(info->ep = (char*const*)env_export(g_session.env)))
+			status = RDR_BAD_ALLOC;
+		else
+			info->exec = &execute_child;
+	}
 	return (status);
 }
 
+// TODO: dead exec_st (should probably be returned)
 void					execute_process(t_exec *info, t_exec_status exec_st)
 {
 	update_exit_count(info->av[0]);

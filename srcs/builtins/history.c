@@ -1,7 +1,7 @@
 #include <execution.h>
 #include <term/term.h>
 
-int	ft_history(t_exec *args)
+int	b_history(t_exec *args)
 {
 	t_line	*curr;
 	size_t	i;

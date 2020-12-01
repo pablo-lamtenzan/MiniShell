@@ -94,7 +94,7 @@ static int		jobs_jobspec(t_exec *args, int nb, int flags)
 	return (SUCCESS);
 }
 
-int				ft_jobs(t_exec *args)
+int				b_jobs(t_exec *args)
 {
 	int			flags;
 	int			exept;

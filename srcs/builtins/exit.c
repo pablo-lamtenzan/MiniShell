@@ -32,7 +32,7 @@ int					ft_atoi_exit(const char *str, bool *st)
 	return (!st ? 255 : i * factor);
 }
 
-int		ft_exit(t_exec *args) // TODO: Callbacks in ft_term.h
+int		b_exit(t_exec *args) // TODO: Callbacks in ft_term.h
 {
 	int i;
 	bool st;

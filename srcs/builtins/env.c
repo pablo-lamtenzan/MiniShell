@@ -21,7 +21,7 @@ void	env_print(int fd, t_map *env)
 	}
 }
 
-int		ft_env(t_exec *args)
+int		b_env(t_exec *args)
 {
 	t_env* 		curr;
 

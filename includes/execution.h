@@ -65,7 +65,7 @@ typedef struct			s_exec
 	int					fds[3];
 	char				handle_dup;
 	t_executable		exec;
-	char				*execution_path;
+	char				*file_path;
 	int					ac;
     char*const			*av;
     char*const			*ep;
