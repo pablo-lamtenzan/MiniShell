@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 21:57:11 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/12/02 11:49:15 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/02 11:54:26 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int	b_cd(t_exec *args)
 			env_set(&g_session.env, "PWD", path, true);
 			return (SUCCESS);
 		}
-		else if (path[0] == '-' && chdir(oldpwd) == 0)
+		else if (path[0] == '-' && ft_chdir(oldpwd) == 0)
 		{
 			swap_pwds(oldpwd);
 			return (SUCCESS);

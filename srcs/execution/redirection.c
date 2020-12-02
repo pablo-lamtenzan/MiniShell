@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 08:52:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/01 09:36:56 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/02 12:27:11 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ t_exec_status			print_redirection_error(t_redir_status rstatus,
 	
 	if (rstatus == RDR_BAD_ALLOC)
 		return (RDR_BAD_ALLOC);
-	ft_dprintf(STDERR_FILENO, error_msg[-rstatus - 1], filename);
+	ft_dprintf(STDERR_FILENO, error_msg[-rstatus - 1], *filename);
 	g_session.st = STD_ERROR;
 	return (SUCCESS);
 }
