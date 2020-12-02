@@ -12,10 +12,11 @@
 
 #include <execution.h>
 #include <job_control.h>
-#include <signal.h>
+#include <signals.h>
 
 // TODO: Cross platform compatibility for missing signals
 // TODO: Test on 42 XUbuntu VM
+
 
 
 void			kill_print_signal(t_exec *args, int vars[5])
@@ -33,29 +34,7 @@ void			kill_print_signal(t_exec *args, int vars[5])
 	}
 }
 
-int				kill_init_exeption(t_exec *args, int *signal)
-{
-	if (args->ac == 1 || (args->ac == 2 && args->av[1][0] == '-' \
-			&& ft_strncmp("-l", args->av[1], 3) \
-			&& ft_strncmp("-L", args->av[1], 3)))
-	{
-		ft_dprintf(STDERR_FILENO, "%s%s\n", \
-			"kill: usage: kill [-s sigspec | -n signum | -sigspec]", \
-			" pid | jobspec ... or kill -l [sigspec]");
-		return (CMD_BAD_USE);
-	}
-	if (!get_signal(&args->av[1][1], signal) \
-			&& (*signal <= 0) && args->av[1][0] == '-')
-	{
-		ft_dprintf(STDERR_FILENO,\
-		"%s: kill: %s: invalid signal specification\n", \
-			g_session.name, args->av[1]);
-		return (CMD_BAD_USE);
-	}
-	if (args->av[1][0] == '%')
-		*signal = 0;
-	return (42);
-}
+
 
 static void		kill_jobspc_msg(t_exec *args, int *vars)
 {
@@ -87,8 +66,7 @@ int				kill_jobspec(t_exec *args, int vars[5])
 	{
 		if (!target || ((*target)->flags & (SIGNALED | KILLED) \
 			&& (vars[3] = CMD_NOT_FOUND)))
-			ft_dprintf(STDERR_FILENO, \
-			"%s: kill: %s: no such job\n", \
+			ft_dprintf(STDERR_FILENO, "%s: kill: %s: no such job\n", \
 			g_session.name, args->av[(vars[0] ? 2 : 1) + vars[1]]);
 		else
 			kill_group(*target, vars[0] ? vars[0] : SIGTERM, \
@@ -127,4 +105,125 @@ int				b_kill(t_exec *args)
 	}
 	print_all_signals();
 	return (SUCCESS);
+}
+
+int				kill_init_exeption(t_exec *args, int *signal)
+{
+	if (args->ac == 1 || (args->ac == 2 && args->av[1][0] == '-' \
+			&& ft_strncmp("-l", args->av[1], 3) \
+			&& ft_strncmp("-L", args->av[1], 3)))
+	{
+		ft_dprintf(STDERR_FILENO, "%s%s\n", \
+			"kill: usage: kill [-s sigspec | -n signum | -sigspec]", \
+			" pid | jobspec ... or kill -l [sigspec]");
+		return (CMD_BAD_USE);
+	}
+	if (!get_signal(&args->av[1][1], signal) \
+			&& (*signal <= 0) && args->av[1][0] == '-')
+	{
+		ft_dprintf(STDERR_FILENO,\
+		"%s: kill: %s: invalid signal specification\n", \
+			g_session.name, args->av[1]);
+		return (CMD_BAD_USE);
+	}
+	if (args->av[1][0] == '%')
+		*signal = 0;
+	return (42);
+}
+
+int				kill_parse(t_exec *args, int *signal)
+{
+	if (args->ac == 1 || (args->ac == 2 && args->av[1][0] == '-') && !(args->av[1][1] ))
+}
+
+
+# define	B_KILL_OPTS	"lsn"
+enum			e_opt
+{
+	B_KILL_OSIG = 0,
+	B_KILL_ONUM = 1,
+	B_KILL_OLST = 2
+};
+
+static int		get_opt(t_signal **signal, t_exec *args)
+{
+	const char	*arg = args->av[1];
+	enum e_opt	opt;
+
+	*signal = NULL;
+	if (*arg != '-' || (opt = ft_strpos(B_KILL_OPTS, *++arg)) == -1 || arg[1])
+		opt = 0;
+	else if (*arg == '-')
+		opt = -1;
+	return (opt);
+}
+
+static int		list_signals()
+{
+	t_list		*curr;
+	t_signal	*sig;
+	int			i;
+
+	curr = g_session.signals;
+	i = 1;
+	while (curr)
+	{
+		sig = (t_signal*)curr->content;
+		ft_dprintf(STDERR_FILENO, "%2d) %-9s ", sig->value, sig->name);
+		if (i % 5 == 0)
+			write(STDERR_FILENO, "\n", 1);
+		i++;
+	}
+	return (0);
+}
+
+static int		print_signals(char *const *args)
+{
+	t_signal	*sig;
+	int			value;
+	int			err;
+
+	err = 0;
+	while (*args)
+	{
+		if (ft_isdigit(**args))
+		{
+			if ((sig = signal_getn(g_session.signals, ft_atoi(*args))))
+				ft_dprintf(STDERR_FILENO, "%s\n", sig->name);
+		}
+		else if ((sig = signal_gets(g_session.signals, *args)))
+			ft_dprintf(STDERR_FILENO, "%u", sig->value);
+		if (!sig)
+		{
+			err |= 1;
+			ft_dprintf(STDERR_FILENO,
+				"%s: kill: %s: invalid signal specification\n", g_session.name,
+				*args);
+		}
+		args++;
+	}
+	return (err);
+}
+
+int				b_kill(t_exec *args)
+{
+	int	opt;
+	int	i;
+
+	if (args->ac <= 1 || (opt = get_opt(&args->av[1])) == -1)
+	{
+		ft_dprintf(STDERR_FILENO, "kill: usage: kill [-s sigspec | -n signum | -sigspec]\
+ pid | jobspec ... or kill -l [sigspec]\n");
+		return (1);
+	}
+	if (opt == B_KILL_OLST)
+	{
+		if (args->ac == 2)
+			return (list_signals());
+		return (print_signals(&args->av[2]))
+	}
+	if (opt == B_KILL_OSIG)
+	{
+		if (ft_strcmp(args->av[], ))
+	}
 }

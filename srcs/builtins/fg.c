@@ -15,7 +15,7 @@
 
 #include <execution.h>
 #include <job_control.h>
-#include <signals.h>
+#include <signals_print.h>
 
 static bool		fg_delete(void)
 {

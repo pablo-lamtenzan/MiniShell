@@ -14,42 +14,6 @@
 #include <job_control.h>
 #include <signal.h>
 
-const char			*get_signal(const char *key, int *res)
-{
-	int				i;
-
-	i = 0;
-	if ((*key == 'l' || *key == 'L') && !*(key + 1))
-	{
-		*res = 256;
-		return ("");
-	}
-	while (i < 31 && ft_strncmp(g_signals[i], key, ft_strlen(g_signals[i]))
-			&& ft_strncmp(&g_signals[i][3], key, ft_strlen(g_signals[i]) - 3)
-			&& ft_strncmp(g_cvalues[i], key, ft_strlen(g_cvalues[i]) + 1))
-		i++;
-	if (i == 31 && !(*res = 0))
-		return (NULL);
-	*res = g_values[i];
-	return (*res < 0 ? NULL : g_signals[i]);
-}
-
-void				print_all_signals(void)
-{
-	int				i;
-	int				tmp;
-
-	i = -1;
-	while (++i < 31)
-	{
-		ft_dprintf(STDERR_FILENO, "%2d) %-9s ", i + 1, \
-			get_signal(g_cvalues[i], &tmp));
-		if ((i + 1) % 5 == 0)
-			write(STDERR_FILENO, "\n", 1);
-	}
-	write(STDERR_FILENO, "\n", 1);
-}
-
 void				kill_core(int signal)
 {
 	kill(g_session.groups->active_processes->pid, signal);

@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include <execution.h>
-#include <signals.h>
+#include <signals_print.h>
 
 static void		print_all_leaders(int fd, int flags)
 {

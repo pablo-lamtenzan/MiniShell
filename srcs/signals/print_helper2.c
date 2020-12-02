@@ -10,9 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <signals.h>
-#include <sys/wait.h>
-#include <signal.h>
+#include <signals_print.h>
 
 void			padding_spaces(int fd, size_t alreaddy_written)
 {

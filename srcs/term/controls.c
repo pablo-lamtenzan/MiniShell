@@ -1,4 +1,5 @@
 #include <term/term.h>
+
 /*
 **	Clear the screen's content, keeping only the current line.
 */

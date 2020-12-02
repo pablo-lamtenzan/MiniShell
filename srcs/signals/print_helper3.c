@@ -10,10 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <signals.h>
-#include <sys/wait.h>
-#include <signal.h>
-
+#include <signals_print.h>
 const char				*get_signal_(int index)
 {
 	static const char	*signals[33] = {

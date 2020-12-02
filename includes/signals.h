@@ -1,71 +1,38 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   signals.h                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/14 03:28:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 09:46:32 by pablo            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef SIGNALS_H
 # define SIGNALS_H
 
-/*
-** External
-*/
 # include <stdlib.h>
-# include <stdbool.h>
-# include <unistd.h>
+# include <signals.h>
 
-/*
-** Local
-*/
-# include <job_control.h>
 # include <libft.h>
 
-/*
-** Modes
-*/
-# define STANDART		0
-# define ADVANCED		1
+# define KILL_SIG_PREFIX	"SIG"
 
-# define SIGNAL_PADDING 18
+typedef struct	s_signal
+{
+	const char	*name;
+	int			value;
+}				t_signal;
 
-/*
-** Helpers
-*/
-void		print_index_args(t_process *target);
-void		print_job_args(int fd, t_process *target);
-const char	*get_signal_(int index);
-int			check_wstatus(t_process *target, int *exit_status);
-bool		stopped_signal(int signal, bool ignore_tstp);
-bool		stopped_signal_group(t_group *group, bool wcheck);
-void		padding_spaces(int fd, size_t alreaddy_written);
-void		print_group_line(int fd, t_group *group);
-char		*ft_norme_makes_my_code_worst(bool condition,
-	char *ret_true, char *ret_false);
+static const t_signal	g_signals[] = {
+	{"HUP", SIGHUP}, {"INT", SIGINT}, {"QUIT", SIGQUIT}, {"ILL", SIGILL},
+	{"TRAP", SIGTRAP}, {"ABRT", SIGABRT}, {"EMT", SIGEMT}, {"FPE", SIGFPE},
+	{"KILL", SIGKILL}, {"BUS", SIGBUS}, {"SEGV", SIGSEGV}, {"SYS", SIGSYS},
+	{"PIPE", SIGPIPE}, {"ALRM", SIGALRM}, {"TERM", SIGTERM}, {"URG", SIGURG},
+	{"STOP", SIGSTOP}, {"TSTP", SIGTSTP}, {"CONT", SIGCONT}, {"CHLD", SIGCHLD},
+	{"TTIN", SIGTTIN}, {"TTOU", SIGTTOU}, {"IO", SIGIO}, {"XCPU", SIGXCPU},
+	{"XFSZ", SIGXFSZ}, {"VTALRM", SIGVTALRM}, {"PROF", SIGPROF},
+	{"WINCH", SIGWINCH}, {"INFO", SIGINFO}, {"USR1", SIGUSR1},
+	{"USR2", SIGUSR2},
+# ifdef SIGSTKFLT
+	{"STKFLT", SIGSTKFLT},
+# endif
+# ifdef SIGPWR
+	{"PWR", SIGPWR},
+# endif
+};
 
-/*
-** Printers
-*/
-void		print_index(int fd, t_process *target,
-	int mode, int exit_st);
-void		print_history(int fd, t_process *target, int mode,
-	int exit_st);
-void		print_sp(int fd, t_process *target, int mode,
-	int exit_st);
-void		print_pid(int fd, t_process *target, int mode);
-void		print_signal_(int fd, t_process *target, int mode,
-	int signal);
-void		print_exit_st(int fd, int exit_st);
-void		print_coredump(int fd, t_process *target, int mode);
-
-/*
-** Global printer
-*/
-void		print_signal(int fd, t_process *target, int mode);
+t_signal	*signal_get_value(t_list *signals, char *name);
+t_signal	*signal_get_name(t_list *signals, int value);
 
 #endif

@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include <execution.h>
-#include <signals.h>
+#include <signals_print.h>
 
 void			print_process(int fd, t_process *target, int flags)
 {

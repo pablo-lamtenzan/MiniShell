@@ -15,7 +15,7 @@
 
 #include <execution.h>
 #include <job_control.h>
-#include <signals.h>
+#include <signals_print.h>
 
 static int			bg_core(void)
 {

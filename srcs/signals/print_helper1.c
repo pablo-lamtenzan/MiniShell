@@ -10,9 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <signals.h>
-#include <sys/wait.h>
-#include <signal.h>
+#include <signals_print.h>
 
 void			print_pid(int fd, t_process *target, int mode)
 {
