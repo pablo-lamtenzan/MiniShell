@@ -33,17 +33,38 @@ int		ft_isatty(int fd)
 	return (ret);
 }
 
-bool	term_init_interactive(t_env **env)
+/*
+**	Detect and init the terminal's capabilities
+**
+**	returns true if successful, or false otherwise.
+*/
+bool		term_init_caps(t_env **env)
 {
-	g_term.is_interactive = ft_isatty(STDIN_FILENO) && ft_isatty(STDERR_FILENO);
-	if (g_term.is_interactive && !term_init_caps(env))
-		ft_dprintf(2, "Failed to retrieve terminfo: %s\n", strerror(errno));
+	const char	*term_type;
+	char		term_buff[MAX_ENTRY + 1];
+	int			ent_st;
+
+	if (!env_set(env, "PS1", TERM_PS1, false)
+	|| !env_set(env, "PS2", TERM_PS2, false)
+	|| !(term_type = env_get(*env, "TERM", 4))
+	|| (ent_st = tgetent(term_buff, term_type)) == -1)
+		return (false);
+	if (ent_st == 0)
+		return (true);
+	if (tcgetattr(STDIN_FILENO, &g_term.caps.s_ios) == -1)
+		return (false);
+	g_term.caps.s_ios_orig = g_term.caps.s_ios;
+	g_term.caps.s_ios.c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG);
+	g_term.caps.s_ios.c_cflag |= ONLCR;
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &g_term.caps.s_ios) == -1)
+		return (false);
+	g_term.has_caps = caps_load(&g_term.caps);
 	return (true);
 }
 
 bool	term_init(t_env **env)
 {
-	g_term.clip.select = (t_select){-1U, -1U};
+	g_term.selec = (t_select){-1U, -1U};
 	if (!(g_term.line = line_new(TERM_LINE_SIZE)))
 		return (false);
 	// TODO: Load and save history file
@@ -53,7 +74,10 @@ bool	term_init(t_env **env)
 	g_term.hist.curr = g_term.line;
 	g_term.hist.next = g_term.line;
 	g_term.hist.head = g_term.line;
-	return (term_init_interactive(env));
+	g_term.is_interactive = ft_isatty(STDIN_FILENO) && ft_isatty(STDERR_FILENO);
+	if (g_term.is_interactive && !term_init_caps(env))
+		ft_dprintf(2, "Failed to retrieve terminfo: %s\n", strerror(errno));
+	return (true);
 }
 
 void	term_destroy(void)

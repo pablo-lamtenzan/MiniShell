@@ -13,6 +13,7 @@ HDRS	=	$(addprefix $(INCDIR)/,\
 	errors.h\
 	$(addprefix term/,\
 		caps.h\
+		hist.h\
 		line.h\
 		term.h\
 	)\
@@ -32,10 +33,11 @@ SRCS	=	$(addprefix $(SRCDIR)/,\
 			param_quoted.c\
 			param.c\
 			subshell.c\
-			tokens.c)\
-			lexer.c\
-			token_utils.c\
-			token.c\
+			tokens.c\
+		)\
+		lexer.c\
+		token_utils.c\
+		token.c\
 		)\
 	$(addprefix term/,\
 		caps.c caps_utils.c\

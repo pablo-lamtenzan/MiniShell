@@ -12,57 +12,57 @@
 
 #include <term/term.h>
 
-static bool	load_caps(t_caps *caps)
+static bool	load_modes(t_modes *modes, char **area)
 {
-	char	*a;
+	*modes = (t_modes) {
+		tgetstr("im", area), tgetstr("ei", area), tgetstr("dm", area),
+		tgetstr("ed", area), tgetstr("cl", area), tgetstr("so", area),
+		tgetstr("se", area),
+	};
+	return (modes->insert && modes->insert_end);
+}
 
-	a = NULL;
-	caps->mode = (t_modes) {
-		tgetstr("im", &a), tgetstr("ei", &a), tgetstr("dm", &a),
-		tgetstr("ed", &a), tgetstr("cl", &a), tgetstr("so", &a),
-		tgetstr("se", &a),
+static bool	load_ctrls(t_ctrls *ctrls, char **area)
+{
+	*ctrls = (t_ctrls) {
+		tgetstr("dc", area), tgetstr("DC", area), tgetstr("ce", area),
+		tgetstr("ec", area), tgetstr("cm", area), tgetstr("ch", area),
+		tgetstr("up", area), tgetstr("do", area), tgetstr("le", area),
+		tgetstr("nd", area),
 	};
-	caps->ctrl = (t_ctrls) {
-		tgetstr("dc", &a), tgetstr("DC", &a), tgetstr("ce", &a),
-		tgetstr("ec", &a), tgetstr("cm", &a), tgetstr("ch", &a),
-		tgetstr("up", &a), tgetstr("do", &a), tgetstr("le", &a),
-		tgetstr("nd", &a),
+	return (ctrls->del && ctrls->del_line && ctrls->move && ctrls->up
+		&& ctrls->down && ctrls->left && ctrls->right);
+}
+
+static bool	load_keys(t_keys *keys, char **area)
+{
+	*keys = (t_keys) {
+		tgetstr("ku", area), tgetstr("kd", area), tgetstr("kl", area),
+		tgetstr("kr", area), tgetstr("kD", area),
 	};
-	caps->key = (t_keys) {	
-		tgetstr("ku", &a), tgetstr("kd", &a), tgetstr("kl", &a),
-		tgetstr("kr", &a), tgetstr("kD", &a),
+	return (keys->up && keys->down && keys->left && keys->right);
+}
+
+static bool	load_flags(t_flags *flags, char **area)
+{
+	*flags = (t_flags) {
+		tgetstr("mi", area), tgetstr("bw", area), tgetstr("am", area),
 	};
-	return (caps->mode.insert && caps->mode.insert_end && caps->ctrl.del
-	&& caps->ctrl.del_line && caps->ctrl.move && caps->ctrl.up
-	&& caps->ctrl.down && caps->ctrl.left && caps->ctrl.right
-	&& caps->key.up && caps->key.down && caps->key.left && caps->key.right);
+	return (true);
 }
 
 /*
-**	Detect and init the terminal's capabilities
+**	Detect and load the terminal's capabilities.
 **
-**	returns true if successful, or false otherwise.
+**	returns true if the terminal appears to be supported or false otherwise.
 */
-bool		term_init_caps(t_env **env)
+bool		caps_load(t_caps *caps)
 {
-	const char	*term_type;
-	char		term_buff[MAX_ENTRY + 1];
-	int			ent_st;
+	char	*area;
 
-	if (!env_set(env, "PS1", TERM_PS1, false)
-	|| !env_set(env, "PS2", TERM_PS2, false)
-	|| !(term_type = env_get(*env, "TERM", 4))
-	|| (ent_st = tgetent(term_buff, term_type)) == -1)
-		return (false);
-	if (ent_st == 0)
-		return (true);
-	if (tcgetattr(STDIN_FILENO, &g_term.caps.s_ios) == -1)
-		return (false);
-	g_term.caps.s_ios_orig = g_term.caps.s_ios;
-	g_term.caps.s_ios.c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG);
-	g_term.caps.s_ios.c_cflag |= ONLCR;
-	if (tcsetattr(STDIN_FILENO, TCSANOW, &g_term.caps.s_ios) == -1)
-		return (false);
-	g_term.has_caps = load_caps(&g_term.caps);
-	return (true);
+	area = NULL;
+	return (load_modes(&caps->mode, &area)
+	&& load_ctrls(&caps->ctrl, &area)
+	&& load_keys(&caps->key, &area)
+	&& load_flags(&caps->flag, &area));
 }

@@ -6,31 +6,44 @@
 # include <term.h>
 # define MAX_ENTRY		1024
 
+
+/*
+**	Special output-sequences to toggle input-modes.
+*/
 typedef struct	s_modes
 {
-	const char	*insert;
-	const char	*insert_end;
-	const char	*del;
-	const char	*del_end;
-	const char	*clear;
-	const char	*standout;
-	const char	*standout_end;
+	char	*insert;
+	char	*insert_end;
+	char	*del;
+	char	*del_end;
+	char	*clear;
+	char	*standout;
+	char	*standout_end;
 }				t_modes;
 
+/*
+**	Special output-sequences to control the terminal.
+*/
 typedef struct	s_ctrls
 {
-	const char	*del;
-	const char	*del_n;
-	const char	*del_line;
-	const char	*erase_n;
-	const char	*move;
-	const char	*move_h;
-	const char	*up;
-	const char	*down;
-	const char	*left;
-	const char	*right;
+	char	*del;
+	char	*del_n;
+	char	*del_line;
+	char	*erase_n;
+	char	*move;
+	char	*move_h;
+	char	*up;
+	char	*down;
+	char	*left;
+	char	*right;
 }				t_ctrls;
 
+
+// TODO: Check length of keys sequences (Could SEGFAULT)
+
+/*
+**	Special input-sequences emmited by the terminal.
+*/
 typedef struct	s_keys
 {
 	char	*up;
@@ -40,13 +53,40 @@ typedef struct	s_keys
 	char	*del;
 }				t_keys;
 
+/*
+**	move_insert: The cursor can be moved in insert mode.
+**
+**	wrap_back: The cursor can wrap back one line at column zero, when using le.
+**
+**	wrap_forward: The cursor can wrap forward one line when writing at the last
+**	column.
+*/
+typedef struct	s_flags
+{
+	bool	move_insert;
+	bool	wrap_back;
+	bool	wrap_forward;
+}				t_flags;
+
 typedef struct	s_caps
 {
 	struct termios	s_ios;
 	struct termios	s_ios_orig;
-	t_modes	mode;
-	t_ctrls	ctrl;
-	t_keys	key;
+	t_modes			mode;
+	t_ctrls			ctrl;
+	t_keys			key;
+	t_flags			flag;
 }				t_caps;
+
+/*
+**					caps.c
+*/
+bool				caps_load(t_caps *caps);
+
+/*
+**					caps_utils.c
+*/
+void				caps_goto(t_caps *caps, size_t pos);
+void				caps_delete(t_caps *caps, size_t n);
 
 #endif

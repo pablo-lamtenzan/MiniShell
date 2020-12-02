@@ -7,7 +7,18 @@
 
 # include <env.h>
 # include <term/line.h>
+# include <term/hist.h>
 # include <term/caps.h>
+
+# ifndef STDIN_FILENO
+#  define STDIN_FILENO	0
+# endif
+# ifndef STDOUT_FILENO
+#  define STDOUT_FILENO	1
+# endif
+# ifndef STDERR_FILENO
+#  define STDERR_FILENO	2
+# endif
 
 # define TERM_DEV_NULL	"/dev/null"
 
@@ -64,20 +75,6 @@ typedef struct		s_select
 	size_t	end;
 }					t_select;
 
-typedef struct		s_clip
-{
-	t_line		line;
-	t_select	select;
-}					t_clip;
-
-typedef struct		s_hist
-{
-	t_line	*head;
-	t_line	*last;
-	t_line	*curr;
-	t_line	*next;
-}					t_hist;
-
 typedef struct		s_term
 {
 	t_caps		caps;
@@ -89,7 +86,8 @@ typedef struct		s_term
 	size_t		msg_len;
 	size_t		origin;
 	size_t		pos;
-	t_clip		clip;
+	t_select	selec;
+	t_line		clip;
 }					t_term;
 
 t_term				g_term;
@@ -115,18 +113,6 @@ t_term_err			term_prompt(const char **dest);
 int					putc_err(int c);
 size_t				strglen(const char *str);
 t_term_err			term_write(const char *input, size_t length);
-
-/*
-**					caps.c
-*/
-bool				term_init_caps(t_env **env);
-
-
-/*
-**					caps_utils.c
-*/
-void				caps_goto(t_caps *caps, size_t pos);
-void				caps_delete(t_caps *caps, size_t n);
 
 /*
 **					keybind.c
@@ -198,15 +184,6 @@ t_term_err			clip_clear(void);
 */
 t_term_err			term_prev_line(void);
 t_term_err			term_next_line(void);
-
-
-/*
-**					hist.c
-*/
-void				hist_add(t_hist *hist, t_line *line);
-void				hist_pop(t_hist *hist);
-void				hist_clear(t_hist *hist);
-void				hist_commit(t_hist *hist, t_line *line);
 
 /*
 **					signals.c
