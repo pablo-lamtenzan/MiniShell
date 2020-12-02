@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:46 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/02 09:59:32 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/02 15:49:00 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,13 +48,15 @@ int		b_exit(t_exec *args) // TODO: Callbacks in ft_term.h
 		if (st == true && args->ac > 2)
 		{
 			write(STDERR_FILENO, "exit\n", 5);
-			ft_dprintf(STDERR_FILENO, "%s\n", "minish: exit: too many arguments");
+			ft_dprintf(STDERR_FILENO, "%s\n", \
+				"minish: exit: too many arguments");
 			return (STD_ERROR);
 		}
 		i = ft_atoi_exit(args->av[1], &st);
 	}
 	if (st == false && (i = INV_EXIT_ARG))
-		ft_dprintf(STDERR_FILENO, "minish: exit: %s%s\n", args->av[1],": numeric argument required");
+		ft_dprintf(STDERR_FILENO, "minish: exit: %s%s\n", \
+			args->av[1], ": numeric argument required");
 	handle_exit_with_active_background((unsigned char)i);
 	return (STD_ERROR);
 }

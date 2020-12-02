@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 23:11:42 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/01 09:14:32 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/02 15:47:32 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,10 @@ static int			bg_core(void)
 {
 	if (g_session.groups->active_processes->flags & STOPPED)
 	{
-		//signal(SIGCHLD, SIG_DFL);
 		g_session.groups->active_processes->flags &= ~STOPPED;
 		g_session.groups->active_processes->flags |= BACKGROUND;
-		//ft_dprintf(2, "[BG][KILL -SIGCONT to group (\'%p\')][pid = %d]\n", g_session.groups, g_session.groups->active_processes->pid);
 		kill(g_session.groups->active_processes->pid, SIGCONT);
 		zombies_list_update(g_session.groups);
-		//signal(SIGCHLD, zombies_catcher);
 	}
 	return (SUCCESS);
 }
@@ -80,7 +77,7 @@ static int			bg_init_exeption(t_exec *args)
 	if (args->av[1] && args->av[1][0] == '-')
 	{
 		ft_dprintf(STDERR_FILENO, "%s: bg: %s: invalid option\n%s\n", \
-			g_session.name ,args->av[1], "bg: usage: bg [job_spec]");
+			g_session.name, args->av[1], "bg: usage: bg [job_spec]");
 		return (CMD_BAD_USE);
 	}
 	if (session_empty() || g_session.groups->next == g_session.nil)
@@ -94,7 +91,7 @@ static int			bg_init_exeption(t_exec *args)
 
 int					b_bg(t_exec *args)
 {
-    t_process		**target;
+	t_process		**target;
 	int				exept;
 
 	if ((exept = bg_init_exeption(args)) != 42)

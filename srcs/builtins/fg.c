@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/01 09:26:12 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/02 15:49:32 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,21 +19,10 @@
 
 static bool		fg_delete(void)
 {
-	t_group		*next;
 	if (!group_condition(g_session.groups, is_active))
 	{
 		zombies_list_remove_node(g_session.groups);
 		history_session_remove_node(g_session.groups);
-		(void)next;
-		/*
-		next = g_session.groups->next;
-		g_session.groups->prev->next = next;
-		next->prev = g_session.groups->prev;
-		delete_group_input(&g_session.groups);
-		delete_processes(g_session.groups);
-		free(g_session.groups);
-		g_session.groups = next;
-		*/
 		group_remove(&g_session.groups);
 		return (true);
 	}
@@ -68,8 +57,6 @@ static int		fg_init_exceptions(t_exec *args)
 	}
 	return (42);
 }
-
-// TODO: Use g_session name for minish
 
 static int		fg_exeptions(t_exec *args, t_process **target)
 {

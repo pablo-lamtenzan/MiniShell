@@ -6,14 +6,14 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:48:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/01 09:24:00 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/02 15:46:24 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <job_control.h>
 
-int			disown_init_exeption(t_exec *args, int *flags, int *nb)
+int				disown_init_exeption(t_exec *args, int *flags, int *nb)
 {
 	if ((*flags = parse_flags(args->ac, &args->av[1], "rah", nb)) < 0 \
 			&& args->av[*nb + 1][0] == '-')
@@ -27,7 +27,7 @@ int			disown_init_exeption(t_exec *args, int *flags, int *nb)
 		if (args->ac > 1 && *flags < 0)
 		{
 			ft_dprintf(STDERR_FILENO, "%s: jobs: %s: no such job\n",\
-				g_session.name ,args->av[1]);
+				g_session.name, args->av[1]);
 			return (STD_ERROR);
 		}
 		return (SUCCESS);

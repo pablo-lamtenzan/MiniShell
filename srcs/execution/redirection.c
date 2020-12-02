@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 08:52:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/02 12:27:11 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/02 15:55:06 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_exec_status			print_redirection_error(t_redir_status rstatus,
 		"minish: %s: ambigous redirect\n",
 		"minish: %s: File name too long\n"
 	};
-	
+
 	if (rstatus == RDR_BAD_ALLOC)
 		return (RDR_BAD_ALLOC);
 	ft_dprintf(STDERR_FILENO, error_msg[-rstatus - 1], *filename);
@@ -31,14 +31,14 @@ t_exec_status			print_redirection_error(t_redir_status rstatus,
 static t_redir_status	try_catch_filename(char ***filename, char *var_name,
 		int height)
 {
-    if (height != 1)
+	if (height != 1)
 	{
 		(*filename)[0] = var_name;
 		return (AMBIG_REDIRECT);
 	}
 	if (ft_strlen((*filename)[0]) >= PATH_MAX)
 		return (FLNAME_TO_LONG);
-    return (CONTINUE);
+	return (CONTINUE);
 }
 
 // TODO: Refactor

@@ -6,17 +6,13 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/01 14:47:29 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/02 15:52:03 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <job_control.h>
 #include <signal.h>
-
-// TODO: Cross platform compatibility for missing signals
-// TODO: Test on 42 XUbuntu VM
-
 
 void			kill_print_signal(t_exec *args, int vars[5])
 {
@@ -96,9 +92,6 @@ int				kill_jobspec(t_exec *args, int vars[5])
 	}
 	return (42);
 }
-
-// DO TO: find: ft_dprintf(STDERR_FILENO, "%s\n", "minish: kill: COT: invalid signal specification");
-	// in true kill
 
 int				b_kill(t_exec *args)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:52 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/28 01:40:47 by chamada          ###   ########lyon.fr   */
+/*   Updated: 2020/12/02 14:58:30 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ int				print_env(int fd, t_map *env)
 
 int	b_export(t_exec *args)
 {
+	const char*	word;
+
 	if (args->ac == 1)
 	{
 		//map_sort(&t->env, &map_cmp);
@@ -52,7 +54,24 @@ int	b_export(t_exec *args)
 			else if (!map_set(&t->env, args->av[args->ac], ""))
 				return (1);
 			*/
-		;
+
+			/* ---------------------- NEW ----------------------*/
+			
+			/* Not tested yet */
+			if (0/* Error handling*/)
+			{
+				; // print not a valid identifier
+				return (STD_ERROR);
+			}
+			/* NAME (av[1]) IS SET */
+			else if ((word = env_get(g_session.env, args->av[args->ac], ft_strlen(args->av[args->ac]))))
+			{
+				if (!env_set(&g_session.env, args->av[args->ac], word, true))
+					return (STD_ERROR);
+			}
+			/* NAME IS UNSET (not very sure about that) */
+			else if (!env_set(&g_session.env, args->av[args->ac], "", true))
+				return (STD_ERROR);
 		}
 	}
 	return (SUCCESS);

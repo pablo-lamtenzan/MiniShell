@@ -8,7 +8,7 @@ int	b_history(t_exec *args)
 
 	curr = g_term.hist.head;
 	i = 1;
-	(void) args;
+	(void)args;
 	while (curr && curr != g_term.hist.next)
 	{
 		ft_dprintf(1, "%lu  %s\n", i++, curr->data);

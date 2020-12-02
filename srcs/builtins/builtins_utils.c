@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 18:03:18 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 08:38:56 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/02 15:44:37 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,33 +16,31 @@
 int				parse_flags(int ac, char*const *av, const char *pattern,
 		int *nb_flags)
 {
-	int			cont;
-	int			flags;
-	int			i;
-	int			prev;
+	int			vars[4];
 
 	*nb_flags = 0;
-	cont = -1;
-	flags = 0;
-	while (++cont < ac - 1)
+	vars[0] = -1;
+	vars[1] = 0;
+	while (++vars[0] < ac - 1)
 	{
-		i = -1;
-		while (av[cont][++i])
+		vars[2] = -1;
+		while (av[vars[0]][++vars[2]])
 		{
-			if (av[cont][i] == '-')
+			if (av[vars[0]][vars[2]] == '-')
 			{
-				if (i == 0)
+				if (vars[2] == 0)
 					continue ;
 				else
 					return (-1);
 			}
-			prev = flags;
-			if ((flags |= (1 << ft_strpos(pattern, av[cont][i]))) < 0)
-				return (!*nb_flags ? -1 : -prev);
+			vars[3] = vars[1];
+			if ((vars[1] |= (1 << ft_strpos(pattern, \
+					av[vars[0]][vars[2]]))) < 0)
+				return (!*nb_flags ? -1 : -vars[3]);
 		}
 		(*nb_flags)++;
 	}
-	return (flags);
+	return (vars[1]);
 }
 
 bool			ignore_pid(int ac, char*const *av)
@@ -79,7 +77,8 @@ static void		for_each_process_loop(int *ret, int (*core)())
 	}
 }
 
-int		for_each_in_group(t_process *leader, int (*core)(), bool (*delete)())
+int				for_each_in_group(t_process *leader,
+		int (*core)(), bool (*delete)())
 {
 	t_group		*remember;
 	t_process	*remember_leader;

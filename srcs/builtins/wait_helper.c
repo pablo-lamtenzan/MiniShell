@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 02:07:01 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 08:14:50 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/02 15:53:09 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,22 +40,10 @@ int				wait_process(t_process **target, int flags)
 
 bool			wait_delete(void)
 {
-	t_group		*next;
-
 	if (!group_condition(g_session.groups, is_active))
 	{
 		zombies_list_remove_node(g_session.groups);
 		history_session_remove_node(g_session.groups);
-		(void)next;
-		/*
-		next = g_session.groups->next;
-		g_session.groups->prev->next = next;
-		next->prev = g_session.groups->prev;
-		delete_group_input(&g_session.groups);
-		delete_processes(g_session.groups);
-		free(g_session.groups);
-		g_session.groups = next;
-		*/
 		group_remove(&g_session.groups);
 		return (true);
 	}
