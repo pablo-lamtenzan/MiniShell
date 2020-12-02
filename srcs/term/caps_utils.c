@@ -6,13 +6,13 @@
 void		caps_goto(t_caps *caps, size_t pos)
 {
 	if (!caps->flag.move_insert)
-	tputs(caps->mode.insert_end, 1, &putc_err);
+		tputs(caps->mode.insert_end, 1, &putc_err);
 	if (caps->ctrl.move_h)
 		tputs(tgoto(caps->ctrl.move_h, 0, pos), 1, &putc_err);
 	else
 		tputs(tgoto(caps->ctrl.move, 0, pos), 1, &putc_err);
 	if (!caps->flag.move_insert)
-	tputs(caps->mode.insert, 1, &putc_err);
+		tputs(caps->mode.insert, 1, &putc_err);
 }
 
 /*
@@ -20,7 +20,9 @@ void		caps_goto(t_caps *caps, size_t pos)
 */
 void		caps_delete(t_caps *caps, size_t n)
 {
-	if (caps->ctrl.del)
+	if (caps->ctrl.del_n)
+		tputs(tparm(caps->ctrl.del_n, 0, n), 1, &putc_err);
+	else if (caps->ctrl.del)
 	{
 		tputs(caps->mode.del, 1, &putc_err);
 		while (n--)
