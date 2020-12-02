@@ -129,7 +129,7 @@ t_term_err			term_write(const char *input, size_t length);
 /*
 **					caps.c
 */
-bool				term_init_caps(t_env **env);
+bool				caps_load(t_caps *caps);
 
 
 /*
