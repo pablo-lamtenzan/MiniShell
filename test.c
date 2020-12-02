@@ -39,14 +39,14 @@ int main()
 		printf("END WRITE\n");
 	}
 	*/
-    int pid = getpid();
-    dprintf(2, "Printf from test.c %d\n", pid);
+    //int pid = getpid();
+    //dprintf(2, "Printf from test.c %d\n", pid);
     //kill(pid, SIGSEGV);
 	//sleep(22);
 	//sleep(20);
-    dprintf(2, "TEST\n");
-    kill(pid, SIGTSTP);
-    dprintf(2, "TEST2\n");
+    //dprintf(2, "TEST\n");
+    //kill(pid, SIGTSTP);
+    //dprintf(2, "TEST2\n");
 	exit(123);
     return (123);
 }

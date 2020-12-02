@@ -3,7 +3,7 @@ LIBFT	=		libft
 OBJDIR	=		objs
 CC		=		/usr/bin/clang
 RM		=		/bin/rm
-CFLAGS	=		-Wall -Wextra -Werror #-g3 -fsanitize=address
+CFLAGS	=		-Wall -Wextra -Werror -g3 -fsanitize=address
 
 include srcs.mk
 
