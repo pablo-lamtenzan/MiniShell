@@ -53,6 +53,21 @@ typedef struct	s_keys
 	char	*del;
 }				t_keys;
 
+/*
+**	move_insert: The cursor can be moved in insert mode.
+**
+**	wrap_back: The cursor can wrap back one line at column zero, when using le.
+**
+**	wrap_forward: The cursor can wrap forward one line when writing at the last
+**	column.
+*/
+typedef struct	s_flags
+{
+	bool	move_insert;
+	bool	wrap_back;
+	bool	wrap_forward;
+}				t_flags;
+
 typedef struct	s_caps
 {
 	struct termios	s_ios;
