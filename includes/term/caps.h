@@ -6,38 +6,51 @@
 # include <term.h>
 # define MAX_ENTRY		1024
 
+
+/*
+**	Special output-sequences to toggle input-modes.
+*/
 typedef struct	s_modes
 {
-	const char	*insert;
-	const char	*insert_end;
-	const char	*del;
-	const char	*del_end;
-	const char	*clear;
-	const char	*standout;
-	const char	*standout_end;
+	char	*insert;
+	char	*insert_end;
+	char	*del;
+	char	*del_end;
+	char	*clear;
+	char	*standout;
+	char	*standout_end;
 }				t_modes;
 
+/*
+**	Special output-sequences to control the terminal.
+*/
 typedef struct	s_ctrls
 {
-	const char	*del;
-	const char	*del_n;
-	const char	*del_line;
-	const char	*erase_n;
-	const char	*move;
-	const char	*move_h;
-	const char	*up;
-	const char	*down;
-	const char	*left;
-	const char	*right;
+	char	*del;
+	char	*del_n;
+	char	*del_line;
+	char	*erase_n;
+	char	*move;
+	char	*move_h;
+	char	*up;
+	char	*down;
+	char	*left;
+	char	*right;
 }				t_ctrls;
 
+
+// TODO: Check length of keys sequences (Could SEGFAULT)
+
+/*
+**	Special input-sequences emmited by the terminal.
+*/
 typedef struct	s_keys
 {
-	const char	*up;
-	const char	*down;
-	const char	*left;
-	const char	*right;
-	const char	*del;
+	char	*up;
+	char	*down;
+	char	*left;
+	char	*right;
+	char	*del;
 }				t_keys;
 
 typedef struct	s_caps
@@ -49,11 +62,5 @@ typedef struct	s_caps
 	t_keys			key;
 	t_flags			flag;
 }				t_caps;
-
-typedef struct	s_flags
-{
-	bool	
-}				t_flags;
-
 
 #endif
