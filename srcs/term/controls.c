@@ -24,7 +24,7 @@ t_term_err	term_backspace()
 	if (g_term.pos > 0)
 	{
 		tputs(g_term.caps.ctrl.left, 1, &putc_err);
-		tputs(g_term.caps.ctrl.del, 1, &putc_err);
+		caps_delete(&g_term.caps, 1);
 		g_term.pos--;
 		line_erase(g_term.line, g_term.pos, 1);
 	}
