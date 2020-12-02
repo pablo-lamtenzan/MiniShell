@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/30 13:20:32 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/02 10:02:17 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@
 ** Session flags
 */
 # define OPEN_PRINT		1
-# define RESTRICT_CATCH	2
+# define PIPED_CMD		2
 
 # define ESPACE			' '
 

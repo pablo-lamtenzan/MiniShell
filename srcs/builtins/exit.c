@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:46 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:06:05 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/02 09:59:32 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,15 +53,8 @@ int		b_exit(t_exec *args) // TODO: Callbacks in ft_term.h
 		}
 		i = ft_atoi_exit(args->av[1], &st);
 	}
-	// TODO: resume_suspended_processes(&t->suspended_processes);
-	term_destroy();
-	//write(STDERR_FILENO, "exit\n", 5);
-	// check if is 255
 	if (st == false && (i = INV_EXIT_ARG))
 		ft_dprintf(STDERR_FILENO, "minish: exit: %s%s\n", args->av[1],": numeric argument required");
-	tputs(g_term.caps.mode.insert_end, 0, &ft_putchar);
-	// debug
-	ft_dprintf(STDERR_FILENO, "[DEBUG]exiting with status code %d\n", (unsigned char)i);
 	handle_exit_with_active_background((unsigned char)i);
 	return (STD_ERROR);
 }

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/01 09:36:04 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/02 10:05:25 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,7 @@ t_exec_status			execute_bst(t_bst *root)
 	t_group				*group;
 
 	keep_alive_killed_processes();
+	g_session.flags &= ~PIPED_CMD;
 	if (!(group = group_new()))
 		return (BAD_ALLOC);
 	g_session.flags |= OPEN_PRINT;
@@ -122,7 +123,7 @@ t_exec_status			execute_bst(t_bst *root)
 	group_push_front(group);
 	ft_bzero(&info, sizeof(t_exec));
 	info = (t_exec){.fds[FDS_STDOUT]=FDS_STDOUT, .fds[FDS_AUX]=FDS_AUX};
-	if (root->type & PIPE)
+	if (root->type & PIPE && (g_session.flags |= PIPED_CMD))
 		st = execute_job(root, &info);
 	else
 		st = execute_cmd(root, &info);
