@@ -119,18 +119,6 @@ size_t				strglen(const char *str);
 t_term_err			term_write(const char *input, size_t length);
 
 /*
-**					caps.c
-*/
-bool				caps_load(t_caps *caps);
-
-
-/*
-**					caps_utils.c
-*/
-void				caps_goto(t_caps *caps, size_t pos);
-void				caps_delete(t_caps *caps, size_t n);
-
-/*
 **					keybind.c
 */
 t_term_action		keybind_get(const t_keybind *keybinds, size_t n, char key);

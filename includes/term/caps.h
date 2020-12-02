@@ -78,4 +78,15 @@ typedef struct	s_caps
 	t_flags			flag;
 }				t_caps;
 
+/*
+**					caps.c
+*/
+bool				caps_load(t_caps *caps);
+
+/*
+**					caps_utils.c
+*/
+void				caps_goto(t_caps *caps, size_t pos);
+void				caps_delete(t_caps *caps, size_t n);
+
 #endif
