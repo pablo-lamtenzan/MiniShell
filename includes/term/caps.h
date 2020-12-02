@@ -33,20 +33,27 @@ typedef struct	s_ctrls
 
 typedef struct	s_keys
 {
-	char	*up;
-	char	*down;
-	char	*left;
-	char	*right;
-	char	*del;
+	const char	*up;
+	const char	*down;
+	const char	*left;
+	const char	*right;
+	const char	*del;
 }				t_keys;
 
 typedef struct	s_caps
 {
 	struct termios	s_ios;
 	struct termios	s_ios_orig;
-	t_modes	mode;
-	t_ctrls	ctrl;
-	t_keys	key;
+	t_modes			mode;
+	t_ctrls			ctrl;
+	t_keys			key;
+	t_flags			flag;
 }				t_caps;
+
+typedef struct	s_flags
+{
+	bool	
+}				t_flags;
+
 
 #endif
