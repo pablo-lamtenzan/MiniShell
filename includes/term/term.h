@@ -7,6 +7,7 @@
 
 # include <env.h>
 # include <term/line.h>
+# include <term/hist.h>
 # include <term/caps.h>
 
 # ifndef STDIN_FILENO
@@ -79,15 +80,6 @@ typedef struct		s_clip
 	t_line		line;
 	t_select	select;
 }					t_clip;
-
-typedef struct		s_hist
-{
-	t_line	*head;
-	t_line	*last;
-	t_line	*curr;
-	t_line	*next;
-}					t_hist;
-
 typedef struct		s_term
 {
 	t_caps		caps;
@@ -208,15 +200,6 @@ t_term_err			clip_clear(void);
 */
 t_term_err			term_prev_line(void);
 t_term_err			term_next_line(void);
-
-
-/*
-**					hist.c
-*/
-void				hist_add(t_hist *hist, t_line *line);
-void				hist_pop(t_hist *hist);
-void				hist_clear(t_hist *hist);
-void				hist_commit(t_hist *hist, t_line *line);
 
 /*
 **					signals.c
