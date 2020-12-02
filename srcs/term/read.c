@@ -55,6 +55,7 @@ t_term_err	term_read_echo(char c)
 	t_term_err	status;
 
 	status = TERM_EOK;
+	select_clear();
 	if (!line_insert(g_term.line, g_term.pos, &c, 1))
 		status = TERM_EALLOC;
 	else if (write(STDERR_FILENO, &c, 1) == -1)
