@@ -1,14 +1,17 @@
 #include <term/term.h>
+
 /*
 **	Set the cursor to pos on the horizontal axis.
 */
 void		caps_goto(t_caps *caps, size_t pos)
 {
+	if (!caps->flag.move_insert)
 	tputs(caps->mode.insert_end, 1, &putc_err);
 	if (caps->ctrl.move_h)
 		tputs(tgoto(caps->ctrl.move_h, 0, pos), 1, &putc_err);
 	else
 		tputs(tgoto(caps->ctrl.move, 0, pos), 1, &putc_err);
+	if (!caps->flag.move_insert)
 	tputs(caps->mode.insert, 1, &putc_err);
 }
 
