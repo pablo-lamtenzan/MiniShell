@@ -14,21 +14,21 @@
 
 t_term_err	select_highlight(void)
 {
-	if (g_term.clip.select.start != -1U && g_term.clip.select.end != -1U)
+	if (g_term.selec.start != -1U && g_term.selec.end != -1U)
 	{
 		/* ft_dprintf(2, "[SELECT] start: %lu, end: %lu\n",
-			g_term.clip.select.start, g_term.clip.select.end); */
+			g_term.selec.start, g_term.selec.end); */
 		caps_goto(&g_term.caps, g_term.origin);
 		tputs(g_term.caps.ctrl.del_line, 1, &putc_err);
-		if (write(STDERR_FILENO, g_term.line->data, g_term.clip.select.start) == -1)
+		if (write(STDERR_FILENO, g_term.line->data, g_term.selec.start) == -1)
 			return (TERM_EWRITE);
 		tputs(g_term.caps.mode.standout, 1, &putc_err);
-		if (write(STDERR_FILENO, g_term.line->data + g_term.clip.select.start,
-			g_term.clip.select.end - g_term.clip.select.start) == -1)
+		if (write(STDERR_FILENO, g_term.line->data + g_term.selec.start,
+			g_term.selec.end - g_term.selec.start) == -1)
 			return (TERM_EWRITE);
 		tputs(g_term.caps.mode.standout_end, 1, &putc_err);
-		if (write(STDERR_FILENO, g_term.line->data + g_term.clip.select.end,
-			g_term.line->len - g_term.clip.select.end) == -1)
+		if (write(STDERR_FILENO, g_term.line->data + g_term.selec.end,
+			g_term.line->len - g_term.selec.end) == -1)
 			return (TERM_EWRITE);
 		caps_goto(&g_term.caps, g_term.origin + g_term.pos);
 	}
@@ -39,18 +39,18 @@ t_term_err	select_left(void)
 {
 	if (g_term.pos > 0)
 	{
-		if (g_term.clip.select.start == -1U || g_term.clip.select.end == -1U)
+		if (g_term.selec.start == -1U || g_term.selec.end == -1U)
 		{
-			g_term.clip.select.start = g_term.pos;
-			g_term.clip.select.end = g_term.pos;
+			g_term.selec.start = g_term.pos;
+			g_term.selec.end = g_term.pos;
 		}
 		else
 		{
 			cursor_l();
-			if (g_term.clip.select.start == g_term.pos + 1)
-				g_term.clip.select.start = g_term.pos;
+			if (g_term.selec.start == g_term.pos + 1)
+				g_term.selec.start = g_term.pos;
 			else
-				g_term.clip.select.end = g_term.pos;
+				g_term.selec.end = g_term.pos;
 			select_highlight();
 		}
 	}
@@ -61,18 +61,18 @@ t_term_err	select_right(void)
 {
 	if (g_term.pos < g_term.line->len)
 	{
-		if (g_term.clip.select.start == -1U || g_term.clip.select.end == -1U)
+		if (g_term.selec.start == -1U || g_term.selec.end == -1U)
 		{
-			g_term.clip.select.start = g_term.pos;
-			g_term.clip.select.end = g_term.pos;
+			g_term.selec.start = g_term.pos;
+			g_term.selec.end = g_term.pos;
 		}
 		else
 		{
 			cursor_r();
-			if (g_term.clip.select.end == g_term.pos - 1)
-				g_term.clip.select.end = g_term.pos;
+			if (g_term.selec.end == g_term.pos - 1)
+				g_term.selec.end = g_term.pos;
 			else
-				g_term.clip.select.start = g_term.pos;
+				g_term.selec.start = g_term.pos;
 			select_highlight();
 		}
 	}
@@ -81,11 +81,11 @@ t_term_err	select_right(void)
 
 t_term_err	select_clear(void)
 {
-	if (g_term.clip.select.start != -1U || g_term.clip.select.end != -1U)
+	if (g_term.selec.start != -1U || g_term.selec.end != -1U)
 	{
 		/* ft_dprintf(2, "[SELECT] clear\n"); */
-		g_term.clip.select.start = -1U;
-		g_term.clip.select.end = -1U;
+		g_term.selec.start = -1U;
+		g_term.selec.end = -1U;
 		if (g_term.line)
 		{
 			caps_goto(&g_term.caps, g_term.origin);

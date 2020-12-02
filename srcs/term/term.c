@@ -64,7 +64,7 @@ bool		term_init_caps(t_env **env)
 
 bool	term_init(t_env **env)
 {
-	g_term.clip.select = (t_select){-1U, -1U};
+	g_term.selec = (t_select){-1U, -1U};
 	if (!(g_term.line = line_new(TERM_LINE_SIZE)))
 		return (false);
 	// TODO: Load and save history file

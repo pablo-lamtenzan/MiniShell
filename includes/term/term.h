@@ -75,11 +75,6 @@ typedef struct		s_select
 	size_t	end;
 }					t_select;
 
-typedef struct		s_clip
-{
-	t_line		line;
-	t_select	select;
-}					t_clip;
 typedef struct		s_term
 {
 	t_caps		caps;
@@ -91,7 +86,8 @@ typedef struct		s_term
 	size_t		msg_len;
 	size_t		origin;
 	size_t		pos;
-	t_clip		clip;
+	t_select	selec;
+	t_line		clip;
 }					t_term;
 
 t_term				g_term;
