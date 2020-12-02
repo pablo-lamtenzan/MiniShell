@@ -17,12 +17,13 @@
 static void		suspend_process(int signal)
 {
 	(void)signal;
-	// TO DO: Block this before free all
+	// TODO: Block this before free all
 	write(STDERR_FILENO, "\n", 1);
 	if (g_session.flags & OPEN_PRINT)
 		print_signal(STDERR_FILENO, \
 			g_session.groups->active_processes, STANDART);
-	
+	// TODO: Check if we should kill on SIGTSTP
+	kill(g_session.groups->active_processes->pid, SIGSTOP);
 }
 
 static void		do_nothing(int signal)
