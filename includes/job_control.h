@@ -118,7 +118,7 @@ bool					session_empty();
 ** Signals interactions
 */
 void					zombies_catcher(int signal);
-void					init_signal_handler();
+void					init_signal_handler(bool interactive);
 void					ignore_all_signals();
 
 /*

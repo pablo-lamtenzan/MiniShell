@@ -115,7 +115,6 @@ void	exec(t_tok* tokens)
 
 static bool				init(int ac, const char **av, const char **ep)
 {
-	init_signal_handler();
 	if (ac > 0 && session_start())
 	{
 		if ((g_session.name = ft_basename(av[0])))
@@ -123,7 +122,11 @@ static bool				init(int ac, const char **av, const char **ep)
 			if ((g_session.env = env_import(ep)))
 			{
 				if (term_init(&g_session.env))
+				{
+					init_signal_handler(g_term.is_interactive
+						&& !g_term.has_caps);
 					return (true);
+				}
 				env_clr(&g_session.env);
 			}			
 			free(g_session.name);

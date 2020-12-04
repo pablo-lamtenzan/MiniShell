@@ -52,12 +52,26 @@ void			ignore_all_signals(void)
 }
 */
 
-void			init_signal_handler(void)
+static void		interrupt_line(int signal)
 {
-	signal(SIGTSTP, suspend_process);
-	signal(SIGCHLD, zombies_catcher);
-	signal(SIGQUIT, do_nothing);
-	signal(SIGINT, do_nothing);
-	signal(SIGTERM, terminate_minishell);
-	signal(SIGHUP, terminate_minishell);
+	(void)signal;
+	write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) - 1);
+	if (g_term.msg)
+		write(STDERR_FILENO, g_term.msg, g_term.msg_len);
+	if (g_term.line)
+	{
+		g_term.line->len = 0;
+		if (g_term.line->data)
+			*g_term.line->data = '\0';
+	}
+}
+
+void			init_signal_handler(bool interactive)
+{
+	signal(SIGTSTP, &suspend_process);
+	signal(SIGCHLD, &zombies_catcher);
+	signal(SIGTERM, &terminate_minishell);
+	signal(SIGHUP, &terminate_minishell);
+	signal(SIGQUIT, &do_nothing);
+	signal(SIGINT, (interactive) ? &interrupt_line: &do_nothing);
 }
