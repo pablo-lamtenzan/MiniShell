@@ -3,14 +3,16 @@ LIBFT	=		libft
 OBJDIR	=		objs
 CC		=		/usr/bin/clang
 RM		=		/bin/rm
-CFLAGS	=		-Wall -Wextra -Werror -g3 -fsanitize=address
 
 include srcs.mk
 
+CFLAGS	=		-Wall -Wextra -Werror -g3 -fsanitize=address
 IFLAGS	=		-I$(INCDIR) -I$(LIBFT)/includes
-LFLAGS	=		-L$(LIBFT) -lft -lcurses -ltermcap
+LFLAGS	=		-L$(LIBFT) -lft
 
 OBJS	=		$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
+BONUS_OBJS	=	$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(BONUS_SRCS))
+
 
 all:			libft $(NAME)
 
@@ -20,8 +22,8 @@ libft:
 $(LIBFT)/libft.a: libft
 
 $(NAME):		$(OBJS) $(LIBFT)/libft.a
-	@echo LINK $(NAME)
-	$(CC) $(OBJS) $(CFLAGS) $(LFLAGS) -o $(NAME)
+	@echo LINK $@
+	$(CC) $(OBJS) $(CFLAGS) $(LFLAGS) -o $@
 
 $(OBJDIR):
 	mkdir -p $@
@@ -29,7 +31,7 @@ $(OBJDIR):
 $(OBJDIR)/%.o:	$(SRCDIR)/%.c $(HDRS) Makefile | $(OBJDIR)
 	@mkdir -p '$(@D)'
 	@echo CC $<
-	@$(CC) $(CFLAGS) $(IFLAGS) -c -o $@ $<	
+	@$(CC) $(CFLAGS) $(IFLAGS) -c -o $@ $<
 
 clean:
 	make -C $(LIBFT) $@
@@ -42,6 +44,14 @@ fclean:			clean
 	@$(RM) -f $(NAME)
 
 re:				fclean all
+
+.SECONDEXPANSION:
+bonus:			LFLAGS += -lcurses -ltermcap
+bonus:			BONUS = _bonus
+bonus:			$$(BONUS_OBJS) $(LIBFT)/libft.a
+	@echo LINK $@
+	$(CC) $(BONUS_OBJS) $(CFLAGS) $(LFLAGS) -o $@
+
 
 .PHONY:			libft clean fclean prompt
 

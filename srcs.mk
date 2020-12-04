@@ -40,18 +40,9 @@ SRCS	=	$(addprefix $(SRCDIR)/,\
 		token.c\
 		)\
 	$(addprefix term/,\
-		caps.c caps_utils.c\
-		clip.c\
-		controls.c\
-		cursor.c cursor_jmp.c\
-		hist.c hist_cursor.c\
-		keybind.c\
 		line.c line_edit.c line_put.c\
-		read.c read_caps.c read_csi.c read_esc.c\
-		select.c select_jmp.c\
-		signals.c\
-		term.c\
-		write.c\
+		read.c\
+		term$(BONUS).c\
 	)\
 	$(addprefix builtins/,\
 		cd.c\
@@ -132,5 +123,20 @@ SRCS	=	$(addprefix $(SRCDIR)/,\
 	)\
 	$(addprefix path/,\
 		path.c\
+	)\
+)
+
+BONUS_SRCS = $(SRCS) $(addprefix $(SRCDIR)/,\
+	$(addprefix term/,\
+		caps_bonus.c caps_utils_bonus.c\
+		clip_bonus.c\
+		controls_bonus.c\
+		cursor_bonus.c cursor_jmp_bonus.c\
+		hist_bonus.c hist_cursor_bonus.c\
+		keybind_bonus.c\
+		read_caps_bonus.c read_csi_bonus.c read_esc_bonus.c\
+		select_bonus.c select_jmp_bonus.c\
+		signals_bonus.c\
+		write_bonus.c\
 	)\
 )
