@@ -47,7 +47,7 @@ SRCS	=	$(addprefix $(SRCDIR)/,\
 		hist.c hist_cursor.c\
 		keybind.c\
 		line.c line_edit.c line_put.c\
-		read.c read_csi.c read_esc.c\
+		read.c read_caps.c read_csi.c read_esc.c\
 		select.c select_jmp.c\
 		signals.c\
 		term.c\
