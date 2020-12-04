@@ -84,7 +84,7 @@ char				*string_expand(const char *input, t_env *env)
 	const char	*val;
 	char		*ret;
 
-	if (!(exp = line_new(4)))
+	if (!input || !(exp = line_new(4)))
 		return (NULL);
 	i = input;
 	while (*(n = i))
