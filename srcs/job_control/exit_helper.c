@@ -22,7 +22,6 @@ void		handle_exit_with_active_background(int exit_status)
 	if (g_session.exit_count++ == 2 || !is_background_active())
 	{
 		term_destroy();
-		tputs(g_term.caps.mode.insert_end, 0, &ft_putchar);
 		session_end();
 		exit(exit_status);
 	}
