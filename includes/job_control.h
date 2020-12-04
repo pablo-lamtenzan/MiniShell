@@ -261,8 +261,7 @@ bool					ignore_pid(int ac, char*const *av);
 int						parse_flags(int ac, char*const *av, const char *pattern,
 						int *nb_flags);
 const char				*is_in_history(t_process *target);
-char					**split_separators(char *input,
-						const char **separators);
+char					**split_separators(char *input);
 int						for_each_in_group(t_process *leader,
 						int (*core)(), bool(*delete)());
 

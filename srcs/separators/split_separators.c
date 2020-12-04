@@ -59,7 +59,7 @@ size_t		get_elem_size(char *input, int *i, const char **separators)
 }
 
 // to norme int vars[4]
-int			copy_inter_seps(char ***res, char *input, const char **separators)
+int			copy_inter_seps(char **res, char *input, const char **separators)
 {
 	int		y;
 	int		i;
@@ -77,36 +77,30 @@ int			copy_inter_seps(char ***res, char *input, const char **separators)
 			if (!ft_strncmp(&input[i], separators[y], \
 				aux = ft_strlen(separators[y])))
 			{
-				i += (int)aux;
+				i += (int)aux; // TODO: Avoid cast to int, use size_t
 				y = -1;
 			}
 		}
 		remember = i;
 		if ((aux = get_elem_size(input, &i, separators)))
 		{
-			if (!((*res)[z++] = ft_strndup(&input[remember], aux)))
+			if (!(res[z++] = ft_strndup(&input[remember], aux)))
 				return (false);
 		}
 	}
 	return (true);
 }
 
-char		**split_separators(char *input, const char **separators)
+char		**split_separators(char *input)
 {
-	char	**res;
-	char	**freed;
+	static const char	*seps[4] = {"||", "&&", ";", NULL};
+	char				**res;
 
-	res = NULL;
-	if (!(res = ft_calloc(\
-		get_separators_nb(input, separators) + 1, sizeof(char*))))
-		return (NULL);
-	if (!(copy_inter_seps(&res, input, separators)))
+	if ((res = ft_calloc(get_separators_nb(input, seps) + 1, sizeof(char*)))
+	&& !(copy_inter_seps(res, input, seps)))
 	{
 		while (*res)
-		{
-			freed = res++;
-			free(freed);
-		}
+			free(res++);
 		res = NULL;
 	}
 	return (res);

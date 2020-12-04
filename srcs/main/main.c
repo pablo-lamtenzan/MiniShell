@@ -98,6 +98,8 @@ void	exec(t_tok* tokens)
 	t_tok			*exec_tokens;
 	t_bst			*root;
 
+	g_session.input_line_index = 0;
+	g_session.input_line = split_separators(g_term.line->data);
 	ft_bzero(flags, sizeof(flags));
 	while ((exec_tokens = handle_separators(&tokens, &flags[STATUS], &flags[PARETHESES_NB])))
 	{
@@ -108,16 +110,12 @@ void	exec(t_tok* tokens)
 			free_bst(root);
 		}
 	}
-}
-
-void	test(int signal)
-{
-	(void)signal;
-	ft_dprintf(2, "THIS IS A TEST\n");
+	strs_unload(g_session.input_line);
 }
 
 static bool				init(int ac, const char **av, const char **ep)
 {
+	init_signal_handler();
 	if (ac > 0 && session_start())
 	{
 		if ((g_session.name = ft_basename(av[0])))
@@ -161,38 +159,46 @@ void					syntax_error(t_lex_st *st)
 	g_term.pos = 0;
 }
 
-
-
-int						main(int ac, const char **av, const char **ep)
+static char		*msg_get(t_lex_err status)
 {
-	static const char*	seps[4] = {"||", "&&", ";", NULL};
-	t_term_err			term_status;
-	t_lex_err			lex_status;
-	t_lex_st			lex_data;
+	const char* const	src =
+		env_get(g_session.env, (status == LEX_EWAIT) ? "PS2" : "PS1", 3);
 
-	init_signal_handler();
-	if (!init(ac, av, ep))
-		return (1);
+	return (src ? string_expand(src, g_session.env) : ft_strdup(""));
+}
+
+static t_term_err	routine(void)
+{
+	t_term_err	status;
+	t_lex_err	lex_status;
+	t_lex_st	lex_data;
+
 	ft_bzero(&lex_data, sizeof(lex_data));
-	term_status = TERM_EOK;
+	status = TERM_EOK;
 	lex_status = LEX_EOK;
-	while ((g_term.msg = string_expand(TERM_PS1, g_session.env))
-	&& (term_status = term_prompt(&lex_data.input)) == TERM_ENL)
+	while ((!g_term.is_interactive || (g_term.msg = msg_get(lex_status)))
+	&& (status = term_prompt(&lex_data.input)) == TERM_ENL)
 	{
 		if ((lex_status = lex_tokens(&lex_data)) == LEX_EOK)
 		{
-			g_session.input_line_index = 0;
-			delete_input_line();
-			g_session.input_line = split_separators(g_term.line->data, seps);
 			exec(lex_data.tokens);
 			lex_data.tokens = NULL;
 		}
-		else if (lex_status == LEX_EWAIT)
-			term_write(TERM_ENDL, sizeof(TERM_ENDL) - 1);
-		else
+		else if (lex_status != LEX_EWAIT)
 			syntax_error(&lex_data);
 		free(g_term.msg);
+		g_term.msg = NULL;
 	}
+	return ((g_term.is_interactive && !g_term.msg) ? TERM_EALLOC : status);
+}
+
+int						main(int ac, const char **av, const char **ep)
+{
+	t_term_err	status;
+
+	if (!init(ac, av, ep))
+		return (1);
+	status = routine();
 	term_destroy();
-	return (term_status);
+	return (status);
 }

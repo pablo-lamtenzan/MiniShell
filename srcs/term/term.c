@@ -88,6 +88,8 @@ void	term_destroy(void)
 		line_clear(&g_term.line);
 	hist_clear(&g_term.hist);
 	clip_clear();
+	free(g_term.msg);
+	g_term.msg = NULL;
 	if (g_term.is_interactive)
 		write(STDOUT_FILENO, TERM_EXIT, sizeof(TERM_EXIT) - 1);
 }
