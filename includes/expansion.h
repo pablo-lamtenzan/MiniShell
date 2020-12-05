@@ -20,7 +20,7 @@ typedef enum	e_exp_st
 char	**tokens_expand(t_tok **tokens, t_env **env, int *ac);
 
 bool	param_expand(t_tok *param, t_env *env);
-char	*string_expand(const char *input, t_env *env);
+t_line	*string_expand(const char *input, t_env *env);
 
 t_line	*word_split(t_tok **params);
 //t_line	*param_split(t_tok **parts);

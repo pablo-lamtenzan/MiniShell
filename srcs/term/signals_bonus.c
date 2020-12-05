@@ -2,23 +2,27 @@
 
 t_term_err	term_interrupt(void)
 {
-	if (g_term.msg && (write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) -1) == -1
-	|| ((g_term.msg_len = ft_strlen(g_term.msg))
-	&& (g_term.origin = strglen(g_term.msg))
-	&& write(STDERR_FILENO, g_term.msg, g_term.msg_len) == -1)))
+	t_term_err	status;
+
+	status = TERM_EOK;
+	if (write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) -1) == -1)
 		return (TERM_EWRITE);
+	if (!g_term.msg)
+		g_term.caps.cursor.origin = g_term.caps.cursor.zero;
+	else if ((status = term_origin(g_term.msg->data, g_term.msg->len)) != TERM_EOK)
+		return (status);
 	if (g_term.has_caps)
 		select_clear();
-	if (g_term.line != g_term.hist.next)
+	if (g_term.line != g_term.caps.hist.next)
 	{
 		line_clear(&g_term.line);
-		g_term.hist.curr = g_term.hist.next;
-		g_term.line = g_term.hist.next;
+		g_term.caps.hist.curr = g_term.caps.hist.next;
+		g_term.line = g_term.caps.hist.next;
 	}
 	*g_term.line->data = '\0';
 	g_term.line->len = 0;
-	g_term.pos = 0;
-	return (TERM_EOK);
+	g_term.caps.index = 0;
+	return (status);
 }
 
 t_term_err	term_eof(void)

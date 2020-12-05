@@ -9,6 +9,7 @@
 # include <term/line.h>
 # include <term/hist.h>
 # include <term/caps.h>
+# include <term/ansi.h>
 
 # ifndef STDIN_FILENO
 #  define STDIN_FILENO	0
@@ -27,14 +28,6 @@
 */
 # define TERM_LINE_SIZE	8
 
-# define C_D			"\033[39m"
-# define C_GL			"\033[92m"
-# define C_B			"\033[34m"
-# define C_BL			"\033[94m"
-# define C_Y			"\033[33m"
-# define S_D			"\033[0m"
-# define S_B			"\033[1m"
-
 /*
 **	Displayed before reading the first-line of a command.
 */
@@ -45,14 +38,6 @@
 */
 # define TERM_PS2		"> "
 
-
-# define TERM_ESC		'\033'
-# define TERM_CSI		'['
-# define TERM_ALTESC	'1'
-# define TERM_SHIFT		'2'
-
-# define TERM_CNTRL		'`'
-
 # define TERM_NL		'\n'
 
 # define TERM_ENDL		"\n"
@@ -60,34 +45,22 @@
 
 typedef enum		e_term_err
 {
-	TERM_ESETATTR = -4,
-	TERM_EALLOC = -3,
-	TERM_EWRITE = -2,
-	TERM_EREAD = -1,
-	TERM_EEOF = 0,
-	TERM_EOK = 1,
-	TERM_ENL = 2
+	TERM_ESETATTR	= -4,
+	TERM_EALLOC		= -3,
+	TERM_EWRITE		= -2,
+	TERM_EREAD		= -1,
+	TERM_EEOF		= 0,
+	TERM_EOK		= 1,
+	TERM_ENL		= 2
 }					t_term_err;
-
-typedef struct		s_select
-{
-	size_t	start;
-	size_t	end;
-}					t_select;
 
 typedef struct		s_term
 {
 	t_caps		caps;
 	bool		is_interactive;
 	bool		has_caps;
-	t_hist		hist;
 	t_line		*line;
-	char		*msg;
-	size_t		msg_len;
-	size_t		origin;
-	size_t		pos;
-	t_select	selec;
-	t_line		clip;
+	t_line		*msg;
 }					t_term;
 
 t_term				g_term;
@@ -113,6 +86,7 @@ t_term_err			term_prompt(const char **dest);
 int					putc_err(int c);
 size_t				strglen(const char *str);
 t_term_err			term_write(const char *input, size_t length);
+t_term_err			term_origin(const char *input, size_t length);
 
 /*
 **					keybind.c
@@ -156,6 +130,7 @@ t_term_err			cursor_start_line(void);
 t_term_err			cursor_end_line(void);
 t_term_err			cursor_next_word(void);
 t_term_err			cursor_prev_word(void);
+t_term_err			cursor_goto_index(size_t index);
 
 /*
 **					select.c

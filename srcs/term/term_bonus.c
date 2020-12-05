@@ -64,16 +64,16 @@ bool		term_init_caps(t_env **env)
 
 bool	term_init(t_env **env)
 {
-	g_term.selec = (t_select){-1U, -1U};
+	g_term.caps.selec = (t_select){-1U, -1U};
 	if (!(g_term.line = line_new(TERM_LINE_SIZE)))
 		return (false);
 	// TODO: Load and save history file
-	g_term.line->prev = g_term.hist.last;
+	g_term.line->prev = g_term.caps.hist.last;
 	*g_term.line->data = '\0';
 	g_term.line->len = 0;
-	g_term.hist.curr = g_term.line;
-	g_term.hist.next = g_term.line;
-	g_term.hist.head = g_term.line;
+	g_term.caps.hist.curr = g_term.line;
+	g_term.caps.hist.next = g_term.line;
+	g_term.caps.hist.head = g_term.line;
 	g_term.is_interactive = ft_isatty(STDIN_FILENO) && ft_isatty(STDERR_FILENO);
 	if (g_term.is_interactive && !term_init_caps(env))
 		ft_dprintf(2, "Failed to retrieve terminfo: %s\n", strerror(errno));
@@ -82,14 +82,13 @@ bool	term_init(t_env **env)
 
 void	term_destroy(void)
 {
-	if (g_term.hist.next != g_term.line)
-		line_clear(&g_term.hist.next);
-	if (g_term.hist.last != g_term.line)
+	if (g_term.caps.hist.next != g_term.line)
+		line_clear(&g_term.caps.hist.next);
+	if (g_term.caps.hist.last != g_term.line)
 		line_clear(&g_term.line);
-	hist_clear(&g_term.hist);
+	hist_clear(&g_term.caps.hist);
 	clip_clear();
-	free(g_term.msg);
-	g_term.msg = NULL;
+	line_clear(&g_term.msg);
 	if (g_term.is_interactive)
 		write(STDOUT_FILENO, TERM_EXIT, sizeof(TERM_EXIT) - 1);
 }
@@ -101,16 +100,13 @@ t_term_err	term_prompt(const char **dst)
 {
 	t_term_err	status;
 
-	if (g_term.is_interactive && g_term.msg
-	&& (g_term.msg_len = ft_strlen(g_term.msg))
-	&& (g_term.origin = strglen(g_term.msg))
-	&& write(STDERR_FILENO, g_term.msg, g_term.msg_len) == -1)
-		status = TERM_EWRITE;
-	else if (g_term.has_caps)
-		status = term_read_caps();
-	else
-		status = term_read();
-	if (dst)
-		*dst = g_term.line->data;
+	status = TERM_EOK;
+	if (!(g_term.is_interactive && g_term.msg->len)
+	|| (status = term_origin(g_term.msg->data, g_term.msg->len)) == TERM_EOK)
+	{
+		status = (g_term.has_caps) ? term_read_caps() : term_read();
+		if (dst)
+			*dst = g_term.line->data;
+	}
 	return(status);
 }

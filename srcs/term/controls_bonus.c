@@ -4,16 +4,17 @@
 */
 t_term_err	term_clear_screen()
 {
-	if (g_term.caps.mode.clear)
+	t_term_err	status;
+
+	status = TERM_EOK;
+	if (g_term.caps.ctrls.clear)
 	{
-		tputs(g_term.caps.mode.clear, 1, &putc_err);
-		if ((g_term.msg
-		&& write(STDERR_FILENO, g_term.msg, g_term.msg_len) == -1)
-		|| write(1, g_term.line->data, g_term.line->len) == -1)
-			return (TERM_EWRITE);
-		g_term.pos = g_term.line->len;
+		tputs(g_term.caps.ctrls.clear, 1, &putc_err);
+		if ((!g_term.msg ||
+		(status = term_origin(g_term.msg->data, g_term.msg->len)) == TERM_EOK))
+			status = term_write(g_term.line->data, g_term.line->len);
 	}
-	return (TERM_EOK);
+	return (status);
 }
 
 /*
@@ -21,12 +22,11 @@ t_term_err	term_clear_screen()
 */
 t_term_err	term_backspace()
 {
-	if (g_term.pos > 0)
+	if (g_term.caps.index > 0)
 	{
-		tputs(g_term.caps.ctrl.left, 1, &putc_err);
+		cursor_l();
 		caps_delete(&g_term.caps, 1);
-		g_term.pos--;
-		line_erase(g_term.line, g_term.pos, 1);
+		line_erase(g_term.line, g_term.caps.index, 1);
 	}
 	return (TERM_EOK);
 }
@@ -37,7 +37,7 @@ t_term_err	term_backspace()
 t_term_err	term_clear_line()
 {
 	cursor_start_line();
-	tputs(g_term.caps.ctrl.del_line, 1, &putc_err);
+	tputs(g_term.caps.ctrls.del_line, 1, &putc_err);
 	return (TERM_EOK);
 }
 
@@ -51,10 +51,10 @@ t_term_err	term_new_line()
 	if (g_term.line->len != 0)
 	{
 		//ft_dprintf(2, "[PROMPT] result: '%s'\n", g_term.line->data);
-		if ((!g_term.hist.next || g_term.line == g_term.hist.next)
-		&& !(g_term.hist.next = line_new(10)))
+		if ((!g_term.caps.hist.next || g_term.line == g_term.caps.hist.next)
+		&& !(g_term.caps.hist.next = line_new(10)))
 			return (TERM_EALLOC);
-		hist_add(&g_term.hist, g_term.line);
+		hist_add(&g_term.caps.hist, g_term.line);
 	}
 	return (TERM_ENL);
 }

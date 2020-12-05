@@ -14,43 +14,49 @@
 
 t_term_err	select_highlight(void)
 {
-	if (g_term.selec.start != -1U && g_term.selec.end != -1U)
+	t_pos	pos;
+
+	if (g_term.caps.selec.start != -1U && g_term.caps.selec.end != -1U)
 	{
 		/* ft_dprintf(2, "[SELECT] start: %lu, end: %lu\n",
-			g_term.selec.start, g_term.selec.end); */
-		caps_goto(&g_term.caps, g_term.origin);
-		tputs(g_term.caps.ctrl.del_line, 1, &putc_err);
-		if (write(STDERR_FILENO, g_term.line->data, g_term.selec.start) == -1)
+			g_term.caps.selec.start, g_term.caps.selec.end); */
+		pos = g_term.caps.cursor.real;
+		caps_goto(&g_term.caps, &g_term.caps.cursor.origin);
+		tputs(g_term.caps.ctrls.del_line, 1, &putc_err);
+		if (write(STDERR_FILENO, g_term.line->data, g_term.caps.selec.start) == -1)
 			return (TERM_EWRITE);
-		tputs(g_term.caps.mode.standout, 1, &putc_err);
-		if (write(STDERR_FILENO, g_term.line->data + g_term.selec.start,
-			g_term.selec.end - g_term.selec.start) == -1)
+		tputs(g_term.caps.modes.standout, 1, &putc_err);
+		if (write(STDERR_FILENO, g_term.line->data + g_term.caps.selec.start,
+			g_term.caps.selec.end - g_term.caps.selec.start) == -1)
+		{
+			tputs(g_term.caps.modes.standout_end, 1, &putc_err);
 			return (TERM_EWRITE);
-		tputs(g_term.caps.mode.standout_end, 1, &putc_err);
-		if (write(STDERR_FILENO, g_term.line->data + g_term.selec.end,
-			g_term.line->len - g_term.selec.end) == -1)
+		}
+		tputs(g_term.caps.modes.standout_end, 1, &putc_err);
+		if (write(STDERR_FILENO, g_term.line->data + g_term.caps.selec.end,
+			g_term.line->len - g_term.caps.selec.end) == -1)
 			return (TERM_EWRITE);
-		caps_goto(&g_term.caps, g_term.origin + g_term.pos);
+		caps_goto(&g_term.caps, &pos);
 	}
 	return (TERM_EOK);
 }
 
 t_term_err	select_left(void)
 {
-	if (g_term.pos > 0)
+	if (g_term.caps.index > 0)
 	{
-		if (g_term.selec.start == -1U || g_term.selec.end == -1U)
+		if (g_term.caps.selec.start == -1U || g_term.caps.selec.end == -1U)
 		{
-			g_term.selec.start = g_term.pos;
-			g_term.selec.end = g_term.pos;
+			g_term.caps.selec.start = g_term.caps.index;
+			g_term.caps.selec.end = g_term.caps.index;
 		}
 		else
 		{
 			cursor_l();
-			if (g_term.selec.start == g_term.pos + 1)
-				g_term.selec.start = g_term.pos;
+			if (g_term.caps.selec.start == g_term.caps.index + 1)
+				g_term.caps.selec.start = g_term.caps.index;
 			else
-				g_term.selec.end = g_term.pos;
+				g_term.caps.selec.end = g_term.caps.index;
 			select_highlight();
 		}
 	}
@@ -59,20 +65,20 @@ t_term_err	select_left(void)
 
 t_term_err	select_right(void)
 {
-	if (g_term.pos < g_term.line->len)
+	if (g_term.caps.index < g_term.line->len)
 	{
-		if (g_term.selec.start == -1U || g_term.selec.end == -1U)
+		if (g_term.caps.selec.start == -1U || g_term.caps.selec.end == -1U)
 		{
-			g_term.selec.start = g_term.pos;
-			g_term.selec.end = g_term.pos;
+			g_term.caps.selec.start = g_term.caps.index;
+			g_term.caps.selec.end = g_term.caps.index;
 		}
 		else
 		{
 			cursor_r();
-			if (g_term.selec.end == g_term.pos - 1)
-				g_term.selec.end = g_term.pos;
+			if (g_term.caps.selec.end == g_term.caps.index - 1)
+				g_term.caps.selec.end = g_term.caps.index;
 			else
-				g_term.selec.start = g_term.pos;
+				g_term.caps.selec.start = g_term.caps.index;
 			select_highlight();
 		}
 	}
@@ -81,18 +87,21 @@ t_term_err	select_right(void)
 
 t_term_err	select_clear(void)
 {
-	if (g_term.selec.start != -1U || g_term.selec.end != -1U)
+	t_pos	pos;
+
+	if (g_term.caps.selec.start != -1U || g_term.caps.selec.end != -1U)
 	{
 		/* ft_dprintf(2, "[SELECT] clear\n"); */
-		g_term.selec.start = -1U;
-		g_term.selec.end = -1U;
+		g_term.caps.selec.start = -1U;
+		g_term.caps.selec.end = -1U;
 		if (g_term.line)
 		{
-			caps_goto(&g_term.caps, g_term.origin);
-			tputs(g_term.caps.ctrl.del_line, 1, &putc_err);
+			pos = g_term.caps.cursor.real;
+			caps_goto(&g_term.caps, &g_term.caps.cursor.origin);
+			tputs(g_term.caps.ctrls.del_line, 1, &putc_err);
 			if (write(STDERR_FILENO, g_term.line->data, g_term.line->len) == -1)
 				return (TERM_EWRITE);
-			caps_goto(&g_term.caps, g_term.origin + g_term.pos);
+			caps_goto(&g_term.caps, &pos);
 		}
 	}
 	return (TERM_EOK);

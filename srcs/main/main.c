@@ -156,18 +156,20 @@ void					syntax_error(t_lex_st *st)
 		g_session.name, input);
 	g_session.st = 258;
 	lex_reset(st);
+	// TODO: Inspect if this is needed
+	/*
 	*g_term.line->data = '\0';
 	g_term.line->len = 0;
-	g_term.pos = 0;
-	g_term.pos = 0;
+	g_term.caps.pos = (t_pos){0, 0};
+	*/
 }
 
-static char		*msg_get(t_lex_err status)
+static t_line	*msg_get(t_lex_err status)
 {
 	const char* const	src =
 		env_get(g_session.env, (status == LEX_EWAIT) ? "PS2" : "PS1", 3);
 
-	return (src ? string_expand(src, g_session.env) : ft_strdup(""));
+	return (src ? string_expand(src, g_session.env) : NULL);
 }
 
 static t_term_err	routine(void)
@@ -189,8 +191,7 @@ static t_term_err	routine(void)
 		}
 		else if (lex_status != LEX_EWAIT)
 			syntax_error(&lex_data);
-		free(g_term.msg);
-		g_term.msg = NULL;
+		line_clear(&g_term.msg);
 	}
 	return ((g_term.is_interactive && !g_term.msg) ? TERM_EALLOC : status);
 }

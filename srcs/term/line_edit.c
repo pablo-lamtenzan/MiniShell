@@ -37,7 +37,8 @@ bool	line_insert(t_line *line, size_t at, const char *str, size_t n)
 	new_len = line->len + n;
 	if (!line_resize(line, new_len + 1))
 		return (false);
-	ft_memmove(line->data + at + n, line->data + at, line->len - at);
+	if (at != line->len)
+		ft_memmove(line->data + at + n, line->data + at, line->len - at);
 	ft_memcpy(line->data + at, str, n);
 	line->len = new_len;
 	line->data[line->len] = '\0';

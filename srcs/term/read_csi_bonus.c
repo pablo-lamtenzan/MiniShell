@@ -19,8 +19,8 @@ t_term_err	term_read_mod_none(void)
 t_term_err	term_read_mod_shift(void)
 {
 	const	t_keybind	keys[] = {
-		{g_term.caps.key.left[2], &select_left},
-		{g_term.caps.key.right[2], &select_right}
+		{g_term.caps.keys.left[2], &select_left},
+		{g_term.caps.keys.right[2], &select_right}
 	};
 	ssize_t				read_st;
 	char				c;
@@ -57,10 +57,10 @@ t_term_err	term_del(void)
 
 	if ((read_st = read(STDIN_FILENO, &c, 1)) != 1)
 		return ((read_st == 0) ? TERM_EEOF: TERM_EREAD);
-	if (c == '~' && g_term.pos != g_term.line->len)
+	if (c == '~' && g_term.caps.index != g_term.line->len)
 	{
 		caps_delete(&g_term.caps, 1);
-		line_erase(g_term.line, g_term.pos, 1);
+		line_erase(g_term.line, g_term.caps.index, 1);
 	}
 	return (TERM_EOK);
 }
@@ -75,11 +75,11 @@ t_term_err	term_read_csi(void)
 	const t_keybind	keys[] = {
 		{'H', &cursor_start_line}, // TODO: Get in terminfo or remove caps.key
 		{'F', &cursor_end_line},
-		{g_term.caps.key.up[2], &term_prev_line},
-		{g_term.caps.key.down[2], &term_next_line},
-		{g_term.caps.key.left[2], &cursor_l},
-		{g_term.caps.key.right[2], &cursor_r},
-		{g_term.caps.key.del[2], &term_del}
+		{g_term.caps.keys.up[2], &term_prev_line},
+		{g_term.caps.keys.down[2], &term_next_line},
+		{g_term.caps.keys.left[2], &cursor_l},
+		{g_term.caps.keys.right[2], &cursor_r},
+		{g_term.caps.keys.del[2], &term_del}
 	};
 	ssize_t			read_st;
 	char			c;

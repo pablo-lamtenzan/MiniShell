@@ -12,6 +12,7 @@ HDRS	=	$(addprefix $(INCDIR)/,\
 	job_control.h\
 	errors.h\
 	$(addprefix term/,\
+		ansi.h\
 		caps.h\
 		hist.h\
 		line.h\

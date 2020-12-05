@@ -51,7 +51,7 @@ static t_line	*param_split(t_tok **parts)
 	{
 		*parts = (*parts)->next;
 		if ((part->type & TOK_MQUOTED)
-		? !line_putstr(curr, part->data) : !str_split(&curr, part->data))
+		? !line_puts(curr, part->data) : !str_split(&curr, part->data))
 		{
 			lines_clear(&words);
 			token_clr(&part);

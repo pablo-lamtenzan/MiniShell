@@ -2,15 +2,15 @@
 
 t_term_err  select_next_word(void)
 {
-    if (g_term.pos < g_term.line->len)
+    if (g_term.caps.index < g_term.line->len)
     {
-        if (g_term.selec.start == -1U || g_term.selec.end == -1U)
+        if (g_term.caps.selec.start == -1U || g_term.caps.selec.end == -1U)
         {
-            g_term.selec.start = g_term.pos;
-            g_term.selec.end = g_term.pos;
+            g_term.caps.selec.start = g_term.caps.index;
+            g_term.caps.selec.end = g_term.caps.index;
         }
         cursor_next_word();
-        g_term.selec.end = g_term.pos;
+        g_term.caps.selec.end = g_term.caps.index;
         select_highlight();
     }
     return (TERM_EOK);
@@ -18,15 +18,15 @@ t_term_err  select_next_word(void)
 
 t_term_err  select_prev_word(void)
 {
-    if (g_term.pos > 0)
+    if (g_term.caps.index > 0)
     {
-        if (g_term.selec.start == -1U || g_term.selec.end == -1U)
+        if (g_term.caps.selec.start == -1U || g_term.caps.selec.end == -1U)
         {
-            g_term.selec.start = g_term.pos;
-            g_term.selec.end = g_term.pos;
+            g_term.caps.selec.start = g_term.caps.index;
+            g_term.caps.selec.end = g_term.caps.index;
         }
         cursor_prev_word();
-        g_term.selec.start = g_term.pos;
+        g_term.caps.selec.start = g_term.caps.index;
         select_highlight();
     }
     return (TERM_EOK);

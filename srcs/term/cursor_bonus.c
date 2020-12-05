@@ -2,20 +2,15 @@
 
 t_term_err	cursor_l(void)
 {
-	if (g_term.pos > 0)
-	{
-		g_term.pos--;
-		tputs(g_term.caps.ctrl.left, 1, &putc_err);
-	}
+	if (g_term.caps.index > 0)
+		return (cursor_goto_index(g_term.caps.index - 1));
 	return (TERM_EOK);
 }
 
 t_term_err	cursor_r(void)
 {
-	if (g_term.pos < g_term.line->len)
-	{
-		g_term.pos++;
-		tputs(g_term.caps.ctrl.right, 1, &putc_err);
-	}
+	// nw -> go forward one line (clearing rest of line)
+	if (g_term.caps.index < g_term.line->len)
+		return (cursor_goto_index(g_term.caps.index + 1));
 	return (TERM_EOK);
 }

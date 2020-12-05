@@ -1,6 +1,6 @@
 #include <term/line.h>
 
-bool	line_putstr(t_line *line, const char *str)
+bool	line_puts(t_line *line, const char *str)
 {
 	return (line_insert(line, line->len, str, ft_strlen(str)));
 }

@@ -76,15 +76,14 @@ static const char	*var_expand(const char **input, t_env *env)
 **
 ** returns the expanded c-string's pointer if succesfull or NULL otherwise.
 */
-char				*string_expand(const char *input, t_env *env)
+t_line				*string_expand(const char *input, t_env *env)
 {
 	t_line		*exp;
 	const char	*i;
 	const char	*n;
 	const char	*val;
-	char		*ret;
 
-	if (!input || !(exp = line_new(4)))
+	if (!(exp = line_new(4)))
 		return (NULL);
 	i = input;
 	while (*(n = i))
@@ -105,9 +104,7 @@ char				*string_expand(const char *input, t_env *env)
 	}
 	if (input != i && !line_insert(exp, exp->len, input, i - input))
 		line_clear(&exp);
-	ret = exp->data;
-	free(exp);
-	return (ret);
+	return (exp);
 }
 
 /*
@@ -118,7 +115,7 @@ char				*string_expand(const char *input, t_env *env)
 */
 bool				param_expand(t_tok *parts, t_env *env)
 {
-	char	*expanded;
+	t_line	*expanded;
 
 	while (parts)
 	{
@@ -127,7 +124,8 @@ bool				param_expand(t_tok *parts, t_env *env)
 			if (!(expanded = string_expand(parts->data, env)))
 				return (false);
 			free(parts->data);
-			parts->data = expanded;
+			parts->data = expanded->data;
+			free(expanded);
 		}
 		parts = parts->next;
 	}

@@ -10,9 +10,9 @@ t_term_err			term_read_esc(void)
 
 	if ((read_st = read(0, &c, 1)) != 1)
 		return ((read_st == 0) ? TERM_EEOF: TERM_EREAD);
-	if (c == TERM_ESC || c == '\0') // -> esc
+	if (c == ANSI_ESC || c == '\0') // -> esc
 		return (TERM_EOK);
-	if (c == TERM_CSI)
+	if (c == ANSI_CSI)
 		return (term_read_csi());
 	if (c == 'b')
 		return (cursor_prev_word());

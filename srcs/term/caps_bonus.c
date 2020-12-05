@@ -16,8 +16,7 @@ static bool	load_modes(t_modes *modes, char **area)
 {
 	*modes = (t_modes) {
 		tgetstr("im", area), tgetstr("ei", area), tgetstr("dm", area),
-		tgetstr("ed", area), tgetstr("cl", area), tgetstr("so", area),
-		tgetstr("se", area),
+		tgetstr("ed", area), tgetstr("so", area), tgetstr("se", area),
 	};
 	return (modes->insert && modes->insert_end);
 }
@@ -26,9 +25,9 @@ static bool	load_ctrls(t_ctrls *ctrls, char **area)
 {
 	*ctrls = (t_ctrls) {
 		tgetstr("dc", area), tgetstr("DC", area), tgetstr("ce", area),
-		tgetstr("ec", area), tgetstr("cm", area), tgetstr("ch", area),
-		tgetstr("up", area), tgetstr("do", area), tgetstr("le", area),
-		tgetstr("nd", area),
+		tgetstr("ec", area), tgetstr("cl", area), tgetstr("cm", area),
+		tgetstr("ch", area), tgetstr("up", area), tgetstr("do", area),
+		tgetstr("le", area), tgetstr("nd", area), tgetstr("nw", area),
 	};
 	return (ctrls->del && ctrls->del_line && ctrls->move && ctrls->up
 		&& ctrls->down && ctrls->left && ctrls->right);
@@ -61,8 +60,10 @@ bool		caps_load(t_caps *caps)
 	char	*area;
 
 	area = NULL;
-	return (load_modes(&caps->mode, &area)
-	&& load_ctrls(&caps->ctrl, &area)
-	&& load_keys(&caps->key, &area)
-	&& load_flags(&caps->flag, &area));
+	return (load_modes(&caps->modes, &area)
+	&& load_ctrls(&caps->ctrls, &area)
+	&& load_keys(&caps->keys, &area)
+	&& load_flags(&caps->flags, &area)
+	&& (caps->width = tgetnum("co")) > 0
+	&& (caps->height = tgetnum("li")) > 0);
 }
