@@ -7,13 +7,14 @@ t_term_err	cursor_goto_index(size_t index)
 	if (index != g_term.caps.index)
 	{
 		g_term.caps.index = index;
-		g_term.caps.cursor.pos.x = index % g_term.caps.width;
-		g_term.caps.cursor.pos.y = index / g_term.caps.width;
-		//ft_dprintf(2, "%d, %d;", g_term.caps.cursor.pos.x, g_term.caps.cursor.pos.y);
+		index += g_term.caps.cursor.origin.x;
 		pos = (t_pos) {
-			g_term.caps.cursor.origin.x + g_term.caps.cursor.pos.x,
-			g_term.caps.cursor.origin.y + g_term.caps.cursor.pos.y,
+			index % g_term.caps.width,
+			index / g_term.caps.width,
 		};
+		//ft_dprintf(2, "%d, %d;", g_term.caps.cursor.pos.x, g_term.caps.cursor.pos.y);
+		g_term.caps.cursor.pos.x = pos.x - g_term.caps.cursor.origin.x;
+		g_term.caps.cursor.pos.y = pos.y - g_term.caps.cursor.origin.y;
 		caps_goto(&g_term.caps, &pos);
 	}
 	return (TERM_EOK);

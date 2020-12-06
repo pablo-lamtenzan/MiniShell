@@ -8,14 +8,14 @@ void		caps_goto(t_caps *caps, t_pos *pos)
 	const bool		insert = caps->mode & CAPS_MINS && !caps->flags.move_insert;
 	const size_t	delta_y = pos->y - caps->cursor.real.y;
 
-	ft_dprintf(2, "%lu", delta_y);
+	//ft_dprintf(2, "%lu", delta_y);
 	if (insert)
 		tputs(caps->modes.insert_end, 1, &putc_err);
 	// if height is the same move only horizontally
-	if (!delta_y && caps->ctrls.move_h)
+	if (false && !delta_y && caps->ctrls.move_h)
 		tputs(tgoto(caps->ctrls.move_h, 0, pos->x), 1, &putc_err);
 	else // else move from the delta
-		tputs(tgoto(caps->ctrls.move, delta_y, pos->x), 1, &putc_err);
+		tputs(tgoto(caps->ctrls.move, pos->x, caps->height - pos->y), 1, &putc_err);
 	caps->cursor.real = *pos;
 	if (insert)
 		tputs(caps->modes.insert, 1, &putc_err);
