@@ -9,12 +9,12 @@ t_term_err	cursor_goto_index(size_t index)
 		g_term.caps.index = index;
 		index += g_term.caps.cursor.origin.x;
 		pos = (t_pos) {
-			index % g_term.caps.width,
-			index / g_term.caps.width,
+			index % (g_term.caps.width -1),
+			index / (g_term.caps.width -1) + g_term.caps.cursor.origin.y,
 		};
 		//ft_dprintf(2, "%d, %d;", g_term.caps.cursor.pos.x, g_term.caps.cursor.pos.y);
-		g_term.caps.cursor.pos.x = pos.x - g_term.caps.cursor.origin.x;
-		g_term.caps.cursor.pos.y = pos.y - g_term.caps.cursor.origin.y;
+		//g_term.caps.cursor.pos.x = pos.x - g_term.caps.cursor.origin.x;
+		//g_term.caps.cursor.pos.y = pos.y - g_term.caps.cursor.origin.y;
 		caps_goto(&g_term.caps, &pos);
 	}
 	return (TERM_EOK);

@@ -28,7 +28,7 @@ static bool	load_ctrls(t_ctrls *ctrls, char **area)
 		tgetstr("ec", area), tgetstr("cl", area), tgetstr("cm", area),
 		tgetstr("ch", area), tgetstr("cv", area), tgetstr("up", area),
 		tgetstr("do", area), tgetstr("le", area), tgetstr("nd", area),
-		tgetstr("nw", area),
+		tgetstr("sf", area),
 	};
 	return (ctrls->del && ctrls->del_line && ctrls->move && ctrls->up
 		&& ctrls->down && ctrls->left && ctrls->right);

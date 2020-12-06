@@ -35,90 +35,25 @@ size_t		strglen(const char *str)
 	return (glen);
 }
 
-// FIXME
-/*
-**	Append to an interactive terminal's input line.
-*/
+
+// TODO: Handle or reject ic
+// TODO; Handle or reject 1-width terminal
 t_term_err	term_write(const char *input, size_t length)
 {
 	t_term_err	status;
-	const t_pos	wrapped = (t_pos){
-		length % (g_term.caps.width - 1),
-		length / (g_term.caps.width - 1),
-	};
-	const int	space_left = g_term.caps.width - g_term.caps.cursor.real.x;
-	const int	first_len = ((size_t)space_left < length) ? space_left : length;
-	int			y;
 
 	status = TERM_EOK;
-	if ((y = (wrapped.y && first_len != 0))
-	&& (write(STDERR_FILENO, input, first_len) == -1
-	|| tputs(tgetstr("nw", NULL), 1, putc_err) == -1))
-		return (TERM_EWRITE);
-	while (y < wrapped.y
-	&& tputs(tgetstr("nw", NULL), 1, putc_err) != -1
-	&& write(STDERR_FILENO, input, g_term.caps.width) != -1)
-	{
-		y++;
-		input += g_term.caps.width;
-	}
-	if (y < wrapped.y
-	|| (wrapped.x && write(STDERR_FILENO, input, wrapped.x) == -1))
+	if (write(1, input, length) == -1)
 		status = TERM_EWRITE;
 	g_term.caps.index += length;
-	g_term.caps.cursor.real.x += wrapped.x;
-	g_term.caps.cursor.real.y += wrapped.y;
-	g_term.caps.cursor.pos.x += wrapped.x;
-	g_term.caps.cursor.pos.y += wrapped.y;
-	return (status);
-}
-
-t_term_err	old_term_write(const char *input, size_t length)
-{
-	t_term_err	status;
-	t_pos		wrapped;
-	int			empty;
-	int			y;
-	size_t		new_index;
-
-	status = TERM_EOK;
-	if (length != 0)
+	g_term.caps.cursor.real.x = (g_term.caps.cursor.origin.x + g_term.caps.index) % (g_term.caps.width - 1);
+	g_term.caps.cursor.real.y =(g_term.caps.cursor.origin.x + g_term.caps.index) / (g_term.caps.width - 1) + g_term.caps.cursor.origin.y;
+	if (g_term.caps.cursor.real.x == g_term.caps.width - 1)
 	{
-		new_index = g_term.caps.index + length;
-		g_term.caps.index = new_index;
-		if ((size_t)(empty = g_term.caps.width - g_term.caps.cursor.real.x) < length)
-		{
-			if (write(STDERR_FILENO, input, empty) == -1)
-				return (TERM_EWRITE);
-			input += empty;
-			new_index -= empty;
-			wrapped.x = new_index % g_term.caps.width;
-			wrapped.y = new_index / g_term.caps.width;
-			y = 0;
-			while (y < wrapped.y && write(STDERR_FILENO,
-				input + y * g_term.caps.width, g_term.caps.width) != -1)
-			{
-				y++;
-				ft_dprintf(2, "WRAP");
-				tputs(g_term.caps.ctrls.scroll_down, 1, &putc_err);
-			}
-			ft_dprintf(2, "y: %d, wrapped.y: %d\n", y, wrapped.y);
-			if (y != wrapped.y || write(STDERR_FILENO,
-				input + y * g_term.caps.width, wrapped.x) == -1)
-				return (TERM_EWRITE);
-			g_term.caps.cursor.pos.x = (g_term.caps.cursor.pos.x + wrapped.x) % g_term.caps.width;
-			g_term.caps.cursor.pos.y += wrapped.y;
-			g_term.caps.cursor.real.x += wrapped.x;
-			g_term.caps.cursor.real.y += wrapped.y;
-		}
+		if (g_term.caps.index < g_term.line->len)
+			tputs(g_term.caps.ctrls.down, 1, &putc_err);
 		else
-		{
-			if (write(STDERR_FILENO, input, length) == -1)
-				return (TERM_EWRITE);
-			g_term.caps.cursor.pos.x += length;
-			g_term.caps.cursor.real.x += length;
-		}
-		//ft_dprintf(2, "EMPTY: %d", empty);
+			tputs(tgetstr("sf", NULL), 1, &putc_err);
 	}
 	return (status);
 }
