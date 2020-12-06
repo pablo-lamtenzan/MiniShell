@@ -43,8 +43,8 @@ t_term_err	term_write(const char *input, size_t length)
 {
 	t_term_err	status;
 	const t_pos	wrapped = (t_pos){
-		length % g_term.caps.width,
-		length / g_term.caps.width,
+		length % (g_term.caps.width - 1),
+		length / (g_term.caps.width - 1),
 	};
 	const int	space_left = g_term.caps.width - g_term.caps.cursor.real.x;
 	const int	first_len = ((size_t)space_left < length) ? space_left : length;
@@ -53,10 +53,10 @@ t_term_err	term_write(const char *input, size_t length)
 	status = TERM_EOK;
 	if ((y = (wrapped.y && first_len != 0))
 	&& (write(STDERR_FILENO, input, first_len) == -1
-	|| tputs(tgetstr("am", NULL), 1, putc_err) == -1))
+	|| tputs(tgetstr("nw", NULL), 1, putc_err) == -1))
 		return (TERM_EWRITE);
 	while (y < wrapped.y
-	&& tputs(tgetstr("am", NULL), 1, putc_err) != -1
+	&& tputs(tgetstr("nw", NULL), 1, putc_err) != -1
 	&& write(STDERR_FILENO, input, g_term.caps.width) != -1)
 	{
 		y++;

@@ -33,6 +33,7 @@ typedef struct	s_ctrls
 	char	*clear;
 	char	*move;
 	char	*move_h;
+	char	*move_v;
 	char	*up;
 	char	*down;
 	char	*left;
