@@ -9,8 +9,8 @@ t_term_err	cursor_goto_index(size_t index)
 		g_term.caps.index = index;
 		index += g_term.caps.cursor.origin.x;
 		pos = (t_pos) {
-			index % (g_term.caps.width -1),
-			index / (g_term.caps.width -1) + g_term.caps.cursor.origin.y,
+			index % (g_term.caps.width),
+			index / (g_term.caps.width) + g_term.caps.cursor.origin.y,
 		};
 		//ft_dprintf(2, "%d, %d;", g_term.caps.cursor.pos.x, g_term.caps.cursor.pos.y);
 		//g_term.caps.cursor.pos.x = pos.x - g_term.caps.cursor.origin.x;
