@@ -31,7 +31,7 @@
 /*
 **	Displayed before reading the first-line of a command.
 */
-# define TERM_PS1		C_D"["S_B""C_B"$USER"S_D""C_D"]"C_GL"$"C_D" "
+# define TERM_PS1		C_D"["S_B""C_BRI"$USER"S_D""C_D""C_BYI"@"S_BGI"$DIRNAME"S_D"]"C_W"$"C_D" "
 
 /*
 **	Displayed before reading the second and subsquent lines of a command.

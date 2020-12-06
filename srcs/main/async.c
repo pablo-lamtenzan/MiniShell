@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 11:18:02 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/01 11:43:51 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/06 06:39:13 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static void		suspend_process(int signal)
 		print_signal(STDERR_FILENO, \
 			g_session.groups->active_processes, STANDART);
 	// TODO: Check if we should kill on SIGTSTP
-	kill(g_session.groups->active_processes->pid, SIGSTOP);
+	// kill(g_session.groups->active_processes->pid, SIGSTOP);
 }
 
 static void		do_nothing(int signal)
@@ -73,5 +73,5 @@ void			init_signal_handler(bool interactive)
 	signal(SIGTERM, &terminate_minishell);
 	signal(SIGHUP, &terminate_minishell);
 	signal(SIGQUIT, &do_nothing);
-	signal(SIGINT, (interactive) ? &interrupt_line: &do_nothing);
+	signal(SIGINT, (interactive) ? &interrupt_line : &do_nothing);
 }
