@@ -2,6 +2,7 @@
 # define CAPS_H
 
 # include <sys/stat.h>
+# include <stdint.h>
 
 # include <term.h>
 # define MAX_ENTRY		1024
