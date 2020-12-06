@@ -53,10 +53,10 @@ t_term_err	term_write(const char *input, size_t length)
 	status = TERM_EOK;
 	if ((y = (wrapped.y && first_len != 0))
 	&& (write(STDERR_FILENO, input, first_len) == -1
-	|| write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) - 1) == -1))
+	|| tputs(tgetstr("am", NULL), 1, putc_err) == -1))
 		return (TERM_EWRITE);
 	while (y < wrapped.y
-	&& tputs(tgetstr("sf", NULL), 1, putc_err) != -1
+	&& tputs(tgetstr("am", NULL), 1, putc_err) != -1
 	&& write(STDERR_FILENO, input, g_term.caps.width) != -1)
 	{
 		y++;
@@ -72,6 +72,7 @@ t_term_err	term_write(const char *input, size_t length)
 	g_term.caps.cursor.pos.y += wrapped.y;
 	return (status);
 }
+
 t_term_err	old_term_write(const char *input, size_t length)
 {
 	t_term_err	status;
