@@ -13,6 +13,7 @@ void		caps_goto_x(t_caps *caps, int pos)
 		{
 			if (delta < 0)
 			{
+				//ft_dprintf(2, "left * %d", delta);
 				delta = -delta;
 				ctrl = g_term.caps.ctrls.left;
 			}

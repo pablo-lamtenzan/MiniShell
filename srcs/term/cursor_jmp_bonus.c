@@ -12,7 +12,7 @@ t_term_err	cursor_goto_index(size_t index)
 			index % (g_term.caps.width),
 			index / (g_term.caps.width) + g_term.caps.cursor.origin.y,
 		};
-		//ft_dprintf(2, "%d, %d;", g_term.caps.cursor.pos.x, g_term.caps.cursor.pos.y);
+		//ft_dprintf(2, "%d, %d;", pos.x, pos.y);
 		//g_term.caps.cursor.pos.x = pos.x - g_term.caps.cursor.origin.x;
 		//g_term.caps.cursor.pos.y = pos.y - g_term.caps.cursor.origin.y;
 		caps_goto(&g_term.caps, &pos);
