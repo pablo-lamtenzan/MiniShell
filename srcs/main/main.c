@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/02 15:34:24 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/06 07:08:06 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <builtins.h>
 #include <signals.h>
 #include <string.h>
+#include <unistd.h>
 
 // TODO: ERROR codes: execution and builtins [error msg] -> [optional help] -> [return]
 /* Errors List:
@@ -119,7 +120,7 @@ static bool				init(int ac, const char **av, const char **ep)
 	{
 		if ((g_session.name = ft_basename(av[0])))
 		{
-			if ((g_session.env = env_import(ep)))
+			if ((g_session.env = env_import(ep)) && env_set(&g_session.env, "DIRNAME", ft_basename(getcwd(NULL, 0)), false))
 			{
 				if (term_init(&g_session.env))
 				{

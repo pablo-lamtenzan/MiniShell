@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 21:57:11 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/12/02 15:37:18 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/06 08:30:35 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,13 @@ int				ft_chdir(const char *path)
 void			swap_pwds(const char *newpwd)
 {
 	const char	*pwd;
+	char		*freed;
 
 	pwd = env_get(g_session.env, "PWD", 3);
 	env_set(&g_session.env, "OLDPWD", pwd, true);
 	env_set(&g_session.env, "PWD", newpwd, true);
+	env_set(&g_session.env, "DIRNAME", (freed = ft_basename(newpwd)), true);
+	free(freed);
 }
 
 int				go_home(t_exec *args)
@@ -82,10 +85,11 @@ int				go_to_path(t_exec *args, char *path)
 
 int	b_cd(t_exec *args)
 {
-	const char	*oldpwd;
+	char		*oldpwd;
 	char		path[PATH_MAX];
 
-	if (!(oldpwd = env_get(g_session.env, "OLDPWD", 6)))
+	if (!(oldpwd = (char*)env_get(g_session.env, "OLDPWD", 6))
+		|| !(oldpwd = ft_strdup(oldpwd)))
 		return (STD_ERROR);
 	if (args->ac == 1)
 		go_home(args);
@@ -101,6 +105,7 @@ int	b_cd(t_exec *args)
 		else if (path[0] == '-' && ft_chdir(oldpwd) == 0)
 		{
 			swap_pwds(oldpwd);
+			free(oldpwd);
 			return (SUCCESS);
 		}
 		else
