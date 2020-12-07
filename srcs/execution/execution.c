@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 08:00:03 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/07 08:57:05 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 #include <path.h>
 
 // TODO: Handle path concatenation alloc error
-static t_exec_status	get_exec(t_exec *info)
+static t_exec_status	get_exec(t_exec *info, t_env **env)
 {
 	t_exec_status	status;
 
@@ -29,25 +29,26 @@ static t_exec_status	get_exec(t_exec *info)
 	if (!(info->exec = builtin_get(info->av[0])))
 	{
 		if (!(info->file_path =
-			path_get(info->av[0], env_get(g_session.env, "PATH", 4))))
+			path_get(info->av[0], env_get(*env, "PATH", 4))))
 		{
 			g_session.st = CMD_NOT_FOUND;
 			status = BAD_PATH;
 		}
-		else if (!(info->ep = (char*const*)env_export(g_session.env)))
+		else if (!(info->ep = (char*const*)env_export(*env)))
 			status = RDR_BAD_ALLOC;
 		else
 			info->exec = &execute_child;
 	}
+	info->env = env;
 	return (status);
 }
 
-static t_exec_status	execute_process(t_exec *info)
+static t_exec_status	execute_process(t_exec *info, t_env **env)
 {
 	t_exec_status		exec_st;
 
 	update_exit_count(info->av[0]);
-	if ((exec_st = get_exec(info)) == SUCCESS)
+	if ((exec_st = get_exec(info, env)) == SUCCESS)
 	{
 		signal(SIGCHLD, SIG_IGN);
 		zombies_list_purge_exited_zombies();
@@ -85,7 +86,7 @@ static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
 			return (RDR_BAD_ALLOC);
 		if (!info->av[0])
 			return (SUCCESS);
-		exec_st = execute_process(info);
+		exec_st = execute_process(info, dup ? &dup : &g_session.env);
 		env_clr(&dup);
 		if (close_pipe_fds(info->fds) != SUCCESS)
 			return (BAD_CLOSE);

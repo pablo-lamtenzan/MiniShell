@@ -20,11 +20,11 @@ void	env_clr(t_env **env)
 {
 	t_env	*current;
 
-	int i = 0;
-	ft_printf("env: %p\n", *env);
+	//int i = 0;
+	//ft_printf("env: %p\n", *env);
 	while ((current = *env))
 	{
-		ft_printf("TEST: %d\n", i++);
+		//ft_printf("TEST: %d\n", i++);
 		*env = current->next;
 		free(current->key);
 		free(current);
@@ -63,6 +63,9 @@ size_t	env_size(t_env *env)
 	return (size);
 }
 
+/*
+** Add back a node in the target env lnk-list
+*/
 bool	env_add_back(t_env **env, t_env *add)
 {
 	t_env	*rmb;
@@ -82,11 +85,6 @@ bool	env_add_back(t_env **env, t_env *add)
 	return (true);		
 }
 
-/*
-** Return a copy of parent env
-*/
-
-// env assing
 /*
 ** Dup the current env and return a pointer to the first elem
 */

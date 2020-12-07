@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:51:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 09:49:14 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/07 08:53:50 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ typedef struct			s_exec
 	int					ac;
     char*const			*av;
     char*const			*ep;
+	t_env				**env;
 }						t_exec;
 
 /*
