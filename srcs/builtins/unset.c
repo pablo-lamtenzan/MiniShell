@@ -1,29 +1,35 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/12/07 10:34:35 by pablo             #+#    #+#             */
+/*   Updated: 2020/12/07 10:52:58 by pablo            ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <execution.h>
 
-int	b_unset_old(t_exec *args)
+static	void	free_node(t_exec *args, t_env **first, t_env **prev,
+		t_env **next)
 {
-	
-	while (args->ac-- > 1)
-	{
-		/* if (!key_check(av[ac]))
-		{
-			ft_printf("%s: %s `%s' : not a valid identifier\n",
-				t->name, av[0], av[ac]);
-			return (1);
-		} */
-		//t->env = map_del(t->env, args->av[args->ac]); // this line only was the 04/11/2020
-		//glob_env = map_del(cmd->glob_env, cmd->av[cmd->ac]);
-	}
-	return (SUCCESS);
+	if (*first && *first == *args->env)
+		*first = (*first)->next;
+	free(*args->env);
+	if (*prev)
+		(*prev)->next = *next;
 }
 
-
-int	b_unset(t_exec *args)
+int		b_unset(t_exec *args)
 {
 	t_env	*next;
 	t_env	*first;
 	t_env	*prev;
 
+	if (args->ac == 1)
+		return (STD_ERROR);
 	while (args->ac-- > 1)
 	{
 		prev = NULL;
@@ -33,13 +39,7 @@ int	b_unset(t_exec *args)
 			next = (*args->env)->next;
 			if (!ft_strncmp(args->av[args->ac], (*args->env)->key, \
 					ft_strlen(args->av[args->ac])))
-			{
-				if (first && first == *args->env)
-					first = first->next;
-				free(*args->env);
-				if (prev)
-					prev->next = next;
-			}
+				free_node(args, &first, &prev, &next);
 			else
 				prev = *args->env;
 			*args->env = next;
