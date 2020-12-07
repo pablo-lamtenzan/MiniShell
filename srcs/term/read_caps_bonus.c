@@ -37,8 +37,10 @@ static t_term_err	term_read_echo(char c)
 
 	status = TERM_EOK;
 	select_clear();
-	if ((status = term_write(&c, 1)) == TERM_EOK && !line_putc(g_term.line, c))
+	if (!line_insert(g_term.line, g_term.caps.index, &c, 1))
 		status = TERM_EALLOC;
+	else
+		status = term_write(&c, 1);
 	return (status);
 }
 
