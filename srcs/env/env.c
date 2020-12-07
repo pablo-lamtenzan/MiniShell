@@ -29,6 +29,23 @@ void	env_clr(t_env **env)
 }
 
 /*
+** Allocates a new env node
+*/
+t_env	*env_new(char *key, bool exported, size_t key_len)
+{
+	t_env *new;
+
+	if ((new = malloc(sizeof(t_env))))
+	{
+		new->exported = exported;
+		new->key = ft_strdup(key);
+		new->key_length = key_len;
+		new->next = NULL;
+	}
+	return (new ? new : NULL);
+}
+
+/*
 ** Return the number of nodes in env
 */
 size_t	env_size(t_env *env)
@@ -43,29 +60,45 @@ size_t	env_size(t_env *env)
 	return (size);
 }
 
+bool	env_add_back(t_env **env, t_env *add)
+{
+	t_env	*rmb;
+
+	if (!add)
+		return (false);
+	if (!env || !*env)
+		*env = add;
+	else
+	{
+		rmb = *env;
+		while ((*env)->next)
+			*env = (*env)->next;
+		(*env)->next = add;
+		*env = rmb;
+	}
+	return (true);		
+}
+
 /*
 ** Return a copy of parent env
 */
-t_env	*env_dup(t_env *curr)
-{
-	t_env	*new;
-	t_env	*cp;
-	t_env	*cp_curr;
-	size_t	size;
 
-	if (!(new = malloc(sizeof(t_env) * (size = env_size(curr)))))
-		return (NULL);
-	cp = new;
-	cp_curr = curr;
+// env assing
+/*
+** Dup the current env and return a pointer to the first elem
+*/
+t_env	*env_dup(t_env *env)
+{
+	t_env	*cp;
+	t_env	*dup;
+
+	cp = env;
+	dup = NULL;
 	while (cp)
 	{
-		cp->next = cp + sizeof(t_env);
-		cp->key = ft_strdup(cp_curr->key);
-		cp->exported = cp_curr->exported;
-		cp->key_length = cp_curr->key_length;
-		cp_curr = cp_curr->next;
-		if (!cp_curr && !(cp->next = NULL))
-			break ;
+		if (!(env_add_back(&dup, env_new(cp->key, cp->exported, cp->key_length))))
+			return (NULL);
+		cp = cp->next;
 	}
-	return (new);
+	return (dup);
 }
