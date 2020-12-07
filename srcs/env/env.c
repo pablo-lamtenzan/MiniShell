@@ -3,14 +3,19 @@
 /*
 ** returns the length of an assignment's key
 */
-size_t	env_key_len(const char *key)
+size_t	env_key_len(const char *key, bool strict)
 {
 	const char	*i;
 
-	i = key;
-	if (!ft_isdigit(*i))
-		while(ft_isalnum(*i) || *i == '_')
-			i++;
+	if (strict)
+	{
+		i = key;
+		if (!ft_isdigit(*i))
+			while(ft_isalnum(*i) || *i == '_')
+				i++;
+	}
+	else if ((i = ft_strchr(key, '=')) == NULL)
+		return (0);
 	return (i - key);
 }
 

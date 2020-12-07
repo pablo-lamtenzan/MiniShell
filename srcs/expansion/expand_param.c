@@ -60,7 +60,7 @@ static const char	*var_expand(const char **input, t_env *env)
 			//ft_dprintf(2, "%d: %s", g_session.st, val);
 			(*input) += 2;
 		}
-		else if ((key_len = env_key_len((*input) + 1)))
+		else if ((key_len = env_key_len((*input) + 1, true)))
 		{
 			if (!(val = env_get(env, ++(*input), key_len)))
 				val = "";

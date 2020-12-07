@@ -33,9 +33,10 @@ static t_env	*env_get_entry(t_env **env, const char *key, size_t key_length)
 **
 ** returns 0 if the assignment is invalid, 1 if successful and -1 otherwise.
 */
-char		env_assign(t_env **env, const char *assignment, bool exported)
+char		env_assign(t_env **env, const char *assignment,
+	bool exported, bool strict)
 {
-	size_t			key_len = env_key_len(assignment);
+	size_t			key_len = env_key_len(assignment, strict);
 	t_env			*entry;
 
 	if (!key_len || assignment[key_len] != ENV_OP_ASSIGN)
@@ -60,23 +61,29 @@ const char		*env_set(t_env **env,
 	const char *key, const char *value, bool exported)
 {
 	const size_t	key_length = ft_strlen(key);
-	const size_t	value_length = ft_strlen(value);
+	const size_t	value_length = (value) ? ft_strlen(value) : 0;
+	const size_t	data_size = key_length + ((value) ? value_length + 2 : 1);
 	t_env			*entry;
-	size_t			data_size;
 
 	if (!(entry = env_get_entry(env, key, key_length)))
 		return (NULL);
-	free(entry->key);
 	entry->exported = exported;
+	if (!value && entry->key)
+		return (entry->key + key_length
+			+ (entry->key[key_length] == ENV_OP_ASSIGN));
 	entry->key_length = key_length;
-	data_size = key_length + value_length + 2;
+	free(entry->key);
 	if (!(entry->key = malloc(sizeof(*entry->key) * data_size)))
 		return (NULL);
-	ft_memcpy(entry->key, key, entry->key_length);
-	entry->key[entry->key_length] = ENV_OP_ASSIGN;
-	ft_memcpy(entry->key + entry->key_length + 1, value, value_length);
+	ft_memcpy(entry->key, key, key_length);
 	entry->key[data_size - 1] = '\0';
-	return (entry->key + entry->key_length + 1);
+	if (value)
+	{
+		entry->key[key_length] = ENV_OP_ASSIGN;
+		ft_memcpy(entry->key + key_length + 1, value, value_length);
+		return (entry->key + key_length + 1);
+	}
+	return (entry->key + key_length);
 }
 
 /*
@@ -92,7 +99,7 @@ t_env			*env_import(const char **envp)
 	env = NULL;
 	while (*envp)
 	{
-		if (!(env_assign(&env, *envp++, true)))
+		if (!(env_assign(&env, *envp++, true, false)))
 		{
 			env_clr(&env);
 			return (NULL);

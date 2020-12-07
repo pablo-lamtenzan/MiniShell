@@ -50,12 +50,13 @@ static bool			var_assign(t_tok **params, t_env **env)
 
 	status = 1;
 	while (status == 1 && (param = *params) && (part = param->data)
-	&& !(part->type & (TOK_MQUOTED)) && (key_len = env_key_len(part->data))
+	&& !(part->type & (TOK_MQUOTED))
+	&& (key_len = env_key_len(part->data, true))
 	&& (((char*)part->data)[key_len] == '='))
 	{
 		if (!(assignment = param_export(part, 0)))
 			return (false);
-		if ((status = env_assign(env, assignment, false)) == 1)
+		if ((status = env_assign(env, assignment, false, true)) == 1)
 		{
 			(*params) = (*params)->next;
 			//ft_dprintf(2, "[EXP][VAR][ASSIGN] assigned '%s'!\n", assignment);
