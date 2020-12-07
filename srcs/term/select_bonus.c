@@ -95,17 +95,22 @@ t_term_err	select_right(void)
 t_term_err	select_clear(void)
 {
 	t_term_err	status;
+	t_pos		pos;
+	int			index;
 
 	status = TERM_EOK;
 	if (g_term.caps.selec.start != -1U || g_term.caps.selec.end != -1U)
 	{
-		/* ft_dprintf(2, "[SELECT] clear\n"); */
 		g_term.caps.selec.start = -1U;
 		g_term.caps.selec.end = -1U;
 		if (g_term.line)
 		{
+			pos = g_term.caps.cursor.real;
+			index = g_term.caps.index;
 			term_clear_line();
-			status = term_write(g_term.line->data, g_term.line->len) != TERM_EOK;
+			status = term_write(g_term.line->data, g_term.line->len);
+			caps_goto(&g_term.caps, &pos);
+			g_term.caps.index = index;
 		}
 	}
 	return (status);

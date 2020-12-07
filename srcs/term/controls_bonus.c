@@ -99,7 +99,9 @@ t_term_err	term_clear_line()
 */
 t_term_err	term_new_line()
 {
-	if (write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) - 1) == -1)
+	term_clear_line();
+	if (write(STDERR_FILENO, g_term.line->data, g_term.line->len) == -1
+	|| write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) - 1) == -1)
 		return (TERM_EWRITE);
 	if (g_term.line->len != 0)
 	{
