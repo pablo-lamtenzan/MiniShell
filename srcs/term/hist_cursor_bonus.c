@@ -5,6 +5,7 @@ t_term_err	term_set_line(t_line *line)
 	t_term_err	status;
 
 	status = TERM_EOK;
+	term_clear_line();
 	if (g_term.caps.hist.curr != g_term.caps.hist.next)
 	{
 		hist_commit(&g_term.caps.hist, g_term.line);
@@ -14,10 +15,7 @@ t_term_err	term_set_line(t_line *line)
 	if (!(g_term.line = line_dup(line)))
 		status = TERM_EALLOC;
 	else
-	{
-		term_clear_line();
 		status = term_write(g_term.line->data, g_term.line->len);
-	}
 	return (status);
 }
 
