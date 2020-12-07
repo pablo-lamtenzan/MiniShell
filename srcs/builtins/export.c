@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:52 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 13:11:42 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/07 13:18:51 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int			b_export(t_exec *args)
 		freed = NULL;
 		while (!assign && *args->env)
 		{
-			if ((freed = trim_name(args->av[args->ac])))
+			if ((freed = trim_name(args->av[i])))
 				return (STD_ERROR);
 			if (!ft_strncmp(freed, (*args->env)->key, ft_strlen(freed)))
 				(*args->env)->exported = true;
@@ -72,11 +72,11 @@ int			b_export(t_exec *args)
 			ret = STD_ERROR;
 		if (assign)
 		{
-			if (!(freed = trim_name(args->av[args->ac])))
+			if (!(freed = trim_name(args->av[i])))
 				return (STD_ERROR);
 			// Problem export the var has no value
 			ft_dprintf(2, "size: %lu\n", ft_strlen(freed) + 1);
-			env_set(args->env, freed, (char*)&args->av[args->ac] + ft_strlen(freed) + 1, true);
+			env_set(args->env, freed, (char*)&args->av[i] + ft_strlen(freed) + 1, true);
 			ret = SUCCESS;
 		}
 	}
