@@ -30,4 +30,7 @@ const char		**env_export(t_env *env);
 
 void			env_clr(t_env **env);
 
+size_t			env_size(t_env *env);
+t_env			*env_dup(t_env *curr);
+
 #endif
