@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/02 10:05:25 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/07 08:00:03 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
 	char				**filename;
 	t_redir_status		redir_st;
 	t_exec_status		exec_st;
+	t_env				*dup;
 
 	exec_st = SUCCESS;
 	if ((redir_st = redirections_handler(&info, cmd, &filename)) != CONTINUE)
@@ -78,12 +79,14 @@ static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
 		exec_st = execute_cmd(cmd->a, info);
 	else
 	{
+		dup = g_session.flags & PIPED_CMD ? env_dup(g_session.env) : NULL;
 		if (!(info->av = tokens_expand((t_tok**)&cmd->a, \
-			&g_session.env, &info->ac)))
+			dup ? &dup : &g_session.env, &info->ac)))
 			return (RDR_BAD_ALLOC);
 		if (!info->av[0])
 			return (SUCCESS);
 		exec_st = execute_process(info);
+		env_clr(&dup);
 		if (close_pipe_fds(info->fds) != SUCCESS)
 			return (BAD_CLOSE);
 	}

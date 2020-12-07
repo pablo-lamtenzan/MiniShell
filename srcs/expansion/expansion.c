@@ -108,19 +108,17 @@ char				**tokens_expand(t_tok **params, t_env **env, int *ac)
 {
 	t_tok	*param;
 	t_line	*args;
-	t_env *dup;
 
 	args = NULL;
-	dup = g_session.flags & PIPED_CMD ? env_dup(*env) : NULL;
 	param = *params;
-	while (param && param_expand(param->data, dup ? dup : *env))
+	while (param && param_expand(param->data, *env))
 		param = param->next;
 	if (param)
 	{
 		token_clr(params);
 		return (NULL);
 	}
-	if (!var_assign(params, dup ? &dup : env) || (*params && !(args = word_split(params))))
+	if (!var_assign(params, env) || (*params && !(args = word_split(params))))
 	{
 		token_clr(params);
 		return (NULL);
