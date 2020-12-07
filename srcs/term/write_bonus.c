@@ -35,9 +35,9 @@ size_t		strglen(const char *str)
 	return (glen);
 }
 
-
 // TODO: Handle or reject ic
-// TODO; Handle or reject 1-width terminal
+// TODO: Handle or reject 1-width terminal
+
 t_term_err	term_write(const char *input, size_t length)
 {
 	t_term_err	status;
@@ -45,19 +45,23 @@ t_term_err	term_write(const char *input, size_t length)
 	status = TERM_EOK;
 	if (length)
 	{
+		// TODO: tputs(tparm(tgetstr("IC", NULL), length), 1, &putc_err);	
 		if (write(1, input, length) == -1)
 			status = TERM_EWRITE;
 		g_term.caps.index += length;
-		g_term.caps.cursor.real.x = (g_term.caps.cursor.origin.x + g_term.caps.index) % (g_term.caps.width);
-		g_term.caps.cursor.real.y = (g_term.caps.cursor.origin.x + g_term.caps.index) / (g_term.caps.width) + g_term.caps.cursor.origin.y;
+		g_term.caps.cursor.real = (t_pos) {
+			(g_term.caps.cursor.origin.x + g_term.caps.index)
+				% (g_term.caps.width),
+			(g_term.caps.cursor.origin.x + g_term.caps.index)
+				/ (g_term.caps.width) + g_term.caps.cursor.origin.y,
+		};
 		if (g_term.caps.cursor.real.x == 0)
 		{
 			if (g_term.caps.index < g_term.line->len)
 				tputs(g_term.caps.ctrls.down, 1, &putc_err);
 			else
-				tputs(tgetstr("sf", NULL), 1, &putc_err);
-			g_term.caps.cursor.real.x = 0;
-		}	
+				tputs(g_term.caps.ctrls.scroll_down, 1, &putc_err);
+		}
 	}
 	return (status);
 }
