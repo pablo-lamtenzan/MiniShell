@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 15:09:00 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/07 15:23:35 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,6 @@ static t_exec_status	execute_process(t_exec *info, t_env **env)
 			g_session.groups->active_processes->flags \
 			& STOPPED ? -1 : (unsigned char)g_session.st;
 	}
-	else
-		ft_dprintf(2, "%s: %s: command not found\n",
-			g_session.name, info->av[0]);
 	destroy_execve_args(info);
 	return (exec_st);
 }
