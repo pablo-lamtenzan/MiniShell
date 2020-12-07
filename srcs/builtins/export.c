@@ -3,76 +3,82 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:52 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/02 14:58:30 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/07 13:11:42 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 
-int				print_env(int fd, t_map *env)
+static void	print_env(int fd, t_env *env)
 {
-	if (env)
-	{
-		if (env->value && *env->value)
-			ft_printf("declare -x %s=\"%s\"\n", env->key, env->value);
-		else
-			ft_printf("declare -x %s\n", env->key);
-		print_env(fd, env->next);
-	}
-	return (SUCCESS);
+	if (!env)
+		return ;
+	if (env->exported)
+		ft_dprintf(fd, "declare -x %s\n", env->key);
+	print_env(fd, env->next);
 }
 
-int	b_export(t_exec *args)
+static char	*trim_name(const char *s)
 {
-	const char*	word;
+	char	*trim;
+	size_t	size;
 
+	size = 0;
+	while (s[size] && s[size] != '=')
+		size++;
+	if (!(trim = malloc(sizeof(char) * size + 1)))
+		return (NULL);
+	trim[size] = 0;
+	ft_memcpy(trim, s, size);
+	return (trim);
+}
+
+int			b_export(t_exec *args)
+{
+	t_env	*first;
+	char	*freed;
+	bool	assign;
+	int		ret;
+	int		i;
+
+	ret = SUCCESS;
+	i = -1;
 	if (args->ac == 1)
 	{
-		//map_sort(&t->env, &map_cmp);
-		//print_env(args->fds[FDS_STDOUT], t->env);
-		;
+		print_env(args->fds[FDS_STDOUT], *args->env);
+		return (ret);
 	}
-	else
+	while (++i < args->ac)
 	{
-		while (args->ac-- > 1)
+		first = *args->env;
+		assign = (bool)ft_strchr(args->av[i], '=');
+		freed = NULL;
+		while (!assign && *args->env)
 		{
-			/* if (!key_check(av[ac])) // TODO: Key checks on export builtin
-			{
-				ft_printf("%s: %s `%s' : not a valid identifier\n",
-					t->name, av[0], av[ac]);
-				return (1);
-			} */
-			/*
-			if ((var = map_get(t->env, args->av[args->ac])))
-			{
-				if (!map_set(&t->env, var->key, var->value))
-					return (1);
-			}
-			else if (!map_set(&t->env, args->av[args->ac], ""))
-				return (1);
-			*/
-
-			/* ---------------------- NEW ----------------------*/
-			
-			/* Not tested yet */
-			if (0/* Error handling*/)
-			{
-				; // print not a valid identifier
+			if ((freed = trim_name(args->av[args->ac])))
 				return (STD_ERROR);
-			}
-			/* NAME (av[1]) IS SET */
-			else if ((word = env_get(g_session.env, args->av[args->ac], ft_strlen(args->av[args->ac]))))
-			{
-				if (!env_set(&g_session.env, args->av[args->ac], word, true))
-					return (STD_ERROR);
-			}
-			/* NAME IS UNSET (not very sure about that) */
-			else if (!env_set(&g_session.env, args->av[args->ac], "", true))
+			if (!ft_strncmp(freed, (*args->env)->key, ft_strlen(freed)))
+				(*args->env)->exported = true;
+			// problem doesn't print the exported true
+			*args->env = (*args->env)->next;
+			free(freed);
+			ret = SUCCESS;
+		}
+		*args->env = first;
+		if (!assign && !freed)
+			ret = STD_ERROR;
+		if (assign)
+		{
+			if (!(freed = trim_name(args->av[args->ac])))
 				return (STD_ERROR);
+			// Problem export the var has no value
+			ft_dprintf(2, "size: %lu\n", ft_strlen(freed) + 1);
+			env_set(args->env, freed, (char*)&args->av[args->ac] + ft_strlen(freed) + 1, true);
+			ret = SUCCESS;
 		}
 	}
-	return (SUCCESS);
+	return (ret);
 }
