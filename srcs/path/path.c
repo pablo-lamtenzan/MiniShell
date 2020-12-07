@@ -1,4 +1,6 @@
 #include <path.h>
+#include <job_control.h>
+#include <unistd.h>
 
 static char	*path_cat(const char *a, const char *b)
 {
@@ -29,7 +31,12 @@ char	*path_get(const char *name, const char *path)
 	{
 		if (*name == '/' || *name == '.')
 		{
-			if ((stat(name, &s) == 0 && s.st_mode & S_IXUSR))
+			if (stat(name, &s) == 0 && S_ISDIR(s.st_mode))
+			{
+				ft_dprintf(STDERR_FILENO, "%s: %s: Is a directory\n", g_session.name, name);
+				return (NULL);
+			}
+			if (s.st_mode & S_IXUSR)
 				absolute = ft_strdup(name);
 		}
 		else if ((paths = ft_split(path, ':')))

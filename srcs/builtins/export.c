@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:52 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 13:18:51 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/07 14:04:24 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int			b_export(t_exec *args)
 	int		i;
 
 	ret = SUCCESS;
-	i = -1;
+	i = 0;
 	if (args->ac == 1)
 	{
 		print_env(args->fds[FDS_STDOUT], *args->env);
