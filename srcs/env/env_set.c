@@ -28,7 +28,8 @@ static t_env	*env_get_entry(t_env **env, const char *key, size_t key_length)
 ** Assign an environment variable using an assignment operation.
 **
 ** The assignment string should be composed of [KEY]=[VALUE].
-** The key's characters must be alphanumeric or '-' and '_'.
+** The key's characters must be alphanumeric or '-' and '_' and cannot start
+** with a digit.
 **
 ** returns 0 if the assignment is invalid, 1 if successful and -1 otherwise.
 */

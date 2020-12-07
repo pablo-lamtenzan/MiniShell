@@ -8,8 +8,9 @@ size_t	env_key_len(const char *key)
 	const char	*i;
 
 	i = key;
-	while(ft_isalnum(*i) || *i == '_' || *i == '-')
-		i++;
+	if (!ft_isdigit(*i))
+		while(ft_isalnum(*i) || *i == '_')
+			i++;
 	return (i - key);
 }
 
