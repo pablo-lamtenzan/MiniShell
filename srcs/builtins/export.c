@@ -17,7 +17,7 @@ static void	print_env(int fd, t_env *env)
 	while (env)
 	{
 		if (env->key[env->key_length] == ENV_OP_ASSIGN)
-			ft_dprintf(fd, "%.*s=\"%s\"\n",
+			ft_dprintf(fd, "declare -x %.*s=\"%s\"\n",
 				(int)env->key_length, env->key, env->key + env->key_length + 1);
 		else
 			ft_dprintf(fd, "declare -x %s\n", env->key);
