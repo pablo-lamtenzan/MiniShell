@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/06 07:08:06 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/06 09:05:03 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,12 +116,21 @@ void	exec(t_tok* tokens)
 
 static bool				init(int ac, const char **av, const char **ep)
 {
+	char				*freed[2];
+
+	freed[0] = NULL;
+	freed[1] = NULL;
+	ft_bzero(&freed, sizeof(freed));
 	if (ac > 0 && session_start())
 	{
 		if ((g_session.name = ft_basename(av[0])))
 		{
-			if ((g_session.env = env_import(ep)) && env_set(&g_session.env, "DIRNAME", ft_basename(getcwd(NULL, 0)), false))
+			if ((g_session.env = env_import(ep)) && env_set(&g_session.env, \
+			"DIRNAME", freed[0] = ft_basename(freed[1] = getcwd(NULL, 0)), false))
 			{
+				free(freed[0]);
+				free(freed[1]);
+				ft_bzero(&freed, sizeof(freed));
 				if (term_init(&g_session.env))
 				{
 					init_signal_handler(g_term.is_interactive
@@ -129,7 +138,9 @@ static bool				init(int ac, const char **av, const char **ep)
 					return (true);
 				}
 				env_clr(&g_session.env);
-			}			
+			}
+			free(freed[0]);	
+			free(freed[1]);
 			free(g_session.name);
 		}
 		session_end();

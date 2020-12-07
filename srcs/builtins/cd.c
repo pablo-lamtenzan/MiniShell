@@ -6,13 +6,12 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 21:57:11 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/12/06 08:30:35 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/06 09:34:33 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <string.h>
-// TODO: Check allocation errors on map_set
 
 int				ft_chdir(const char *path)
 {
@@ -88,9 +87,6 @@ int	b_cd(t_exec *args)
 	char		*oldpwd;
 	char		path[PATH_MAX];
 
-	if (!(oldpwd = (char*)env_get(g_session.env, "OLDPWD", 6))
-		|| !(oldpwd = ft_strdup(oldpwd)))
-		return (STD_ERROR);
 	if (args->ac == 1)
 		go_home(args);
 	else
@@ -99,10 +95,11 @@ int	b_cd(t_exec *args)
 		ft_memcpy(path, args->av[1], ft_strlen(args->av[1]));
 		if (path[0] == '/' && ft_chdir(path) == 0)
 		{
-			env_set(&g_session.env, "PWD", path, true);
+			swap_pwds(path);
 			return (SUCCESS);
 		}
-		else if (path[0] == '-' && ft_chdir(oldpwd) == 0)
+		else if (path[0] == '-' && (oldpwd = (char*)env_get(g_session.env, \
+		"OLDPWD", 6)) && (oldpwd = ft_strdup(oldpwd)) && ft_chdir(oldpwd) == 0)
 		{
 			swap_pwds(oldpwd);
 			free(oldpwd);

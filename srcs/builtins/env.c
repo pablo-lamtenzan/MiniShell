@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:20:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/11/29 03:05:59 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/07 08:56:20 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int		b_env(t_exec *args)
 {
 	t_env* 		curr;
 
-	curr = g_session.env;
+	curr = *args->env;
 	(void) args;
 	while (curr)
 	{
