@@ -7,6 +7,7 @@ void		caps_goto_x(t_caps *caps, int pos)
 
 	if ((delta = pos - caps->cursor.real.x))
 	{
+		caps->cursor.real.x = pos;
 		if (caps->ctrls.move_h)
 			tputs(tgoto(caps->ctrls.move_h, 0, pos), 1, &putc_err);
 		else
@@ -32,6 +33,7 @@ void		caps_goto_y(t_caps *caps, int pos)
 
 	if ((delta = pos - caps->cursor.real.y))
 	{
+		caps->cursor.real.y = pos;
 		if (delta < 0)
 		{
 			delta = -delta;
@@ -45,10 +47,11 @@ void		caps_goto_y(t_caps *caps, int pos)
 	}
 }
 
+// TODO: Do not use reference if sizeof(t_pos) is <= sizeof(t_pos*)
 /*
 **	Set the cursor's real position to pos.
 */
-void		caps_goto(t_caps *caps, t_pos *pos)
+void		caps_goto(t_caps *caps, const t_pos *pos)
 {
 	const bool		insert = caps->mode & CAPS_MINS && !caps->flags.move_insert;
 
@@ -57,50 +60,6 @@ void		caps_goto(t_caps *caps, t_pos *pos)
 	// if height is the same move only horizontally // TODO: remove false
 	caps_goto_y(caps, pos->y);
 	caps_goto_x(caps, pos->x);
-	caps->cursor.real = *pos;
 	if (insert)
 		tputs(caps->modes.insert, 1, &putc_err);
-}
-
-
-/*
-**	Set the cursor's position to origin + pos.
-*/
-/* void	cursor_goto(t_caps *caps, t_pos *pos)
-{
-	const bool		insert = caps->mode & CAPS_MINS && !caps->flags.move_insert;
-	const size_t	delta_y = pos->y - caps->cursor.real.y;
-
-	if (insert)
-		tputs(caps->modes.insert_end, 1, &putc_err);
-	// if height is the same move only horizontally
-	if (!delta_y && caps->ctrls.move_h)
-		tputs(tgoto(caps->ctrls.move_h, 0, pos->x), 1, &putc_err);
-	else // else move from the delta
-		tputs(tgoto(caps->ctrls.move, delta_y, pos->x), 1, &putc_err);
-	caps->cursor.real = *pos;
-	if (insert)
-		tputs(caps->modes.insert, 1, &putc_err);
-} */
-
-/*
-**	Delete n characters starting at the cursor's position.
-*/
-void		caps_delete(t_caps *caps, size_t n)
-{
-	bool	toggle_del;
-
-	if (caps->ctrls.del_n)
-	{
-		tputs(tparm(caps->ctrls.del_n, 0, n), 1, &putc_err);
-	}
-	else if (caps->ctrls.del)
-	{
-		if ((toggle_del = !(caps->mode & CAPS_MDEL)))
-			tputs(caps->modes.del, 1, &putc_err);
-		while (n--)
-			tputs(caps->ctrls.del, 1, &putc_err);
-		if (toggle_del)
-			tputs(caps->modes.del_end, 1, &putc_err);
-	}
 }

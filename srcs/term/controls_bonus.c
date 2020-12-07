@@ -1,9 +1,11 @@
 #include <term/term.h>
+
 /*
 **	Clear the screen's content, keeping only the current line.
 */
 t_term_err	term_clear_screen()
 {
+	const t_pos	pos = g_term.caps.cursor.real;
 	t_term_err	status;
 
 	status = TERM_EOK;
@@ -13,6 +15,57 @@ t_term_err	term_clear_screen()
 		if ((!g_term.msg ||
 		(status = term_origin(g_term.msg->data, g_term.msg->len)) == TERM_EOK))
 			status = term_write(g_term.line->data, g_term.line->len);
+		caps_goto(&g_term.caps, &pos);
+	}
+	return (status);
+}
+
+// TODO: Check if delete-mode needs to be activated before clearing parts
+
+/*
+**	Clear the screen from the cursor to the end of the screen.
+*/
+t_term_err	term_clear_eos()
+{
+	const int	x = g_term.caps.cursor.real.x;
+
+	if (x)
+	{
+		tputs(g_term.caps.ctrls.del_eol, 1, &putc_err);
+		if (x + g_term.line->len - g_term.caps.index >= (size_t)g_term.caps.width)
+		{
+			caps_goto_x(&g_term.caps, 0);
+			caps_goto_y(&g_term.caps, g_term.caps.cursor.real.y + 1);
+			tputs(g_term.caps.ctrls.del_eos, 1, &putc_err);
+			caps_goto_y(&g_term.caps, g_term.caps.cursor.real.y - 1);
+			caps_goto_x(&g_term.caps, x);
+		}
+	}
+	else
+		tputs(g_term.caps.ctrls.del_eos, 1, &putc_err);
+	return (TERM_EOK);
+}
+
+// TODO: Alt-backspace
+
+/*
+**	Delete n characters from the terminal's input line, starting at the current
+**	cursor position.
+*/
+t_term_err	term_line_del(size_t n)
+{
+	const t_pos	pos = g_term.caps.cursor.real;
+	const int	index = g_term.caps.index;
+	t_term_err	status;
+
+	status = TERM_EOK;
+	if (line_erase(g_term.line, index, n))
+	{
+		term_clear_eos();
+		status = term_write(g_term.line->data + index,
+			g_term.line->len - index);
+		caps_goto(&g_term.caps, &pos);
+		g_term.caps.index = index;
 	}
 	return (status);
 }
@@ -25,8 +78,7 @@ t_term_err	term_backspace()
 	if (g_term.caps.index > 0)
 	{
 		cursor_l();
-		caps_delete(&g_term.caps, 1);
-		line_erase(g_term.line, g_term.caps.index, 1);
+		term_line_del(1);
 	}
 	return (TERM_EOK);
 }
@@ -36,8 +88,9 @@ t_term_err	term_backspace()
 */
 t_term_err	term_clear_line()
 {
-	cursor_start_line();
-	tputs(g_term.caps.ctrls.del_line, 1, &putc_err);
+	caps_goto(&g_term.caps, &g_term.caps.cursor.origin);
+	g_term.caps.index = 0;
+	term_clear_eos();
 	return (TERM_EOK);
 }
 

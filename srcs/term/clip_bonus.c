@@ -36,15 +36,13 @@ t_term_err	clip_cut(void)
 {
 	t_term_err	status;
 
-	if (g_term.caps.selec.start != -1U && g_term.caps.selec.end != -1U)
+	if (g_term.caps.selec.start != -1U && g_term.caps.selec.end != -1U
+	&& (status = clip_copy()) == TERM_EOK)
 	{
-		if ((status = clip_copy()) != TERM_EOK)
-			return (status);
 		//ft_dprintf(2, "start: %lu len: %lu\n", g_term.caps.selec.start, g_term.clip.len);
 		//caps_goto(&g_term.caps, g_term.caps.origin + g_term.pos);
-		caps_delete(&g_term.caps, g_term.caps.clip.len);
 		// TODO: Fix line_erase with full line (Actually it seems to work...)
-		line_erase(g_term.line, g_term.caps.index, g_term.caps.clip.len);
+		term_line_del(g_term.caps.clip.len);
 		select_clear();
 	}
 	return (TERM_EOK);
@@ -53,15 +51,18 @@ t_term_err	clip_cut(void)
 // TODO: Use term_write!
 t_term_err	clip_paste(void)
 {
-	if (!g_term.caps.clip.len)
-		return (TERM_EOK);
-	select_clear();
-	if (write(STDERR_FILENO, g_term.caps.clip.data, g_term.caps.clip.len) == -1)
-		return (TERM_EWRITE);
-	if (!line_insert(g_term.line, g_term.caps.index, g_term.caps.clip.data, g_term.caps.clip.len))
-		return (TERM_EALLOC);
-	g_term.caps.index += g_term.caps.clip.len;
-	return (TERM_EOK);
+	t_term_err	status;
+
+	status = TERM_EOK;
+	if (g_term.caps.clip.len)
+	{
+		select_clear();
+		if ((status = term_write(g_term.caps.clip.data, g_term.caps.clip.len))
+			!= TERM_EOK && !line_insert(g_term.line, g_term.caps.index,
+				g_term.caps.clip.data, g_term.caps.clip.len))
+			status = TERM_EALLOC;
+	}
+	return (status);
 }
 
 t_term_err	clip_clear(void)

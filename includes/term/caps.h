@@ -28,7 +28,8 @@ typedef struct	s_ctrls
 {
 	char	*del;
 	char	*del_n;
-	char	*del_line;
+	char	*del_eol;
+	char	*del_eos;
 	char	*erase_n;
 	char	*clear;
 	char	*move;
@@ -83,12 +84,14 @@ typedef struct		s_pos
 	int	y;
 }					t_pos;
 
+// TODO: Rename real to pos
+// TODO: Remove zero?
 typedef struct		s_cursor
 {
 	t_pos	zero;
 	t_pos	real;
 	t_pos	origin;
-	t_pos	pos;
+//	t_pos	pos;
 }					t_cursor;
 
 typedef struct		s_select
@@ -126,7 +129,9 @@ bool				caps_load(t_caps *caps);
 /*
 **					caps_utils.c
 */
-void				caps_goto(t_caps *caps, t_pos *pos);
-void				caps_delete(t_caps *caps, size_t n);
+void				caps_goto_x(t_caps *caps, int pos);
+void				caps_goto_y(t_caps *caps, int pos);
+void				caps_goto(t_caps *caps, const t_pos *pos);
+void				caps_delete(t_caps *caps, size_t n_chars, size_t n_lines);
 
 #endif
