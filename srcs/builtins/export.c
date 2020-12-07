@@ -55,7 +55,7 @@ int			b_export(t_exec *args)
 		else
 		{
 			ft_dprintf(STDERR_FILENO,
-				"%s: export: `%s': not a valid identifier",
+				"%s: export: `%s': not a valid identifier\n",
 					g_session.name, args->av[i]);
 		}
 	}
