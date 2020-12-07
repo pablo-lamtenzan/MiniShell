@@ -14,35 +14,27 @@
 
 static void	print_env(int fd, t_env *env)
 {
-	if (!env)
-		return ;
-	if (env->exported)
-		ft_dprintf(fd, "declare -x %s\n", env->key);
-	print_env(fd, env->next);
+	while (env)
+	{
+		if (env->exported)
+		{
+			if (env->key[env->key_length] == ENV_OP_ASSIGN)
+				ft_dprintf(fd, "declare -x %.*s=\"%s\"\n",
+					(int)env->key_length, env->key, env->key + env->key_length + 1);
+			else
+				ft_dprintf(fd, "declare -x %s\n", env->key);
+		}
+		env = env->next;
+	}
 }
 
-static char	*trim_name(const char *s)
-{
-	char	*trim;
-	size_t	size;
-
-	size = 0;
-	while (s[size] && s[size] != '=')
-		size++;
-	if (!(trim = malloc(sizeof(char) * size + 1)))
-		return (NULL);
-	trim[size] = 0;
-	ft_memcpy(trim, s, size);
-	return (trim);
-}
-
+// TODO: Maybe print errno on allocation error (STD_ERROR)
 int			b_export(t_exec *args)
 {
-	t_env	*first;
-	char	*freed;
-	bool	assign;
 	int		ret;
 	int		i;
+	size_t	key_len;
+	char	assign_st;
 
 	ret = SUCCESS;
 	i = 0;
@@ -53,31 +45,18 @@ int			b_export(t_exec *args)
 	}
 	while (++i < args->ac)
 	{
-		first = *args->env;
-		assign = (bool)ft_strchr(args->av[i], '=');
-		freed = NULL;
-		while (!assign && *args->env)
+		if ((key_len = env_key_len(args->av[i], true)))
 		{
-			if ((freed = trim_name(args->av[i])))
+			if ((assign_st = env_assign(args->env, args->av[i], true, true)) == 0)
+				env_set(args->env, args->av[i], NULL, true);
+			else if (assign_st == -1)
 				return (STD_ERROR);
-			if (!ft_strncmp(freed, (*args->env)->key, ft_strlen(freed)))
-				(*args->env)->exported = true;
-			// problem doesn't print the exported true
-			*args->env = (*args->env)->next;
-			free(freed);
-			ret = SUCCESS;
 		}
-		*args->env = first;
-		if (!assign && !freed)
-			ret = STD_ERROR;
-		if (assign)
+		else
 		{
-			if (!(freed = trim_name(args->av[i])))
-				return (STD_ERROR);
-			// Problem export the var has no value
-			ft_dprintf(2, "size: %lu\n", ft_strlen(freed) + 1);
-			env_set(args->env, freed, (char*)&args->av[i] + ft_strlen(freed) + 1, true);
-			ret = SUCCESS;
+			ft_dprintf(STDERR_FILENO,
+				"%s: export: `%s': not a valid identifier\n",
+					g_session.name, args->av[i]);
 		}
 	}
 	return (ret);
