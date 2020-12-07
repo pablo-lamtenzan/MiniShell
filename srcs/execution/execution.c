@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 08:57:05 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/07 10:28:41 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,10 @@ static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
 			dup ? &dup : &g_session.env, &info->ac)))
 			return (RDR_BAD_ALLOC);
 		if (!info->av[0])
+		{
+			env_clr(&dup);
 			return (SUCCESS);
+		}
 		exec_st = execute_process(info, dup ? &dup : &g_session.env);
 		env_clr(&dup);
 		if (close_pipe_fds(info->fds) != SUCCESS)
