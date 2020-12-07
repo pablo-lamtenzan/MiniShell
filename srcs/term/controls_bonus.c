@@ -66,7 +66,7 @@ t_term_err	term_line_del(size_t n)
 			g_term.line->len - index);
 		caps_goto(&g_term.caps, &pos);
 		g_term.caps.index = index;
-	}	
+	}
 	return (status);
 }
 
