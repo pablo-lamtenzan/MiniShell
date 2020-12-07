@@ -24,10 +24,10 @@ int	b_unset(t_exec *args)
 	t_env	*first;
 	t_env	*prev;
 
-	prev = NULL;
-	first = *args->env;
 	while (args->ac-- > 1)
 	{
+		prev = NULL;
+		first = *args->env;
 		while (*args->env)
 		{
 			next = (*args->env)->next;
@@ -43,7 +43,6 @@ int	b_unset(t_exec *args)
 			else
 				prev = *args->env;
 			*args->env = next;
-			ft_dprintf(2, "Env addr: %p\n", *args->env);
 		}
 		*args->env = first;
 	}
