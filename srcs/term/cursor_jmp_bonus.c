@@ -1,5 +1,6 @@
 #include <term/term.h>
 
+// TODO: Consider using void for functions with arguments
 t_term_err	cursor_goto_index(size_t index)
 {
 	t_pos	pos;
@@ -12,9 +13,6 @@ t_term_err	cursor_goto_index(size_t index)
 			index % (g_term.caps.width),
 			index / (g_term.caps.width) + g_term.caps.cursor.origin.y,
 		};
-		//ft_dprintf(2, "%d, %d;", pos.x, pos.y);
-		//g_term.caps.cursor.pos.x = pos.x - g_term.caps.cursor.origin.x;
-		//g_term.caps.cursor.pos.y = pos.y - g_term.caps.cursor.origin.y;
 		caps_goto(&g_term.caps, &pos);
 	}
 	return (TERM_EOK);
@@ -27,7 +25,9 @@ t_term_err	cursor_goto_index(size_t index)
 */
 t_term_err	cursor_start_line(void)
 {
-	return (cursor_goto_index(0));
+	caps_goto(&g_term.caps, &g_term.caps.cursor.origin);
+	g_term.caps.index = 0;
+	return (TERM_EOK);
 }
 
 t_term_err	cursor_end_line(void)

@@ -68,7 +68,6 @@ t_term_err	term_origin(const char *input, size_t length)
 	t_term_err		status;
 	const size_t	graphical_len = strglen(input);
 
-	//caps_goto(&g_term.caps, &g_term.caps.cursor.zero);
 	if (length && write(STDERR_FILENO, input, length) == -1)
 		status = TERM_EWRITE;
 	else

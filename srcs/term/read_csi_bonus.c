@@ -52,17 +52,16 @@ t_term_err	term_read_mod_alt(void)
 
 t_term_err	term_del(void)
 {
-	ssize_t	read_st;
-	char	c;
+	t_term_err	status;
+	ssize_t		read_st;
+	char		c;
 
+	status = TERM_EOK;
 	if ((read_st = read(STDIN_FILENO, &c, 1)) != 1)
-		return ((read_st == 0) ? TERM_EEOF: TERM_EREAD);
-	if (c == '~' && g_term.caps.index != g_term.line->len)
-	{
-		caps_delete(&g_term.caps, 1);
-		line_erase(g_term.line, g_term.caps.index, 1);
-	}
-	return (TERM_EOK);
+		status = (read_st == 0) ? TERM_EEOF: TERM_EREAD;
+	else if (c == '~' && g_term.caps.index != g_term.line->len)
+		status = term_line_del(1);
+	return (status);
 }
 
 t_term_err	term_read_csi(void)
