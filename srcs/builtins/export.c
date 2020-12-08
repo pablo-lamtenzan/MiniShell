@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:52 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 14:04:24 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 15:11:14 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,15 +40,15 @@ int			b_export(t_exec *args)
 	i = 0;
 	if (args->ac == 1)
 	{
-		print_env(args->fds[FDS_STDOUT], *args->env);
+		print_env(args->fds[FDS_STDOUT], args->session->env);
 		return (ret);
 	}
 	while (++i < args->ac)
 	{
 		if ((key_len = env_key_len(args->av[i], true)))
 		{
-			if ((assign_st = env_assign(args->env, args->av[i], true, true)) == 0)
-				env_set(args->env, args->av[i], NULL, true);
+			if ((assign_st = env_assign(&args->session->env, args->av[i], true, true)) == 0)
+				env_set(&args->session->env, args->av[i], NULL, true);
 			else if (assign_st == -1)
 				return (STD_ERROR);
 		}
@@ -56,7 +56,8 @@ int			b_export(t_exec *args)
 		{
 			ft_dprintf(STDERR_FILENO,
 				"%s: export: `%s': not a valid identifier\n",
-					g_session.name, args->av[i]);
+					args->session->name, args->av[i]);
+			ret = STD_ERROR;
 		}
 	}
 	return (ret);

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/07 10:34:35 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:52:58 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 15:09:57 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 static	void	free_node(t_exec *args, t_env **first, t_env **prev,
 		t_env **next)
 {
-	if (*first && *first == *args->env)
+	if (*first && *first == args->session->env)
 		*first = (*first)->next;
-	free(*args->env);
+	free(args->session->env);
 	if (*prev)
 		(*prev)->next = *next;
 }
@@ -33,18 +33,18 @@ int		b_unset(t_exec *args)
 	while (args->ac-- > 1)
 	{
 		prev = NULL;
-		first = *args->env;
-		while (*args->env)
+		first = args->session->env;
+		while (args->session->env)
 		{
-			next = (*args->env)->next;
-			if (!ft_strncmp(args->av[args->ac], (*args->env)->key, \
+			next = (args->session->env)->next;
+			if (!ft_strncmp(args->av[args->ac], (args->session->env)->key, \
 					ft_strlen(args->av[args->ac])))
 				free_node(args, &first, &prev, &next);
 			else
-				prev = *args->env;
-			*args->env = next;
+				prev = args->session->env;
+			args->session->env = next;
 		}
-		*args->env = first;
+		args->session->env = first;
 	}
 	return (SUCCESS);
 }

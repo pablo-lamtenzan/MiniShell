@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:46 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 18:25:13 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 15:06:45 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int		b_exit(t_exec *args) // TODO: Callbacks in ft_term.h
 	int i;
 	bool st;
 
-	i = g_session.st;
+	i = args->session->st;
 	st = true;
 	if (args && args->ac > 1)
 	{
@@ -57,6 +57,6 @@ int		b_exit(t_exec *args) // TODO: Callbacks in ft_term.h
 	if (st == false && (i = INV_EXIT_ARG))
 		ft_dprintf(STDERR_FILENO, "minish: exit: %s%s\n", \
 			args->av[1], ": numeric argument required");
-	handle_exit_with_active_background((unsigned char)i);
+	handle_exit_with_active_background((unsigned char)i, args->session);
 	return (STD_ERROR);
 }
