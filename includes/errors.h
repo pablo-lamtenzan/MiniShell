@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 11:35:08 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:37:25 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 10:49:37 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,9 @@ typedef enum			e_redir_status
 	FILE_NOT_FOUND		= -1,
 	AMBIG_REDIRECT		= -2,
 	FLNAME_TO_LONG		= -3,
-	RDR_BAD_ALLOC		= -4
+	IS_A_DIR			= -4,
+	NO_PERMISSIONS		= -5,
+	RDR_BAD_ALLOC		= -6
 }						t_redir_status;
 
 #endif

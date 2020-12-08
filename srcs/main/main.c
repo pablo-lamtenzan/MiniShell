@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/06 09:05:03 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/07 21:15:11 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,8 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st)
 }
 
 // TO DO: Norme
-// TO DO: exit msg stopped jobs when ctrl^D
+// TO DO: exit msg stopped jobs when ctrl^D/O 
+// TO DO: redir dir
 
 void	exec(t_tok* tokens)
 {

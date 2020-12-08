@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:46 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:34:01 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/07 18:25:13 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int		b_exit(t_exec *args) // TODO: Callbacks in ft_term.h
 				st = false;
 		if (st == true && args->ac > 2)
 		{
-			write(STDERR_FILENO, "exit\n", 5);
+			//write(STDERR_FILENO, "exit\n", 5);
 			ft_dprintf(STDERR_FILENO, "%s\n", \
 				"minish: exit: too many arguments");
 			return (STD_ERROR);

@@ -1,17 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   caps.c                                             :+:      :+:    :+:   */
+/*   caps_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 18:53:27 by chamada           #+#    #+#             */
-/*   Updated: 2020/11/28 01:50:05 by chamada          ###   ########lyon.fr   */
+/*   Updated: 2020/12/07 17:28:29 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <term/term.h>
 #include <sys/ioctl.h>
+#include <signals.h>
 
 static bool	load_modes(t_modes *modes, char **area)
 {
@@ -94,3 +95,4 @@ bool		caps_load(t_caps *caps)
 		signal(SIGWINCH, &update_dimensions);
 	return (enabled);
 }
+

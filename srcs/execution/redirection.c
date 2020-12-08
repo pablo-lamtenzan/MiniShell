@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 08:52:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:35:10 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 11:18:50 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,26 @@
 t_exec_status			print_redirection_error(t_redir_status rstatus,
 		char **filename)
 {
-	const char			*error_msg[3] = {
-		"minish: %s: No such file or directory\n",
-		"minish: %s: ambigous redirect\n",
-		"minish: %s: File name too long\n"
+	const char			*error_msg[5] = {
+		"%s: %s: No such file or directory\n",
+		"%s: %s: ambigous redirect\n",
+		"%s: %s: File name too long\n",
+		"%s: %s: Is a directory\n",
+		"%s: %s: permission denied\n"
 	};
 
 	if (rstatus == RDR_BAD_ALLOC)
 		return (RDR_BAD_ALLOC);
-	ft_dprintf(STDERR_FILENO, error_msg[-rstatus - 1], *filename);
+	ft_dprintf(STDERR_FILENO, error_msg[-rstatus - 1], g_session.name, *filename);
 	g_session.st = STD_ERROR;
 	return (SUCCESS);
 }
 
 static t_redir_status	try_catch_filename(char ***filename, char *var_name,
-		int height)
+		int height, t_tok_t type)
 {
+	struct stat			s;
+	const int			ret = stat((*filename)[0], &s);
 	if (height != 1)
 	{
 		(*filename)[0] = var_name;
@@ -38,6 +42,11 @@ static t_redir_status	try_catch_filename(char ***filename, char *var_name,
 	}
 	if (ft_strlen((*filename)[0]) >= PATH_MAX)
 		return (FLNAME_TO_LONG);
+	if (ret == 0 && S_ISDIR(s.st_mode))
+		return (IS_A_DIR);
+	if (ret == 0 && ((type & REDIR_LE  && !(s.st_mode & S_IRUSR)) \
+			|| (type & (REDIR_GR | REDIR_DG) && !(s.st_mode & S_IWUSR))))
+		return (NO_PERMISSIONS);
 	return (CONTINUE);
 }
 
@@ -92,7 +101,7 @@ t_redir_status			redirections_handler(t_exec** info, t_bst* cmd, char*** filenam
 	aux = (char*)((t_tok*)cmd->b)->data;
 	if (!(*filename = tokens_expand((t_tok**)&cmd->b, &g_session.env, &height)))
 		return (RDR_BAD_ALLOC);
-	if ((redir_st = try_catch_filename(filename, aux, height)) != CONTINUE)
+	if ((redir_st = try_catch_filename(filename, aux, height, cmd->type)) != CONTINUE)
         return (redir_st);
 	if (cmd->type & REDIR_GR || cmd->type & REDIR_DG)
 		redir_st = try_catch_out(info, cmd->type, (*filename)[0]);

@@ -261,4 +261,22 @@ EXIT
 [ALL OK]
 
 
+***** SECOND ROUND ***** 07/12/20
+
+Many chaned pipes seems have a Problem
+
+Some errors on redirections but our minishell seem clean while i execute similars TESTS
+
+Same confusing shit as before with the separators
+
+EXPORT:
+- return value: "export 42=something" same for "export .=something"
+- tester said export var= (but i dont know for his one)
+- Another: The purpose of this test is to check that exporting an existing variable results in an updated variable.
+There are more ...
+
+LOCAL VARIABLES has some issues ...
+
+check quoting too
+
 
