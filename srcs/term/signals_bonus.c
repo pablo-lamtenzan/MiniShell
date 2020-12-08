@@ -31,15 +31,3 @@ t_term_err	term_eof(void)
 		return (TERM_EEOF);
 	return (TERM_EOK);
 }
-
-t_term_err	term_stop(void)
-{
-	ft_dprintf(2, "[PROMPT][SIGNAL] STOP\n");
-	return (TERM_EOK);
-}
-
-t_term_err	term_suspend(void)
-{
-	ft_dprintf(2, "[PROMPT][SIGNAL] SUSPEND\n");
-	return (TERM_EOK);
-}

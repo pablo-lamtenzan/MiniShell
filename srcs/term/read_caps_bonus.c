@@ -12,8 +12,6 @@ static t_term_err	term_cntrl(char c)
 		{g_term.caps.s_ios.c_cc[VINTR], &term_interrupt},
 		{g_term.caps.s_ios.c_cc[VERASE], &term_backspace},
 		{g_term.caps.s_ios.c_cc[VEOF], &term_eof},
-		{g_term.caps.s_ios.c_cc[VSTOP], &term_stop},
-		{g_term.caps.s_ios.c_cc[VSUSP], &term_suspend},
 //		{'u' - TERM_CNTRL, &term_clear_line},
 		{'h' - ANSI_CNTRL, &term_backspace},
 		{'l' - ANSI_CNTRL, &term_clear_screen},
