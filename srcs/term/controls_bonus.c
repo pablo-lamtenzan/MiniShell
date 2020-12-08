@@ -55,7 +55,7 @@ t_term_err	term_clear_eos()
 t_term_err	term_line_del(size_t n)
 {
 	const t_pos		pos = g_term.caps.cursor.real;
-	const int		index = g_term.caps.index;
+	const size_t	index = g_term.caps.index;
 	const size_t	remaining = g_term.line->len - n - index;
 	t_term_err		status;
 
@@ -66,6 +66,7 @@ t_term_err	term_line_del(size_t n)
 			caps_delete(&g_term.caps, n);
 		else
 		{
+			// TODO: Toggle insert mode and delete overflow instead of eos
 			term_clear_eos();
 			status = term_write(g_term.line->data + index, remaining);
 			caps_goto(&g_term.caps, &pos);
