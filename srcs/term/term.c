@@ -33,6 +33,7 @@ int		ft_isatty(int fd)
 	return (ret);
 }
 
+// TODO: Add dirname to signature and environment
 bool	term_init(t_env **env)
 {
 	if (!(g_term.line = line_new(TERM_LINE_SIZE)))

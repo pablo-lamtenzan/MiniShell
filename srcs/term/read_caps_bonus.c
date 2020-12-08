@@ -1,6 +1,7 @@
 #include <term/term.h>
 
 
+// TODO: Put keybinds in static variable at initialization
 /*
 **	Control key-strokes.
 */
