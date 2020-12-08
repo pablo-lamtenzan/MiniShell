@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:37:36 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 15:13:07 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@
 # define RESTRICT_OP	32
 # define NO_HANGUP		64
 # define NO_DELETE		128
+# define SUBSHELL		256
 
 /*
 ** Session flags
@@ -116,7 +117,8 @@ t_session				*session_start(t_session *session,
 	const char *name, const char **envp);
 void					session_end(t_session *session);
 bool					session_empty();
-
+t_session				*session_dup();
+void					session_destroy(t_session **target);
 /*
 ** Signals interactions
 */
@@ -201,7 +203,7 @@ void					deadzombie_remove_node(t_process *target);
 /*
 ** Exit helper
 */
-void					handle_exit_with_active_background(int exit_status);
+void					handle_exit_with_active_background(int exit_status, t_session *session);
 void					update_exit_count(const char *name);
 
 /*

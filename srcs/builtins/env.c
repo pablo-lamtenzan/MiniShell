@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:20:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:33:58 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 15:01:18 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int		b_env(t_exec *args)
 {
 	t_env* 		curr;
 
-	curr = *args->env;
+	curr = args->session->env;
 	(void) args;
 	while (curr)
 	{

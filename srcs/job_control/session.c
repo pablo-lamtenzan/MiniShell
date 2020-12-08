@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:08:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:36:12 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 15:46:17 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,4 +16,25 @@ bool			session_empty(void)
 {
 	return (g_session.nil->next == g_session.nil \
 		&& g_session.nil->prev == g_session.nil);
+}
+
+t_session		*session_dup()
+{
+	t_session	*dup;
+
+	return ((dup = ft_calloc(1 ,sizeof(t_session))) \
+	&& (dup->name = ft_strdup(g_session.name)) \
+	&& (dup->env = env_dup(g_session.env)) \
+	&& ((dup->flags = g_session.flags) || !dup->flags)
+	&& ((dup->exit_count = g_session.exit_count) || !dup->exit_count)
+	&& (ft_strlcpy(dup->cwd, g_session.cwd, PATH_MAX))
+	? dup : NULL);
+}
+
+void			session_destroy(t_session **target)
+{
+	env_clr(&(*target)->env);
+	free((*target)->name);
+	free(*target);
+	*target = NULL;
 }

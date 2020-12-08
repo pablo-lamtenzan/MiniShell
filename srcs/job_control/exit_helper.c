@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:30:21 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:35:32 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 15:05:52 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 #include <stdlib.h>
 #include <term/term.h>
 
-void		handle_exit_with_active_background(int exit_status)
+void		handle_exit_with_active_background(int exit_status, t_session *session)
 {
-	if (g_session.flags & PIPED_CMD)
+	if (session->flags & PIPED_CMD)
 		return ;
-	if (g_session.exit_count++ == 2 || !is_background_active())
+	if (session->exit_count++ == 2 || !is_background_active())
 	{
 		term_destroy();
 		session_end(&g_session);

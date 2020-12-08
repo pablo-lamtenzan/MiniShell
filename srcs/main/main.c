@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 21:15:11 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 15:36:34 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st)
 
 // TO DO: Norme
 // TO DO: exit msg stopped jobs when ctrl^D/O 
-// TO DO: redir dir
+// TO DO: sleep 22 ; ctrl^Z ; bg ; fg ; ctrl^C <----------- NEED \n after ^C in this case
 
 void	exec(t_tok* tokens)
 {

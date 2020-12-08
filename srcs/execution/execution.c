@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 15:23:35 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 15:45:08 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 #include <path.h>
 
 // TODO: Handle path concatenation alloc error
-static t_exec_status	get_exec(t_exec *info, t_env **env)
+static t_exec_status	get_exec(t_exec *info)
 {
 	t_exec_status	status;
 
@@ -29,31 +29,43 @@ static t_exec_status	get_exec(t_exec *info, t_env **env)
 	if (!(info->exec = builtin_get(info->av[0])))
 	{
 		if (!(info->file_path =
-			path_get(info->av[0], env_get(*env, "PATH", 4))))
+			path_get(info->av[0], env_get(info->session->env, "PATH", 4))))
 		{
 			g_session.st = CMD_NOT_FOUND;
 			status = BAD_PATH;
 		}
-		else if (!(info->ep = (char*const*)env_export(*env)))
+		else if (!(info->ep = (char*const*)env_export(info->session->env)))
 			status = RDR_BAD_ALLOC;
 		else
 			info->exec = &execute_child;
 	}
-	info->env = env;
 	return (status);
 }
 
-static t_exec_status	execute_process(t_exec *info, t_env **env)
+static bool				handle_subshell(t_executable exec, const char *name)
+{
+	if (g_session.flags & PIPED_CMD && (exec == &b_bg 
+	|| exec == &b_fg || exec == &b_kill || exec == &b_wait \
+	|| exec == &b_disown || exec == &b_jobs))
+	{
+		ft_dprintf(STDERR_FILENO, "%s: %s: no job control\n", g_session.name, name);
+		return (false);
+	}
+	return (true);
+}
+
+static t_exec_status	execute_process(t_exec *info)
 {
 	t_exec_status		exec_st;
 
 	update_exit_count(info->av[0]);
-	if ((exec_st = get_exec(info, env)) == SUCCESS)
+	if ((exec_st = get_exec(info)) == SUCCESS)
 	{
 		signal(SIGCHLD, SIG_IGN);
 		zombies_list_purge_exited_zombies();
 		signal(SIGCHLD, zombies_catcher);
-		g_session.st = (unsigned char)info->exec(info);
+		if (handle_subshell(info->exec, info->av[0]))
+			g_session.st = (unsigned char)info->exec(info);
 		g_session.groups->active_processes->ret = \
 			g_session.groups->active_processes->flags \
 			& STOPPED ? -1 : (unsigned char)g_session.st;
@@ -67,7 +79,6 @@ static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
 	char				**filename;
 	t_redir_status		redir_st;
 	t_exec_status		exec_st;
-	t_env				*dup;
 
 	exec_st = SUCCESS;
 	if ((redir_st = redirections_handler(&info, cmd, &filename)) != CONTINUE)
@@ -77,17 +88,21 @@ static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
 		exec_st = execute_cmd(cmd->a, info);
 	else
 	{
-		dup = g_session.flags & PIPED_CMD ? env_dup(g_session.env) : NULL;
+		info->session = g_session.flags & PIPED_CMD ? session_dup() : &g_session;
+		ft_dprintf(2, "fl<gs: %d\n", g_session.flags);
 		if (!(info->av = tokens_expand((t_tok**)&cmd->a, \
-			dup ? &dup : &g_session.env, &info->ac)))
+			&info->session->env, &info->ac)))
+		{
+			g_session.flags & PIPED_CMD ? session_destroy(&info->session) : NULL;
 			return (RDR_BAD_ALLOC);
+		}
 		if (!info->av[0])
 		{
-			env_clr(&dup);
+			g_session.flags & PIPED_CMD ? session_destroy(&info->session) : NULL;
 			return (SUCCESS);
 		}
-		exec_st = execute_process(info, dup ? &dup : &g_session.env);
-		env_clr(&dup);
+		exec_st = execute_process(info);
+		g_session.flags & PIPED_CMD ? session_destroy(&info->session) : NULL;
 		if (close_pipe_fds(info->fds) != SUCCESS)
 			return (BAD_CLOSE);
 	}
