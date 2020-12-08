@@ -26,11 +26,8 @@ void	env_clr(t_env **env)
 {
 	t_env	*current;
 
-	//int i = 0;
-	ft_printf("env: %p\n", *env);
 	while ((current = *env))
 	{
-		//ft_printf("TEST: %d\n", i++);
 		*env = current->next;
 		free(current->key);
 		free(current);
