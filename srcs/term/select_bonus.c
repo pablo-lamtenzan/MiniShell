@@ -22,7 +22,7 @@ t_term_err	select_highlight(void)
 	{
 		/* ft_dprintf(2, "[SELECT] start: %lu, end: %lu\n",
 			g_term.caps.selec.start, g_term.caps.selec.end); */
-		pos = g_term.caps.cursor.real;
+		pos = g_term.caps.cursor.pos;
 		index = g_term.caps.index;
 		term_clear_line();
 		if ((status = term_write(g_term.line->data, g_term.caps.selec.start))
@@ -42,7 +42,7 @@ t_term_err	select_highlight(void)
 		if ((status = term_write(g_term.line->data + g_term.caps.selec.end,
 			g_term.line->len - g_term.caps.selec.end)) != TERM_EOK)
 			return (status);
-		caps_goto(&g_term.caps, &pos);
+		caps_goto(&g_term.caps, pos);
 		g_term.caps.index = index;
 	}
 	return (TERM_EOK);
@@ -105,11 +105,11 @@ t_term_err	select_clear(void)
 		g_term.caps.selec.end = -1U;
 		if (g_term.line)
 		{
-			pos = g_term.caps.cursor.real;
+			pos = g_term.caps.cursor.pos;
 			index = g_term.caps.index;
 			term_clear_line();
 			status = term_write(g_term.line->data, g_term.line->len);
-			caps_goto(&g_term.caps, &pos);
+			caps_goto(&g_term.caps, pos);
 			g_term.caps.index = index;
 		}
 	}

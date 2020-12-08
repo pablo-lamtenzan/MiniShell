@@ -5,9 +5,9 @@ void		caps_goto_x(t_caps *caps, int pos)
 	int			delta;
 	char		*ctrl;
 
-	if ((delta = pos - caps->cursor.real.x))
+	if ((delta = pos - caps->cursor.pos.x))
 	{
-		caps->cursor.real.x = pos;
+		caps->cursor.pos.x = pos;
 		if (caps->ctrls.move_h)
 			tputs(tgoto(caps->ctrls.move_h, 0, pos), 1, &putc_err);
 		else
@@ -32,7 +32,7 @@ void		caps_goto_y(t_caps *caps, int pos)
 	/* int			scroll; */
 	char		*ctrl;
 
-	if ((delta = pos - caps->cursor.real.y))
+	if ((delta = pos - caps->cursor.pos.y))
 	{
 		if (delta < 0)
 		{
@@ -48,7 +48,7 @@ void		caps_goto_y(t_caps *caps, int pos)
 			//ft_dprintf(2, "%d, ", delta);
 		while (delta--)
 			tputs(ctrl, 1, &putc_err);
-		caps->cursor.real.y = pos;
+		caps->cursor.pos.y = pos;
 		/* } */
 	}
 }
@@ -57,15 +57,15 @@ void		caps_goto_y(t_caps *caps, int pos)
 /*
 **	Set the cursor's real position to pos.
 */
-void		caps_goto(t_caps *caps, const t_pos *pos)
+void		caps_goto(t_caps *caps, const t_pos pos)
 {
 	const bool		insert = caps->mode & CAPS_MINS && !caps->flags.move_insert;
 
 	if (insert)
 		tputs(caps->modes.insert_end, 1, &putc_err);
 	// if height is the same move only horizontally // TODO: remove false
-	caps_goto_y(caps, pos->y);
-	caps_goto_x(caps, pos->x);
+	caps_goto_y(caps, pos.y);
+	caps_goto_x(caps, pos.x);
 	if (insert)
 		tputs(caps->modes.insert, 1, &putc_err);
 }
