@@ -19,55 +19,34 @@ static char	*path_cat(const char *a, const char *b)
 	return (cat);
 }
 
-# define PTH_EPOINT		1
-# define PTH_ESLASH		2
-# define PTH_EMANPT		4
-# define PTH_EUNKNOWN	8
-
-// TO DO: ?? Don't know if continue with that: theres somes execptions and we handle clean now (but not all)
-static int	get_code(char *name, size_t	*skip)
-{
-	if (name[0] == '.')
-	{
-		*skip = 1;
-		if (name[1] && name[1] == '/')
-		{
-			*skip = 2;
-			return (PTH_EPOINT | PTH_ESLASH);
-		}
-		if (!name[1])
-			return (PTH_EMANPT);
-		return (PTH_EPOINT);
-	}
-	else if (name[0] == '/')
-	{
-		*skip = 0;
-		return (PTH_ESLASH);
-	}
-	return (PTH_EUNKNOWN);
-}
-
-static int	exec_path_error(char *name)
+static int		path_error(const char *name)
 {
 	struct stat	s;
-	size_t		skip;
-	const int 	st = get_code(name, &skip);
-	// TO DO: rmv this printf
-	ft_dprintf(2, "skip: %lu\n", skip);
-	const int	ret = stat(name + skip, &s);
 	int			res;
+	const int	st = stat(name, &s);
 
 	res = SUCCESS;
-	if (st & PTH_EMANPT)
-		res = ft_dprintf(STDERR_FILENO, "%s: %s: filename argument required\n%s: usege: %s filename [arguments]\n", g_session.name, name, name, name);
-	else if (!ret && S_ISDIR(s.st_mode))
-		res = ft_dprintf(STDERR_FILENO, "%s: %s: Is a directory\n", g_session.name, name);
-	else if (ret && st & PTH_ESLASH)
-		res = ft_dprintf(STDERR_FILENO, "%s: %s: No such file or directory\n", g_session.name, name);
-	else if (ret && st & PTH_EPOINT)
-		res = ft_dprintf(STDERR_FILENO, "%s: %s command not found\n", g_session.name, name);
-	else if (st & PTH_EUNKNOWN)
-		res = 1;
+	if (!ft_strncmp(name, "./", 2))
+	{
+		if (st == 0 && S_ISDIR(s.st_mode))
+			res = ft_dprintf(STDERR_FILENO, \
+				"%s: %s: Is a directory\n", g_session.name, name);
+		else if (st == 0 && !(s.st_mode & S_IXUSR))
+			res = ft_dprintf(STDERR_FILENO, \
+				"%s: %s: Permission denied\n", g_session.name, name);
+		else if (st)
+			res = ft_dprintf(STDERR_FILENO, \
+				"%s: %s: No such file or directory\n", g_session.name, name);
+	}
+	else
+	{
+		if (st == 0 && ft_strchr(name, '/') && S_ISDIR(s.st_mode))
+			res = ft_dprintf(STDERR_FILENO, \
+				"%s: %s: Is a directory\n", g_session.name, name);
+		else if (st && ft_strchr(name, '/'))
+			res = ft_dprintf(STDERR_FILENO, \
+				"%s: %s: No such file or directory\n", g_session.name, name);
+	}
 	return (res);
 }
 
@@ -79,11 +58,11 @@ char	*path_get(const char *name, const char *path)
 	size_t		i;
 
 	absolute = NULL;
-	if (name && *name)
+	if (name && *name && path_error(name) == 0)
 	{
 		if (*name == '/' || *name == '.')
 		{
-			if (exec_path_error((char*)name) == 0 && s.st_mode & S_IXUSR)
+			if (stat(name, &s) == 0 && s.st_mode & S_IXUSR)
 				absolute = ft_strdup(name);
 		}
 		else if ((paths = ft_split(path, ':')))
