@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 08:52:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 10:53:58 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 10:57:40 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static t_redir_status	try_catch_filename(char ***filename, char *var_name,
 		return (FLNAME_TO_LONG);
 	if (ret == 0 && S_ISDIR(s.st_mode))
 		return (IS_A_DIR);
-	if (ret == 0 && !(s.st_mode & S_IXUSR))
+	if (ret == 0 && !(s.st_mode & S_IRUSR))
 		return (NO_PERMISSIONS);
 	return (CONTINUE);
 }
