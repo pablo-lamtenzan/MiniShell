@@ -72,11 +72,11 @@ t_term_err	term_origin(const char *input, size_t length)
 	t_term_err		status;
 	const size_t	graphical_len = strglen(input);
 
+	status = TERM_EOK;
 	if (length && write(STDERR_FILENO, input, length) == -1)
 		status = TERM_EWRITE;
-	else
+	else if (g_term.has_caps)
 	{
-		status = TERM_EOK;
 		g_term.caps.cursor.origin = (t_pos) {
 			graphical_len % g_term.caps.width,
 			graphical_len / g_term.caps.width
