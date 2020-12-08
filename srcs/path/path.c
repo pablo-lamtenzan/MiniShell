@@ -2,7 +2,7 @@
 #include <job_control.h>
 #include <unistd.h>
 
-static char	*path_cat(const char *a, const char *b)
+char	*path_cat(const char *a, const char *b)
 {
 	const size_t	len = ft_strlen(a) + ft_strlen(b) + 1;
 	char			*cat;
