@@ -5,9 +5,9 @@ void		caps_goto_x(t_caps *caps, int pos)
 	int			delta;
 	char		*ctrl;
 
-	if ((delta = pos - caps->cursor.real.x))
+	if ((delta = pos - caps->cursor.pos.x))
 	{
-		caps->cursor.real.x = pos;
+		caps->cursor.pos.x = pos;
 		if (caps->ctrls.move_h)
 			tputs(tgoto(caps->ctrls.move_h, 0, pos), 1, &putc_err);
 		else
@@ -32,7 +32,7 @@ void		caps_goto_y(t_caps *caps, int pos)
 	/* int			scroll; */
 	char		*ctrl;
 
-	if ((delta = pos - caps->cursor.real.y))
+	if ((delta = pos - caps->cursor.pos.y))
 	{
 		if (delta < 0)
 		{
@@ -48,7 +48,7 @@ void		caps_goto_y(t_caps *caps, int pos)
 			//ft_dprintf(2, "%d, ", delta);
 		while (delta--)
 			tputs(ctrl, 1, &putc_err);
-		caps->cursor.real.y = pos;
+		caps->cursor.pos.y = pos;
 		/* } */
 	}
 }

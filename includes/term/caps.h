@@ -90,14 +90,11 @@ typedef struct		s_pos
 	int	y;
 }					t_pos;
 
-// TODO: Rename real to pos
-// TODO: Remove zero?
 typedef struct		s_cursor
 {
 	t_pos	zero;
-	t_pos	real;
+	t_pos	pos;
 	t_pos	origin;
-//	t_pos	pos;
 }					t_cursor;
 
 typedef struct		s_select

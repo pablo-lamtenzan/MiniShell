@@ -35,13 +35,13 @@ t_term_err	cursor_write(const char *input, size_t length)
 	if (write(STDERR_FILENO, input, length) == -1)
 		return (TERM_EWRITE);
 	g_term.caps.index += length;
-	g_term.caps.cursor.real = (t_pos) {
+	g_term.caps.cursor.pos = (t_pos) {
 		(g_term.caps.cursor.origin.x + g_term.caps.index)
 			% (g_term.caps.width),
 		(g_term.caps.cursor.origin.x + g_term.caps.index)
 			/ (g_term.caps.width) + g_term.caps.cursor.origin.y,
 	};
-	if (g_term.caps.cursor.real.x == 0)
+	if (g_term.caps.cursor.pos.x == 0)
 		cursor_d();
 	return (TERM_EOK);
 }
@@ -59,10 +59,10 @@ t_term_err	term_write(const char *input, size_t length)
 		// TODO: Get error return
 		cursor_write(input, length);
 		if ((remaining = g_term.line->len - g_term.caps.index)
-		&& (g_term.caps.cursor.real.x == 0
-		|| g_term.caps.cursor.real.x + remaining >= (size_t)g_term.caps.width))
+		&& (g_term.caps.cursor.pos.x == 0
+		|| g_term.caps.cursor.pos.x + remaining >= (size_t)g_term.caps.width))
 		{
-			pos = g_term.caps.cursor.real;
+			pos = g_term.caps.cursor.pos;
 			index = g_term.line->len - remaining;
 			tputs(g_term.caps.modes.insert_end, 1, &putc_err);
 			status = cursor_write(g_term.line->data + index, remaining);
@@ -89,8 +89,8 @@ t_term_err	term_origin(const char *input, size_t length)
 			graphical_len % g_term.caps.width,
 			graphical_len / g_term.caps.width
 		};
-		g_term.caps.cursor.real = g_term.caps.cursor.origin;
-		if (g_term.caps.cursor.real.x == 0)
+		g_term.caps.cursor.pos = g_term.caps.cursor.origin;
+		if (g_term.caps.cursor.pos.x == 0)
 			cursor_d();
 	}
 	return (status);

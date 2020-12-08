@@ -5,7 +5,7 @@
 */
 t_term_err	term_clear_screen()
 {
-	const t_pos	pos = g_term.caps.cursor.real;
+	const t_pos	pos = g_term.caps.cursor.pos;
 	t_term_err	status;
 
 	status = TERM_EOK;
@@ -27,7 +27,7 @@ t_term_err	term_clear_screen()
 */
 t_term_err	term_clear_eos()
 {
-	const int	x = g_term.caps.cursor.real.x;
+	const int	x = g_term.caps.cursor.pos.x;
 
 	if (x)
 	{
@@ -35,9 +35,9 @@ t_term_err	term_clear_eos()
 		if (x + g_term.line->len - g_term.caps.index >= (size_t)g_term.caps.width)
 		{
 			caps_goto_x(&g_term.caps, 0);
-			caps_goto_y(&g_term.caps, g_term.caps.cursor.real.y + 1);
+			caps_goto_y(&g_term.caps, g_term.caps.cursor.pos.y + 1);
 			tputs(g_term.caps.ctrls.del_eos, 1, &putc_err);
-			caps_goto_y(&g_term.caps, g_term.caps.cursor.real.y - 1);
+			caps_goto_y(&g_term.caps, g_term.caps.cursor.pos.y - 1);
 			caps_goto_x(&g_term.caps, x);
 		}
 	}
@@ -54,7 +54,7 @@ t_term_err	term_clear_eos()
 */
 t_term_err	term_line_del(size_t n)
 {
-	const t_pos		pos = g_term.caps.cursor.real;
+	const t_pos		pos = g_term.caps.cursor.pos;
 	const size_t	index = g_term.caps.index;
 	const size_t	remaining = g_term.line->len - n - index;
 	t_term_err		status;
