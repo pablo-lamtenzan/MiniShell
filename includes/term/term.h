@@ -6,8 +6,6 @@
 # include <unistd.h>
 
 # include <env.h>
-# include <term/line.h>
-# include <term/hist.h>
 # include <term/caps.h>
 # include <term/ansi.h>
 
@@ -85,6 +83,7 @@ t_term_err			term_prompt(const char **dest);
 */
 int					putc_err(int c);
 size_t				strglen(const char *str);
+t_term_err			cursor_write(const char *input, size_t length);
 t_term_err			term_write(const char *input, size_t length);
 t_term_err			term_origin(const char *input, size_t length);
 
@@ -123,15 +122,16 @@ t_term_err			term_new_line(void);
 */
 t_term_err			cursor_l(void);
 t_term_err			cursor_r(void);
+t_term_err			cursor_d(void);
 
 /*
 **					cursor_jmp.c
 */
+void				cursor_goto_index(size_t index);
 t_term_err			cursor_start_line(void);
 t_term_err			cursor_end_line(void);
 t_term_err			cursor_next_word(void);
 t_term_err			cursor_prev_word(void);
-t_term_err			cursor_goto_index(size_t index);
 
 /*
 **					select.c

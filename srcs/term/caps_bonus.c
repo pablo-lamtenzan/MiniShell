@@ -89,10 +89,9 @@ bool		caps_load(t_caps *caps)
 		&& load_ctrls(&caps->ctrls, &area)
 		&& load_keys(&caps->keys, &area)
 		&& load_flags(&caps->flags)
-		&& (caps->width = tgetnum("co")) > 0
-		&& (caps->height = tgetnum("li")) > 0;
+		&& (caps->width = tgetnum("co")) > 1
+		&& (caps->height = tgetnum("li")) > 1;
 	if (enabled)
 		signal(SIGWINCH, &update_dimensions);
 	return (enabled);
 }
-

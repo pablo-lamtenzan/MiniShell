@@ -100,6 +100,7 @@ void	term_destroy(void)
 		write(STDOUT_FILENO, TERM_EXIT, sizeof(TERM_EXIT) - 1);
 }
 
+// TODO: Use less branches using separate caps routines
 /*
 **	Prompt the user of an interactive terminal.
 */
