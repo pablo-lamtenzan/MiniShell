@@ -132,6 +132,6 @@ bool				caps_load(t_caps *caps);
 void				caps_goto_x(t_caps *caps, int pos);
 void				caps_goto_y(t_caps *caps, int pos);
 void				caps_goto(t_caps *caps, const t_pos *pos);
-void				caps_delete(t_caps *caps, size_t n_chars, size_t n_lines);
+void				caps_delete(t_caps *caps, size_t n);
 
 #endif

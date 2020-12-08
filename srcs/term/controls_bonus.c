@@ -54,18 +54,23 @@ t_term_err	term_clear_eos()
 */
 t_term_err	term_line_del(size_t n)
 {
-	const t_pos	pos = g_term.caps.cursor.real;
-	const int	index = g_term.caps.index;
-	t_term_err	status;
+	const t_pos		pos = g_term.caps.cursor.real;
+	const int		index = g_term.caps.index;
+	const size_t	remaining = g_term.line->len - n - index;
+	t_term_err		status;
 
 	status = TERM_EOK;
 	if (line_erase(g_term.line, index, n))
 	{
-		term_clear_eos();
-		status = term_write(g_term.line->data + index,
-			g_term.line->len - index);
-		caps_goto(&g_term.caps, &pos);
-		g_term.caps.index = index;
+		if (pos.x + remaining < (size_t)g_term.caps.width)
+			caps_delete(&g_term.caps, n);
+		else
+		{
+			term_clear_eos();
+			status = term_write(g_term.line->data + index, remaining);
+			caps_goto(&g_term.caps, &pos);
+			g_term.caps.index = index;
+		}
 	}
 	return (status);
 }

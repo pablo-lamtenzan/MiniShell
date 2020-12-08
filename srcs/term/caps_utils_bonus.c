@@ -63,3 +63,23 @@ void		caps_goto(t_caps *caps, const t_pos *pos)
 	if (insert)
 		tputs(caps->modes.insert, 1, &putc_err);
 }
+
+/*
+**	Delete n characters starting at the cursor's position.
+*/
+void		caps_delete(t_caps *caps, size_t n)
+{
+	bool	toggle_del;
+
+	if (caps->ctrls.del_n)
+		tputs(tparm(caps->ctrls.del_n, 0, n), 1, &putc_err);
+	else if (caps->ctrls.del)
+	{
+		if ((toggle_del = !(caps->mode & CAPS_MDEL)))
+			tputs(caps->modes.del, 1, &putc_err);
+		while (n--)
+			tputs(caps->ctrls.del, 1, &putc_err);
+		if (toggle_del)
+			tputs(caps->modes.del_end, 1, &putc_err);
+	}
+}
