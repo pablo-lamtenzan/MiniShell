@@ -19,6 +19,7 @@
 # include <unistd.h>
 # include <stdbool.h>
 # include <sys/types.h>
+# include <sys/param.h>
 # include <signal.h>
 
 /*
@@ -98,6 +99,7 @@ typedef struct			s_session
 	char				**input_line;
 	size_t				input_line_index;
 	unsigned char		exit_count;
+	char				cwd[PATH_MAX + 1];
 	char				*name;
 	t_env				*env;
 	char				flags;
@@ -110,8 +112,9 @@ t_exec_status			wait_processes(t_exec_status st);
 /*
 ** Session
 */
-t_session				*session_start();
-void					session_end();
+t_session				*session_start(t_session *session,
+	const char *name, const char **envp);
+void					session_end(t_session *session);
 bool					session_empty();
 
 /*

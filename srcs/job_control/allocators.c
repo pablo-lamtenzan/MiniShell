@@ -13,16 +13,37 @@
 #include <job_control.h>
 #include <libft.h>
 #include <stdlib.h>
+#include <string.h>
+#include <errno.h>
 
-t_session			*session_start(void)
+t_session			*session_start(t_session *sess,
+	const char *name, const char **ep)
 {
-	ft_bzero(&g_session, sizeof(t_session));
-	if (!(g_session.nil = ft_calloc(1, sizeof(t_group))))
-		return (NULL);
-	g_session.nil->next = g_session.nil;
-	g_session.nil->prev = g_session.nil;
-	g_session.groups = g_session.nil;
-	return (&g_session);
+	t_group *const	nil = ft_calloc(1, sizeof(*nil));
+	char *const		basename = ft_basename(name);
+	t_env			*env;
+
+	env = NULL;
+	if (nil && basename && (env = env_import(ep))
+	&& (sess || (sess = malloc(sizeof(*sess)))))
+	{
+		ft_bzero(sess, sizeof(*sess));
+		if (getcwd(sess->cwd, PATH_MAX))
+		{
+			nil->prev = nil;
+			nil->next = nil;
+			sess->nil = nil;
+			sess->groups = nil;
+			sess->name = basename;
+			sess->env = env;
+			return (sess);
+		}
+		ft_dprintf(2, "getcwd: %s\n", strerror(errno));
+	}
+	free(nil);
+	free(basename);
+	env_clr(&env);
+	return (NULL);
 }
 
 t_group				*group_new(void)

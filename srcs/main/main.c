@@ -85,7 +85,7 @@ static void			handle_exec_error(t_bst* root, t_exec_status exec_st)
 	}
 	free_bst(root);
 	term_destroy();
-	session_end();
+	session_end(&g_session);
 	exit(exit_val);
 }
 
@@ -114,36 +114,34 @@ void	exec(t_tok* tokens)
 	strs_unload(g_session.input_line);
 }
 
-static bool				init(int ac, const char **av, const char **ep)
+/* static bool				init_login()
 {
-	char				*freed[2];
+	// Load rc files
+	return (true);
+}
 
-	freed[0] = NULL;
-	freed[1] = NULL;
-	ft_bzero(&freed, sizeof(freed));
-	if (ac > 0 && session_start())
+static bool				init_interactive()
+{
+	// Bind interactive signal handlers
+	// Init environment variables (DIRNAME, PS1, PS2, etc...)
+	// Load history
+	return (true);
+} */
+
+static bool				init(const char *name, const char **ep)
+{
+	bool	is_login;
+
+	if ((is_login = (*name == '-')))
+		name++;
+	if (session_start(&g_session, name, ep))
 	{
-		if ((g_session.name = ft_basename(av[0])))
+		if (term_init(&g_session.env, g_session.cwd))
 		{
-			if ((g_session.env = env_import(ep)) && env_set(&g_session.env, \
-			"DIRNAME", freed[0] = ft_basename(freed[1] = getcwd(NULL, 0)), false))
-			{
-				free(freed[0]);
-				free(freed[1]);
-				ft_bzero(&freed, sizeof(freed));
-				if (term_init(&g_session.env))
-				{
-					init_signal_handler(g_term.is_interactive
-						&& !g_term.has_caps);
-					return (true);
-				}
-				env_clr(&g_session.env);
-			}
-			free(freed[0]);	
-			free(freed[1]);
-			free(g_session.name);
+			init_signal_handler(g_term.is_interactive && !g_term.has_caps);
+			return (true);
 		}
-		session_end();
+		session_end(&g_session);
 	}
 	return (false);
 }
@@ -212,7 +210,7 @@ int						main(int ac, const char **av, const char **ep)
 {
 	t_term_err	status;
 
-	if (!init(ac, av, ep))
+	if (ac < 1 || !init(av[0], ep))
 		return (1);
 	status = routine();
 	term_destroy();

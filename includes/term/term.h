@@ -76,7 +76,7 @@ typedef struct		s_keybind
 /*
 **					term.c
 */
-bool				term_init(t_env **env);
+bool				term_init(t_env **env, const char *cwd);
 void				term_destroy(void);
 t_term_err			term_prompt(const char **dest);
 

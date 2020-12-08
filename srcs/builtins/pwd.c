@@ -16,15 +16,8 @@
 
 int		b_pwd(t_exec *args)
 {
-	char			cwd[PATH_MAX];
-
 	if (args->ac > 1)
 		ft_dprintf(STDERR_FILENO, "%s\n", "pwd: too many arguments");
-	else
-	{
-		if (!(getcwd(cwd, sizeof(cwd))))
-			return (STD_ERROR);
-		ft_dprintf(args->fds[FDS_STDOUT], "%s\n", cwd);
-	}
+	ft_dprintf(args->fds[FDS_STDOUT], "%s\n", g_session.cwd);
 	return (SUCCESS);
 }

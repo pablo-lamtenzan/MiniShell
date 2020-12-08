@@ -22,7 +22,7 @@ void		handle_exit_with_active_background(int exit_status)
 	if (g_session.exit_count++ == 2 || !is_background_active())
 	{
 		term_destroy();
-		session_end();
+		session_end(&g_session);
 		exit(exit_status);
 	}
 	else

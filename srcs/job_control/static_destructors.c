@@ -14,43 +14,44 @@
 #include <libft.h>
 #include <stdlib.h>
 
-void				session_end(void)
+void				session_end(t_session *sess)
 {
 	//ignore_all_signals();
-	background_force_exit();
-	delete_groups();
-	delete_deadzombies();
-	delete_zombies();
-	delete_hist();
-	delete_input_line();
-	free(g_session.nil);
+	background_force_exit(sess);
+	delete_groups(sess);
+	delete_deadzombies(sess);
+	delete_zombies(sess);
+	delete_hist(sess);
+	delete_input_line(sess);
+	env_clr(&sess->env);
+	free(sess->name);
+	free(sess->nil);
+	sess->name = NULL;
+	sess->nil = NULL;
 }
 
-void				delete_deadzombies(void)
+void				delete_deadzombies(t_session *sess)
 {
-	t_deadzombie	*next;
+	t_deadzombie	*curr;
 
-	while (g_session.dead_zombies)
+	while ((curr = sess->dead_zombies))
 	{
-		next = g_session.dead_zombies->next;
-		free(g_session.dead_zombies);
-		g_session.dead_zombies = next;
+		sess->dead_zombies = curr->next;
+		free(curr);
 	}
 }
 
-void				delete_groups(void)
+void				delete_groups(t_session *sess)
 {
-	t_group			*fill;
+	t_group			*curr;
 
-	while (g_session.groups != g_session.nil)
+	while ((curr = sess->groups) != sess->nil)
 	{
-		fill = g_session.groups;
-		g_session.groups = g_session.groups->next;
-		delete_group_input(&g_session.groups);
-		delete_processes(&fill);
-		free(fill->nil);
-		free(fill);
-		fill = NULL;
+		sess->groups = curr->next;
+		delete_group_input(&sess->groups);
+		delete_processes(&curr);
+		free(curr->nil);
+		free(curr);
 	}
 }
 

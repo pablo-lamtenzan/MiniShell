@@ -12,20 +12,31 @@
 
 #include <execution.h>
 #include <string.h>
+#include <path.h>
 
+// TODO: Chdir using subshell session
 int				ft_chdir(const char *path)
 {
 	struct stat	stats;
 
 	stat(path, &stats);
-	if (S_ISDIR(stats.st_mode) && !(stats.st_mode & S_IRUSR))
-		return (42);
-	else if (S_ISDIR(stats.st_mode) && g_session.flags & PIPED_CMD)
-		return (0);
+	if (S_ISDIR(stats.st_mode))
+	{
+		if (!(stats.st_mode & S_IRUSR))
+			ft_dprintf(STDERR_FILENO, "%s: cd: %s: Permission denied\n",
+				g_session.name, path);
+		else if (!(g_session.flags & PIPED_CMD))
+			return ((chdir(path) == -1) ? STD_ERROR : SUCCESS);
+		else
+			return (SUCCESS);
+	}
 	else
-		return (chdir(path));
+		ft_dprintf(STDERR_FILENO, "%s: %s: Not a directory\n",
+			g_session.name, path);
+	return (STD_ERROR);
 }
 
+// TODO: Secure
 void			swap_pwds(const char *newpwd)
 {
 	const char	*pwd;
@@ -58,28 +69,29 @@ int				go_home(t_exec *args)
 	return (SUCCESS);
 }
 
-int				go_to_path(t_exec *args, char *path)
+// TODO: chdir 
+int				go_to_path(char *path)
 {
-	char		cwd[PATH_MAX];
 	int			ret;
 
-	if (!(getcwd(cwd, sizeof(cwd))))
-		return (1);
-	ft_strlcat(cwd, "/", ft_strlen(cwd) + 2);
-	ft_strlcat(cwd, path, ft_strlen(cwd) + 2 + ft_strlen(path));
-	if ((ret = ft_chdir(cwd)) == 0)
+	if (!getcwd(g_session.cwd, sizeof(g_session.cwd) - 1))
 	{
-		getcwd(cwd, sizeof(cwd));
-		swap_pwds(cwd);
+		ft_dprintf(STDERR_FILENO, "%s: getcwd: %s\n",
+			g_session.name, strerror(errno));
+		return (STD_ERROR);
+	}
+	if ((ret = ft_chdir(path)) == 0)
+	{
+		if (!getcwd(g_session.cwd, sizeof(g_session.cwd) - 1))
+		{
+			ft_dprintf(STDERR_FILENO, "%s: getcwd: %s\n",
+				g_session.name, strerror(errno));
+			return (STD_ERROR);
+		}
+		swap_pwds(g_session.cwd);
 		return (SUCCESS);
 	}
-	else if (ret == 42)
-		ft_dprintf(STDERR_FILENO, "%s: cd: %s: Permission denied\n", \
-			g_session.name, args->av[1]);
-	else
-		ft_dprintf(STDERR_FILENO, "%s: %s: Not a directory\n", \
-			g_session.name, args->av[1]);
-	return (STD_ERROR);
+	return (ret);
 }
 
 int	b_cd(t_exec *args)
@@ -88,25 +100,27 @@ int	b_cd(t_exec *args)
 	char		path[PATH_MAX];
 
 	if (args->ac == 1)
-		go_home(args);
+		return (go_home(args));
 	else
 	{
-		ft_bzero(path, PATH_MAX);
-		ft_memcpy(path, args->av[1], ft_strlen(args->av[1]));
+		ft_bzero(path, sizeof(path));
+		//ft_memcpy(path, args->av[1], ft_strlen(args->av[1]));
+		ft_strlcpy(path, args->av[1], sizeof(path));
 		if (path[0] == '/' && ft_chdir(path) == 0)
 		{
 			swap_pwds(path);
 			return (SUCCESS);
 		}
-		else if (path[0] == '-' && (oldpwd = (char*)env_get(g_session.env, \
-		"OLDPWD", 6)) && (oldpwd = ft_strdup(oldpwd)) && ft_chdir(oldpwd) == 0)
+		else if (path[0] == '-'
+		&& (oldpwd = (char*)env_get(g_session.env, "OLDPWD", 6))
+		&& (oldpwd = ft_strdup(oldpwd)) && ft_chdir(oldpwd) == 0)
 		{
 			swap_pwds(oldpwd);
 			free(oldpwd);
 			return (SUCCESS);
 		}
 		else
-			return (go_to_path(args, path));
+			return (go_to_path(path));
 	}
 	return (STD_ERROR);
 }

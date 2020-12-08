@@ -90,31 +90,31 @@ size_t			background_index_get(t_group *nil, t_process *target)
 	return (index);
 }
 
-void			background_force_exit(void)
+void			background_force_exit(t_session *sess)
 {
 	t_group		*curr;
 	t_process	*leader;
 
-	curr = g_session.groups;
-	while (g_session.groups != g_session.nil)
+	curr = sess->groups;
+	while (sess->groups != sess->nil)
 	{
-		leader = g_session.groups->active_processes;
-		while (g_session.groups->active_processes != g_session.groups->nil)
+		leader = sess->groups->active_processes;
+		while (sess->groups->active_processes != sess->groups->nil)
 		{
-			if (!(g_session.groups->active_processes->flags & NO_HANGUP))
-				kill(g_session.groups->active_processes->pid, SIGHUP);
-			kill(g_session.groups->active_processes->pid, SIGCONT);
-			if (!(g_session.groups->active_processes->flags & NO_HANGUP))
-				while (waitpid(g_session.groups->active_processes->pid, \
-						&g_session.groups->active_processes->wstatus, 0) <= 0)
+			if (!(sess->groups->active_processes->flags & NO_HANGUP))
+				kill(sess->groups->active_processes->pid, SIGHUP);
+			kill(sess->groups->active_processes->pid, SIGCONT);
+			if (!(sess->groups->active_processes->flags & NO_HANGUP))
+				while (waitpid(sess->groups->active_processes->pid, \
+						&sess->groups->active_processes->wstatus, 0) <= 0)
 					;
-			g_session.groups->active_processes = \
-				g_session.groups->active_processes->next;
+			sess->groups->active_processes = \
+				sess->groups->active_processes->next;
 		}
-		g_session.groups->active_processes = leader;
-		g_session.groups = g_session.groups->next;
+		sess->groups->active_processes = leader;
+		sess->groups = sess->groups->next;
 	}
-	g_session.groups = curr;
+	sess->groups = curr;
 }
 
 bool			is_background_active(void)

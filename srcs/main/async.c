@@ -33,12 +33,13 @@ static void		do_nothing(int signal)
 
 static void		terminate_minishell(int signal)
 {
+	const int	exit_st = g_session.st;
 	// DO TO: Can be leaks if per example minish is allocating mem in a aux fct
 	// We can do another global with the references of all the not-global allocation and then free them in this call
 	(void)signal;
 	term_destroy();
-	session_end();
-	exit(g_session.st);
+	session_end(&g_session);
+	exit(exit_st);
 }
 
 /*

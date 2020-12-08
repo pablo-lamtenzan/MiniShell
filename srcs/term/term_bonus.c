@@ -38,17 +38,24 @@ int		ft_isatty(int fd)
 **
 **	returns true if successful, or false otherwise.
 */
-bool		term_init_caps(t_env **env)
+bool		term_init_caps(t_env **env, const char *cwd)
 {
+	char *const	dirname = ft_basename(cwd);
 	const char	*term_type;
 	char		term_buff[MAX_ENTRY + 1];
 	int			ent_st;
 
-	if (!env_set(env, "PS1", TERM_PS1, false)
+	if (!dirname
+	|| !env_set(env, "DIRNAME", dirname, false)
+	|| !env_set(env, "PS1", TERM_PS1, false)
 	|| !env_set(env, "PS2", TERM_PS2, false)
 	|| !(term_type = env_get(*env, "TERM", 4))
 	|| (ent_st = tgetent(term_buff, term_type)) == -1)
+	{
+		free(dirname);
 		return (false);
+	}
+	free(dirname);
 	if (ent_st == 0)
 		return (true);
 	if (tcgetattr(STDIN_FILENO, &g_term.caps.s_ios) == -1)
@@ -62,12 +69,12 @@ bool		term_init_caps(t_env **env)
 	return (true);
 }
 
-bool	term_init(t_env **env)
+// TODO: Reference to term!
+bool	term_init(t_env **env, const char *cwd)
 {
 	g_term.caps.selec = (t_select){-1U, -1U};
 	if (!(g_term.line = line_new(TERM_LINE_SIZE)))
 		return (false);
-	// TODO: Load and save history file
 	g_term.line->prev = g_term.caps.hist.last;
 	*g_term.line->data = '\0';
 	g_term.line->len = 0;
@@ -75,7 +82,7 @@ bool	term_init(t_env **env)
 	g_term.caps.hist.next = g_term.line;
 	g_term.caps.hist.head = g_term.line;
 	g_term.is_interactive = ft_isatty(STDIN_FILENO) && ft_isatty(STDERR_FILENO);
-	if (g_term.is_interactive && !term_init_caps(env))
+	if (g_term.is_interactive && !term_init_caps(env, cwd))
 		ft_dprintf(2, "Failed to retrieve terminfo: %s\n", strerror(errno));
 	return (true);
 }
