@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 15:45:08 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 15:48:57 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,6 @@ static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
 	else
 	{
 		info->session = g_session.flags & PIPED_CMD ? session_dup() : &g_session;
-		ft_dprintf(2, "fl<gs: %d\n", g_session.flags);
 		if (!(info->av = tokens_expand((t_tok**)&cmd->a, \
 			&info->session->env, &info->ac)))
 		{
