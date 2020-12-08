@@ -140,6 +140,6 @@ void				caps_delete(t_caps *caps, size_t n);
 */
 void				caps_goto_x(t_caps *caps, int pos);
 void				caps_goto_y(t_caps *caps, int pos);
-void				caps_goto(t_caps *caps, const t_pos *pos);
+void				caps_goto(t_caps *caps, const t_pos pos);
 
 #endif

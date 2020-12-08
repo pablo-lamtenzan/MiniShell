@@ -65,7 +65,7 @@ static void		update_dimensions(int signal)
 		g_term.caps.width = s_winsz.ws_col;
 		g_term.caps.height = s_winsz.ws_row;
 		index = g_term.caps.index;
-		caps_goto(&g_term.caps, &g_term.caps.cursor.zero);
+		caps_goto(&g_term.caps, (t_pos){0, 0});
 		g_term.caps.index = 0;
 		tputs(g_term.caps.ctrls.del_eos, 1, &putc_err);
 		term_origin(g_term.msg->data, g_term.msg->len);

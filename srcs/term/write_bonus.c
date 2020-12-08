@@ -67,7 +67,7 @@ t_term_err	term_write(const char *input, size_t length)
 			tputs(g_term.caps.modes.insert_end, 1, &putc_err);
 			status = cursor_write(g_term.line->data + index, remaining);
 			tputs(g_term.caps.modes.insert, 1, &putc_err);
-			caps_goto(&g_term.caps, &pos);
+			caps_goto(&g_term.caps, pos);
 			g_term.caps.index -= remaining;
 		}
 	}

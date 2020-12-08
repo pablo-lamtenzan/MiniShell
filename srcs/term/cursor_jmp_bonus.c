@@ -13,7 +13,7 @@ void	cursor_goto_index(size_t index)
 			index % (g_term.caps.width),
 			index / (g_term.caps.width) + g_term.caps.cursor.origin.y,
 		};
-		caps_goto(&g_term.caps, &pos);
+		caps_goto(&g_term.caps, pos);
 	}
 }
 
@@ -24,7 +24,7 @@ void	cursor_goto_index(size_t index)
 */
 t_term_err	cursor_start_line(void)
 {
-	caps_goto(&g_term.caps, &g_term.caps.cursor.origin);
+	caps_goto(&g_term.caps, g_term.caps.cursor.origin);
 	g_term.caps.index = 0;
 	return (TERM_EOK);
 }

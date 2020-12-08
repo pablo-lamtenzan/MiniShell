@@ -42,7 +42,7 @@ t_term_err	select_highlight(void)
 		if ((status = term_write(g_term.line->data + g_term.caps.selec.end,
 			g_term.line->len - g_term.caps.selec.end)) != TERM_EOK)
 			return (status);
-		caps_goto(&g_term.caps, &pos);
+		caps_goto(&g_term.caps, pos);
 		g_term.caps.index = index;
 	}
 	return (TERM_EOK);
@@ -109,7 +109,7 @@ t_term_err	select_clear(void)
 			index = g_term.caps.index;
 			term_clear_line();
 			status = term_write(g_term.line->data, g_term.line->len);
-			caps_goto(&g_term.caps, &pos);
+			caps_goto(&g_term.caps, pos);
 			g_term.caps.index = index;
 		}
 	}

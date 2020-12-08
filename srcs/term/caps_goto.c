@@ -57,15 +57,15 @@ void		caps_goto_y(t_caps *caps, int pos)
 /*
 **	Set the cursor's real position to pos.
 */
-void		caps_goto(t_caps *caps, const t_pos *pos)
+void		caps_goto(t_caps *caps, const t_pos pos)
 {
 	const bool		insert = caps->mode & CAPS_MINS && !caps->flags.move_insert;
 
 	if (insert)
 		tputs(caps->modes.insert_end, 1, &putc_err);
 	// if height is the same move only horizontally // TODO: remove false
-	caps_goto_y(caps, pos->y);
-	caps_goto_x(caps, pos->x);
+	caps_goto_y(caps, pos.y);
+	caps_goto_x(caps, pos.x);
 	if (insert)
 		tputs(caps->modes.insert, 1, &putc_err);
 }

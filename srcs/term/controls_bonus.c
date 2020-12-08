@@ -15,7 +15,7 @@ t_term_err	term_clear_screen()
 		if ((!g_term.msg ||
 		(status = term_origin(g_term.msg->data, g_term.msg->len)) == TERM_EOK))
 			status = term_write(g_term.line->data, g_term.line->len);
-		caps_goto(&g_term.caps, &pos);
+		caps_goto(&g_term.caps, pos);
 	}
 	return (status);
 }
@@ -69,7 +69,7 @@ t_term_err	term_line_del(size_t n)
 			// TODO: Toggle insert mode and delete overflow instead of eos
 			term_clear_eos();
 			status = term_write(g_term.line->data + index, remaining);
-			caps_goto(&g_term.caps, &pos);
+			caps_goto(&g_term.caps, pos);
 			g_term.caps.index = index;
 		}
 	}
@@ -94,7 +94,7 @@ t_term_err	term_backspace()
 */
 t_term_err	term_clear_line()
 {
-	caps_goto(&g_term.caps, &g_term.caps.cursor.origin);
+	caps_goto(&g_term.caps, g_term.caps.cursor.origin);
 	g_term.caps.index = 0;
 	term_clear_eos();
 	return (TERM_EOK);
