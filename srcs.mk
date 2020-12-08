@@ -129,7 +129,7 @@ SRCS	=	$(addprefix $(SRCDIR)/,\
 
 BONUS_SRCS = $(SRCS) $(addprefix $(SRCDIR)/,\
 	$(addprefix term/,\
-		caps_bonus.c caps_utils_bonus.c\
+		caps_bonus.c caps_goto.c caps_utils_bonus.c\
 		clip_bonus.c\
 		controls_bonus.c\
 		cursor_bonus.c cursor_jmp_bonus.c\

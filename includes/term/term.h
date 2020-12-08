@@ -6,8 +6,6 @@
 # include <unistd.h>
 
 # include <env.h>
-# include <term/line.h>
-# include <term/hist.h>
 # include <term/caps.h>
 # include <term/ansi.h>
 

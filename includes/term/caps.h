@@ -3,8 +3,14 @@
 
 # include <sys/stat.h>
 # include <stdint.h>
+# include <stdbool.h>
+# include <unistd.h>
 
 # include <term.h>
+
+# include <term/line.h>
+# include <term/hist.h>
+
 # define MAX_ENTRY		1024
 
 
@@ -129,9 +135,14 @@ bool				caps_load(t_caps *caps);
 /*
 **					caps_utils.c
 */
+int					putc_err(int c);
+void				caps_delete(t_caps *caps, size_t n);
+
+/*
+**					caps_goto.c
+*/
 void				caps_goto_x(t_caps *caps, int pos);
 void				caps_goto_y(t_caps *caps, int pos);
 void				caps_goto(t_caps *caps, const t_pos *pos);
-void				caps_delete(t_caps *caps, size_t n);
 
 #endif
