@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 16:45:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:37:06 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 22:03:12 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ typedef struct		s_bst
 	void			*a;
 	void			*b;
 	t_tok_t			type;
-}                   t_bst;
+}					t_bst;
 
 /*
 ** BST create

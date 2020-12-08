@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/07 10:37:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:37:15 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 22:03:32 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # include <term/term.h>
 # include <execution.h>
 
-typedef		struct		s_builtin
+typedef	struct			s_builtin
 {
 	const char			*name;
 	t_executable		exec;
