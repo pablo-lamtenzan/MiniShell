@@ -1,7 +1,7 @@
 #include <term/term.h>
 
 // TODO: Consider using void for functions with arguments
-t_term_err	cursor_goto_index(size_t index)
+void	cursor_goto_index(size_t index)
 {
 	t_pos	pos;
 
@@ -15,7 +15,6 @@ t_term_err	cursor_goto_index(size_t index)
 		};
 		caps_goto(&g_term.caps, &pos);
 	}
-	return (TERM_EOK);
 }
 
 /*
@@ -32,7 +31,8 @@ t_term_err	cursor_start_line(void)
 
 t_term_err	cursor_end_line(void)
 {
-	return (cursor_goto_index(g_term.line->len));
+	cursor_goto_index(g_term.line->len);
+	return (TERM_EOK);
 }
 
 t_term_err	cursor_next_word(void)

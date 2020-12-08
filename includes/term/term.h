@@ -129,11 +129,11 @@ t_term_err			cursor_d(void);
 /*
 **					cursor_jmp.c
 */
+void				cursor_goto_index(size_t index);
 t_term_err			cursor_start_line(void);
 t_term_err			cursor_end_line(void);
 t_term_err			cursor_next_word(void);
 t_term_err			cursor_prev_word(void);
-t_term_err			cursor_goto_index(size_t index);
 
 /*
 **					select.c
