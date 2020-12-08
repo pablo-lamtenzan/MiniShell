@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 10:27:06 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:36:50 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 21:53:41 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,33 +58,28 @@ size_t		get_elem_size(char *input, int *i, const char **separators)
 	return (size);
 }
 
-// to norme int vars[4]
 int			copy_inter_seps(char **res, char *input, const char **separators)
 {
-	int		y;
-	int		i;
-	int		z;
-	int		remember;
 	size_t	aux;
+	int		vars[4];
 
-	i = 0;
-	z = 0;
-	while (input[i])
+	ft_bzero(&vars, sizeof(vars));
+	while (input[vars[1]])
 	{
-		y = -1;
-		while (separators[++y])
+		vars[0] = -1;
+		while (separators[++vars[0]])
 		{
-			if (!ft_strncmp(&input[i], separators[y], \
-				aux = ft_strlen(separators[y])))
+			if (!ft_strncmp(&input[vars[1]], separators[vars[0]], \
+				aux = ft_strlen(separators[vars[0]])))
 			{
-				i += (int)aux; // TODO: Avoid cast to int, use size_t
-				y = -1;
+				vars[1] += (int)aux;
+				vars[0] = -1;
 			}
 		}
-		remember = i;
-		if ((aux = get_elem_size(input, &i, separators)))
+		vars[3] = vars[1];
+		if ((aux = get_elem_size(input, &vars[1], separators)))
 		{
-			if (!(res[z++] = ft_strndup(&input[remember], aux)))
+			if (!(res[vars[2]++] = ft_strndup(&input[vars[3]], aux)))
 				return (false);
 		}
 	}

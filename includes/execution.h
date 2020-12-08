@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:51:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 14:39:57 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 22:05:47 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,8 @@ t_redir_status			redirections_handler(t_exec **info, t_bst *cmd, char ***filenam
 int						execute_child(t_exec *info);
 t_exec_status			build_execve_args(t_exec *info);
 void					destroy_execve_args(t_exec *info);
+bool					handle_subshell(t_executable exec, const char *name);
+t_exec_status			get_exec(t_exec *info);
 
 /*
 ** Redirections
