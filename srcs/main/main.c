@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 15:36:34 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 20:17:56 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ void					syntax_error(t_lex_st *st)
 		input = st->input;
 	ft_dprintf(2, "%s: syntax error near unexpected token `%s'\n",
 		g_session.name, input);
-	g_session.st = 258;
+	g_session.st = STD_ERROR;
 	lex_reset(st);
 	// TODO: Inspect if this is needed
 	/*

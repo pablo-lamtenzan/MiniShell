@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:52 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 15:11:14 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 20:33:29 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ static void	print_env(int fd, t_env *env)
 		{
 			if (env->key[env->key_length] == ENV_OP_ASSIGN)
 				ft_dprintf(fd, "declare -x %.*s=\"%s\"\n",
-					(int)env->key_length, env->key, env->key + env->key_length + 1);
+					(int)env->key_length, env->key, env->key + \
+						env->key_length + 1);
 			else
 				ft_dprintf(fd, "declare -x %s\n", env->key);
 		}
@@ -47,7 +48,8 @@ int			b_export(t_exec *args)
 	{
 		if ((key_len = env_key_len(args->av[i], true)))
 		{
-			if ((assign_st = env_assign(&args->session->env, args->av[i], true, true)) == 0)
+			if ((assign_st = env_assign(&args->session->env, \
+					args->av[i], true, true)) == 0)
 				env_set(&args->session->env, args->av[i], NULL, true);
 			else if (assign_st == -1)
 				return (STD_ERROR);

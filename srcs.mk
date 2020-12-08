@@ -112,6 +112,7 @@ SRCS	=	$(addprefix $(SRCDIR)/,\
 		process_operations.c\
 		process.c\
 		session.c\
+		return_st.c\
 		static_destructors.c\
 		static_destructors2.c\
 		wait_processes.c\

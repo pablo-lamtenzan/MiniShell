@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:19:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:36:36 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 20:53:44 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ bool				zombies_list_update(t_group *update)
 	fill = g_session.zombies;
 	g_session.zombies = zombie;
 	zombie->next = fill;
-	//ft_dprintf(2, "NEW ZOMBIE NODE: group=(\'%p\')\n", g_session.zombies->background_group);
 	return (true);
 }
 
@@ -63,9 +62,6 @@ void				zombies_list_remove_node(t_group *target)
 		prev = g_session.zombies;
 		g_session.zombies = g_session.zombies->next;
 	}
-	//if (first && first->background_group
-	//	&& first->background_group->nil->next->pid == target->nil->next->pid)
-	//	g_session.zombies = first->next;
 	if (first)
 		g_session.zombies = first;
 	else
@@ -87,7 +83,6 @@ void				zombies_list_purge_exited_groups(void)
 			if (g_session.groups == first)
 				first = first->next;
 			history_session_remove_node(g_session.groups);
-			//ft_dprintf(2, "[RM GROUP: %p]\n", g_session.groups);
 			group_remove(&g_session.groups);
 		}
 		g_session.groups = next;
@@ -100,33 +95,23 @@ void				zombies_list_purge_exited_zombies(void)
 	t_background	*next;
 	t_background	*first;
 	t_background	*prev;
-	//bool			freed;
 
 	prev = NULL;
-	//freed = false;
 	first = g_session.zombies;
 	while (g_session.zombies)
 	{
 		next = g_session.zombies->next;
 		if (g_session.zombies->exited)
 		{
-			//freed = true;
 			if (first && first == g_session.zombies)
 				first = first->next;
-			
-			//ft_dprintf(2, "[ZOMBIE IS DELETED! (%p)][NEXT: %p][CURR: %p]\n", g_session.zombies->background_group, g_session.zombies->next, g_session.zombies);
 			free(g_session.zombies);
-			//g_session.zombies = next;
-			// Here crutial bug: Update well the prev and you win!
-			// Heap use after free
 			if (prev)
 				prev->next = next;
 		}
 		else
 			prev = g_session.zombies;
-		//if ((!freed && g_session.zombies))
 		g_session.zombies = next;
-		//freed = false;
 	}
 	g_session.zombies = first;
 }

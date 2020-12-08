@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 21:57:11 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/12/08 14:58:35 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 20:40:22 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include <string.h>
 #include <path.h>
 
-// TODO: Chdir using subshell session
 int				ft_chdir(const char *path, t_exec *args)
 {
 	struct stat	stats;
@@ -94,7 +93,7 @@ int				go_to_path(char *path, t_exec *args)
 	return (ret);
 }
 
-int	b_cd(t_exec *args)
+int				b_cd(t_exec *args)
 {
 	char		*oldpwd;
 	char		path[PATH_MAX];

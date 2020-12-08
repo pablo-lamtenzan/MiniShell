@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 01:53:32 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:34:13 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 20:34:09 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ void			print_group(int fd, t_process *leader, int flags,
 	g_session.groups = remember;
 }
 
-// TO DO: test to exclude all signals exept SIGCONT here
 bool			is_not_running(t_process *target)
 {
 	return (WIFEXITED(target->wstatus) || WIFSTOPPED(target->wstatus));

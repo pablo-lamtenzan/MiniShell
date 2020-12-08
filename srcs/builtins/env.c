@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:20:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 15:01:18 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 20:37:13 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@ void	env_print(int fd, t_map *env)
 
 int		b_env(t_exec *args)
 {
-	t_env* 		curr;
+	t_env	*curr;
 
 	curr = args->session->env;
-	(void) args;
+	(void)args;
 	while (curr)
 	{
 		ft_putstr_fd(curr->key, args->fds[FDS_STDOUT]);

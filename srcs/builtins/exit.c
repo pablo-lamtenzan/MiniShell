@@ -6,14 +6,14 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:46 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 15:06:45 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 20:40:00 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <term/term.h>
 
-int					ft_atoi_exit(const char *str, bool *st)
+int		ft_atoi_exit(const char *str, bool *st)
 {
 	char			factor;
 	unsigned long	max;
@@ -34,8 +34,8 @@ int					ft_atoi_exit(const char *str, bool *st)
 
 int		b_exit(t_exec *args) // TODO: Callbacks in ft_term.h
 {
-	int i;
-	bool st;
+	int		i;
+	bool	st;
 
 	i = args->session->st;
 	st = true;
@@ -47,7 +47,6 @@ int		b_exit(t_exec *args) // TODO: Callbacks in ft_term.h
 				st = false;
 		if (st == true && args->ac > 2)
 		{
-			//write(STDERR_FILENO, "exit\n", 5);
 			ft_dprintf(STDERR_FILENO, "%s\n", \
 				"minish: exit: too many arguments");
 			return (STD_ERROR);
@@ -58,5 +57,5 @@ int		b_exit(t_exec *args) // TODO: Callbacks in ft_term.h
 		ft_dprintf(STDERR_FILENO, "minish: exit: %s%s\n", \
 			args->av[1], ": numeric argument required");
 	handle_exit_with_active_background((unsigned char)i, args->session);
-	return (STD_ERROR);
+	return ((unsigned char)i);
 }

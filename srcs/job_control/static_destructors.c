@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:34:43 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:36:15 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 20:51:34 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 void				session_end(t_session *sess)
 {
-	//ignore_all_signals();
+	ignore_all_signals();
 	background_force_exit(sess);
 	delete_groups(sess);
 	delete_deadzombies(sess);

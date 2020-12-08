@@ -6,13 +6,13 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/07 10:34:35 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 15:09:57 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 19:33:16 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 
-static	void	free_node(t_exec *args, t_env **first, t_env **prev,
+static void	free_node(t_exec *args, t_env **first, t_env **prev,
 		t_env **next)
 {
 	if (*first && *first == args->session->env)
@@ -22,7 +22,7 @@ static	void	free_node(t_exec *args, t_env **first, t_env **prev,
 		(*prev)->next = *next;
 }
 
-int		b_unset(t_exec *args)
+int			b_unset(t_exec *args)
 {
 	t_env	*next;
 	t_env	*first;

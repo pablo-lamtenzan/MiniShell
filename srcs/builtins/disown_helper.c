@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 02:55:51 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:33:44 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 20:20:51 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,21 +70,10 @@ void			disown_all_groups(int flags)
 
 int				disowm_delete(void)
 {
-	t_group		*fill;
-
 	if (!group_condition(g_session.groups, is_active))
 	{
 		zombies_list_remove_node(g_session.groups);
 		history_session_remove_node(g_session.groups);
-		(void)fill;
-		/*
-		fill = g_session.groups;
-		g_session.groups->prev->next = g_session.groups->next;
-		g_session.groups->next->prev = g_session.groups->prev;
-		delete_group_input(&fill);
-		free(fill);
-		fill = NULL;
-		*/
 		group_remove(&g_session.groups);
 		return (true);
 	}

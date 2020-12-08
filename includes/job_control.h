@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 07:32:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 15:13:07 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 20:28:46 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@
 */
 # define OPEN_PRINT		1
 # define PIPED_CMD		2
+# define BUILTIN		4
 
 # define ESPACE			' '
 
@@ -119,6 +120,7 @@ void					session_end(t_session *session);
 bool					session_empty();
 t_session				*session_dup();
 void					session_destroy(t_session **target);
+
 /*
 ** Signals interactions
 */
@@ -159,6 +161,7 @@ bool					is_exited(t_process *target);
 bool					is_removable(t_process *target);
 bool					is_coredump(t_process *target);
 bool					is_signaled(t_process *target);
+bool					is_stopped(t_process *target);
 
 /*
 ** Process
@@ -180,7 +183,7 @@ bool					is_leader(t_process *target);
 void					background_update(t_process **target);
 size_t					background_index_get(t_group *nil, t_process *target);
 void					background_force_exit();
-bool					is_background_active();
+bool					is_background_stopped();
 t_process				**background_find(t_process *target,
 						const char *search_type, t_group	*group);
 
@@ -269,15 +272,6 @@ const char				*is_in_history(t_process *target);
 char					**split_separators(char *input);
 int						for_each_in_group(t_process *leader,
 						int (*core)(), bool(*delete)());
-
-
-# ifndef SIGSTKFLT
-#  define SIGSTKFLT -1
-# endif
-
-# ifndef SIGPWR
-#  define SIGPWR -1
-# endif
 
 static const char		*g_signals[31] = {
 	"SIGHUP", "SIGINT", "SIGQUIT", "SIGILL", "SIGTRAP", "SIGABRT",

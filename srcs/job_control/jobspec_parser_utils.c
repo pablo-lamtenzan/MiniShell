@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:51:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:35:49 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 20:49:42 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 size_t			get_search_mode(const char *av)
 {
-	//ft_dprintf(2, "AV : %s\n", av);
 	if (av[0] && av[0] != '?')
 		return (1);
 	if (av[0] == '?' && av[1])

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:08:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 15:46:17 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 20:54:32 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@ bool			session_empty(void)
 		&& g_session.nil->prev == g_session.nil);
 }
 
-t_session		*session_dup()
+t_session		*session_dup(void)
 {
 	t_session	*dup;
 
-	return ((dup = ft_calloc(1 ,sizeof(t_session))) \
+	return ((dup = ft_calloc(1, sizeof(t_session))) \
 	&& (dup->name = ft_strdup(g_session.name)) \
 	&& (dup->env = env_dup(g_session.env)) \
 	&& ((dup->flags = g_session.flags) || !dup->flags)

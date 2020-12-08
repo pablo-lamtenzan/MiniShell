@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   async.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 11:18:02 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/06 06:39:13 by pablo            ###   ########.fr       */
+/*   Updated: 2020/12/08 20:51:18 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,10 @@
 static void		suspend_process(int signal)
 {
 	(void)signal;
-	// TODO: Block this before free all
 	write(STDERR_FILENO, "\n", 1);
 	if (g_session.flags & OPEN_PRINT)
 		print_signal(STDERR_FILENO, \
 			g_session.groups->active_processes, STANDART);
-	// TODO: Check if we should kill on SIGTSTP
-	// kill(g_session.groups->active_processes->pid, SIGSTOP);
 }
 
 static void		do_nothing(int signal)
@@ -34,15 +31,13 @@ static void		do_nothing(int signal)
 static void		terminate_minishell(int signal)
 {
 	const int	exit_st = g_session.st;
-	// DO TO: Can be leaks if per example minish is allocating mem in a aux fct
-	// We can do another global with the references of all the not-global allocation and then free them in this call
+
 	(void)signal;
 	term_destroy();
 	session_end(&g_session);
 	exit(exit_st);
 }
 
-/*
 void			ignore_all_signals(void)
 {
 	signal(SIGTSTP, SIG_IGN);
@@ -51,7 +46,6 @@ void			ignore_all_signals(void)
 	signal(SIGINT, SIG_IGN);
 	signal(SIGTERM, SIG_IGN);
 }
-*/
 
 static void		interrupt_line(int signal)
 {

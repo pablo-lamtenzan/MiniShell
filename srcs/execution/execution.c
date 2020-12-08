@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 15:48:57 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 16:48:13 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ static t_exec_status	get_exec(t_exec *info)
 		else
 			info->exec = &execute_child;
 	}
+	g_session.flags |= info->exec != &execute_child ? BUILTIN : 0;
 	return (status);
 }
 
@@ -81,6 +82,7 @@ static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
 	t_exec_status		exec_st;
 
 	exec_st = SUCCESS;
+	g_session.flags &= ~BUILTIN;
 	if ((redir_st = redirections_handler(&info, cmd, &filename)) != CONTINUE)
 		return (print_redirection_error(redir_st, filename));
 	if (!(cmd->type & CMD) || (cmd->type & PIPE \

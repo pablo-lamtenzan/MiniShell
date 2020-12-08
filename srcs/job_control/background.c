@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:30:37 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:35:18 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 20:28:53 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,14 +117,14 @@ void			background_force_exit(t_session *sess)
 	sess->groups = curr;
 }
 
-bool			is_background_active(void)
+bool			is_background_stopped(void)
 {
 	t_group		*curr;
 
 	curr = g_session.groups;
 	while (g_session.groups != g_session.nil)
 	{
-		if (group_condition(g_session.groups, is_active))
+		if (group_condition(g_session.groups, is_stopped))
 		{
 			g_session.groups = curr;
 			return (true);
