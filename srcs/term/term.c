@@ -33,15 +33,25 @@ int		ft_isatty(int fd)
 	return (ret);
 }
 
-// TODO: Add dirname to signature and environment
-bool	term_init(t_env **env)
+bool	term_init(t_env **env, const char *cwd)
 {
+	char	*basename;
+
 	if (!(g_term.line = line_new(TERM_LINE_SIZE)))
 		return (false);
 	g_term.is_interactive = ft_isatty(STDIN_FILENO) && ft_isatty(STDERR_FILENO);
-	if (g_term.is_interactive && !(env_set(env, "PS1", TERM_PS1, false)
-		&& env_set(env, "PS2", TERM_PS2, false)))
-		ft_dprintf(2, "Failed to retrieve terminfo: %s\n", strerror(errno));
+	if (!g_term.is_interactive)
+		return (true);
+	if (!((basename = ft_basename(cwd))
+	&& env_set(env, "DIRNAME", basename, false)
+	&& env_set(env, "PS1", TERM_PS1, false)
+	&& env_set(env, "PS2", TERM_PS2, false)))
+	{
+		ft_dprintf(2, "Initialization failed: %s\n", strerror(errno));
+		free(basename);
+		return (false);
+	}
+	free(basename);
 	return (true);
 }
 
