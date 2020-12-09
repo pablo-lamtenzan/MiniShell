@@ -53,7 +53,7 @@ static void		interrupt_line(int signal)
 	(void)signal;
 	write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) - 1);
 	if (g_term.msg)
-		write(STDERR_FILENO, g_term.msg, g_term.msg->len);
+		write(STDERR_FILENO, g_term.msg->data, g_term.msg->len);
 	if (g_term.line && g_term.line->len)
 	{
 		g_term.line->len = 0;
