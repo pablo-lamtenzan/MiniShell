@@ -44,18 +44,11 @@ static t_exec_status	executer(t_bst *cmd, t_exec *info)
 
 	exec_st = SUCCESS;
 	info->session = g_session.flags & PIPED_CMD ? session_dup() : &g_session;
-	if (!(info->av = tokens_expand((t_tok**)&cmd->a, \
-		&info->session->env, &info->ac)))
-	{
-		g_session.flags & PIPED_CMD ? session_destroy(&info->session) : NULL;
-		return (RDR_BAD_ALLOC);
-	}
-	if (!info->av[0])
-	{
-		g_session.flags & PIPED_CMD ? session_destroy(&info->session) : NULL;
-		return (SUCCESS);
-	}
-	exec_st = execute_process(info);
+	info->av = tokens_expand((t_tok**)&cmd->a, &info->session->env, &info->ac);
+	if (!info->av)
+		exec_st= RDR_BAD_ALLOC;
+	else if (info->av[0])
+		exec_st = execute_process(info);
 	g_session.flags & PIPED_CMD ? session_destroy(&info->session) : NULL;
 	return (exec_st);
 }
@@ -74,13 +67,8 @@ static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
 	if (!(cmd->type & CMD) || (cmd->type & PIPE \
 			&& !(((t_bst*)cmd->a)->type & CMD)))
 		exec_st = execute_cmd(cmd->a, info);
-	else
-	{
-		if ((exec_st = executer(cmd, info)) != SUCCESS)
-			return (exec_st);
-		if (close_pipe_fds(info->fds) != SUCCESS)
-			return (BAD_CLOSE);
-	}
+	else if ((exec_st = executer(cmd, info)) == SUCCESS)
+		exec_st = close_pipe_fds(info->fds);
 	return (exec_st == BAD_PATH ? SUCCESS : exec_st);
 }
 
