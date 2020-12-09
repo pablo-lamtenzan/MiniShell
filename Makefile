@@ -1,8 +1,9 @@
-NAME	=		minishell
-LIBFT	=		libft
-OBJDIR	=		objs
-CC		=		/usr/bin/clang
-RM		=		/bin/rm
+NAME		=		minishell
+NAME_BONUS	=		minish
+LIBFT		=		libft
+OBJDIR		=		objs
+CC			=		/usr/bin/clang
+RM			=		/bin/rm
 
 include srcs.mk
 
@@ -25,6 +26,11 @@ $(NAME):		$(OBJS) $(LIBFT)/libft.a
 	@echo LINK $@
 	$(CC) $(OBJS) $(CFLAGS) $(LFLAGS) -o $@
 
+$(NAME_BONUS): LFLAGS += -lcurses -ltermcap
+$(NAME_BONUS): $(OBJS_BONUS) $(LIBFT)/libft.a
+	@echo LINK $@
+	$(CC) $(OBJS_BONUS) $(CFLAGS) $(LFLAGS) -o $@
+
 $(OBJDIR):
 	mkdir -p $@
 
@@ -45,13 +51,8 @@ fclean:			clean
 
 re:				fclean all
 
-bonus:			LFLAGS += -lcurses -ltermcap
-bonus:			BONUS = _bonus
-bonus:			$(OBJS_BONUS) $(LIBFT)/libft.a
-	@echo LINK $(NAME)
-	$(CC) $(OBJS_BONUS) $(CFLAGS) $(LFLAGS) -o $(NAME)
+bonus:			$(NAME_BONUS)
 
-
-.PHONY:			libft clean fclean prompt bonus
+.PHONY:			libft clean fclean bonus
 
 $(VERBOSE).SILENT:
