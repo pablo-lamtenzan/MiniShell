@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 08:52:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 21:27:35 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 01:01:50 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,20 +71,11 @@ static t_redir_status	try_catch_out(t_exec **info, t_tok_t type,
 	int	tmp;
 
 	tmp = -1;
-	if (type & REDIR_GR)
-	{
-		tmp = open(filename, O_WRONLY | O_CREAT | O_TRUNC, UMASK);
-		if (!((*info)->handle_dup & REDIR_OUT))
-			(*info)->fds[FDS_STDOUT] = tmp;
-		(*info)->handle_dup |= REDIR_OUT;
-	}
-	else if (type & REDIR_DG)
-	{
-		tmp = open(filename, O_WRONLY | O_CREAT | O_APPEND, UMASK);
-		if (!((*info)->handle_dup & REDIR_OUT))
-			(*info)->fds[FDS_STDOUT] = tmp;
-		(*info)->handle_dup |= REDIR_OUT;
-	}
+	tmp = open(filename, O_WRONLY | O_CREAT | \
+			(type & REDIR_DG ? O_APPEND : O_TRUNC), UMASK);
+	if (!((*info)->handle_dup & REDIR_OUT))
+		(*info)->fds[FDS_STDOUT] = tmp;
+	(*info)->handle_dup |= REDIR_OUT;
 	return (tmp >= 0 ? CONTINUE : FILE_NOT_FOUND);
 }
 
@@ -103,7 +94,7 @@ t_redir_status			redirections_handler(t_exec **info, t_bst *cmd,
 	if ((redir_st = try_catch_filename(filename, aux, height, cmd->type)) \
 			!= CONTINUE)
 		return (redir_st);
-	if (cmd->type & REDIR_GR || cmd->type & REDIR_DG)
+	if (cmd->type & (REDIR_GR | REDIR_DG))
 		redir_st = try_catch_out(info, cmd->type, (*filename)[0]);
 	else if (cmd->type & REDIR_LE)
 		redir_st = try_catch_in(info, cmd->type, (*filename)[0]);

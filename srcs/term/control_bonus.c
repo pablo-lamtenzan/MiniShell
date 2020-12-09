@@ -1,4 +1,5 @@
 #include <term/term.h>
+#include <job_control.h>
 
 /*
 **	Delete one character to the left of the cursor.
@@ -37,6 +38,22 @@ t_term_err	term_interrupt(void)
 t_term_err	term_eof(void)
 {
 	if (g_term.line->len == 0)
-		return (TERM_EEOF);
+	{
+		if (g_session.exit_count == 1 || !is_background_stopped())
+			return (TERM_EEOF);
+		else
+		{
+			if (g_session.exit_count == 0)
+			{
+				// TO DO: sleep 2 ; bg ; (wait 2 secs) ctrl^D -> inf loop
+				write(STDERR_FILENO, "\nThere are stopped jobs.\n", 25);
+				// TO DO: print prompt segfaults (heap overflow)
+				//write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) - 1);
+				//if (g_term.msg)
+				//	write(STDERR_FILENO, g_term.msg, g_term.msg->len);
+			}
+			g_session.exit_count++;
+		}
+	}
 	return (TERM_EOK);
 }

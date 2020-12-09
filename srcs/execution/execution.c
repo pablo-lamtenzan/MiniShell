@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 21:40:32 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 01:08:04 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ static t_exec_status	executer(t_bst *cmd, t_exec *info)
 	return (exec_st);
 }
 
+// TO DO: SESSION DESTROY IN THIS FUNCT
 static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
 {
 	char				**filename;
@@ -107,10 +108,9 @@ t_exec_status			execute_bst(t_bst *root)
 	t_group				*group;
 
 	keep_alive_killed_processes();
-	g_session.flags &= ~PIPED_CMD;
 	if (!(group = group_new()))
 		return (BAD_ALLOC);
-	g_session.flags |= OPEN_PRINT;
+	g_session.flags = (g_session.flags & ~PIPED_CMD) | OPEN_PRINT;
 	group->input = ft_split(g_session.input_line[g_session.input_line_index++],\
 		ESPACE);
 	group_push_front(group);
