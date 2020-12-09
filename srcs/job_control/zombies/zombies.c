@@ -6,12 +6,18 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:19:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 20:53:44 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:39:15 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <job_control.h>
-#include <signals.h>
+#include <job_control/conditions.h>
+#include <job_control/zombies.h>
+#include <job_control/session.h>
+#include <signals_print.h>
+
+/*
+** Push a node in the zombie processes list using it as a stack.
+*/
 
 bool				zombies_list_update(t_group *update)
 {
@@ -39,6 +45,11 @@ static void			remove_zombie_node(t_background **prev, t_background **next,
 	free(g_session.zombies);
 	g_session.zombies = NULL;
 }
+
+/*
+** Removes a node containing the given target as parameter in the
+** zombies list using it as a linked-list.
+*/
 
 void				zombies_list_remove_node(t_group *target)
 {
@@ -68,6 +79,11 @@ void				zombies_list_remove_node(t_group *target)
 		g_session.zombies = next;
 }
 
+/*
+** Destroys all the groups nodes containing exited groups in the
+** job control data structure.
+*/
+
 void				zombies_list_purge_exited_groups(void)
 {
 	t_group			*first;
@@ -89,6 +105,11 @@ void				zombies_list_purge_exited_groups(void)
 	}
 	g_session.groups = first;
 }
+
+/*
+** Destroy all the zombies nodes in the zombies list containing an exited
+** group.
+*/
 
 void				zombies_list_purge_exited_zombies(void)
 {

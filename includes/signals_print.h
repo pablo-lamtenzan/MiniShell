@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signals.h                                          :+:      :+:    :+:   */
+/*   signals_print.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 03:28:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:37:44 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:37:35 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SIGNALS_H
-# define SIGNALS_H
+#ifndef SIGNALS_PRINT_H
+# define SIGNALS_PRINT_H
 
 /*
 ** External
@@ -23,7 +23,8 @@
 /*
 ** Local
 */
-# include <job_control.h>
+# include <job_control/group.h>
+# include <cross_plateform_signals.h>
 # include <libft.h>
 
 /*

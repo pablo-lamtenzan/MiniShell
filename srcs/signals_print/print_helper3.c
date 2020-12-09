@@ -6,11 +6,11 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 04:50:26 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 22:01:47 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 22:20:38 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <signals.h>
+#include <signals_print.h>
 #include <sys/wait.h>
 #include <signal.h>
 

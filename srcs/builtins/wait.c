@@ -6,13 +6,15 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:20:29 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:34:48 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:26:22 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
-#include <signals.h>
-#include <job_control.h>
+#include <signals_print.h>
+#include <job_control/jc_builtins.h>
+#include <job_control/jobspec_parser.h>
+#include <job_control/utils.h>
 
 static int			wait_init_exeption(t_exec *args, int *flags, int *nb)
 {

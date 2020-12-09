@@ -6,12 +6,14 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 16:59:55 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:34:24 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:26:11 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
-#include <job_control.h>
+#include <job_control/jc_builtins.h>
+#include <job_control/jobspec_parser.h>
+#include <job_control/utils.h>
 #include <signal.h>
 
 void			kill_print_signal(t_exec *args, int vars[5])

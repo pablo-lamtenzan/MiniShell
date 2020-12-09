@@ -6,27 +6,39 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 04:21:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:35:24 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:45:50 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <job_control.h>
-#include <signals.h>
+#include <job_control/session.h>
+#include <signals_print.h>
 
-void				deadzombie_push_back(t_deadzombie *target)
+/*
+** Push a new node using the zombie list ass a queue.
+*/
+
+bool				deadzombie_push_back(t_deadzombie *target)
 {
 	t_deadzombie	*remember;
 
+	if (!target)
+		return (false);
 	if (!(remember = g_session.dead_zombies))
 	{
 		g_session.dead_zombies = target;
-		return ;
+		return (true);
 	}
 	while (g_session.dead_zombies->next)
 		g_session.dead_zombies = g_session.dead_zombies->next;
 	g_session.dead_zombies->next = target;
 	g_session.dead_zombies = remember;
+	return (true);
 }
+
+/*
+** Print the data of the zombies when they exit, then the
+** nodes are destroyed.
+*/
 
 void				deadzombies_print(void)
 {
@@ -56,6 +68,11 @@ static void			remove_dead_node(t_deadzombie **prev, t_deadzombie **next,
 	free(g_session.dead_zombies);
 	g_session.dead_zombies = NULL;
 }
+
+/*
+** Remove the dead zombie node in the dead zombie list who has
+** the same pid as the target param
+*/
 
 void				deadzombie_remove_node(t_process *target)
 {

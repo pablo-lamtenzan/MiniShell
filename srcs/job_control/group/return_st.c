@@ -6,11 +6,13 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 21:12:39 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 21:17:00 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:38:57 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <job_control.h>
+#include <job_control/conditions.h>
+#include <job_control/session.h>
+#include <errors.h>
 
 static void		set_ret(void)
 {
@@ -21,6 +23,10 @@ static void		set_ret(void)
 		g_session.st = SIGNAL_BASE + \
 				g_session.groups->active_processes->prev->ret;
 }
+
+/*
+** If there's background processes, correct the execution return status.
+*/
 
 void			group_return_handler(void)
 {

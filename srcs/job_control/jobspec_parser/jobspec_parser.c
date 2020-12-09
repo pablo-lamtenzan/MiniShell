@@ -6,12 +6,20 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:44:40 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:35:59 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:18:52 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <job_control.h>
+#include <job_control/background.h>
+#include <job_control/session.h>
+#include <job_control/jobspec_parser.h>
+#include <job_control/utils.h>
 #include <libft.h>
+
+/*
+** Performs a search in the job control data structure returning a reference
+** to the group who contains the index given as parameter or else NULL.
+*/
 
 t_process		**get_process_by_index(t_group *groups, size_t index)
 {
@@ -24,6 +32,11 @@ t_process		**get_process_by_index(t_group *groups, size_t index)
 	}
 	return (index ? NULL : &groups->nil->next);
 }
+
+/*
+** Performs a search in the job control data structure returning a reference
+** to the group who contains the pid given as parameter or else NULL.
+*/
 
 t_process		**get_process_by_pid(t_group *groups, pid_t pid)
 {
@@ -39,6 +52,11 @@ t_process		**get_process_by_pid(t_group *groups, pid_t pid)
 	return (NULL);
 }
 
+/*
+** Performs a search in the history returning a reference
+** to the group who contains the pid given as parameter or else NULL.
+*/
+
 t_process		**get_process_by_history(t_group *groups, size_t index)
 {
 	t_history	*hist_addr;
@@ -52,6 +70,10 @@ t_process		**get_process_by_history(t_group *groups, size_t index)
 		hist_addr = g_session.hist->next;
 	return (get_process_by_pid(groups, hist_addr->group->nil->next->pid));
 }
+
+/*
+** Perform a search supporting the POSIX job specification patterns.
+*/
 
 t_process		**process_search(char*const *av)
 {
@@ -70,6 +92,11 @@ t_process		**process_search(char*const *av)
 	else
 		return (NULL);
 }
+
+/*
+** Call a condition and proceed to search if the condition return true.
+** Return a reference to the process found.
+*/
 
 t_process		**jobspec_parser(int ac, char*const *av,
 		bool (*fill)(int ac, char*const *av))

@@ -1,5 +1,6 @@
 #include <term/term.h>
-#include <job_control.h>
+#include <job_control/session.h>
+#include <job_control/background.h>
 
 /*
 **	Delete one character to the left of the cursor.
@@ -45,7 +46,6 @@ t_term_err	term_eof(void)
 		{
 			if (g_session.exit_count == 0)
 			{
-				// TO DO: sleep 2 ; bg ; (wait 2 secs) ctrl^D -> inf loop
 				write(STDERR_FILENO, "\nThere are stopped jobs.", 25);
 				write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) - 1);
 				if (g_term.msg)

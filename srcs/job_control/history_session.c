@@ -6,13 +6,19 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:11:48 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 20:49:24 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:32:27 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <job_control.h>
+#include <job_control/session.h>
+#include <job_control/conditions.h>
 #include <libft.h>
 #include <stdlib.h>
+
+/*
+** Push a node usign the history list as a stack and initialise
+** it using the target group given as parameter.
+*/
 
 bool				history_session_update(t_group *update)
 {
@@ -27,6 +33,10 @@ bool				history_session_update(t_group *update)
 	hist->next = next;
 	return (true);
 }
+
+/*
+** Pop a node in the history data structure using it as a stack.
+*/
 
 void				history_pop_front(void)
 {
@@ -52,6 +62,11 @@ static void			remove_hist_node(t_history **prev, t_history **next,
 	free(g_session.hist);
 	g_session.hist = NULL;
 }
+
+/*
+** Remove a node containing the target group in the history data structure
+** using it as a linked-list.
+*/
 
 void				history_session_remove_node(t_group *target)
 {
@@ -79,6 +94,10 @@ void				history_session_remove_node(t_group *target)
 	else
 		g_session.hist = next;
 }
+
+/*
+** Destroys all the history node who has exited groups.
+*/
 
 void				history_session_purge_exited(void)
 {

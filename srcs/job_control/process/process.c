@@ -6,12 +6,16 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:07:32 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:36:09 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:47:34 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <job_control.h>
+#include <job_control/group.h>
 #include <libft.h>
+
+/*
+** Link target between prev and next nodes
+*/
 
 void			process_insert(t_process *prev, t_process *next,
 		t_process *target)
@@ -21,6 +25,10 @@ void			process_insert(t_process *prev, t_process *next,
 	target->next = next;
 	target->prev = prev;
 }
+
+/*
+** Push a process in the given group using the group processes list as a stack.
+*/
 
 void			process_push_front(t_group **group, t_process *target)
 {
@@ -35,6 +43,10 @@ void			process_push_front(t_group **group, t_process *target)
 	}
 	(*group)->active_processes = (*group)->nil->next;
 }
+
+/*
+** Push a process in the given group using the group processes list as a queue.
+*/
 
 void			process_push_back(t_group **group, t_process *target)
 {

@@ -1,5 +1,5 @@
 #include <expansion.h>
-#include <job_control.h>
+//#include <job_control/session.h>
 
 static char		*param_export(t_tok *param, bool free_params)
 {

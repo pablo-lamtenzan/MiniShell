@@ -1,7 +1,7 @@
 #include <expansion.h>
 
 // TODO: Put g_session and related files into session.h
-#include <job_control.h>
+#include <job_control/session.h>
 
 /*
 ** Expand the ~, ~+ and ~- patterns using the environment.

@@ -6,11 +6,13 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 07:09:15 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:36:18 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:27:48 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <job_control.h>
+#include <job_control/utils.h>
+#include <job_control/background.h>
+#include <job_control/session.h>
 #include <libft.h>
 #include <stdlib.h>
 

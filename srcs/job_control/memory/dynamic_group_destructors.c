@@ -6,13 +6,21 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:41:09 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:35:26 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:22:05 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <job_control.h>
+#include <job_control/destructors.h>
+#include <job_control/group.h>
+#include <job_control/session.h>
 #include <libft.h>
+
 #include <stdlib.h>
+
+/*
+** Remove the target node in the group data structure
+** using it as a doubly-linked-list.
+*/
 
 void			group_remove(t_group **target)
 {
@@ -30,6 +38,10 @@ void			group_remove(t_group **target)
 	*target = NULL;
 }
 
+/*
+** Pop a node in the group data structure using it as a stack.
+*/
+
 void			group_pop_front(void)
 {
 	t_group		*fill;
@@ -41,6 +53,10 @@ void			group_pop_front(void)
 	g_session.nil->next = fill;
 	g_session.groups = g_session.nil->next;
 }
+
+/*
+** Pop a node in the group data structure using it as a queue.
+*/
 
 void			group_pop_back(void)
 {

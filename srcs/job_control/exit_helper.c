@@ -6,19 +6,26 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:30:21 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 20:57:53 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:16:25 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <job_control.h>
+#include <job_control/session.h>
+#include <job_control/background.h>
 #include <libft.h>
-#include <stdlib.h>
 #include <term/term.h>
+
+
+#include <stdlib.h>
 
 bool		is_stopped(t_process *target)
 {
 	return (target->flags & STOPPED);
 }
+
+/*
+** Check if the parent (our shell) is allowed to exit.
+*/
 
 void		handle_exit_with_active_background(int exit_status,
 		t_session *session)
@@ -34,6 +41,10 @@ void		handle_exit_with_active_background(int exit_status,
 	else
 		write(STDERR_FILENO, "There are stopped jobs.\n", 25);
 }
+
+/*
+** Uptate the stopped jobs exit count.
+*/
 
 void		update_exit_count(const char *name)
 {
