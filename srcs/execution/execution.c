@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 01:08:04 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 17:28:40 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static t_exec_status	executer(t_bst *cmd, t_exec *info)
 	return (exec_st);
 }
 
-// TO DO: SESSION DESTROY IN THIS FUNCT
+// TO DO: SESSION DESTROY IN THIS FUNC
 static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
 {
 	char				**filename;
@@ -64,8 +64,8 @@ static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
 	g_session.flags &= ~BUILTIN;
 	if ((redir_st = redirections_handler(&info, cmd, &filename)) != CONTINUE)
 		return (print_redirection_error(redir_st, filename));
-	if (!(cmd->type & CMD) || (cmd->type & PIPE \
-			&& !(((t_bst*)cmd->a)->type & CMD)))
+	if (!(cmd->type & CMD) \
+	|| (cmd->type & PIPE && !(((t_bst*)cmd->a)->type & CMD)))
 		exec_st = execute_cmd(cmd->a, info);
 	else if ((exec_st = executer(cmd, info)) == SUCCESS)
 		exec_st = close_pipe_fds(info->fds);
@@ -79,13 +79,15 @@ static t_exec_status	execute_job(t_bst *job, t_exec *info)
 	st = SUCCESS;
 	info->handle_dup = NONE;
 	if (open_pipe_fds(&info, job->b ? job->type : 0) != SUCCESS)
-		return (BAD_PIPE);
-	if (!(job->type & (CMD | REDIR_DG | REDIR_GR | REDIR_LE)))
-		st = execute_cmd(job->a, info);
-	if (st == SUCCESS && job->b && job->type & PIPE)
-		st = execute_job(job->b, info);
-	else if (st == SUCCESS)
-		st = execute_cmd(job, info);
+		st = BAD_PIPE;
+	else if (!(job->type & (CMD | REDIR_DG | REDIR_GR | REDIR_LE))
+	&& (st = execute_cmd(job->a, info)) == SUCCESS)
+	{
+		if (job->b && job->type & PIPE)
+			st = execute_job(job->b, info);
+		else
+			st = execute_cmd(job, info);
+	}
 	return (st);
 }
 
