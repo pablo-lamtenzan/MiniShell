@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 20:17:56 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 22:52:30 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ void	exec(t_tok* tokens)
 		}
 	}
 	strs_unload(g_session.input_line);
+	g_session.input_line = NULL;
 }
 
 /* static bool				init_login()
@@ -214,6 +215,7 @@ int						main(int ac, const char **av, const char **ep)
 	if (ac < 1 || !init(av[0], ep))
 		return (1);
 	status = routine();
+	session_end(&g_session);
 	term_destroy();
 	return (status);
 }

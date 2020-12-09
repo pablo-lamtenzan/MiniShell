@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 11:18:02 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 20:51:18 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 01:16:46 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ void			ignore_all_signals(void)
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, SIG_IGN);
 	signal(SIGTERM, SIG_IGN);
+	signal(SIGHUP, SIG_IGN);
 }
 
 static void		interrupt_line(int signal)

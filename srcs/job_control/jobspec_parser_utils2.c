@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 03:52:48 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:35:57 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/08 22:18:32 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int				matrix_height(char **matrix)
 	char		**it;
 
 	it = matrix;
-	while (*it)
+	while (it && *it)
 		it++;
 	return (it - matrix);
 }
