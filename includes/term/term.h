@@ -3,6 +3,8 @@
 
 // TODO: Migrate headers
 // TODO: ONOEOT (Discard ^D)
+# include <sys/ttydefaults.h>
+
 # include <unistd.h>
 
 # include <env.h>
@@ -108,14 +110,22 @@ t_term_err			term_read_esc(void);
 */
 t_term_err			term_read_csi(void);
 
+
+/*
+**					clear_bonus.c
+*/
+t_term_err			term_clear_screen(void);
+t_term_err			term_clear_eos(void);
+t_term_err			term_clear_line(void);
+
 /*
 **					controls.c
 */
-t_term_err			term_clear_screen(void);
+t_term_err			term_new_line(void);
 t_term_err			term_line_del(size_t n);
 t_term_err			term_backspace(void);
-t_term_err			term_clear_line(void);
-t_term_err			term_new_line(void);
+t_term_err			term_line_discard(void);
+t_term_err			term_line_kill(void);
 
 /*
 **					cursor.c

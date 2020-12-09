@@ -1,53 +1,31 @@
 #include <term/term.h>
 
 /*
-**	Clear the screen's content, keeping only the current line.
+**	Write the line ending character and add the current line to history.
 */
-t_term_err	term_clear_screen()
+t_term_err	term_new_line()
 {
-	const t_pos	pos = g_term.caps.cursor.pos;
 	t_term_err	status;
 
-	status = TERM_EOK;
-	if (g_term.caps.ctrls.clear)
+	status = TERM_ENL;
+	// TODO: Disable insertion and overwrite instead of clearing
+	term_clear_line();
+	if (write(STDERR_FILENO, g_term.line->data, g_term.line->len) == -1
+	|| write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) - 1) == -1)
+		status = TERM_EWRITE;
+	else if (g_term.line->len != 0)
 	{
-		tputs(g_term.caps.ctrls.clear, 1, &putc_err);
-		if ((!g_term.msg ||
-		(status = term_origin(g_term.msg->data, g_term.msg->len)) == TERM_EOK))
-			status = term_write(g_term.line->data, g_term.line->len);
-		caps_goto(&g_term.caps, pos);
+		if ((!g_term.caps.hist.next || g_term.line == g_term.caps.hist.next)
+		&& !(g_term.caps.hist.next = line_new(10)))
+			status = TERM_EALLOC;
+		else
+			hist_add(&g_term.caps.hist, g_term.line);
 	}
 	return (status);
 }
 
-// TODO: Check if delete-mode needs to be activated before clearing parts
-
-/*
-**	Clear the screen from the cursor to the end of the screen.
-*/
-t_term_err	term_clear_eos()
-{
-	const int	x = g_term.caps.cursor.pos.x;
-
-	if (x)
-	{
-		tputs(g_term.caps.ctrls.del_eol, 1, &putc_err);
-		if (x + g_term.line->len - g_term.caps.index >= (size_t)g_term.caps.width)
-		{
-			caps_goto_x(&g_term.caps, 0);
-			caps_goto_y(&g_term.caps, g_term.caps.cursor.pos.y + 1);
-			tputs(g_term.caps.ctrls.del_eos, 1, &putc_err);
-			caps_goto_y(&g_term.caps, g_term.caps.cursor.pos.y - 1);
-			caps_goto_x(&g_term.caps, x);
-		}
-	}
-	else
-		tputs(g_term.caps.ctrls.del_eos, 1, &putc_err);
-	return (TERM_EOK);
-}
 
 // TODO: Alt-backspace
-
 /*
 **	Delete n characters from the terminal's input line, starting at the current
 **	cursor position.
@@ -90,32 +68,29 @@ t_term_err	term_backspace()
 }
 
 /*
-**	Clear the current line visually, without deleting it's content.
+**	Discard a line's content.
 */
-t_term_err	term_clear_line()
+t_term_err	term_line_discard(void)
 {
-	caps_goto(&g_term.caps, g_term.caps.cursor.origin);
+	select_clear();
+	if (g_term.line != g_term.caps.hist.next)
+	{
+		line_clear(&g_term.line);
+		g_term.caps.hist.curr = g_term.caps.hist.next;
+		g_term.line = g_term.caps.hist.next;
+	}
+	*g_term.line->data = '\0';
+	g_term.line->len = 0;
 	g_term.caps.index = 0;
-	term_clear_eos();
 	return (TERM_EOK);
 }
 
 /*
-**	Write the line ending character.
+**	Kill a line's content.
 */
-t_term_err	term_new_line()
+t_term_err	term_line_kill(void)
 {
 	term_clear_line();
-	if (write(STDERR_FILENO, g_term.line->data, g_term.line->len) == -1
-	|| write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) - 1) == -1)
-		return (TERM_EWRITE);
-	if (g_term.line->len != 0)
-	{
-		//ft_dprintf(2, "[PROMPT] result: '%s'\n", g_term.line->data);
-		if ((!g_term.caps.hist.next || g_term.line == g_term.caps.hist.next)
-		&& !(g_term.caps.hist.next = line_new(10)))
-			return (TERM_EALLOC);
-		hist_add(&g_term.caps.hist, g_term.line);
-	}
-	return (TERM_ENL);
+	term_line_discard();
+	return (TERM_EOK);
 }

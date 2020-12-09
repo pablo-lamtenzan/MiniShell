@@ -11,17 +11,7 @@ t_term_err	term_interrupt(void)
 		g_term.caps.cursor.origin = g_term.caps.cursor.zero;
 	else if ((status = term_origin(g_term.msg->data, g_term.msg->len)) != TERM_EOK)
 		return (status);
-	if (g_term.has_caps)
-		select_clear();
-	if (g_term.line != g_term.caps.hist.next)
-	{
-		line_clear(&g_term.line);
-		g_term.caps.hist.curr = g_term.caps.hist.next;
-		g_term.line = g_term.caps.hist.next;
-	}
-	*g_term.line->data = '\0';
-	g_term.line->len = 0;
-	g_term.caps.index = 0;
+	term_line_discard();
 	return (status);
 }
 
