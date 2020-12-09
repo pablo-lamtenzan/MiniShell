@@ -72,11 +72,14 @@ t_term_err	term_line_discard(void)
 }
 
 /*
-**	Kill a line's content.
+**	Kill a line's content on the left of the cursor.
 */
 t_term_err	term_line_kill(void)
 {
-	term_clear_line();
-	term_line_discard();
+	const size_t	index = g_term.caps.index;
+
+	caps_goto(&g_term.caps, g_term.caps.cursor.origin);
+	g_term.caps.index = 0;
+	term_line_del(index);
 	return (TERM_EOK);
 }
