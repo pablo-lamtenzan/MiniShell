@@ -1,13 +1,16 @@
 #ifndef CAPS_H
 # define CAPS_H
 
+# include <sys/ttydefaults.h>
 # include <sys/stat.h>
+
 # include <stdint.h>
 # include <stdbool.h>
 # include <unistd.h>
 
 # include <term.h>
 
+# include <term/ansi.h>
 # include <term/line.h>
 # include <term/hist.h>
 

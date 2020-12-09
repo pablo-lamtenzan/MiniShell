@@ -3,13 +3,10 @@
 
 // TODO: Migrate headers
 // TODO: ONOEOT (Discard ^D)
-# include <sys/ttydefaults.h>
-
 # include <unistd.h>
 
 # include <env.h>
 # include <term/caps.h>
-# include <term/ansi.h>
 
 # ifndef STDIN_FILENO
 #  define STDIN_FILENO	0

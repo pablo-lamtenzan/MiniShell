@@ -26,6 +26,7 @@ static t_term_err	term_cntrl(char c)
 	};
 	t_term_action	action;
 
+	ft_dprintf(2, "%hhu: %c", c, c);
 	if ((action = keybind_get(keys, sizeof(keys) / sizeof(*keys), c)))
 		return (action());
 	return (TERM_EOK);
