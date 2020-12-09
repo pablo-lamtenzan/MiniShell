@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 17:28:40 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 17:39:39 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,9 @@ static t_exec_status	execute_process(t_exec *info)
 
 static t_exec_status	executer(t_bst *cmd, t_exec *info)
 {
-	t_exec_status		exec_st;
-
-	exec_st = SUCCESS;
-	info->session = g_session.flags & PIPED_CMD ? session_dup() : &g_session;
+	if (!(info->session = g_session.flags & PIPED_CMD ? session_dup() \
+			: &g_session))
+		return (BAD_ALLOC);
 	if (!(info->av = tokens_expand((t_tok**)&cmd->a, \
 		&info->session->env, &info->ac)))
 		return (RDR_BAD_ALLOC);
@@ -52,7 +51,6 @@ static t_exec_status	executer(t_bst *cmd, t_exec *info)
 	return (execute_process(info));
 }
 
-// TO DO: SESSION DESTROY IN THIS FUNC
 static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
 {
 	char				**filename;
