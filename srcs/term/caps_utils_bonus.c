@@ -15,8 +15,8 @@ void		caps_delete(t_caps *caps, size_t n)
 {
 	bool	toggle_del;
 
-	if (n > 1 && caps->ctrls.del_n)
-		tputs(tparm(caps->ctrls.del_n, 0, n), 1, &putc_err);
+	if (caps->ctrls.del_n)
+		tputs(tparm(caps->ctrls.del_n, n), 1, &putc_err);
 	else if (caps->ctrls.del)
 	{
 		if ((toggle_del = !(caps->mode & CAPS_MDEL)))

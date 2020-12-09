@@ -13,6 +13,7 @@ static t_term_err	term_cntrl(char c)
 		{CINTR, &term_interrupt},
 		{CERASE, &term_backspace},
 		{CEOF, &term_eof},
+		{CWERASE, &term_line_kill},
 		{CKILL, &term_line_kill},
 		{CTRL('h'), &term_backspace},
 		{CTRL('l'), &term_clear_screen},
@@ -26,7 +27,6 @@ static t_term_err	term_cntrl(char c)
 	};
 	t_term_action	action;
 
-	ft_dprintf(2, "%hhu: %c", c, c);
 	if ((action = keybind_get(keys, sizeof(keys) / sizeof(*keys), c)))
 		return (action());
 	return (TERM_EOK);

@@ -1,6 +1,6 @@
 objs/
 minishell
-bonus
+minish
 a.out
 *.dSYM/
 test.c
@@ -11,4 +11,3 @@ d
 e
 f
 g
-prompt

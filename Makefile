@@ -1,8 +1,9 @@
-NAME	=		minishell
-LIBFT	=		libft
-OBJDIR	=		objs
-CC		=		/usr/bin/clang
-RM		=		/bin/rm
+NAME		=		minishell
+NAME_BONUS	=		minish
+LIBFT		=		libft
+OBJDIR		=		objs
+CC			=		/usr/bin/clang
+RM			=		/bin/rm
 
 include srcs.mk
 
@@ -11,7 +12,7 @@ IFLAGS	=		-I$(INCDIR) -I$(LIBFT)/includes
 LFLAGS	=		-L$(LIBFT) -lft
 
 OBJS	=		$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
-BONUS_OBJS	=	$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(BONUS_SRCS))
+OBJS_BONUS	=	$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS_BONUS))
 
 
 all:			libft $(NAME)
@@ -24,6 +25,11 @@ $(LIBFT)/libft.a: libft
 $(NAME):		$(OBJS) $(LIBFT)/libft.a
 	@echo LINK $@
 	$(CC) $(OBJS) $(CFLAGS) $(LFLAGS) -o $@
+
+$(NAME_BONUS): LFLAGS += -lcurses -ltermcap
+$(NAME_BONUS): $(OBJS_BONUS) $(LIBFT)/libft.a
+	@echo LINK $@
+	$(CC) $(OBJS_BONUS) $(CFLAGS) $(LFLAGS) -o $@
 
 $(OBJDIR):
 	mkdir -p $@
@@ -45,14 +51,8 @@ fclean:			clean
 
 re:				fclean all
 
-.SECONDEXPANSION:
-bonus:			LFLAGS += -lcurses -ltermcap
-bonus:			BONUS = _bonus
-bonus:			$$(BONUS_OBJS) $(LIBFT)/libft.a
-	@echo LINK $@
-	$(CC) $(BONUS_OBJS) $(CFLAGS) $(LFLAGS) -o $@
+bonus:			$(NAME_BONUS)
 
-
-.PHONY:			libft clean fclean prompt
+.PHONY:			libft clean fclean bonus
 
 $(VERBOSE).SILENT:
