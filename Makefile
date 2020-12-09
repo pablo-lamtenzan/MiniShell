@@ -11,7 +11,7 @@ IFLAGS	=		-I$(INCDIR) -I$(LIBFT)/includes
 LFLAGS	=		-L$(LIBFT) -lft
 
 OBJS	=		$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
-BONUS_OBJS	=	$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(BONUS_SRCS))
+OBJS_BONUS	=	$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS_BONUS))
 
 
 all:			libft $(NAME)
@@ -45,14 +45,13 @@ fclean:			clean
 
 re:				fclean all
 
-.SECONDEXPANSION:
 bonus:			LFLAGS += -lcurses -ltermcap
 bonus:			BONUS = _bonus
-bonus:			$$(BONUS_OBJS) $(LIBFT)/libft.a
-	@echo LINK $@
-	$(CC) $(BONUS_OBJS) $(CFLAGS) $(LFLAGS) -o $@
+bonus:			$(OBJS_BONUS) $(LIBFT)/libft.a
+	@echo LINK $(NAME)
+	$(CC) $(OBJS_BONUS) $(CFLAGS) $(LFLAGS) -o $(NAME)
 
 
-.PHONY:			libft clean fclean prompt
+.PHONY:			libft clean fclean prompt bonus
 
 $(VERBOSE).SILENT:
