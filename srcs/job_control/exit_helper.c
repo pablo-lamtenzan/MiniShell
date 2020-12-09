@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:30:21 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 23:16:25 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/10 00:09:42 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include <job_control/background.h>
 #include <libft.h>
 #include <term/term.h>
-
 
 #include <stdlib.h>
 
