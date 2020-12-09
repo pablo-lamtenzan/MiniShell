@@ -1,6 +1,21 @@
 #include <term/term.h>
 
-// TODO: Move to controls
+/*
+**	Delete one character to the left of the cursor.
+*/
+t_term_err	term_backspace()
+{
+	if (g_term.caps.index > 0)
+	{
+		cursor_l();
+		term_line_del(1);
+	}
+	return (TERM_EOK);
+}
+
+/*
+**	Cancel the terminal's input line.
+*/
 t_term_err	term_interrupt(void)
 {
 	t_term_err	status;
@@ -16,6 +31,9 @@ t_term_err	term_interrupt(void)
 	return (status);
 }
 
+/*
+**	End transmition when the line is empty and there are no jobs to be awaited.
+*/
 t_term_err	term_eof(void)
 {
 	if (g_term.line->len == 0)

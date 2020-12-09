@@ -24,7 +24,6 @@ t_term_err	term_line_new(void)
 	return (status);
 }
 
-
 // TODO: Alt-backspace
 /*
 **	Delete n characters from the terminal's input line, starting at the current
@@ -52,19 +51,6 @@ t_term_err	term_line_del(size_t n)
 		}
 	}
 	return (status);
-}
-
-/*
-**	Delete one character to the left of the cursor.
-*/
-t_term_err	term_backspace()
-{
-	if (g_term.caps.index > 0)
-	{
-		cursor_l();
-		term_line_del(1);
-	}
-	return (TERM_EOK);
 }
 
 /*
