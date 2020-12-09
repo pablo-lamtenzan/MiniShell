@@ -26,14 +26,16 @@ static bool	load_modes(t_modes *modes, char **area)
 static bool	load_ctrls(t_ctrls *ctrls, char **area)
 {
 	*ctrls = (t_ctrls) {
+		tgetstr("ic", area), tgetstr("ip", area), tgetstr("IC", area),
 		tgetstr("dc", area), tgetstr("DC", area), tgetstr("ce", area),
 		tgetstr("cd", area), tgetstr("ec", area), tgetstr("cl", area),
 		tgetstr("cm", area), tgetstr("ch", area), tgetstr("cv", area),
 		tgetstr("up", area), tgetstr("do", area), tgetstr("le", area),
 		tgetstr("nd", area), tgetstr("sf", area),
 	};
-	return (ctrls->del && ctrls->del_eol && ctrls->del_eos && ctrls->move
-		&& ctrls->up && ctrls->down && ctrls->left && ctrls->right);
+	return ((ctrls->ins_n || ctrls->ins) && ctrls->del && ctrls->del_eol
+		&& ctrls->del_eos && ctrls->move && ctrls->up && ctrls->down
+		&& ctrls->left && ctrls->right);
 }
 
 static bool	load_keys(t_keys *keys, char **area)
