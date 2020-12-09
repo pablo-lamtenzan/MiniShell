@@ -5,18 +5,20 @@
 */
 t_term_err			term_read_esc(void)
 {
-	ssize_t	read_st;
-	char	c;
+	static const t_keybind	keys[] = {
+		{ANSI_CSI, &term_read_csi},
+		{'b', &cursor_prev_word},
+		{'f', &cursor_next_word},
+	};
+	t_term_action	action;
+	ssize_t			read_st;
+	char			c;
 
 	if ((read_st = read(0, &c, 1)) != 1)
 		return ((read_st == 0) ? TERM_EEOF: TERM_EREAD);
 	if (c == ANSI_ESC || c == '\0') // -> esc
 		return (TERM_EOK);
-	if (c == ANSI_CSI)
-		return (term_read_csi());
-	if (c == 'b')
-		return (cursor_prev_word());
-	if (c == 'f')
-		return (cursor_next_word());
+	if ((action = keybind_get(keys, sizeof(keys) / sizeof(*keys), c)))
+		return (action());
 	return (TERM_EOK);
 }

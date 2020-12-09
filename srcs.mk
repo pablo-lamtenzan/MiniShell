@@ -131,14 +131,14 @@ SRCS	=	$(addprefix $(SRCDIR)/,\
 BONUS_SRCS = $(SRCS) $(addprefix $(SRCDIR)/,\
 	$(addprefix term/,\
 		caps_bonus.c caps_goto.c caps_utils_bonus.c\
+		clear_bonus.c\
 		clip_bonus.c\
-		controls_bonus.c\
+		control_bonus.c control_line_bonus.c\
 		cursor_bonus.c cursor_jmp_bonus.c\
 		hist_bonus.c hist_cursor_bonus.c\
 		keybind_bonus.c\
 		read_caps_bonus.c read_csi_bonus.c read_esc_bonus.c\
 		select_bonus.c select_jmp_bonus.c\
-		signals_bonus.c\
 		write_bonus.c\
 	)\
 )

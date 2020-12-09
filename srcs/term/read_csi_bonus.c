@@ -18,9 +18,9 @@ t_term_err	term_read_mod_none(void)
 
 t_term_err	term_read_mod_shift(void)
 {
-	const	t_keybind	keys[] = {
-		{g_term.caps.keys.left[2], &select_left},
-		{g_term.caps.keys.right[2], &select_right}
+	static const	t_keybind	keys[] = {
+		{'D', &select_left},
+		{'C', &select_right}
 	};
 	ssize_t				read_st;
 	char				c;
@@ -35,7 +35,7 @@ t_term_err	term_read_mod_shift(void)
 
 t_term_err	term_read_mod_alt(void)
 {
-	const t_keybind	keys[] = {
+	static const t_keybind	keys[] = {
 		{'D', select_prev_word},
 		{'C', select_next_word}
 	};
@@ -66,19 +66,19 @@ t_term_err	term_del(void)
 
 t_term_err	term_read_csi(void)
 {
-	const t_keybind	mods[] = {
+	static const t_keybind	mods[] = {
 		{'1', &term_read_mod_none},
 		{'2', &term_read_mod_shift},
-		{'4', &term_read_mod_alt}
+		{'4', &term_read_mod_alt},
 	};
-	const t_keybind	keys[] = {
+	static const t_keybind	keys[] = {
 		{'H', &cursor_start_line}, // TODO: Get in terminfo or remove caps.key
 		{'F', &cursor_end_line},
-		{g_term.caps.keys.up[2], &term_prev_line},
-		{g_term.caps.keys.down[2], &term_next_line},
-		{g_term.caps.keys.left[2], &cursor_l},
-		{g_term.caps.keys.right[2], &cursor_r},
-		{g_term.caps.keys.del[2], &term_del}
+		{'A', &term_prev_line},
+		{'B', &term_next_line},
+		{'D', &cursor_l},
+		{'C', &cursor_r},
+		{'3', &term_del}
 	};
 	ssize_t			read_st;
 	char			c;

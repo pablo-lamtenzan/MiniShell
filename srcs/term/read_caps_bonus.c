@@ -1,32 +1,32 @@
 #include <term/term.h>
 
 
+// TODO: CTRL('t') -> swap two last chars
 // TODO: Put keybinds in static variable at initialization
 /*
 **	Control key-strokes.
 */
 static t_term_err	term_cntrl(char c)
 {
-	const t_keybind	keys[] =
+	static const t_keybind	keys[] =
 	{
-		{g_term.caps.s_ios.c_cc[VINTR], &term_interrupt},
-		{g_term.caps.s_ios.c_cc[VERASE], &term_backspace},
-		{g_term.caps.s_ios.c_cc[VEOF], &term_eof},
-		{g_term.caps.s_ios.c_cc[VSTOP], &term_stop},
-		{g_term.caps.s_ios.c_cc[VSUSP], &term_suspend},
-//		{'u' - TERM_CNTRL, &term_clear_line},
-		{'h' - ANSI_CNTRL, &term_backspace},
-		{'l' - ANSI_CNTRL, &term_clear_screen},
-		{'j' - ANSI_CNTRL, &term_new_line},
-		{'a' - ANSI_CNTRL, &cursor_start_line},
-		{'e' - ANSI_CNTRL, &cursor_end_line},
-		{'y' - ANSI_CNTRL, &clip_paste},
-		{'k' - ANSI_CNTRL, &clip_cut},
-		{'p' - ANSI_CNTRL, &term_prev_line},
-		{'n' - ANSI_CNTRL, &term_next_line}
+		{CINTR, &term_interrupt},
+		{CERASE, &term_backspace},
+		{CEOF, &term_eof},
+		{CKILL, &term_line_kill},
+		{CTRL('h'), &term_backspace},
+		{CTRL('l'), &term_clear_screen},
+		{CTRL('j'), &term_line_new},
+		{CTRL('a'), &cursor_start_line},
+		{CTRL('e'), &cursor_end_line},
+		{CTRL('y'), &clip_paste},
+		{CTRL('k'), &clip_cut},
+		{CTRL('p'), &term_prev_line},
+		{CTRL('n'), &term_next_line}
 	};
 	t_term_action	action;
 
+	ft_dprintf(2, "%hhu: %c", c, c);
 	if ((action = keybind_get(keys, sizeof(keys) / sizeof(*keys), c)))
 		return (action());
 	return (TERM_EOK);

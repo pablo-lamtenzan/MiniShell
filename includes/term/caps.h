@@ -1,13 +1,16 @@
 #ifndef CAPS_H
 # define CAPS_H
 
+# include <sys/ttydefaults.h>
 # include <sys/stat.h>
+
 # include <stdint.h>
 # include <stdbool.h>
 # include <unistd.h>
 
 # include <term.h>
 
+# include <term/ansi.h>
 # include <term/line.h>
 # include <term/hist.h>
 
@@ -32,6 +35,9 @@ typedef struct	s_modes
 */
 typedef struct	s_ctrls
 {
+	char	*ins;
+	char	*ins_pad;
+	char	*ins_n;
 	char	*del;
 	char	*del_n;
 	char	*del_eol;
@@ -134,6 +140,7 @@ bool				caps_load(t_caps *caps);
 */
 int					putc_err(int c);
 void				caps_delete(t_caps *caps, size_t n);
+ssize_t				caps_insert(t_caps *caps, const char* input, size_t length);
 
 /*
 **					caps_goto.c

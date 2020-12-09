@@ -1,6 +1,22 @@
 #include <term/term.h>
 #include <job_control.h>
 
+/*
+**	Delete one character to the left of the cursor.
+*/
+t_term_err	term_backspace()
+{
+	if (g_term.caps.index > 0)
+	{
+		cursor_l();
+		term_line_del(1);
+	}
+	return (TERM_EOK);
+}
+
+/*
+**	Cancel the terminal's input line.
+*/
 t_term_err	term_interrupt(void)
 {
 	t_term_err	status;
@@ -12,20 +28,13 @@ t_term_err	term_interrupt(void)
 		g_term.caps.cursor.origin = g_term.caps.cursor.zero;
 	else if ((status = term_origin(g_term.msg->data, g_term.msg->len)) != TERM_EOK)
 		return (status);
-	if (g_term.has_caps)
-		select_clear();
-	if (g_term.line != g_term.caps.hist.next)
-	{
-		line_clear(&g_term.line);
-		g_term.caps.hist.curr = g_term.caps.hist.next;
-		g_term.line = g_term.caps.hist.next;
-	}
-	*g_term.line->data = '\0';
-	g_term.line->len = 0;
-	g_term.caps.index = 0;
+	term_line_discard();
 	return (status);
 }
 
+/*
+**	End transmition when the line is empty and there are no jobs to be awaited.
+*/
 t_term_err	term_eof(void)
 {
 	if (g_term.line->len == 0)
@@ -46,17 +55,5 @@ t_term_err	term_eof(void)
 			g_session.exit_count++;
 		}
 	}
-	return (TERM_EOK);
-}
-
-t_term_err	term_stop(void)
-{
-	ft_dprintf(2, "[PROMPT][SIGNAL] STOP\n");
-	return (TERM_EOK);
-}
-
-t_term_err	term_suspend(void)
-{
-	ft_dprintf(2, "[PROMPT][SIGNAL] SUSPEND\n");
 	return (TERM_EOK);
 }

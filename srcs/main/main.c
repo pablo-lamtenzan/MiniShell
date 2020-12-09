@@ -217,5 +217,5 @@ int						main(int ac, const char **av, const char **ep)
 	status = routine();
 	session_end(&g_session);
 	term_destroy();
-	return (status);
+	return (status == TERM_EEOF ? g_session.st : status);
 }
