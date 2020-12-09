@@ -39,6 +39,7 @@
 
 # define TERM_ENDL		"\n"
 # define TERM_EXIT		"exit"TERM_ENDL
+# define TERM_STOPPED_JOBS TERM_ENDL"There are stopped jobs."TERM_ENDL
 
 typedef enum		e_term_err
 {
