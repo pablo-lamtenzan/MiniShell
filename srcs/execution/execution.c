@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 01:08:04 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 17:21:40 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,21 +46,14 @@ static t_exec_status	executer(t_bst *cmd, t_exec *info)
 	info->session = g_session.flags & PIPED_CMD ? session_dup() : &g_session;
 	if (!(info->av = tokens_expand((t_tok**)&cmd->a, \
 		&info->session->env, &info->ac)))
-	{
-		g_session.flags & PIPED_CMD ? session_destroy(&info->session) : NULL;
 		return (RDR_BAD_ALLOC);
-	}
 	if (!info->av[0])
-	{
-		g_session.flags & PIPED_CMD ? session_destroy(&info->session) : NULL;
 		return (SUCCESS);
-	}
 	exec_st = execute_process(info);
-	g_session.flags & PIPED_CMD ? session_destroy(&info->session) : NULL;
 	return (exec_st);
 }
 
-// TO DO: SESSION DESTROY IN THIS FUNCT
+// TO DO: SESSION DESTROY IN THIS FUNC
 static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
 {
 	char				**filename;
@@ -76,8 +69,8 @@ static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
 		exec_st = execute_cmd(cmd->a, info);
 	else
 	{
-		if ((exec_st = executer(cmd, info)) != SUCCESS)
-			return (exec_st);
+		exec_st = executer(cmd, info);
+		g_session.flags & PIPED_CMD ? session_destroy(&info->session) : NULL;
 		if (close_pipe_fds(info->fds) != SUCCESS)
 			return (BAD_CLOSE);
 	}

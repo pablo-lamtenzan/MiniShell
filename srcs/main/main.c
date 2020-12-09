@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 22:52:30 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 17:16:31 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	token_print(t_tok *tokens, const char *prefix)
 }
 */
 
-static void			handle_exec_error(t_bst* root, t_exec_status exec_st)
+static void			handle_exec_error(t_bst *root, t_exec_status exec_st)
 {
 	// TO DO: TEST the display of thease error msg
 	static const char*		labels[] = {
