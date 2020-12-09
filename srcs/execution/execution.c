@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 17:21:40 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 17:28:40 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,7 @@ static t_exec_status	executer(t_bst *cmd, t_exec *info)
 		return (RDR_BAD_ALLOC);
 	if (!info->av[0])
 		return (SUCCESS);
-	exec_st = execute_process(info);
-	return (exec_st);
+	return (execute_process(info));
 }
 
 // TO DO: SESSION DESTROY IN THIS FUNC
