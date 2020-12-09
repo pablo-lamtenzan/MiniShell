@@ -121,7 +121,7 @@ t_term_err			term_clear_line(void);
 /*
 **					controls.c
 */
-t_term_err			term_new_line(void);
+t_term_err			term_line_new(void);
 t_term_err			term_line_del(size_t n);
 t_term_err			term_backspace(void);
 t_term_err			term_line_discard(void);

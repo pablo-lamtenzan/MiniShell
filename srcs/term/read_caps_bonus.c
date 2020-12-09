@@ -16,7 +16,7 @@ static t_term_err	term_cntrl(char c)
 		{CKILL, &term_line_kill},
 		{CTRL('h'), &term_backspace},
 		{CTRL('l'), &term_clear_screen},
-		{CTRL('j'), &term_new_line},
+		{CTRL('j'), &term_line_new},
 		{CTRL('a'), &cursor_start_line},
 		{CTRL('e'), &cursor_end_line},
 		{CTRL('y'), &clip_paste},

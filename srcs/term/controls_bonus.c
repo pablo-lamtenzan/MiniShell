@@ -3,7 +3,7 @@
 /*
 **	Write the line ending character and add the current line to history.
 */
-t_term_err	term_new_line()
+t_term_err	term_line_new(void)
 {
 	t_term_err	status;
 

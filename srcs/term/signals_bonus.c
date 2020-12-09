@@ -1,5 +1,6 @@
 #include <term/term.h>
 
+// TODO: Move to controls
 t_term_err	term_interrupt(void)
 {
 	t_term_err	status;
