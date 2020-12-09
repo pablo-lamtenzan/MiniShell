@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/22 21:57:11 by plamtenz          #+#    #+#             */
-/*   Updated: 2020/12/08 20:40:22 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 19:24:24 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 static int		swap_pwds(t_session *sess)
 {
-	char *		basename;
+	char		*basename;
 	const char	*old_pwd;
 
 	if (!(getcwd(sess->cwd, sizeof(sess->cwd) - 1)

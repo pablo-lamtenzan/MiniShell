@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 17:39:39 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 18:54:08 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
 	{
 		exec_st = executer(cmd, info);
 		g_session.flags & PIPED_CMD ? session_destroy(&info->session) : NULL;
+		chdir(g_session.cwd);
 		if (close_pipe_fds(info->fds) != SUCCESS)
 			return (BAD_CLOSE);
 	}
