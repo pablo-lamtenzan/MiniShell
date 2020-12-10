@@ -6,11 +6,11 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 03:52:48 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 22:18:32 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:46:39 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <job_control.h>
+#include <job_control/session.h>
 #include <libft.h>
 
 bool			is_jobspec(const char *string)
@@ -38,6 +38,10 @@ int				matrix_height(char **matrix)
 		it++;
 	return (it - matrix);
 }
+
+/*
+** Reurns true if there no other groups followig the pattern "%?pattern".
+*/
 
 bool			is_not_ambigous_v2(const char *niddle)
 {

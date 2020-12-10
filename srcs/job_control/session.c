@@ -6,17 +6,25 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:08:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 17:38:34 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:47:45 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <job_control.h>
+#include <job_control/session.h>
+
+/*
+** Return  true if there not groups in the job control data structure.
+*/
 
 bool			session_empty(void)
 {
 	return (g_session.nil->next == g_session.nil \
 		&& g_session.nil->prev == g_session.nil);
 }
+
+/*
+** Perform a allocated copy of the job control data structure.
+*/
 
 t_session		*session_dup(void)
 {
@@ -33,6 +41,10 @@ t_session		*session_dup(void)
 		session_destroy(&dup);
 	return (dup);
 }
+
+/*
+** Destroy an allocated copy of the job control data structure.
+*/
 
 void			session_destroy(t_session **target)
 {

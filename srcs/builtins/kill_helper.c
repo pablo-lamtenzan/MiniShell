@@ -6,12 +6,13 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 02:42:01 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:34:21 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:12:32 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
-#include <job_control.h>
+#include <job_control/jc_builtins.h>
+#include <job_control/background.h>
 #include <signal.h>
 
 const char			*get_signal(const char *key, int *res)

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 23:11:42 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:33:21 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:25:49 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,11 @@
 #include <signal.h>
 
 #include <execution.h>
-#include <job_control.h>
-#include <signals.h>
+#include <job_control/jc_builtins.h>
+#include <job_control/background.h>
+#include <job_control/jobspec_parser.h>
+#include <job_control/utils.h>
+#include <signals_print.h>
 
 static int			bg_core(void)
 {

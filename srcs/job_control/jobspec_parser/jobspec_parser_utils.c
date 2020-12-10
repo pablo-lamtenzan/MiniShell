@@ -6,11 +6,11 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:51:20 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 20:49:42 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:49:25 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <job_control.h>
+#include <job_control/utils.h>
 #include <libft.h>
 
 size_t			get_search_mode(const char *av)

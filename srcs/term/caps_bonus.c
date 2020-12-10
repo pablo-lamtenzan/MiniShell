@@ -6,13 +6,13 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 18:53:27 by chamada           #+#    #+#             */
-/*   Updated: 2020/12/07 17:28:29 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 22:20:38 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <term/term.h>
 #include <sys/ioctl.h>
-#include <signals.h>
+#include <signals_print.h>
 
 static bool	load_modes(t_modes *modes, char **area)
 {

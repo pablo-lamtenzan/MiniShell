@@ -6,11 +6,13 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 04:41:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 22:01:42 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:30:49 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <signals.h>
+#include <signals_print.h>
+#include <job_control/conditions.h>
+
 #include <sys/wait.h>
 #include <signal.h>
 

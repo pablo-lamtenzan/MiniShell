@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 17:16:31 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:48:19 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,10 @@
 #include <execution.h>
 #include <separators.h>
 #include <builtins.h>
-#include <signals.h>
+#include <signals_print.h>
+#include <job_control/utils.h>
+#include <signal_handler.h>
+
 #include <string.h>
 #include <unistd.h>
 
@@ -89,8 +92,6 @@ static void			handle_exec_error(t_bst *root, t_exec_status exec_st)
 	exit(exit_val);
 }
 
-// TO DO: Norme
-// TO DO: exit msg stopped jobs when ctrl^D/O 
 // TO DO: sleep 22 ; ctrl^Z ; bg ; fg ; ctrl^C <----------- NEED \n after ^C in this case
 
 void	exec(t_tok* tokens)

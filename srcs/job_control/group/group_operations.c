@@ -6,13 +6,17 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:55:48 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 21:13:02 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:46:01 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <job_control.h>
+#include <job_control/session.h>
 #include <libft.h>
 #include <sys/wait.h>
+
+/*
+** For each process in the target group returns true if the condition is true.
+*/
 
 bool			group_condition(t_group *target, bool (*condition)(t_process*))
 {
@@ -29,6 +33,11 @@ bool			group_condition(t_group *target, bool (*condition)(t_process*))
 	}
 	return (false);
 }
+
+/*
+** Return the group node in the job control data structure containing
+** the target process given as argument.
+*/
 
 t_group			*group_get(t_process *target)
 {

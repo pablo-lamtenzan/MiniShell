@@ -6,13 +6,15 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 11:18:02 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 01:16:46 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:48:55 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <job_control.h>
+#include <job_control/session.h>
 #include <term/term.h>
-#include <signals.h>
+#include <signals_print.h>
+#include <cross_plateform_signals.h>
+#include <signal_handler.h>
 
 static void		suspend_process(int signal)
 {

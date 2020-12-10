@@ -6,11 +6,13 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:49:49 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:35:45 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:24:56 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <job_control.h>
+#include <job_control/jobspec_parser.h>
+#include <job_control/session.h>
+#include <job_control/utils.h>
 #include <libft.h>
 
 static bool		cond1(t_group *groups, const char *av)
@@ -29,6 +31,11 @@ static bool		cond2(t_group *groups, const char *av, int count)
 		&& is_leader(groups->active_processes) \
 		&& is_not_ambigous_v2(&av[1]));
 }
+
+/*
+** Perform a search operation in the job control data structure searching
+** by name. Support the following patterns: "%name" "%?pattern".
+*/
 
 t_process		**get_process_by_name(t_group *groups, const char *av)
 {
@@ -57,6 +64,10 @@ t_process		**get_process_by_name(t_group *groups, const char *av)
 	}
 	return (NULL);
 }
+
+/*
+** Return true if there not other group followin the "%name" pattern.
+*/
 
 bool			is_not_ambigous(t_process *target)
 {

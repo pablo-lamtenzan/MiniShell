@@ -7,9 +7,8 @@ HDRS		=	$(addprefix $(INCDIR)/,\
 	execution.h\
 	separators.h\
 	path.h\
-	signals.h\
+	signals_print.h\
 	cross_plateform_signals.h\
-	job_control.h\
 	errors.h\
 	$(addprefix term/,\
 		ansi.h\
@@ -17,6 +16,19 @@ HDRS		=	$(addprefix $(INCDIR)/,\
 		hist.h\
 		line.h\
 		term.h\
+	)\
+	$(addprefix job_control/,\
+		background.h\
+		conditions.h\
+		destructors.h\
+		group.h\
+		history.h\
+		jc_builtins.h\
+		jobspec_parser.h\
+		process.h\
+		session.h\
+		utils.h\
+		zombies.h\
 	)\
 )
 
@@ -86,37 +98,47 @@ $(addprefix separators/,\
 	separators.c\
 	split_separators.c\
 )\
-$(addprefix signals/,\
+$(addprefix signals_print/,\
 	print_signals.c\
 	print_helper1.c\
 	print_helper2.c\
 	print_helper3.c\
 )\
 $(addprefix job_control/,\
-	allocators.c\
+	$(addprefix group/,\
+		group_operations.c\
+		group.c\
+		return_st.c\
+	)\
+	$(addprefix jobspec_parser/,\
+		jobspec_parser_name.c\
+		jobspec_parser_utils.c\
+		jobspec_parser_utils2.c\
+		jobspec_parser.c\
+	)\
+	$(addprefix memory/,\
+		allocators.c\
+		dynamic_group_destructors.c\
+		dynamic_process_destructors.c\
+		static_destructors.c\
+		static_destructors2.c\
+	)\
+	$(addprefix process/,\
+		process_operations.c\
+		process.c\
+	)\
+	$(addprefix zombies/,\
+		dead_zombies.c\
+		zombies_catcher.c\
+		zombies.c\
+	)\
 	background.c\
 	conditions.c\
-	dead_zombies.c\
-	dynamic_group_destructors.c\
-	dynamic_process_destructors.c\
 	exit_helper.c\
-	group_operations.c\
-	group.c\
 	history_session.c\
-	jobspec_parser_name.c\
-	jobspec_parser_utils.c\
-	jobspec_parser_utils2.c\
-	jobspec_parser.c\
 	print_terminated.c\
-	process_operations.c\
-	process.c\
 	session.c\
-	return_st.c\
-	static_destructors.c\
-	static_destructors2.c\
 	wait_processes.c\
-	zombies_catcher.c\
-	zombies.c\
 )\
 $(addprefix main/,\
 	main.c\

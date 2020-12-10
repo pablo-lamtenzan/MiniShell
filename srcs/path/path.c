@@ -1,5 +1,6 @@
 #include <path.h>
-#include <job_control.h>
+#include <errors.h>
+#include <job_control/session.h>
 #include <unistd.h>
 
 char	*path_cat(const char *a, const char *b)

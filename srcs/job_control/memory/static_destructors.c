@@ -6,13 +6,22 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:34:43 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 22:17:07 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:20:24 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <job_control.h>
+#include <job_control/destructors.h>
+#include <job_control/background.h>
+#include <job_control/utils.h>
+#include <signal_handler.h>
 #include <libft.h>
+
 #include <stdlib.h>
+
+/*
+** Forces to exit and wait all the backgroud processes, mute the signal
+** handlers and proceed to free all the job control ressources.
+*/
 
 void				session_end(t_session *sess)
 {

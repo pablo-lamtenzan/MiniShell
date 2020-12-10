@@ -6,11 +6,16 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:11:08 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:36:05 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:19:30 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <job_control.h>
+#include <job_control/background.h>
+
+/*
+** Return the pid of the leader of the group processes where the current
+** target given as parameter is.
+*/
 
 pid_t			process_get_leader_pid(t_group *nil, t_process *target)
 {
@@ -25,6 +30,11 @@ pid_t			process_get_leader_pid(t_group *nil, t_process *target)
 	}
 	return (0);
 }
+
+/*
+** Returns true if the given process target is the leader of its
+** group process.
+*/
 
 bool			is_leader(t_process *target)
 {

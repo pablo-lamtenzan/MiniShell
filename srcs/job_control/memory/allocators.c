@@ -6,15 +6,19 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:22:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:35:15 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:45:13 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <job_control.h>
+#include <job_control/session.h>
 #include <libft.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+
+/*
+** Job control objects allocation and initialisation functions
+*/
 
 t_session			*session_start(t_session *sess,
 	const char *name, const char **ep)
@@ -50,9 +54,13 @@ t_group				*group_new(void)
 {
 	t_group			*group;
 
-	if (!(group = ft_calloc(1, sizeof(t_group)))
-			|| !(group->nil = ft_calloc(1, sizeof(t_process))))
+	if (!(group = ft_calloc(1, sizeof(t_group))))
 		return (NULL);
+	if (!(group->nil = ft_calloc(1, sizeof(t_process))))
+	{
+		free(group);
+		return (NULL);
+	}
 	group->nil->next = group->nil;
 	group->nil->prev = group->nil;
 	group->active_processes = group->nil;

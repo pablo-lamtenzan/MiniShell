@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 19:37:07 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:44:17 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,11 @@
 #include <execution.h>
 #include <builtins.h>
 #include <expansion.h>
-#include <job_control.h>
+#include <job_control/jc_builtins.h>
+#include <job_control/background.h>
+#include <job_control/utils.h>
+#include <cross_plateform_signals.h>
+#include <signal_handler.h>
 #include <errors.h>
 
 static t_exec_status	execute_process(t_exec *info)
