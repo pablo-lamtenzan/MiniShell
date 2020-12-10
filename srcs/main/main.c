@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/10 20:54:45 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/11 00:18:30 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,39 +21,6 @@
 
 #include <string.h>
 #include <unistd.h>
-
-// TODO: ERROR codes: execution and builtins [error msg] -> [optional help] -> [return]
-/* Errors List:
-- bash: a: command not found -> 127
-- bash: syntax error near unexpected token '||' -> not return (token type could be anything) -> 2
-- bash: syntax error near unexpected token `newline' -> input: "<" -> 2
-- bash: .: filename argument required"\n".: usage: . filename [arguments] -> input "." (called bash period) -> 2
-- bash: a: No such file or directory -> input: echo < a -> 1
-- bash: $a: ambiguous redirect -> 1
-- bash:	filename: File name too long -> redirect to a long filename -> 1
-
-// perror for fork?
-// SIGPIPE for pipes
-// SIGHUP job control (sent to a job when its term is closed 99% sure)
-
-// SIGHUP dans le term -> pour chaque process (actif ou stoppe) SIGHUP -> ensuite pour chauqe process stoppe SIGCONT -> ensuite exit
-// Cat ; ctrl + z -> SIGSTPT -> if (signal stoped and read or writes) -> all group process recives SIGTTIN
-
-void	token_print(t_tok *tokens, const char *prefix)
-{
-	ft_dprintf(2, "[%s]\n", prefix);
-	while (tokens)
-	{
-		if (tokens->type & TOK_CMD)
-			token_print(tokens->data, "CMD");
-		else if (tokens->type == TOK_PARAM)
-			token_print(tokens->data, "PRM");
-		else
-			ft_dprintf(2, "[%s][%5hu] '%s'\n", prefix, tokens->type, tokens->data);
-		tokens = tokens->next;
-	}
-}
-*/
 
 static void			handle_exec_error(t_bst *root, t_exec_status exec_st)
 {
@@ -91,9 +58,6 @@ static void			handle_exec_error(t_bst *root, t_exec_status exec_st)
 	session_end(&g_session);
 	exit(exit_val);
 }
-
-// TO DO: sleep 22 ; ctrl^Z ; bg ; fg ; ctrl^C <----------- NEED \n after ^C in this case
-// cd leak
 
 void	exec(t_tok* tokens)
 {

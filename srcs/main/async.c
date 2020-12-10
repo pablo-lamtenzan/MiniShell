@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 11:18:02 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 23:48:55 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/11 00:15:02 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void			ignore_all_signals(void)
 	signal(SIGHUP, SIG_IGN);
 }
 
-static void		interrupt_line(int signal)
+/*static */void		interrupt_line(int signal)
 {
 	(void)signal;
 	write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) - 1);
@@ -71,5 +71,7 @@ void			init_signal_handler(bool interactive)
 	signal(SIGTERM, &terminate_minishell);
 	signal(SIGHUP, &terminate_minishell);
 	signal(SIGQUIT, &do_nothing);
-	signal(SIGINT, (interactive) ? &interrupt_line : &do_nothing);
+	// TO DO: Ctrl^C bug with sleep
+	(void)interactive;
+	signal(SIGINT, /*(interactive) ? &interrupt_line :*/ &do_nothing);
 }
