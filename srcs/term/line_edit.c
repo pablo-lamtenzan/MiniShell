@@ -18,6 +18,8 @@ bool	line_resize(t_line *line, size_t new_size)
 
 	if (new_size <= line->size)
 		return (true);
+	if (!line->size)
+		line->size++;
 	while (new_size > line->size)
 		line->size *= 2;
 	if (!(new = malloc(sizeof(*new) * line->size)))
