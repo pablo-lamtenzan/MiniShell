@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/11 00:18:30 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/11 00:34:10 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ static void			handle_exec_error(t_bst *root, t_exec_status exec_st)
 	exit(exit_val);
 }
 
-void	exec(t_tok* tokens)
+void	exec(t_tok **tokens)
 {
 	t_exec_status	exec_st;
 	int				flags[3];
@@ -69,7 +69,7 @@ void	exec(t_tok* tokens)
 	g_session.input_line_index = 0;
 	g_session.input_line = split_separators(g_term.line->data);
 	ft_bzero(flags, sizeof(flags));
-	while ((exec_tokens = handle_separators(&tokens, &flags[STATUS], &flags[PARETHESES_NB])))
+	while ((exec_tokens = handle_separators(tokens, &flags[STATUS], &flags[PARETHESES_NB])))
 	{
 		if (handle_conditionals(flags[STATUS], &flags[CONDITIONALS], flags[PARETHESES_NB]))
 		{
@@ -114,14 +114,6 @@ static bool				init(const char *name, const char **ep)
 	return (false);
 }
 
-void					lex_reset(t_lex_st *st)
-{
-	token_clr(&st->tokens);
-	st->input = NULL;
-	st->wait = TOK_NONE;
-	st->subshell_level = 0;
-}
-
 void					syntax_error(t_lex_st *st)
 {
 	const char			*input;
@@ -133,13 +125,7 @@ void					syntax_error(t_lex_st *st)
 	ft_dprintf(2, "%s: syntax error near unexpected token `%s'\n",
 		g_session.name, input);
 	g_session.st = STD_ERROR;
-	lex_reset(st);
-	// TODO: Inspect if this is needed
-	/*
-	*g_term.line->data = '\0';
-	g_term.line->len = 0;
-	g_term.caps.pos = (t_pos){0, 0};
-	*/
+	ft_bzero(st, sizeof(*st));
 }
 
 static t_line	*msg_get(t_lex_err status)
@@ -155,20 +141,25 @@ static t_term_err	routine(void)
 	t_term_err	status;
 	t_lex_err	lex_status;
 	t_lex_st	lex_data;
+	t_tok		*tokens;
 
+	tokens = NULL;
 	ft_bzero(&lex_data, sizeof(lex_data));
 	status = TERM_EOK;
 	lex_status = LEX_EOK;
 	while ((!g_term.is_interactive || (g_term.msg = msg_get(lex_status)))
 	&& (status = term_prompt(&lex_data.input)) == TERM_ENL)
 	{
-		if ((lex_status = lex_tokens(&lex_data)) == LEX_EOK)
+		if ((lex_status = lex_tokens(&tokens, &lex_data)) == LEX_EOK)
 		{
-			exec(lex_data.tokens);
-			lex_data.tokens = NULL;
+			exec(&tokens);
+			token_clr(&tokens);
 		}
 		else if (lex_status != LEX_EWAIT)
+		{
 			syntax_error(&lex_data);
+			token_clr(&tokens);
+		}
 		line_clear(&g_term.msg);
 	}
 	return ((g_term.is_interactive && !g_term.msg) ? TERM_EALLOC : status);

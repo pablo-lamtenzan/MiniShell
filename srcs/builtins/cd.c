@@ -16,10 +16,12 @@
 
 static int		swap_pwds(t_session *sess)
 {
-	char		*basename;
-	const char	*old_pwd;
+	char			*basename;
+	const char		*old_pwd;
+	t_exec_status	status;
 
 	basename = NULL;
+	status = SUCCESS;
 	if (!(getcwd(sess->cwd, sizeof(sess->cwd) - 1)
 	&& (basename = ft_basename(sess->cwd))
 	&& (old_pwd = env_get(sess->env, "PWD", 3))
@@ -28,10 +30,10 @@ static int		swap_pwds(t_session *sess)
 	&& env_set(&sess->env, "DIRNAME", basename, true)))
 	{
 		ft_dprintf(STDERR_FILENO, "%s: cd: %s\n", sess->name, strerror(errno));
-		free(basename);
-		return (STD_ERROR);
+		status = STD_ERROR;
 	}
-	return (SUCCESS);
+	free(basename);
+	return (status);
 }
 
 static int		ft_chdir(t_session *sess, const char *path)

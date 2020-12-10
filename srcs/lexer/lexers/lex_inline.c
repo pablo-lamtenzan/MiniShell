@@ -37,31 +37,28 @@ static t_tok_t	lex_redir_op_type(t_lex_st *st)
 **
 ** REDIR_OPERATOR IFS PARAM
 */
-static t_lex_err	lex_redir(t_lex_st *st)
+static t_lex_err	lex_redir(t_tok **tokens, t_lex_st *st)
 {
 	const t_tok_t	type = lex_redir_op_type(st);
-	t_lex_st		param_st;
 	t_lex_err		status;
 	t_tok			*redir;
+	t_tok			*redir_data;
 
-//	ft_dprintf(2, "[LEX][  CMD][INLINE][ REDIR] Input: '%s'\n", st->input);
+	redir_data = NULL;
 	if (type == TOK_NONE)
-		return (LEX_ENOMATCH);
-	param_st = *st;
-	param_st.tokens = NULL;
-	if (lex_ifs(&param_st) != LEX_EOK
-	|| (status = lex_param(&param_st, TOK_PARAM)) == LEX_ENOMATCH)
-		return (LEX_ESYNTAX);
-	if (status == LEX_EOK)
+		status = LEX_ENOMATCH;
+	else if (lex_ifs(st) != LEX_EOK
+	|| (status = lex_param(&redir_data, st, TOK_PARAM)) == LEX_ENOMATCH)
+		status = LEX_ESYNTAX;
+	else if (status == LEX_EOK)
 	{
-		if (!(redir = token_new(param_st.tokens, type)))
+		if ((redir = token_new(redir_data, type)))
+			token_add_back(tokens, redir);
+		else
 		{
-			token_clr(&param_st.tokens);
-			return (LEX_EALLOC);
+			token_clr(&redir_data);
+			status = LEX_EALLOC;
 		}
-		token_add_back(&st->tokens, redir);
-		st->input = param_st.input;
-		st->wait = param_st.wait;
 	}
 	return (status);
 }
@@ -72,12 +69,12 @@ static t_lex_err	lex_redir(t_lex_st *st)
 **
 ** "<<" PARAM
 */
-static t_lex_err	lex_heredoc(t_lex_st *st)
+static t_lex_err	lex_heredoc(t_tok **tokens, t_lex_st *st)
 {
 	if (ft_strncmp(st->input, "<<", 2))
 		return (LEX_ENOMATCH);
 //	ft_dprintf(2, "[LEX][  CMD][INLINE][HEREDOC] Input: '%s'\n", st->input);
-	return (lex_param(st, OP_HEREDOC));
+	return (lex_param(tokens, st, OP_HEREDOC));
 }
 
 /*
@@ -86,11 +83,11 @@ static t_lex_err	lex_heredoc(t_lex_st *st)
 **
 ** REDIR | HEREDOC
 */
-t_lex_err		lex_inline(t_lex_st *st)
+t_lex_err		lex_inline(t_tok **tokens, t_lex_st *st)
 {
 	t_lex_err		status;
 
-	if ((status = lex_redir(st)) == LEX_ENOMATCH) // alocates a token redir
-		status = lex_heredoc(st); // alocates a token heredoc
+	if ((status = lex_redir(tokens, st)) == LEX_ENOMATCH) // alocates a token redir
+		status = lex_heredoc(tokens, st); // alocates a token heredoc
 	return (status);
 }
