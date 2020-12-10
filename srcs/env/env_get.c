@@ -31,7 +31,8 @@ const char		**env_export(t_env *env)
 	current = env;
 	while (current)
 	{
-		if (current->exported)
+		if (current->exported
+		&& current->key[current->key_length] == ENV_OP_ASSIGN)
 			length++;
 		current = current->next;
 	}
@@ -42,7 +43,8 @@ const char		**env_export(t_env *env)
 		strs[length--] = NULL;
 		while (current)
 		{
-			if (current->exported)
+			if (current->exported
+			&& current->key[current->key_length] == ENV_OP_ASSIGN)
 				strs[length--] = current->key;
 			current = current->next;
 		}
