@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 01:45:31 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 23:50:05 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/10 00:13:13 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void				catch_group(t_group **group)
 /*
 ** SIGCHLD signal handler: tries to wait for all the background processes and
 ** store their data if the processes were signaled or just terminated.
-** Has is own data structure, cointaning references to the job control data
+** Has its own data structure, containing references to the job control data
 ** structure groups. Is implemented in that way to avoid the data corruption
 ** in the job control data structure in a potential asyncronous interaction
 ** with the main thread.

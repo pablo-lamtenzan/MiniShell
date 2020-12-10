@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 23:48:19 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/10 17:07:24 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ static void			handle_exec_error(t_bst *root, t_exec_status exec_st)
 }
 
 // TO DO: sleep 22 ; ctrl^Z ; bg ; fg ; ctrl^C <----------- NEED \n after ^C in this case
+// check 17h30 golem, litecoin
 
 void	exec(t_tok* tokens)
 {
