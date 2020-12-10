@@ -114,12 +114,8 @@ char				**tokens_expand(t_tok **params, t_env **env, int *ac)
 	param = *params;
 	while (param && param_expand(param->data, *env))
 		param = param->next;
-	if (param)
-	{
-		token_clr(params);
-		return (NULL);
-	}
-	if (!var_assign(params, env) || (*params && !(args = word_split(params))))
+	if (param
+	|| !var_assign(params, env) || (*params && !(args = word_split(params))))
 	{
 		token_clr(params);
 		return (NULL);
