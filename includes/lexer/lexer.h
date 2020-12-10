@@ -43,7 +43,6 @@ typedef enum		e_lex_err
 typedef struct		s_lex_st
 {
 	const char	*input;
-	t_tok		*tokens;
 	int			subshell_level;
 	t_tok_t		wait;
 }					t_lex_st;
@@ -59,7 +58,7 @@ bool				is_special(char c);
 **
 ** IFS ( TOKEN IFS )*
 */
-t_lex_err			lex_tokens(t_lex_st *st);
+t_lex_err			lex_tokens(t_tok **tokens, t_lex_st *st);
 
 /*
 ** SUBSHELL
@@ -67,7 +66,7 @@ t_lex_err			lex_tokens(t_lex_st *st);
 **
 ** '(' TOKENS ')'
 */
-t_lex_err			lex_subshell(t_lex_st *st);
+t_lex_err			lex_subshell(t_tok **tokens, t_lex_st *st);
 
 /*
 ** CMD
@@ -75,7 +74,7 @@ t_lex_err			lex_subshell(t_lex_st *st);
 **
 ** CMD_SIMPLEs OPERATION*
 */
-t_lex_err			lex_cmd(t_lex_st *st);
+t_lex_err			lex_cmd(t_tok **tokens, t_lex_st *st);
 
 
 /*
@@ -84,7 +83,7 @@ t_lex_err			lex_cmd(t_lex_st *st);
 **
 ** OPERATOR CMD
 */
-t_lex_err			lex_operation(t_lex_st *st);
+t_lex_err			lex_operation(t_tok **tokens, t_lex_st *st);
 
 /*
 ** PARAM
@@ -92,7 +91,7 @@ t_lex_err			lex_operation(t_lex_st *st);
 **
 ** (PARAM_QUOTED | PARAM_SIMPLE)*
 */
-t_lex_err			lex_param(t_lex_st *st, t_tok_t type);
+t_lex_err			lex_param(t_tok **tokens, t_lex_st *st, t_tok_t type);
 
 /*
 ** PARAM_QUOTED
@@ -100,7 +99,7 @@ t_lex_err			lex_param(t_lex_st *st, t_tok_t type);
 **
 ** PARAM_SQUOTED | PARAM_DQUOTED
 */
-t_lex_err			lex_param_quoted(t_lex_st *st, t_tok_t type);
+t_lex_err			lex_param_quoted(t_tok **tokens, t_lex_st *st, t_tok_t type);
 
 /*
 ** PARAM_SQUOTED
@@ -109,7 +108,7 @@ t_lex_err			lex_param_quoted(t_lex_st *st, t_tok_t type);
 **
 ** '\'' ( char - \' )* '\''
 */
-t_lex_err			lex_param_squoted(t_lex_st *st, t_tok_t type);
+t_lex_err			lex_param_squoted(t_tok **tokens, t_lex_st *st, t_tok_t type);
 
 /*
 ** PARAM_DQUOTED
@@ -117,7 +116,7 @@ t_lex_err			lex_param_squoted(t_lex_st *st, t_tok_t type);
 **
 ** '"' ( ( char - ["\"\\"] ) | ( '\\' ["\"\\"] ) )* '"'
 */
-t_lex_err			lex_param_dquoted(t_lex_st *st, t_tok_t type);
+t_lex_err			lex_param_dquoted(t_tok **tokens, t_lex_st *st, t_tok_t type);
 
 /*
 ** INLINE
@@ -125,7 +124,7 @@ t_lex_err			lex_param_dquoted(t_lex_st *st, t_tok_t type);
 **
 ** REDIR | HEREDOC
 */
-t_lex_err			lex_inline(t_lex_st *st);
+t_lex_err			lex_inline(t_tok **tokens, t_lex_st *st);
 
 /*
 ** IFS

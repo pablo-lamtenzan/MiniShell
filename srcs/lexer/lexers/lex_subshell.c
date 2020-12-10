@@ -6,23 +6,26 @@
 **
 ** '('
 */
-static t_lex_err	lex_scope_in(t_lex_st *st)
+static t_lex_err	lex_scope_in(t_tok **tokens, t_lex_st *st)
 {
-	t_tok	*scope_in;
+	t_lex_err	status;
+	t_tok		*scope_in;
 
+	status = LEX_ENOMATCH;
 	if (*st->input == '(')
 	{
-//		ft_dprintf(2, "[LEX][SCOPE][ IN] Input: '%s'\n", st->input);
-//		ft_dprintf(2, "[LEX][SCOPE][ IN] MATCH!\n");
 		st->input++;
 		st->wait |= TOK_SCOPE_OUT;
 		st->subshell_level++;
-		if (!(scope_in = token_new(NULL, TOK_SCOPE_IN)))
-			return (LEX_EALLOC);
-		token_add_back(&st->tokens, scope_in);
-		return (LEX_EOK);
+		if ((scope_in = token_new(NULL, TOK_SCOPE_IN)))
+		{
+			token_add_back(tokens, scope_in);
+			status = LEX_EOK;
+		}
+		else
+			status = LEX_EALLOC;
 	}
-	return (LEX_ENOMATCH);
+	return (status);
 }
 
 /*
@@ -31,7 +34,7 @@ static t_lex_err	lex_scope_in(t_lex_st *st)
 **
 ** ')'
 */
-static t_lex_err	lex_scope_out(t_lex_st *st)
+static t_lex_err	lex_scope_out(t_tok **tokens, t_lex_st *st)
 {
 	t_tok	*scope_out;
 
@@ -48,7 +51,7 @@ static t_lex_err	lex_scope_out(t_lex_st *st)
 			st->wait &= ~TOK_SCOPE_OUT;
 		if (!(scope_out = token_new(NULL, TOK_SCOPE_OUT)))
 			return (LEX_EALLOC);
-		token_add_back(&st->tokens, scope_out);
+		token_add_back(tokens, scope_out);
 		return (LEX_EOK);
 	}
 	return (LEX_ENOMATCH);
@@ -60,19 +63,19 @@ static t_lex_err	lex_scope_out(t_lex_st *st)
 **
 ** SCOPE_IN TOKENS SCOPE_OUT
 */
-t_lex_err	lex_subshell(t_lex_st *st)
+t_lex_err	lex_subshell(t_tok **tokens, t_lex_st *st)
 {
 	t_lex_err	status;
 
 //	ft_dprintf(2, "[LEX][SUBSH] Input: '%s'\n", st->input);
 	// TODO: Fix scope resume
-	if ((status = lex_scope_in(st)) == LEX_EOK)
+	if ((status = lex_scope_in(tokens, st)) == LEX_EOK)
 	{
 //		ft_dprintf(2, "[LEX][SUBSH][ IN] Status: %d, Wait: '%d'\n", status, st->wait);
-		if ((status = lex_tokens(st)) == LEX_EOK
+		if ((status = lex_tokens(tokens, st)) == LEX_EOK
 		|| (status == LEX_EWAIT && st->wait & (TOK_SCOPE_OUT | TOK_SEP)))
 		{
-			status = lex_scope_out(st);
+			status = lex_scope_out(tokens, st);
 //			ft_dprintf(2, "[LEX][SUBSH][OUT] Status: %d Wait: '%d'\n", status, st->wait);
 		}
 //		ft_dprintf(2, "[LEX][SUBSH][END] Status '%d'\n", status);
@@ -158,103 +161,3 @@ bool					input_line_push_back(t_input_line **lines, t_input_line *new_line)
 		*lines = new_line;
 	return (true);
 }
-
-/* Just temporally defines */
-
-# define END 1 // end of input line
-# define WAIT 2 // requires more input
-
-t_tok				*input_line_concatenate(t_input_line *lines);
-
-/*
-** Used at the end of the lexer (for each lexed line)
-** Returns NULL if malloc error
-** Else return a pointer to the input tokens
-** Always return a pointer to the tokens (have to use the tokens after this fct when the status is END)
-** Arg "lines" could be member of a struct and be started to null (no have to think about it)
-**	it will be allocated and freed automatically
-*/
-
-t_tok				*input_line_update(t_input_line *lines, t_lex_st *st)
-{
-	t_tok*			tokens;
-
-	/* Add to the queue the line */
-	if (!input_line_push_back(&lines, input_line_new(st)))
-		return (NULL);
-
-	tokens = NULL;
-	/* The input line is not multiline or not multiline anymore */
-	if (st->wait & END)
-	{
-		/* Concatenate the tokens and return them */
-		tokens = input_line_concatenate(lines);
-		/* Empty the queue */
-		input_line_destroy(lines);
-	}
-	/* The input is multiline */
-	else
-	{
-		/* Return the first token of the first line 
-		This is just for no return NULL
-		In this case the tokens must not be used
-		*/
-		tokens = lines->lexed_lines->tokens;
-	}
-	return (tokens);
-}
-
-/* The concatenation happends here */
-t_tok				*input_line_concatenate(t_input_line *lines)
-{
-	t_tok			*tokens;
-	t_input_line	*first;
-
-	tokens = NULL;
-	first = lines;
-	while (lines)
-	{
-		/* Concatenate */
-		if (tokens)
-			tokens->next = lines->lexed_lines->tokens;
-
-		/* Get the last token of each line */
-		tokens = lines->lexed_lines->tokens;
-		while (tokens && tokens->next)
-			tokens = tokens->next;
-
-		/* Iterate */
-		lines = lines->next;
-	}
-	/* And as easy as that we have the multiline tokens in same format than before */
-	lines = first;
-	return (lines->lexed_lines->tokens);
-}
-
-/* Used for update the current line, must be called at the begin before starting the lexer */
-void				lex_init(t_input_line *lines, t_lex_st *st)
-{
-	/* No multiline */
-	if (!lines)
-		return ;
-
-	/* Go to the last line (the prevous line) */
-	while (lines->next)
-		lines = lines->next;
-	
-	/* Update */
-	st->wait = lines->lexed_lines->wait;
-	st->subshell_level = lines->lexed_lines->subshell_level;
-}
-
-/*
-** JUST A LITTLE CONCLUSION:
-**
-** 1) Use lex_init before start lexing it will update the st if needed
-** 2) Must have correctly set the flags END and WAIT (their current version)
-** 3) At the end of each lexer call input_line_update at automatilly will create or destroy ressources
-** 4) Must have a reference to input_line and init it to NULL
-** 5) History is not handled in this example but is the same
-**		just have to concatenate the "input"
-** 6) The engine is just a queue who stores the t_lex_st when multiline is all or else empty itself
-*/
