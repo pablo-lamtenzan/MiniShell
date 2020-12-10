@@ -32,13 +32,11 @@ static t_lex_err	lex_param_simple(t_tok **tokens, t_lex_st *st, t_tok_t type)
 t_lex_err		lex_param(t_tok **tokens, t_lex_st *st, t_tok_t type) // handles multiple params in a cmd token (cmd.data)
 {
 	t_lex_err	status;
-	bool		success;
 	t_tok		*param;
 	t_tok		*param_data;
 
 	param_data = NULL;
 	status = LEX_EOK;
-	success = false;
 	while (status == LEX_EOK)
 		if ((status = lex_param_quoted(&param_data, st, type)) == LEX_ENOMATCH)
 			status = lex_param_simple(&param_data, st, type); // allocates a param and set no flag
