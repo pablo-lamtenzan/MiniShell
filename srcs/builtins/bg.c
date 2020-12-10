@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 23:11:42 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 23:25:49 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/10 20:19:01 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,19 +34,19 @@ static int			bg_core(void)
 
 static int			bg_execptions(t_exec *args, t_process **target)
 {
-	if ((*target)->flags & RESTRICT_OP)
+	if (target && (*target)->flags & RESTRICT_OP)
 	{
 		ft_dprintf(STDERR_FILENO, "%s: bg: %s: no such job\n", g_session.name, \
 			args->av[1]);
 		return (STD_ERROR);
 	}
-	if ((*target)->flags & BACKGROUND)
+	if (target && (*target)->flags & BACKGROUND)
 	{
 		ft_dprintf(STDERR_FILENO, "%s: job %lu already in background\n", \
 			g_session.name, background_index_get(g_session.nil, *target));
 		return (SUCCESS);
 	}
-	if ((*target)->flags & (SIGNALED | KILLED))
+	if (target && (*target)->flags & (SIGNALED | KILLED))
 	{
 		ft_dprintf(STDERR_FILENO, "%s: bg: job has terminated\n",
 			g_session.name);
@@ -97,6 +97,7 @@ int					b_bg(t_exec *args)
 	t_process		**target;
 	int				exept;
 
+	target = NULL;
 	if ((exept = bg_init_exeption(args)) != 42)
 		return (exept);
 	if (bg_skip(&target) && args->ac > 1 \
@@ -108,7 +109,8 @@ int					b_bg(t_exec *args)
 	}
 	if ((exept = bg_execptions(args, target)) != 42)
 		return (exept);
-	print_index_args(*target);
+	if (target)
+		print_index_args(*target);
 	write(STDERR_FILENO, " &\n", 3);
-	return (for_each_in_group(*target, bg_core, NULL));
+	return (target ? for_each_in_group(*target, bg_core, NULL) : STD_ERROR);
 }

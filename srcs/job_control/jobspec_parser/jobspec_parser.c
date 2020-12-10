@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:44:40 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 23:18:52 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/10 20:05:43 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,8 @@ t_process		**get_process_by_history(t_group *groups, size_t index)
 		hist_addr = g_session.hist;
 	else if (index == 2)
 		hist_addr = g_session.hist->next;
-	return (get_process_by_pid(groups, hist_addr->group->nil->next->pid));
+	return (!hist_addr || !hist_addr->group ? NULL \
+	: get_process_by_pid(groups, hist_addr->group->nil->next->pid));
 }
 
 /*

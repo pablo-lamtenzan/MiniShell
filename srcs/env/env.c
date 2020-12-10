@@ -100,8 +100,13 @@ t_env	*env_dup(t_env *env)
 	dup = NULL;
 	while (cp)
 	{
-		if (!(env_add_back(&dup, env_new(cp->key, cp->exported, cp->key_length))))
+		if (!(env_add_back(&dup, env_new(cp->key, cp->exported, \
+				cp->key_length))))
+		{
+			if (dup)
+				env_clr(&dup);
 			return (NULL);
+		}
 		cp = cp->next;
 	}
 	return (dup);

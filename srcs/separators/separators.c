@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/05 00:01:43 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:36:48 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/10 20:08:37 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,9 @@ t_tok			*handle_separators(t_tok **tokens, int *status,
 	tks[3] = tks[0];
 	skip_parentheses(tks, parentheses_nb, &saved);
 	tks[1] = *tokens;
-	while (tks[1]->next && tks[1]->next != tks[0])
+	while (tks[1] && tks[1]->next && tks[1]->next != tks[0])
 		tks[1] = tks[1]->next;
-	if (saved & (AND | OR | OPEN_PAR | CLOSE_PAR | SEMICOLON))
+	if (tks[1] && saved & (AND | OR | OPEN_PAR | CLOSE_PAR | SEMICOLON))
 		tks[1]->next = NULL;
 	tks[2] = *tokens;
 	*tokens = tks[3]->next;
