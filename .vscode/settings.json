@@ -6,7 +6,8 @@
 		"string_view": "c",
 		"ranges": "c",
 		"functional": "c",
-		"tuple": "c"
+		"tuple": "c",
+		"compare": "c"
 	},
 	"C_Cpp.dimInactiveRegions": false
 }

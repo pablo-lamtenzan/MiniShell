@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/10 20:52:40 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/10 23:32:28 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,12 @@ void				destroy_execve_args(t_exec *info)
 	free((void*)info->file_path);
 	info->file_path = NULL;
 	info->exec = NULL;
+	if (g_session.flags & BUILTIN)
+	{
+		strs_unload((char**)info->av);
+		info->av = NULL;
+	}
+	
 }
 
 bool				handle_subshell(t_executable exec, const char *name)
