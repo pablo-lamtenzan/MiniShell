@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/10 20:58:34 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/10 21:47:10 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,14 +88,12 @@ static t_exec_status	execute_job(t_bst *job, t_exec *info)
 	info->handle_dup = NONE;
 	if (open_pipe_fds(&info, job->b ? job->type : 0) != SUCCESS)
 		st = BAD_PIPE;
-	else if (!(job->type & (CMD | REDIR_DG | REDIR_GR | REDIR_LE))
-	&& (st = execute_cmd(job->a, info)) == SUCCESS)
-	{
-		if (job->b && job->type & PIPE)
-			st = execute_job(job->b, info);
-		else
-			st = execute_cmd(job, info);
-	}
+	if (!(job->type & (CMD | REDIR_DG | REDIR_GR | REDIR_LE)))
+		st = execute_cmd(job->a, info);
+	if (st == SUCCESS && job->b && job->type & PIPE)
+		st = execute_job(job->b, info);
+	else if (st == SUCCESS)
+		st = execute_cmd(job, info);
 	return (st);
 }
 
