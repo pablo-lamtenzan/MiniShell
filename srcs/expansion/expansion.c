@@ -56,7 +56,7 @@ static bool			var_assign(t_tok **params, t_env **env)
 	{
 		if (!(assignment = param_export(part, 0)))
 			return (false);
-		if ((status = env_assign(env, assignment, false, true)) == 1)
+		if ((status = env_assign(env, assignment, true, true)) == 1)
 		{
 			(*params) = (*params)->next;
 			//ft_dprintf(2, "[EXP][VAR][ASSIGN] assigned '%s'!\n", assignment);
