@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 10:27:06 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 21:53:41 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/10 20:30:14 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,8 +94,7 @@ char		**split_separators(char *input)
 	if ((res = ft_calloc(get_separators_nb(input, seps) + 1, sizeof(char*)))
 	&& !(copy_inter_seps(res, input, seps)))
 	{
-		while (*res)
-			free(res++);
+		strs_unload(res);
 		res = NULL;
 	}
 	return (res);

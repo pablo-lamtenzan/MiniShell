@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 08:52:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 01:01:50 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/10 19:47:30 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 t_exec_status			print_redirection_error(t_redir_status rstatus,
 		char **filename)
 {
-	const char			*error_msg[5] = {
+	static const char	*error_msg[5] = {
 		"%s: %s: No such file or directory\n",
 		"%s: %s: ambigous redirect\n",
 		"%s: %s: File name too long\n",
@@ -24,7 +24,7 @@ t_exec_status			print_redirection_error(t_redir_status rstatus,
 	};
 
 	if (rstatus == RDR_BAD_ALLOC)
-		return (RDR_BAD_ALLOC);
+		return (BAD_ALLOC);
 	ft_dprintf(STDERR_FILENO, error_msg[-rstatus - 1], g_session.name, \
 		*filename);
 	g_session.st = STD_ERROR;
@@ -55,10 +55,9 @@ static t_redir_status	try_catch_filename(char ***filename, char *var_name,
 static t_redir_status	try_catch_in(t_exec **info, t_tok_t type,
 		const char *filename)
 {
-	int					tmp;
+	const int tmp = open(filename, O_RDONLY);
 
 	(void)type;
-	tmp = open(filename, O_RDONLY);
 	if (!((*info)->handle_dup & REDIR_IN))
 		(*info)->fds[FDS_STDIN] = tmp;
 	(*info)->handle_dup |= REDIR_IN;
@@ -68,11 +67,9 @@ static t_redir_status	try_catch_in(t_exec **info, t_tok_t type,
 static t_redir_status	try_catch_out(t_exec **info, t_tok_t type,
 		const char *filename)
 {
-	int	tmp;
-
-	tmp = -1;
-	tmp = open(filename, O_WRONLY | O_CREAT | \
+	const int tmp = open(filename, O_WRONLY | O_CREAT | \
 			(type & REDIR_DG ? O_APPEND : O_TRUNC), UMASK);
+
 	if (!((*info)->handle_dup & REDIR_OUT))
 		(*info)->fds[FDS_STDOUT] = tmp;
 	(*info)->handle_dup |= REDIR_OUT;
