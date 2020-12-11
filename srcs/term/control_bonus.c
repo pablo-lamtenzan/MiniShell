@@ -5,7 +5,7 @@
 /*
 **	Delete one character to the left of the cursor.
 */
-t_term_err	term_backspace()
+t_term_err	term_backspace(void)
 {
 	if (g_term.caps.index > 0)
 	{

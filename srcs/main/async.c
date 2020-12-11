@@ -25,7 +25,7 @@ static void		suspend_process(int signal)
 			g_session.groups->active_processes, STANDART);
 }
 
-static void		do_nothing(int signal)
+void			do_nothing(int signal)
 {
 	(void)signal;
 }
@@ -50,21 +50,7 @@ void			ignore_all_signals(void)
 	signal(SIGHUP, SIG_IGN);
 }
 
-/*static */void		interrupt_line(int signal)
-{
-	(void)signal;
-	write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) - 1);
-	if (g_term.msg)
-		write(STDERR_FILENO, g_term.msg->data, g_term.msg->len);
-	if (g_term.line && g_term.line->len)
-	{
-		g_term.line->len = 0;
-		if (g_term.line->data)
-			*g_term.line->data = '\0';
-	}
-}
-
-void			init_signal_handler(bool interactive)
+void			init_signal_handler(void)
 {
 	signal(SIGTSTP, &suspend_process);
 	signal(SIGCHLD, &zombies_catcher);
@@ -72,6 +58,5 @@ void			init_signal_handler(bool interactive)
 	signal(SIGHUP, &terminate_minishell);
 	signal(SIGQUIT, &do_nothing);
 	// TO DO: Ctrl^C bug with sleep
-	(void)interactive;
-	signal(SIGINT, /*(interactive) ? &interrupt_line :*/ &do_nothing);
+	signal(SIGINT, &do_nothing);
 }
