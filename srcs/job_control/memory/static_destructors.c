@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:34:43 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/11 21:07:13 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/12 00:30:11 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,9 @@ void				delete_processes(t_group **group)
 	t_process		*fill;
 	int				i;
 
-	i = -1;
 	while ((*group)->active_processes != (*group)->nil)
 	{
+		i = -1;
 		fill = (*group)->active_processes;
 		while ((*group)->active_processes->data && ++i < \
 				matrix_height(((char**)(*group)->active_processes->data)))

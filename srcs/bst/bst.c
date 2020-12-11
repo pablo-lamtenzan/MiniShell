@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 16:23:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/11 01:18:53 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/11 22:55:20 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,18 +21,22 @@ static t_bst		*build_job(t_tok *tokens, t_tok *delim)
 	tk1 = find_last_operator(tokens, delim);
 	if (!(node = new_node(NULL, NULL, tk1->type)))
 		return (NULL);
-	tk2 = find_next_operator(tokens, REDIR_GR | REDIR_LE | REDIR_DG | PIPE);
+	tk2 = find_next_operator(tokens, REDIRECT | PIPE);
 	if (tk1 != tk2 && tk2 != delim)
 	{
 		node->a = build_job(tokens, tk1);
 		node->b = tk1->data;
+		free(tk1);
 	}
 	else
 	{
 		if (tokens->type & CMD)
 			node->a = tokens->data;
-		else if (tk1->type & (REDIR_GR | REDIR_LE | REDIR_DG))
+		if (tk1->type & (REDIRECT))
+		{
 			node->b = tk1->data;
+			free(tk1);
+		}
 		node->type |= CMD;
 		free(tokens);
 	}
@@ -47,21 +51,23 @@ static t_bst		*build_bst(t_tok *tokens)
 
 	if ((tk1 = find_next_operator(tokens, PIPE))->type & PIPE)
 		node = new_node(NULL, NULL, tk1->type);
-	else if ((tk2 = find_next_operator(tokens, REDIR_GR | REDIR_LE \
-			| REDIR_DG))->type & (REDIR_GR | REDIR_LE | REDIR_DG))
+	else if ((tk2 = find_next_operator(tokens, REDIRECT))->type & (REDIRECT))
 		node = new_node(NULL, NULL, tk2->type);
 	else
 		node = new_node(NULL, NULL, CMD);
 	if (!node)
 		return (NULL);
 	node->a = build_job(tokens, tk1);
-	if (find_next_operator(tk1->next, PIPE)->type & PIPE)
+	if ((tk2 = find_next_operator(tk1->next, PIPE))->type & PIPE)
+	{
 		node->b = build_bst(tk1->next);
-	else if (find_next_operator(tk1, REDIR_GR | REDIR_LE \
-			| REDIR_DG)->type & (REDIR_GR | REDIR_LE | REDIR_DG))
+		//free(tk2);
+	}
+	else if (find_next_operator(tk1, REDIRECT)->type & (REDIRECT))
 		node->b = build_job(tk1->next, NULL);
 	else
 		node->b = build_job(tk1->next, NULL);
+	free(tk1);
 	return (node);
 }
 

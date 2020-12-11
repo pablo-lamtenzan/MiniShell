@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 16:45:17 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 22:03:12 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/11 23:02:45 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # define REDIR_DL	OP_HEREDOC
 # define PIPE		OP_PIPE
 # define CMD		TOK_CMD
+# define REDIRECT	OP_MREDIR
 
 typedef struct		s_bst
 {

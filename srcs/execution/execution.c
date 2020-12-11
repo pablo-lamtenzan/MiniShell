@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/11 20:24:26 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/11 23:09:21 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
 	g_session.flags &= ~BUILTIN;
 	if ((redir_st = redirections_handler(&info, cmd, &filename)) != CONTINUE)
 		return (print_redirection_error(redir_st, filename));
+	if (cmd->type & (REDIRECT))
+		strs_unload(filename);
 	if (!(cmd->type & CMD) \
 	|| (cmd->type & PIPE && !(((t_bst*)cmd->a)->type & CMD)))
 		exec_st = execute_cmd(cmd->a, info);
