@@ -1,90 +1,53 @@
 #include <term/term.h>
 
-#include <fcntl.h>
-#include <string.h>
-#include <errno.h>
-
-int		ft_isatty(int fd)
-{
-	struct stat	st;
-	struct stat	null_st;
-	int			null_fd;
-	int			ret;
-
-	ret = 0;
-	if (fstat(fd, &st))
-		ft_dprintf(STDERR_FILENO, "Could not stat fd %d: %s\n",
-			fd, strerror(errno));
-	else if (S_ISCHR(st.st_mode))
-	{
-		if ((null_fd = open(TERM_DEV_NULL, O_RDONLY)) == -1)
-			ft_dprintf(STDERR_FILENO, "Could not open "TERM_DEV_NULL": %s",
-				strerror(errno));
-		else
-		{
-			if (fstat(null_fd, &null_st))
-				ft_dprintf(STDERR_FILENO, "Could not stat fd %d: %s\n",
-					null_fd, strerror(errno));
-			else
-				ret = st.st_ino != null_st.st_ino;
-			close(null_fd);
-		}
-	}
-	return (ret);
-}
-
 /*
 **	Detect and init the terminal's capabilities
 **
 **	returns true if successful, or false otherwise.
 */
-bool		term_init_caps(t_env **env, const char *cwd)
+static t_term_err	term_init_caps(const char *term_type)
 {
-	char *const	dirname = ft_basename(cwd);
-	const char	*term_type;
 	char		term_buff[MAX_ENTRY + 1];
 	int			ent_st;
 
-	if (!dirname
-	|| !env_set(env, "DIRNAME", dirname, false)
-	|| !env_set(env, "PS1", TERM_PS1, false)
-	|| !env_set(env, "PS2", TERM_PS2, false)
-	|| !(term_type = env_get(*env, "TERM", 4))
-	|| (ent_st = tgetent(term_buff, term_type)) == -1)
-	{
-		free(dirname);
-		return (false);
-	}
-	free(dirname);
-	if (ent_st == 0)
-		return (true);
+	if (!term_type || (ent_st = tgetent(term_buff, term_type)) == 0)
+		return (write(STDERR_FILENO, TERM_HUNKNOWN, sizeof(TERM_HUNKNOWN) - 1)
+			== -1 ? TERM_EWRITE : TERM_EOK);
+	if (ent_st == -1)
+		return (TERM_ESETATTR);
 	if (tcgetattr(STDIN_FILENO, &g_term.caps.s_ios) == -1)
-		return (false);
+		return (TERM_EGETATTR);
 	g_term.caps.s_ios_orig = g_term.caps.s_ios;
 	g_term.caps.s_ios.c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG);
 	g_term.caps.s_ios.c_cflag |= ONLCR;
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &g_term.caps.s_ios) == -1)
-		return (false);
+		return (TERM_ESETATTR);
 	g_term.has_caps = caps_load(&g_term.caps);
 	return (true);
 }
 
 // TODO: Reference to term!
-bool	term_init(t_env **env, const char *cwd)
+t_term_err	term_init(t_env **env, const char *cwd)
 {
-	g_term.caps.selec = (t_select){-1U, -1U};
-	if (!(g_term.line = line_new(TERM_LINE_SIZE)))
-		return (false);
-	g_term.line->prev = g_term.caps.hist.last;
-	*g_term.line->data = '\0';
-	g_term.line->len = 0;
-	g_term.caps.hist.curr = g_term.line;
-	g_term.caps.hist.next = g_term.line;
-	g_term.caps.hist.head = g_term.line;
-	g_term.is_interactive = ft_isatty(STDIN_FILENO) && ft_isatty(STDERR_FILENO);
-	if (g_term.is_interactive && !term_init_caps(env, cwd))
-		ft_dprintf(2, "Failed to retrieve terminfo: %s\n", strerror(errno));
-	return (true);
+	t_term_err	status;
+
+	// TODO: Cleanup: I think we do not nead to init history in noninteractive session
+	if ((g_term.line = line_new(TERM_LINE_SIZE)))
+	{
+		status = TERM_EOK;
+		g_term.caps.selec = (t_select){-1U, -1U};
+		g_term.line->prev = g_term.caps.hist.last;
+		g_term.caps.hist.curr = g_term.line;
+		g_term.caps.hist.next = g_term.line;
+		g_term.caps.hist.head = g_term.line;
+		g_term.is_interactive = isatty(STDIN_FILENO) && isatty(STDERR_FILENO);
+		if (g_term.is_interactive
+		&& (status = term_init_env(env, cwd)) == TERM_EOK)
+			status = term_init_caps(env_get(*env, "TERM", 4));
+	}
+	else
+		status = TERM_EALLOC;
+	return (status);
 }
 
 void	term_destroy(void)

@@ -47,7 +47,8 @@ t_term_err	term_eof(void)
 			{
 				// TO DO: sleep 2 ; bg ; (wait 2 secs) ctrl^D -> inf loop
 				// TO DO: print prompt segfaults (heap overflow)
-				write(STDERR_FILENO, TERM_STOPPED_JOBS, sizeof(TERM_STOPPED_JOBS) - 1);
+				write(STDERR_FILENO,
+					TERM_EXIT_JOBS, sizeof(TERM_EXIT_JOBS) - 1);
 				if (g_term.msg)
 					write(STDERR_FILENO, g_term.msg->data, g_term.msg->len);
 			}

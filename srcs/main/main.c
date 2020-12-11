@@ -132,17 +132,19 @@ static bool				init_interactive()
 
 static bool				init(const char *name, const char **ep)
 {
-	bool	is_login;
+	t_term_err	status;
+	bool		is_login;
 
 	if ((is_login = (*name == '-')))
 		name++;
 	if (session_start(&g_session, name, ep))
 	{
-		if (term_init(&g_session.env, g_session.cwd))
+		if ((status = term_init(&g_session.env, g_session.cwd)) == TERM_EOK)
 		{
 			init_signal_handler(g_term.is_interactive && !g_term.has_caps);
 			return (true);
 		}
+		term_perror(status);
 		session_end(&g_session);
 	}
 	return (false);
@@ -213,9 +215,14 @@ int						main(int ac, const char **av, const char **ep)
 	t_term_err	status;
 
 	if (ac < 1 || !init(av[0], ep))
-		return (1);
+		return (STD_ERROR);
 	status = routine();
 	session_end(&g_session);
 	term_destroy();
-	return (status == TERM_EEOF ? g_session.st : status);
+	if (status != TERM_EEOF)
+	{
+		term_perror(status);
+		return (STD_ERROR);
+	}
+	return (g_session.st);
 }

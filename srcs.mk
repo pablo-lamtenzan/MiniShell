@@ -43,6 +43,7 @@ $(addprefix lexer/,\
 	token.c\
 	)\
 $(addprefix term/,\
+	init.c\
 	line.c line_edit.c line_put.c\
 	read.c\
 )\
