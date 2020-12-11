@@ -48,6 +48,8 @@ fclean:			clean
 	make -C $(LIBFT) $@
 	@echo RM $(NAME)
 	@$(RM) -f $(NAME)
+	@echo RM $(NAME_BONUS)
+	@$(RM) -f $(NAME_BONUS)
 
 re:				fclean all
 
