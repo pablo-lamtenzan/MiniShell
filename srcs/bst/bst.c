@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 16:23:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 20:32:08 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/11 01:18:53 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ static t_bst		*build_job(t_tok *tokens, t_tok *delim)
 	t_bst			*node;
 
 	tk1 = find_last_operator(tokens, delim);
-	node = new_node(NULL, NULL, tk1->type);
+	if (!(node = new_node(NULL, NULL, tk1->type)))
+		return (NULL);
 	tk2 = find_next_operator(tokens, REDIR_GR | REDIR_LE | REDIR_DG | PIPE);
 	if (tk1 != tk2 && tk2 != delim)
 	{
@@ -50,6 +51,8 @@ static t_bst		*build_bst(t_tok *tokens)
 		node = new_node(NULL, NULL, tk2->type);
 	else
 		node = new_node(NULL, NULL, CMD);
+	if (!node)
+		return (NULL);
 	node->a = build_job(tokens, tk1);
 	if (find_next_operator(tk1->next, PIPE)->type & PIPE)
 		node->b = build_bst(tk1->next);
