@@ -107,7 +107,7 @@ static bool				init(const char *name, const char **ep)
 	{
 		if ((status = term_init(&g_session.env, g_session.cwd)) == TERM_EOK)
 		{
-			init_signal_handler(g_term.is_interactive && !g_term.has_caps);
+			init_signal_handler();
 			return (true);
 		}
 		term_perror(status);
