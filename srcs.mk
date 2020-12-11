@@ -1,22 +1,8 @@
 INCDIR		=	includes
 SRCDIR		=	srcs
 
-HDRS		=	$(addprefix $(INCDIR)/,\
-	bst.h\
-	builtins.h\
-	execution.h\
-	separators.h\
-	path.h\
-	signals_print.h\
-	cross_plateform_signals.h\
-	errors.h\
-	$(addprefix term/,\
-		ansi.h\
-		caps.h\
-		hist.h\
-		line.h\
-		term.h\
-	)\
+HDRS		=\
+$(addprefix $(INCDIR)/,\
 	$(addprefix job_control/,\
 		background.h\
 		conditions.h\
@@ -30,14 +16,31 @@ HDRS		=	$(addprefix $(INCDIR)/,\
 		utils.h\
 		zombies.h\
 	)\
+	$(addprefix lexer/,\
+		lexer.h\
+		token.h\
+	)\
+	$(addprefix term/,\
+		ansi.h\
+		caps.h\
+		hist.h\
+		line.h\
+		term.h\
+	)\
+	bst.h\
+	builtins.h\
+	cross_plateform_signals.h\
+	env.h\
+	errors.h\
+	execution.h\
+	expansion.h\
+	path.h\
+	separators.h\
+	signal_handler.h\
+	signals_print.h\
 )
 
 SRCS_COMMON =\
-$(addprefix env/env,\
-	_get.c\
-	_set.c\
-	.c\
-)\
 $(addprefix lexer/,\
 	$(addprefix lexers/lex_,\
 		cmd.c\
@@ -51,10 +54,15 @@ $(addprefix lexer/,\
 	lexer.c\
 	token_utils.c\
 	token.c\
-	)\
+)\
 $(addprefix term/,\
+	init.c\
 	line.c line_edit.c line_put.c\
 	read.c\
+)\
+$(addprefix bst/,\
+	bst_fill.c\
+	bst.c\
 )\
 $(addprefix builtins/,\
 	cd.c\
@@ -67,20 +75,16 @@ $(addprefix builtins/,\
 	fg.c\
 	history.c\
 	bg.c\
-	jobs_helper.c\
-	jobs.c\
-	kill_helper.c\
-	kill.c\
-	wait_helper.c\
-	wait.c\
-	disown_helper.c\
-	disown.c\
-	builtins.c\
-	builtins_utils.c\
+	jobs.c jobs_helper.c\
+	kill.c kill_helper.c\
+	wait.c wait_helper.c\
+	disown.c disown_helper.c\
+	builtins.c builtins_utils.c\
 )\
-$(addprefix bst/,\
-	bst_fill.c\
-	bst.c\
+$(addprefix env/env,\
+	_get.c\
+	_set.c\
+	.c\
 )\
 $(addprefix execution/,\
 	execution_fd.c\
@@ -92,17 +96,6 @@ $(addprefix expansion/,\
 	expand_param.c\
 	expansion.c\
 	word_split.c\
-)\
-$(addprefix separators/,\
-	conditionals.c\
-	separators.c\
-	split_separators.c\
-)\
-$(addprefix signals_print/,\
-	print_signals.c\
-	print_helper1.c\
-	print_helper2.c\
-	print_helper3.c\
 )\
 $(addprefix job_control/,\
 	$(addprefix group/,\
@@ -140,6 +133,17 @@ $(addprefix job_control/,\
 	session.c\
 	wait_processes.c\
 )\
+$(addprefix separators/,\
+	conditionals.c\
+	separators.c\
+	split_separators.c\
+)\
+$(addprefix signals_print/,\
+	print_signals.c\
+	print_helper1.c\
+	print_helper2.c\
+	print_helper3.c\
+)\
 $(addprefix main/,\
 	main.c\
 	async.c\
@@ -148,14 +152,16 @@ $(addprefix path/,\
 	path.c\
 )
 
-SRCS		=	$(addprefix $(SRCDIR)/,\
+SRCS		=\
+$(addprefix $(SRCDIR)/,\
 	$(SRCS_COMMON)\
 	$(addprefix term/,\
 		term.c\
 	)\
 )
 
-SRCS_BONUS	=	$(addprefix $(SRCDIR)/,\
+SRCS_BONUS	=\
+$(addprefix $(SRCDIR)/,\
 	$(SRCS_COMMON)\
 	$(addsuffix _bonus.c,\
 		$(addprefix term/,\

@@ -28,6 +28,7 @@ void		caps_delete(t_caps *caps, size_t n)
 	}
 }
 
+// TODO: Too much insert
 ssize_t		caps_insert(t_caps *caps, const char* input, size_t length)
 {
 	ssize_t	ret;

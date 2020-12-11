@@ -4,10 +4,16 @@
 // TODO: Migrate headers
 // TODO: ONOEOT (Discard ^D)
 # include <unistd.h>
+# include <fcntl.h>
+# include <string.h>
+# include <errno.h>
 
 # include <env.h>
 # include <term/caps.h>
 
+/*
+**	Default file-descriptors.
+*/
 # ifndef STDIN_FILENO
 #  define STDIN_FILENO	0
 # endif
@@ -18,6 +24,9 @@
 #  define STDERR_FILENO	2
 # endif
 
+/*
+**	Character device file to exclude during tty-detection.
+*/
 # define TERM_DEV_NULL	"/dev/null"
 
 /*
@@ -28,22 +37,49 @@
 /*
 **	Displayed before reading the first-line of a command.
 */
-# define TERM_PS1		C_D"["S_B""C_BRI"$USER"S_D""C_D""C_BYI"@"S_BGI"$DIRNAME"S_D"]"C_W"$"C_D" "
+# define TERM_PS1\
+	C_D"["S_B""C_BRI"$USER"S_D""C_D""C_BYI"@"S_BGI"$DIRNAME"S_D"]"C_W"$"C_D" "
 
 /*
 **	Displayed before reading the second and subsquent lines of a command.
 */
 # define TERM_PS2		"> "
 
+/*
+**	Default new-line character.
+*/
 # define TERM_NL		'\n'
 
+/*
+**	Default line ending string.
+*/
 # define TERM_ENDL		"\n"
-# define TERM_EXIT		"exit"TERM_ENDL
-# define TERM_STOPPED_JOBS TERM_ENDL"There are stopped jobs."TERM_ENDL
 
+/*
+**	Default exit message.
+*/
+# define TERM_EXIT		"exit"TERM_ENDL
+
+/*
+**	Exit message when there are stopped jobs.
+*/
+# define TERM_EXIT_JOBS	TERM_ENDL"There are stopped jobs."TERM_ENDL
+
+/*
+**	Help message when encountering unknown ttys.
+*/
+# define TERM_HUNKNOWN	"Could not detect terminal type!"TERM_ENDL\
+	"Specify a terminal type with `setenv TERM <type>'\
+	to enable advanced capabilities."TERM_ENDL
+
+/*
+**	Terminal error codes.
+*/
 typedef enum		e_term_err
 {
-	TERM_ESETATTR	= -4,
+	TERM_ESETATTR	= -7,
+	TERM_EGETATTR	= -6,
+	TERM_EGETENT	= -5,
 	TERM_EALLOC		= -3,
 	TERM_EWRITE		= -2,
 	TERM_EREAD		= -1,
@@ -61,6 +97,7 @@ typedef struct		s_term
 	t_line		*msg;
 }					t_term;
 
+// TODO: Fix multiple definitions from header inclusion
 t_term				g_term;
 
 typedef t_term_err	(*t_term_action)(void);
@@ -72,14 +109,20 @@ typedef struct		s_keybind
 }					t_keybind;
 
 /*
-**					term.c
+**					term.c / term_bonus.c
 */
-bool				term_init(t_env **env, const char *cwd);
+t_term_err			term_init(t_env **env, const char *cwd);
 void				term_destroy(void);
 t_term_err			term_prompt(const char **dest);
 
 /*
-**					write.c
+**					init.c
+*/
+t_term_err			term_init_env(t_env **env, const char *cwd);
+void				term_perror(t_term_err err);
+
+/*
+**					write_bonus.c
 */
 int					putc_err(int c);
 size_t				strglen(const char *str);
@@ -88,23 +131,23 @@ t_term_err			term_write(const char *input, size_t length);
 t_term_err			term_origin(const char *input, size_t length);
 
 /*
-**					keybind.c
+**					keybind_bonus.c
 */
 t_term_action		keybind_get(const t_keybind *keybinds, size_t n, char key);
 
 /*
-**					read.c
+**					read.c / read_bonus.c
 */
 t_term_err			term_read_caps(void);
 t_term_err			term_read(void);
 
 /*
-**					read_esc.c
+**					read_esc_bonus.c
 */
 t_term_err			term_read_esc(void);
 
 /*
-**					read_csi.c
+**					read_csi_bonus.c
 */
 t_term_err			term_read_csi(void);
 
@@ -117,7 +160,13 @@ t_term_err			term_clear_eos(void);
 t_term_err			term_clear_line(void);
 
 /*
-**					controls.c
+**					control_bonus.c
+*/
+t_term_err			term_interrupt(void);
+t_term_err			term_eof(void);
+
+/*
+**					control_line_bonus.c
 */
 t_term_err			term_line_new(void);
 t_term_err			term_line_del(size_t n);
@@ -126,14 +175,14 @@ t_term_err			term_line_discard(void);
 t_term_err			term_line_kill(void);
 
 /*
-**					cursor.c
+**					cursor_bonus.c
 */
 t_term_err			cursor_l(void);
 t_term_err			cursor_r(void);
 t_term_err			cursor_d(void);
 
 /*
-**					cursor_jmp.c
+**					cursor_jmp_bonus.c
 */
 void				cursor_goto_index(size_t index);
 t_term_err			cursor_start_line(void);
@@ -142,7 +191,7 @@ t_term_err			cursor_next_word(void);
 t_term_err			cursor_prev_word(void);
 
 /*
-**					select.c
+**					select_bonus.c
 */
 t_term_err			select_highlight(void);
 t_term_err			select_left(void);
@@ -150,13 +199,13 @@ t_term_err			select_right(void);
 t_term_err			select_clear(void);
 
 /*
-**					select_jmp.c
+**					select_jmp_bonus.c
 */
 t_term_err			select_next_word(void);
 t_term_err			select_prev_word(void);
 
 /*
-**					clip.c
+**					clip_bonus.c
 */
 t_term_err			clip_copy(void);
 t_term_err			clip_cut(void);
@@ -164,17 +213,9 @@ t_term_err			clip_paste(void);
 t_term_err			clip_clear(void);
 
 /*
-**					hist_cursor.c
+**					hist_cursor_bonus.c
 */
 t_term_err			term_prev_line(void);
 t_term_err			term_next_line(void);
-
-/*
-**					signals.c
-*/
-t_term_err			term_interrupt(void);
-t_term_err			term_eof(void);
-t_term_err			term_stop(void);
-t_term_err			term_suspend(void);
 
 #endif

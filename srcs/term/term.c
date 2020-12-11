@@ -1,10 +1,6 @@
 #include <term/term.h>
 
-#include <fcntl.h>
-#include <string.h>
-#include <errno.h>
-
-int		ft_isatty(int fd)
+static int	ft_isatty(int fd)
 {
 	struct stat	st;
 	struct stat	null_st;
@@ -33,26 +29,22 @@ int		ft_isatty(int fd)
 	return (ret);
 }
 
-bool	term_init(t_env **env, const char *cwd)
+t_term_err	term_init(t_env **env, const char *cwd)
 {
-	char	*basename;
+	t_term_err	status;
 
-	if (!(g_term.line = line_new(TERM_LINE_SIZE)))
-		return (false);
-	g_term.is_interactive = ft_isatty(STDIN_FILENO) && ft_isatty(STDERR_FILENO);
-	if (!g_term.is_interactive)
-		return (true);
-	if (!((basename = ft_basename(cwd))
-	&& env_set(env, "DIRNAME", basename, false)
-	&& env_set(env, "PS1", TERM_PS1, false)
-	&& env_set(env, "PS2", TERM_PS2, false)))
+	if ((g_term.line = line_new(0)))
 	{
-		ft_dprintf(2, "Initialization failed: %s\n", strerror(errno));
-		free(basename);
-		return (false);
+		status = TERM_EOK;
+		g_term.is_interactive =
+			ft_isatty(STDIN_FILENO) && ft_isatty(STDERR_FILENO);
+		if (g_term.is_interactive
+		&& (status = term_init_env(env, cwd)) != TERM_EOK)
+			line_clear(&g_term.line);
 	}
-	free(basename);
-	return (true);
+	else
+		status = TERM_EALLOC;
+	return (status);
 }
 
 void	term_destroy(void)

@@ -46,9 +46,11 @@ t_term_err	term_eof(void)
 		{
 			if (g_session.exit_count == 0)
 			{
-				write(STDERR_FILENO, "\nThere are stopped jobs.", 25);
-				write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) - 1);
-				if (g_term.msg)
+				// TO DO: sleep 2 ; bg ; (wait 2 secs) ctrl^D -> inf loop
+				// TO DO: print prompt segfaults (heap overflow)
+				write(STDERR_FILENO,
+					TERM_EXIT_JOBS, sizeof(TERM_EXIT_JOBS) - 1);
+				if (g_term.msg && g_term.msg->len)
 					write(STDERR_FILENO, g_term.msg->data, g_term.msg->len);
 			}
 			g_session.exit_count++;
