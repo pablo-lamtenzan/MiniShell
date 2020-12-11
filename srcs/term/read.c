@@ -1,5 +1,6 @@
 #include <term/term.h>
 #include <signal_handler.h>
+#include <signal.h>
 
 void	term_sig_interrupt(int signal)
 {

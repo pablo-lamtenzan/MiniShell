@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 10:27:06 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/10 20:30:14 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/11 18:24:58 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ size_t		get_elem_size(char *input, int *i, const char **separators)
 	size_t	size;
 
 	size = 1;
-	while (input[++(*i)])
+	while (input[*i] && input[++(*i)])
 	{
 		y = -1;
 		while (separators[++y])
