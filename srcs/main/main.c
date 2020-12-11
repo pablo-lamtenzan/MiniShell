@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/11 00:34:10 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/11 17:27:09 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ void	exec(t_tok **tokens)
 				handle_exec_error(root, exec_st);
 			free_bst(root);
 		}
+		else
+			token_clr(&exec_tokens);
 	}
 	strs_unload(g_session.input_line);
 	g_session.input_line = NULL;
