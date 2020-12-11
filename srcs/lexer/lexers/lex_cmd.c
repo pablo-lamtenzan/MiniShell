@@ -7,10 +7,13 @@ static t_lex_err	cmd_new(t_tok **tokens,
 	t_tok			*cmd;
 
 	status = LEX_EOK;
-	if (!(cmd = token_new(data, TOK_CMD)))
+	if ((cmd = token_new(data, TOK_CMD)))
+	{
+		cmd->next = inline_operators;
+		token_add_back(tokens, cmd);
+	}
+	else
 		status = LEX_EALLOC;
-	cmd->next = inline_operators;
-	token_add_back(tokens, cmd);
 	return (status);
 }
 

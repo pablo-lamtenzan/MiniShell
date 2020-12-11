@@ -58,12 +58,16 @@ void		token_add_front(t_tok **tokens, t_tok *token)
 */
 void		token_clr(t_tok **tokens)
 {
-	while(*tokens)
+	t_tok	*curr;
+
+	while ((curr = *tokens))
 	{
-		if ((*tokens)->type & TOK_CMD || ((*tokens)->type == TOK_PARAM))
-			token_clr((t_tok**)&(*tokens)->data);
+		ft_dprintf(2, "[TOK][CLR] %hu\n", curr->type);
+		if (curr->type & TOK_CMD || (curr->type == TOK_PARAM))
+			token_clr((t_tok**)&curr->data);
 		else
-			free((*tokens)->data);
-		*tokens = (*tokens)->next;
+			free(curr->data);
+		*tokens = curr->next;
+		free(curr);
 	}
 }
