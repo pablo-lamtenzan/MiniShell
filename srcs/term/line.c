@@ -18,14 +18,18 @@ t_line	*line_new(size_t size)
 
 	if (!(line = malloc(sizeof(*line))))
 		return (NULL);
-	line->size = size;
-	if (!(line->data = malloc(sizeof(*line->data) * line->size)))
+	if ((line->size = size))
 	{
-		free(line);
-		return (NULL);
+		if (!(line->data = malloc(sizeof(*line->data) * line->size)))
+		{
+			free(line);
+			return (NULL);
+		}
+		*line->data = '\0';
 	}
+	else
+		line->data = NULL;
 	line->len = 0;
-	*line->data = '\0';
 	line->next = NULL;
 	line->prev = NULL;
 	return (line);
