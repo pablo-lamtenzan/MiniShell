@@ -84,11 +84,11 @@ void				delete_processes(t_group **group)
 	{
 		i = -1;
 		fill = (*group)->active_processes;
-		while ((*group)->active_processes->data && ++i < \
-				matrix_height(((char**)(*group)->active_processes->data)))
-			free((*group)->active_processes->data[i]);
-		free((char**)(*group)->active_processes->data);
-		(*group)->active_processes->data = NULL;
+		if ((*group)->active_processes->data)
+		{
+			strs_unload((char**)(*group)->active_processes->data);
+			(*group)->active_processes->data = NULL;
+		}
 		(*group)->active_processes = (*group)->active_processes->next;
 		free(fill);
 		fill = NULL;
