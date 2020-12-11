@@ -4,13 +4,15 @@ SRCDIR		=	srcs
 HDRS		=	$(addprefix $(INCDIR)/,\
 	bst.h\
 	builtins.h\
-	execution.h\
-	separators.h\
-	path.h\
-	signals.h\
 	cross_plateform_signals.h\
-	job_control.h\
+	env.h\
 	errors.h\
+	execution.h\
+	expansion.h\
+	job_control.h\
+	path.h\
+	separators.h\
+	signals.h\
 	$(addprefix term/,\
 		ansi.h\
 		caps.h\
