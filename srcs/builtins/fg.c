@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 09:32:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 20:13:31 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:30:04 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,12 @@
 #include <signal.h>
 
 #include <execution.h>
-#include <job_control.h>
-#include <signals.h>
+#include <job_control/jc_builtins.h>
+#include <job_control/background.h>
+#include <job_control/jobspec_parser.h>
+#include <job_control/conditions.h>
+#include <job_control/utils.h>
+#include <signals_print.h>
 
 static bool		fg_delete(void)
 {

@@ -57,6 +57,7 @@ static t_line	*param_split(t_tok **parts)
 			token_clr(&part);
 			return (NULL);
 		}
+		//free(curr->data);
 		free(part->data); // free popped part
 		free(part);
 	}

@@ -1,10 +1,11 @@
 #include <term/term.h>
-#include <job_control.h>
+#include <job_control/session.h>
+#include <job_control/background.h>
 
 /*
 **	Delete one character to the left of the cursor.
 */
-t_term_err	term_backspace()
+t_term_err	term_backspace(void)
 {
 	if (g_term.caps.index > 0)
 	{
@@ -49,7 +50,7 @@ t_term_err	term_eof(void)
 				// TO DO: print prompt segfaults (heap overflow)
 				write(STDERR_FILENO,
 					TERM_EXIT_JOBS, sizeof(TERM_EXIT_JOBS) - 1);
-				if (g_term.msg)
+				if (g_term.msg && g_term.msg->len)
 					write(STDERR_FILENO, g_term.msg->data, g_term.msg->len);
 			}
 			g_session.exit_count++;

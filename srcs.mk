@@ -1,18 +1,25 @@
 INCDIR		=	includes
 SRCDIR		=	srcs
 
-HDRS		=	$(addprefix $(INCDIR)/,\
-	bst.h\
-	builtins.h\
-	cross_plateform_signals.h\
-	env.h\
-	errors.h\
-	execution.h\
-	expansion.h\
-	job_control.h\
-	path.h\
-	separators.h\
-	signals.h\
+HDRS		=\
+$(addprefix $(INCDIR)/,\
+	$(addprefix job_control/,\
+		background.h\
+		conditions.h\
+		destructors.h\
+		group.h\
+		history.h\
+		jc_builtins.h\
+		jobspec_parser.h\
+		process.h\
+		session.h\
+		utils.h\
+		zombies.h\
+	)\
+	$(addprefix lexer/,\
+		lexer.h\
+		token.h\
+	)\
 	$(addprefix term/,\
 		ansi.h\
 		caps.h\
@@ -20,14 +27,20 @@ HDRS		=	$(addprefix $(INCDIR)/,\
 		line.h\
 		term.h\
 	)\
+	bst.h\
+	builtins.h\
+	cross_plateform_signals.h\
+	env.h\
+	errors.h\
+	execution.h\
+	expansion.h\
+	path.h\
+	separators.h\
+	signal_handler.h\
+	signals_print.h\
 )
 
 SRCS_COMMON =\
-$(addprefix env/env,\
-	_get.c\
-	_set.c\
-	.c\
-)\
 $(addprefix lexer/,\
 	$(addprefix lexers/lex_,\
 		cmd.c\
@@ -41,11 +54,15 @@ $(addprefix lexer/,\
 	lexer.c\
 	token_utils.c\
 	token.c\
-	)\
+)\
 $(addprefix term/,\
 	init.c\
 	line.c line_edit.c line_put.c\
 	read.c\
+)\
+$(addprefix bst/,\
+	bst_fill.c\
+	bst.c\
 )\
 $(addprefix builtins/,\
 	cd.c\
@@ -58,20 +75,16 @@ $(addprefix builtins/,\
 	fg.c\
 	history.c\
 	bg.c\
-	jobs_helper.c\
-	jobs.c\
-	kill_helper.c\
-	kill.c\
-	wait_helper.c\
-	wait.c\
-	disown_helper.c\
-	disown.c\
-	builtins.c\
-	builtins_utils.c\
+	jobs.c jobs_helper.c\
+	kill.c kill_helper.c\
+	wait.c wait_helper.c\
+	disown.c disown_helper.c\
+	builtins.c builtins_utils.c\
 )\
-$(addprefix bst/,\
-	bst_fill.c\
-	bst.c\
+$(addprefix env/env,\
+	_get.c\
+	_set.c\
+	.c\
 )\
 $(addprefix execution/,\
 	execution_fd.c\
@@ -84,42 +97,52 @@ $(addprefix expansion/,\
 	expansion.c\
 	word_split.c\
 )\
+$(addprefix job_control/,\
+	$(addprefix group/,\
+		group_operations.c\
+		group.c\
+		return_st.c\
+	)\
+	$(addprefix jobspec_parser/,\
+		jobspec_parser_name.c\
+		jobspec_parser_utils.c\
+		jobspec_parser_utils2.c\
+		jobspec_parser.c\
+	)\
+	$(addprefix memory/,\
+		allocators.c\
+		dynamic_group_destructors.c\
+		dynamic_process_destructors.c\
+		static_destructors.c\
+		static_destructors2.c\
+	)\
+	$(addprefix process/,\
+		process_operations.c\
+		process.c\
+	)\
+	$(addprefix zombies/,\
+		dead_zombies.c\
+		zombies_catcher.c\
+		zombies.c\
+	)\
+	background.c\
+	conditions.c\
+	exit_helper.c\
+	history_session.c\
+	print_terminated.c\
+	session.c\
+	wait_processes.c\
+)\
 $(addprefix separators/,\
 	conditionals.c\
 	separators.c\
 	split_separators.c\
 )\
-$(addprefix signals/,\
+$(addprefix signals_print/,\
 	print_signals.c\
 	print_helper1.c\
 	print_helper2.c\
 	print_helper3.c\
-)\
-$(addprefix job_control/,\
-	allocators.c\
-	background.c\
-	conditions.c\
-	dead_zombies.c\
-	dynamic_group_destructors.c\
-	dynamic_process_destructors.c\
-	exit_helper.c\
-	group_operations.c\
-	group.c\
-	history_session.c\
-	jobspec_parser_name.c\
-	jobspec_parser_utils.c\
-	jobspec_parser_utils2.c\
-	jobspec_parser.c\
-	print_terminated.c\
-	process_operations.c\
-	process.c\
-	session.c\
-	return_st.c\
-	static_destructors.c\
-	static_destructors2.c\
-	wait_processes.c\
-	zombies_catcher.c\
-	zombies.c\
 )\
 $(addprefix main/,\
 	main.c\
@@ -129,14 +152,16 @@ $(addprefix path/,\
 	path.c\
 )
 
-SRCS		=	$(addprefix $(SRCDIR)/,\
+SRCS		=\
+$(addprefix $(SRCDIR)/,\
 	$(SRCS_COMMON)\
 	$(addprefix term/,\
 		term.c\
 	)\
 )
 
-SRCS_BONUS	=	$(addprefix $(SRCDIR)/,\
+SRCS_BONUS	=\
+$(addprefix $(SRCDIR)/,\
 	$(SRCS_COMMON)\
 	$(addsuffix _bonus.c,\
 		$(addprefix term/,\

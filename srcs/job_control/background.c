@@ -6,15 +6,21 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:30:37 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 20:28:53 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:38:44 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sys/wait.h>
 #include <signal.h>
 
-#include <job_control.h>
+#include <job_control/conditions.h>
+#include <job_control/background.h>
+#include <errors.h>
 #include <libft.h>
+
+/*
+** Wait for the target process, store its return status and set flags.
+*/
 
 void			background_update(t_process **target)
 {
@@ -32,6 +38,11 @@ void			background_update(t_process **target)
 		history_session_update(group_get(*target));
 	}
 }
+
+/*
+** Takes a process as param, can compare its pid or wstatus to find the right
+** object in the job control data structure and return a reference of it.
+*/
 
 t_process		**background_find(t_process *target, const char *search_type,
 		t_group *group)
@@ -62,6 +73,10 @@ t_process		**background_find(t_process *target, const char *search_type,
 	return (NULL);
 }
 
+/*
+** Return the index of the target process in the job control data structure.
+*/
+
 size_t			background_index_get(t_group *nil, t_process *target)
 {
 	size_t		index;
@@ -90,6 +105,13 @@ size_t			background_index_get(t_group *nil, t_process *target)
 	return (index);
 }
 
+/*
+** Force each background group (running or stopped) to exit.
+** Uses SIGHUP if the job wasn't disowned and SIGCONT for
+** stopped groups. Then, it waits until the group has not
+** terminated.
+*/
+
 void			background_force_exit(t_session *sess)
 {
 	t_group		*curr;
@@ -104,7 +126,7 @@ void			background_force_exit(t_session *sess)
 			if (!(sess->groups->active_processes->flags & NO_HANGUP))
 				kill(sess->groups->active_processes->pid, SIGHUP);
 			kill(sess->groups->active_processes->pid, SIGCONT);
-			if (!(sess->groups->active_processes->flags & NO_HANGUP))
+			if (!(sess->groups->active_processes->flags & (NO_HANGUP | EXITED)))
 				while (waitpid(sess->groups->active_processes->pid, \
 						&sess->groups->active_processes->wstatus, 0) <= 0)
 					;
@@ -116,6 +138,10 @@ void			background_force_exit(t_session *sess)
 	}
 	sess->groups = curr;
 }
+
+/*
+** Return true if at least 1 background group is stopped.
+*/
 
 bool			is_background_stopped(void)
 {

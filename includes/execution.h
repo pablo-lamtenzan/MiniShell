@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:51:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 22:05:47 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:43:49 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 ** Local
 */
 # include <bst.h>
-# include <job_control.h>
+# include <job_control/session.h>
 # include <libft.h>
 # include <expansion.h>
 # include <errors.h>
@@ -71,6 +71,8 @@ typedef struct			s_exec
     char*const			*ep;
 	t_session			*session;
 }						t_exec;
+
+t_exec_status			wait_processes(t_exec_status st);
 
 /*
 ** Execution

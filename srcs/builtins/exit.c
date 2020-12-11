@@ -6,12 +6,13 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:46 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 20:40:00 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:11:52 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <term/term.h>
+#include <job_control/background.h>
 
 int		ft_atoi_exit(const char *str, bool *st)
 {
@@ -32,7 +33,7 @@ int		ft_atoi_exit(const char *str, bool *st)
 	return (!st ? 255 : i * factor);
 }
 
-int		b_exit(t_exec *args) // TODO: Callbacks in ft_term.h
+int		b_exit(t_exec *args)
 {
 	int		i;
 	bool	st;

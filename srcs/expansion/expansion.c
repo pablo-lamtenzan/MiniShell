@@ -1,5 +1,5 @@
 #include <expansion.h>
-#include <job_control.h>
+//#include <job_control/session.h>
 
 static char		*param_export(t_tok *param, bool free_params)
 {
@@ -56,7 +56,7 @@ static bool			var_assign(t_tok **params, t_env **env)
 	{
 		if (!(assignment = param_export(part, 0)))
 			return (false);
-		if ((status = env_assign(env, assignment, false, true)) == 1)
+		if ((status = env_assign(env, assignment, true, true)) == 1)
 		{
 			(*params) = (*params)->next;
 			//ft_dprintf(2, "[EXP][VAR][ASSIGN] assigned '%s'!\n", assignment);
@@ -114,12 +114,8 @@ char				**tokens_expand(t_tok **params, t_env **env, int *ac)
 	param = *params;
 	while (param && param_expand(param->data, *env))
 		param = param->next;
-	if (param)
-	{
-		token_clr(params);
-		return (NULL);
-	}
-	if (!var_assign(params, env) || (*params && !(args = word_split(params))))
+	if (param
+	|| !var_assign(params, env) || (*params && !(args = word_split(params))))
 	{
 		token_clr(params);
 		return (NULL);

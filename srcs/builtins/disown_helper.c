@@ -6,12 +6,14 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 02:55:51 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 20:20:51 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:30:30 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
-#include <job_control.h>
+#include <job_control/jc_builtins.h>
+#include <job_control/background.h>
+#include <job_control/conditions.h>
 
 void			disown_process(t_process **target, int flags)
 {

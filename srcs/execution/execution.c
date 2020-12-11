@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 17:39:39 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/10 21:47:10 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,11 @@
 #include <execution.h>
 #include <builtins.h>
 #include <expansion.h>
-#include <job_control.h>
+#include <job_control/jc_builtins.h>
+#include <job_control/background.h>
+#include <job_control/utils.h>
+#include <cross_plateform_signals.h>
+#include <signal_handler.h>
 #include <errors.h>
 
 static t_exec_status	execute_process(t_exec *info)
@@ -46,12 +50,10 @@ static t_exec_status	executer(t_bst *cmd, t_exec *info)
 	info->session = g_session.flags & PIPED_CMD ? session_dup() : &g_session;
 	if (!info->session)
 		return (BAD_ALLOC);
-	info->av = tokens_expand((t_tok**)&cmd->a, &info->session->env, &info->ac);
-	if (!info->av)
-		exec_st = RDR_BAD_ALLOC;
+	if(!(info->av = tokens_expand((t_tok**)&cmd->a, &info->session->env, &info->ac)))
+		exec_st = BAD_ALLOC;
 	else if (info->av[0])
 		exec_st = execute_process(info);
-	g_session.flags & PIPED_CMD ? session_destroy(&info->session) : NULL;
 	return (exec_st);
 }
 
@@ -61,15 +63,20 @@ static t_exec_status	execute_cmd(t_bst *cmd, t_exec *info)
 	t_redir_status		redir_st;
 	t_exec_status		exec_st;
 
-	exec_st = SUCCESS;
 	g_session.flags &= ~BUILTIN;
 	if ((redir_st = redirections_handler(&info, cmd, &filename)) != CONTINUE)
 		return (print_redirection_error(redir_st, filename));
 	if (!(cmd->type & CMD) \
 	|| (cmd->type & PIPE && !(((t_bst*)cmd->a)->type & CMD)))
 		exec_st = execute_cmd(cmd->a, info);
-	else if ((exec_st = executer(cmd, info)) == SUCCESS)
-		exec_st = close_pipe_fds(info->fds);
+	else
+	{
+		exec_st = executer(cmd, info);
+		g_session.flags & PIPED_CMD ? session_destroy(&info->session) : NULL;
+		chdir(g_session.cwd);
+		if (close_pipe_fds(info->fds) != SUCCESS)
+			return (BAD_CLOSE);
+	}
 	return (exec_st == BAD_PATH ? SUCCESS : exec_st);
 }
 
@@ -81,14 +88,12 @@ static t_exec_status	execute_job(t_bst *job, t_exec *info)
 	info->handle_dup = NONE;
 	if (open_pipe_fds(&info, job->b ? job->type : 0) != SUCCESS)
 		st = BAD_PIPE;
-	else if (!(job->type & (CMD | REDIR_DG | REDIR_GR | REDIR_LE))
-	&& (st = execute_cmd(job->a, info)) == SUCCESS)
-	{
-		if (job->b && job->type & PIPE)
-			st = execute_job(job->b, info);
-		else
-			st = execute_cmd(job, info);
-	}
+	if (!(job->type & (CMD | REDIR_DG | REDIR_GR | REDIR_LE)))
+		st = execute_cmd(job->a, info);
+	if (st == SUCCESS && job->b && job->type & PIPE)
+		st = execute_job(job->b, info);
+	else if (st == SUCCESS)
+		st = execute_cmd(job, info);
 	return (st);
 }
 

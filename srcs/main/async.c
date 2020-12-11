@@ -6,13 +6,15 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 11:18:02 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 01:16:46 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/11 00:15:02 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <job_control.h>
+#include <job_control/session.h>
 #include <term/term.h>
-#include <signals.h>
+#include <signals_print.h>
+#include <cross_plateform_signals.h>
+#include <signal_handler.h>
 
 static void		suspend_process(int signal)
 {
@@ -23,7 +25,7 @@ static void		suspend_process(int signal)
 			g_session.groups->active_processes, STANDART);
 }
 
-static void		do_nothing(int signal)
+void			do_nothing(int signal)
 {
 	(void)signal;
 }
@@ -48,26 +50,13 @@ void			ignore_all_signals(void)
 	signal(SIGHUP, SIG_IGN);
 }
 
-static void		interrupt_line(int signal)
-{
-	(void)signal;
-	write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) - 1);
-	if (g_term.msg)
-		write(STDERR_FILENO, g_term.msg->data, g_term.msg->len);
-	if (g_term.line && g_term.line->len)
-	{
-		g_term.line->len = 0;
-		if (g_term.line->data)
-			*g_term.line->data = '\0';
-	}
-}
-
-void			init_signal_handler(bool interactive)
+void			init_signal_handler(void)
 {
 	signal(SIGTSTP, &suspend_process);
 	signal(SIGCHLD, &zombies_catcher);
 	signal(SIGTERM, &terminate_minishell);
 	signal(SIGHUP, &terminate_minishell);
 	signal(SIGQUIT, &do_nothing);
-	signal(SIGINT, (interactive) ? &interrupt_line : &do_nothing);
+	// TO DO: Ctrl^C bug with sleep
+	signal(SIGINT, &do_nothing);
 }

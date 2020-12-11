@@ -6,12 +6,14 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 18:03:18 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:33:26 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:26:43 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
-#include <job_control.h>
+#include <job_control/jc_builtins.h>
+#include <job_control/background.h>
+#include <job_control/utils.h>
 
 int				parse_flags(int ac, char*const *av, const char *pattern,
 		int *nb_flags)

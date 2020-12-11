@@ -7,7 +7,7 @@
 **
 ** '\'' ( char - \' )* '\''
 */
-t_lex_err		lex_param_squoted(t_lex_st *st, t_tok_t type)
+t_lex_err		lex_param_squoted(t_tok **tokens, t_lex_st *st, t_tok_t type)
 {
 	t_tok		*param;
 	const char	*start;
@@ -27,7 +27,7 @@ t_lex_err		lex_param_squoted(t_lex_st *st, t_tok_t type)
 		return (LEX_EWAIT);
 	if (!(param = token_strndup(start, st->input - start, TOK_SQUOTED | type)))
 		return (LEX_EALLOC);
-	token_add_back(&st->tokens, param);
+	token_add_back(tokens, param);
 	st->input++;
 	st->wait &= ~TOK_SQUOTED;
 	return (LEX_EOK);
@@ -39,7 +39,7 @@ t_lex_err		lex_param_squoted(t_lex_st *st, t_tok_t type)
 **
 ** '"' ( ( char - ["\"\\"] ) | ( '\\' ["\"\\"] ) )* '"'
 */
-t_lex_err		lex_param_dquoted(t_lex_st *st, t_tok_t type)
+t_lex_err		lex_param_dquoted(t_tok **tokens, t_lex_st *st, t_tok_t type)
 {
 	t_tok		*param;
 	const char	*start;
@@ -61,10 +61,10 @@ t_lex_err		lex_param_dquoted(t_lex_st *st, t_tok_t type)
 			if (st->input != start && !(param = token_strndup(start,
 				st->input - start, TOK_DQUOTED | type)))
 				return (LEX_EALLOC);
-			token_add_back(&st->tokens, param);
+			token_add_back(tokens, param);
 			if (!(param = token_strndup(++st->input, 1, TOK_SQUOTED | type)))
 				return (LEX_EALLOC);
-			token_add_back(&st->tokens, param);
+			token_add_back(tokens, param);
 			start = ++st->input;
 		}
 	}
@@ -72,7 +72,7 @@ t_lex_err		lex_param_dquoted(t_lex_st *st, t_tok_t type)
 		return (LEX_EWAIT);
 	if (!(param = token_strndup(start, st->input - start, TOK_DQUOTED | type)))
 		return (LEX_EALLOC);
-	token_add_back(&st->tokens, param);
+	token_add_back(tokens, param);
 	st->input++;
 	st->wait &= ~TOK_DQUOTED;
 	return (LEX_EOK);
@@ -84,13 +84,13 @@ t_lex_err		lex_param_dquoted(t_lex_st *st, t_tok_t type)
 **
 ** PARAM_SQUOTED | PARAM_DQUOTED
 */
-t_lex_err			lex_param_quoted(t_lex_st *st, t_tok_t type)
+t_lex_err			lex_param_quoted(t_tok **tokens, t_lex_st *st, t_tok_t type)
 {
 	t_lex_err	status;
 
 //	ft_dprintf(2, "[LEX][PARAM][QUOTED] Input: '%s'\n", st->input);
 	if (st->wait & TOK_SQUOTED
-	|| (status = lex_param_dquoted(st, type)) == LEX_ENOMATCH) // allocates a param and set flag DQUOTE + trim dquotes
-		status = lex_param_squoted(st, type); // allocates a param and set the flag SQUOTE + trim squotes
+	|| (status = lex_param_dquoted(tokens, st, type)) == LEX_ENOMATCH) // allocates a param and set flag DQUOTE + trim dquotes
+		status = lex_param_squoted(tokens, st, type); // allocates a param and set the flag SQUOTE + trim squotes
 	return (status);
 }

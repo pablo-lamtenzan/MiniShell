@@ -6,11 +6,11 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 04:43:25 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:36:02 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:47:02 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <job_control.h>
+#include <job_control/session.h>
 
 static void		next_is_killed(bool *stop)
 {
@@ -27,6 +27,12 @@ static void		next_is_killed(bool *stop)
 		*stop = true;
 	}
 }
+
+/*
+** Keep alive groups nodes containing killed processes during one execution
+** after their host process execution has end. This is used to print the
+** termination status of the exited background jobs.
+*/
 
 void			keep_alive_killed_processes(void)
 {

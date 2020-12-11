@@ -6,12 +6,16 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 12:03:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/07 10:34:17 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 23:30:16 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
-#include <signals.h>
+#include <signals_print.h>
+#include <job_control/jc_builtins.h>
+#include <job_control/jobspec_parser.h>
+#include <job_control/conditions.h>
+#include <job_control/utils.h>
 
 static void		print_all_leaders(int fd, int flags)
 {

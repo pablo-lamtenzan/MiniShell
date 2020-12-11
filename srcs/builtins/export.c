@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:52 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 20:33:29 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/10 19:19:33 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ int			b_export(t_exec *args)
 {
 	int		ret;
 	int		i;
-	size_t	key_len;
 	char	assign_st;
 
 	ret = SUCCESS;
@@ -46,7 +45,7 @@ int			b_export(t_exec *args)
 	}
 	while (++i < args->ac)
 	{
-		if ((key_len = env_key_len(args->av[i], true)))
+		if (env_key_len(args->av[i], true))
 		{
 			if ((assign_st = env_assign(&args->session->env, \
 					args->av[i], true, true)) == 0)

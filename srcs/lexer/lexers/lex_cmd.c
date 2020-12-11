@@ -1,5 +1,22 @@
 #include <lexer/lexer.h>
 
+static t_lex_err	cmd_new(t_tok **tokens,
+	t_tok *inline_operators, t_tok *data)
+{
+	t_lex_err		status;
+	t_tok			*cmd;
+
+	status = LEX_EOK;
+	if ((cmd = token_new(data, TOK_CMD)))
+	{
+		cmd->next = inline_operators;
+		token_add_back(tokens, cmd);
+	}
+	else
+		status = LEX_EALLOC;
+	return (status);
+}
+
 /*
 ** CMD_SIMPLE
 ** PARAMs or INLINEs separated by IFS
@@ -7,42 +24,25 @@
 ** ( IFS ( PARAM | INLINE ) ) *
 ** TODO: Handle st->wait
 */
-static t_lex_err	lex_cmd_simple(t_lex_st *st)
+static t_lex_err	lex_cmd_simple(t_tok **tokens, t_lex_st *st)
 {
 	t_lex_err		status;
-	t_lex_st		cmd_st;
-	t_tok			*cmd;
+	t_tok			*inline_operators;
+	t_tok			*cmd_data;
 
-//	ft_dprintf(2, "[LEX][  CMD][SIMPLE] Input: '%s'\n", st->input);
-	cmd_st = *st;
-	if (!(cmd = token_new(NULL, TOK_CMD)))
-		return (LEX_EALLOC);
-	cmd->next = NULL;
-	cmd->data = NULL;
+	inline_operators = NULL;
+	cmd_data = NULL;
 	status = LEX_EOK;
-	while (status == LEX_EOK && (status = lex_ifs(&cmd_st)) == LEX_EOK)
+	while (status == LEX_EOK && (status = lex_ifs(st)) == LEX_EOK) // skip spaces
+		if ((status = lex_inline(&inline_operators, st)) == LEX_ENOMATCH) // handles redir tokens and increments input
+			status = lex_param(&cmd_data, st, TOK_PARAM); //handles tokens params
+	if ((inline_operators || cmd_data)
+	&& (status = cmd_new(tokens, inline_operators, cmd_data)) != LEX_EOK)
 	{
-		cmd_st.tokens = cmd;
-		if ((status = lex_inline(&cmd_st)) == LEX_ENOMATCH) // handles redir tokens and increments input
-		{
-			cmd_st.tokens = cmd->data;
-//			ft_dprintf(2, "[LEX][  CMD][SIMPLE][INLINE] Status: '%d'\n", status);
-			status = lex_param(&cmd_st, TOK_PARAM); //handles tokens params (into the cmd token) cmd and incremenst input
-//			ft_dprintf(2, "[LEX][  CMD][SIMPLE][ PARAM] Status: '%d'\n", status);
-			cmd->data = cmd_st.tokens;
-		}
+		token_clr(&inline_operators);
+		token_clr(&cmd_data);
 	}
-	cmd_st.tokens = cmd; // TODO: Cleanup duplicate pointers
-	st->input = cmd_st.input;
-	st->wait = cmd_st.wait; // TODO: | (status == LEX_EWAIT) ? TOK_CMD : TOK_NONE
-	if ((!cmd->data && !cmd->next))
-	{
-		free(cmd);
-		return (status);
-	}
-	// TODO: Cleanup error handling
-	token_add_back(&st->tokens, cmd_st.tokens);
-	return (status == LEX_ENOMATCH ? LEX_EOK : status);
+	return (status);
 }
 
 /*
@@ -51,19 +51,16 @@ static t_lex_err	lex_cmd_simple(t_lex_st *st)
 **
 ** "|" | "||" | "&&"
 */
-static t_lex_err	lex_operator(t_lex_st *st)
+static t_lex_err	lex_operator(t_tok **tokens, t_lex_st *st)
 {
 	t_tok_t		type;
 	t_tok		*operator;
 
-//	ft_dprintf(2, "[LEX][  CMD][ OP] Input: '%s'\n", st->input);
 	if (*st->input == '|')
 	{
-//		ft_dprintf(2, "[LEX][  CMD][ OP][PIPE] MATCH!\n");
 		st->input++;
 		if (*st->input == '|')
 		{
-//			ft_dprintf(2, "[LEX][  CMD][ OP][  OR] MATCH!\n");
 			type = OP_OR;
 			st->input++;
 		}
@@ -72,18 +69,14 @@ static t_lex_err	lex_operator(t_lex_st *st)
 	}
 	else if (!ft_strncmp(st->input, "&&", 2))
 	{
-//		ft_dprintf(2, "[LEX][  CMD][ OP][ AND] MATCH!\n");
 		type = OP_AND;
 		st->input += 2;
 	}
 	else
-	{
-//		ft_dprintf(2, "[LEX][  CMD][ OP] NOMATCH!\n");
 		return (LEX_ENOMATCH);
-	}
 	if (!(operator = token_new(NULL, type)))
 		return (LEX_EALLOC);
-	token_add_back(&st->tokens, operator);
+	token_add_back(tokens, operator);
 	return (LEX_EOK);
 }
 
@@ -93,7 +86,7 @@ static t_lex_err	lex_operator(t_lex_st *st)
 **
 ** SUBSHELL | CMD_SIMPLE
 */
-t_lex_err			lex_cmd(t_lex_st *st)
+t_lex_err			lex_cmd(t_tok **tokens, t_lex_st *st)
 {
 	t_lex_err	status;
 
@@ -103,8 +96,8 @@ t_lex_err			lex_cmd(t_lex_st *st)
 		return (lex_cmd_simple(st)); */
 
 //	ft_dprintf(2, "[LEX][  CMD] Input: '%s'!\n", st->input);
-	if ((status = lex_subshell(st)) == LEX_ENOMATCH)
-		status = lex_cmd_simple(st);
+	if ((status = lex_subshell(tokens, st)) == LEX_ENOMATCH)
+		status = lex_cmd_simple(tokens, st);
 	return (status);
 }
 
@@ -114,13 +107,13 @@ t_lex_err			lex_cmd(t_lex_st *st)
 **
 ** OPERATOR IFS CMD
 */
-t_lex_err			lex_operation(t_lex_st *st)
+t_lex_err			lex_operation(t_tok **tokens, t_lex_st *st)
 {
 	t_lex_err	status;
 
 //	ft_dprintf(2, "[LEX][   OP] Input: '%s'\n", st->input);
-	if ((status = lex_operator(st)) == LEX_EOK
+	if ((status = lex_operator(tokens, st)) == LEX_EOK
 	&& (status = lex_ifs(st)) == LEX_EOK)
-		status = lex_cmd(st);
+		status = lex_cmd(tokens, st);
 	return (status);
 }

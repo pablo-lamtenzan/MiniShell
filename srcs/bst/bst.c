@@ -30,9 +30,10 @@ static t_bst		*build_job(t_tok *tokens, t_tok *delim)
 	{
 		if (tokens->type & CMD)
 			node->a = tokens->data;
-		if (tk1->type & (REDIR_GR | REDIR_LE | REDIR_DG))
+		else if (tk1->type & (REDIR_GR | REDIR_LE | REDIR_DG))
 			node->b = tk1->data;
 		node->type |= CMD;
+		free(tokens);
 	}
 	return (node);
 }
