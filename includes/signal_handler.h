@@ -19,7 +19,8 @@
 # include <stdbool.h>
 
 void					zombies_catcher(int signal);
-void					init_signal_handler(bool interactive);
-void					ignore_all_signals();
+void					init_signal_handler(void);
+void					ignore_all_signals(void);
+void					do_nothing(int signal);
 
 #endif
