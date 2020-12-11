@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:34:43 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 23:20:24 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/11 21:07:13 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void				delete_groups(t_session *sess)
 	while ((curr = sess->groups) != sess->nil)
 	{
 		sess->groups = curr->next;
-		delete_group_input(&sess->groups);
+		delete_group_input(&curr);
 		delete_processes(&curr);
 		free(curr->nil);
 		free(curr);

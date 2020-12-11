@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/11 17:27:09 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/11 21:10:59 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ static void			handle_exec_error(t_bst *root, t_exec_status exec_st)
 	session_end(&g_session);
 	exit(exit_val);
 }
+
+// TO DO: Leaks stopped processes in ft_split
 
 void	exec(t_tok **tokens)
 {

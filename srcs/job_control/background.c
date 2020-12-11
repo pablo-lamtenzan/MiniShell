@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 00:30:37 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 23:38:44 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/11 21:17:07 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 #include <job_control/conditions.h>
 #include <job_control/background.h>
+#include <cross_plateform_signals.h>
+#include <signal_handler.h>
 #include <errors.h>
 #include <libft.h>
 

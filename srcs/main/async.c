@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 11:18:02 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/11 20:57:25 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/11 21:15:26 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void			ignore_all_signals(void)
 
 void			init_signal_handler(void)
 {
-	signal(SIGTSTP, SIG_IGN/*&suspend_process*/);
+	signal(SIGTSTP, &suspend_process);
 	signal(SIGCHLD, &zombies_catcher);
 	signal(SIGTERM, &terminate_minishell);
 	signal(SIGHUP, &terminate_minishell);
