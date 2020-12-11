@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:56:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 23:48:03 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/11 20:52:20 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,9 @@ t_exec_status	wait_processes(t_exec_status st)
 	while (group->active_processes != group->nil)
 	{
 		g_session.flags &= ~OPEN_PRINT;
+		signal(SIGTSTP, &suspend_process);
 		background_update(&group->active_processes);
+		signal(SIGTSTP, SIG_DFL);
 		if (WIFSIGNALED(group->active_processes->wstatus) \
 				|| WIFSTOPPED(group->active_processes->wstatus))
 			print_signal(STDERR_FILENO, group->active_processes, STANDART);

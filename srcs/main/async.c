@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 11:18:02 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/11 00:15:02 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/11 20:57:25 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <cross_plateform_signals.h>
 #include <signal_handler.h>
 
-static void		suspend_process(int signal)
+void			suspend_process(int signal)
 {
 	(void)signal;
 	write(STDERR_FILENO, "\n", 1);
@@ -52,11 +52,10 @@ void			ignore_all_signals(void)
 
 void			init_signal_handler(void)
 {
-	signal(SIGTSTP, &suspend_process);
+	signal(SIGTSTP, SIG_IGN/*&suspend_process*/);
 	signal(SIGCHLD, &zombies_catcher);
 	signal(SIGTERM, &terminate_minishell);
 	signal(SIGHUP, &terminate_minishell);
 	signal(SIGQUIT, &do_nothing);
-	// TO DO: Ctrl^C bug with sleep
 	signal(SIGINT, &do_nothing);
 }

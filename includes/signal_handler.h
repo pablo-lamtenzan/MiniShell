@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/09 22:57:00 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 23:44:59 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/11 20:51:58 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,5 +22,6 @@ void					zombies_catcher(int signal);
 void					init_signal_handler(void);
 void					ignore_all_signals(void);
 void					do_nothing(int signal);
+void					suspend_process(int signal);
 
 #endif
