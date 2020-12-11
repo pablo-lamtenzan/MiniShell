@@ -89,6 +89,5 @@ void				delete_processes(t_group **group)
 		}
 		(*group)->active_processes = (*group)->active_processes->next;
 		free(fill);
-		fill = NULL;
 	}
 }
