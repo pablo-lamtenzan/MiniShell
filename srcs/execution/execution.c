@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/10 21:47:10 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/11 01:24:38 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,8 @@ t_exec_status			execute_bst(t_bst *root)
 	t_exec_status		st;
 	t_group				*group;
 
+	if (!root)
+		return (BAD_ALLOC);
 	keep_alive_killed_processes();
 	if (!(group = group_new()))
 		return (BAD_ALLOC);

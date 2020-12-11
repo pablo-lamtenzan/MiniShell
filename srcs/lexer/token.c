@@ -62,7 +62,6 @@ void		token_clr(t_tok **tokens)
 
 	while ((curr = *tokens))
 	{
-		ft_dprintf(2, "[TOK][CLR] %hu\n", curr->type);
 		if (curr->type & TOK_CMD || (curr->type == TOK_PARAM))
 			token_clr((t_tok**)&curr->data);
 		else

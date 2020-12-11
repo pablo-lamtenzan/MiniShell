@@ -6,28 +6,38 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/05 00:01:43 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/10 20:08:37 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/11 17:31:34 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <separators.h>
 #include <execution.h>
 
+static t_tok	*increment(t_tok **target)
+{
+	t_tok		*next;
+
+	next = (*target)->next;
+	free(*target);
+	*target = next;
+	return (*target);
+}
+
 static void		skip_parentheses(t_tok **tks, int *parentheses_nb, int *saved)
 {
 	if (*saved & CLOSE_PAR)
 	{
 		while (tks[3]->next && tks[3]->next->type & CLOSE_PAR \
-				&& (tks[3] = tks[3]->next))
+				&& increment(&tks[3]))
 			(*parentheses_nb)--;
 		if (tks[3]->next && tks[3]->next->type & (AND | OR) \
-				&& (tks[3] = tks[3]->next))
+				&& increment(&tks[3]))
 			*saved |= tks[3]->type;
 	}
 	else if (*saved & (OR | AND))
 	{
 		while (tks[3]->next && tks[3]->next->type & OPEN_PAR \
-				&& (tks[3] = tks[3]->next))
+				&& increment(&tks[3]))
 			(*parentheses_nb)++;
 		*saved |= tks[3]->type;
 	}
@@ -41,12 +51,13 @@ t_tok			*handle_separators(t_tok **tokens, int *status,
 
 	if (!*tokens)
 		return (NULL);
-	while ((*tokens)->type & OPEN_PAR && (*tokens = (*tokens)->next))
+	while ((*tokens)->type & OPEN_PAR && increment(tokens))
 		(*parentheses_nb)++;
 	if (saved && (*status = saved))
 		saved = 0;
-	saved |= (tks[0] = find_next_operator(*tokens, AND | OR | OPEN_PAR \
-			| CLOSE_PAR | SEMICOLON))->type;
+	tks[0] = find_next_operator(*tokens, AND | OR | OPEN_PAR \
+			| CLOSE_PAR | SEMICOLON);
+	saved |= tks[0]->type;
 	tks[3] = tks[0];
 	skip_parentheses(tks, parentheses_nb, &saved);
 	tks[1] = *tokens;
@@ -56,5 +67,7 @@ t_tok			*handle_separators(t_tok **tokens, int *status,
 		tks[1]->next = NULL;
 	tks[2] = *tokens;
 	*tokens = tks[3]->next;
+	if (tks[3]->type & (AND | OR | OPEN_PAR | CLOSE_PAR | SEMICOLON))
+		free(tks[3]);
 	return (tks[2]);
 }
