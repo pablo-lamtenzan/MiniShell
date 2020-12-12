@@ -25,12 +25,12 @@ t_term_err	select_highlight(void)
 		pos = g_term.caps.cursor.pos;
 		index = g_term.caps.index;
 		term_clear_line();
-		if ((status = term_write(g_term.line->data, g_term.caps.selec.start))
+		if ((status = cursor_write(g_term.line->data, g_term.caps.selec.start))
 			!= TERM_EOK)
 			return (status);
 		tputs(g_term.caps.modes.standout, 1, &putc_err);
 		g_term.caps.mode |= CAPS_MSO;
-		if ((status = term_write(g_term.line->data + g_term.caps.selec.start,
+		if ((status = cursor_write(g_term.line->data + g_term.caps.selec.start,
 			g_term.caps.selec.end - g_term.caps.selec.start)) != TERM_EOK)
 		{
 			tputs(g_term.caps.modes.standout_end, 1, &putc_err);
@@ -39,7 +39,7 @@ t_term_err	select_highlight(void)
 		}
 		tputs(g_term.caps.modes.standout_end, 1, &putc_err);
 		g_term.caps.mode &= ~CAPS_MSO;
-		if ((status = term_write(g_term.line->data + g_term.caps.selec.end,
+		if ((status = cursor_write(g_term.line->data + g_term.caps.selec.end,
 			g_term.line->len - g_term.caps.selec.end)) != TERM_EOK)
 			return (status);
 		caps_goto(&g_term.caps, pos);
