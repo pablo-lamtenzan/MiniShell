@@ -60,7 +60,7 @@ static bool			var_assign(t_tok **params, t_env **env)
 		{
 			(*params) = (*params)->next;
 			//ft_dprintf(2, "[EXP][VAR][ASSIGN] assigned '%s'!\n", assignment);
-			free(param->data);
+			token_clr((t_tok**)&param->data);
 			free(param);
 		}
 		free(assignment);
