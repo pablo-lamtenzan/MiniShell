@@ -6,11 +6,17 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 16:23:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/12 00:36:49 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/12 22:35:28 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <bst.h>
+#include <execution/bst.h>
+
+static void			put_filename(t_bst *node, t_tok *tk1)
+{
+	node->b = tk1->data;
+	free(tk1);
+}
 
 static t_bst		*build_job(t_tok *tokens, t_tok *delim)
 {
@@ -33,10 +39,7 @@ static t_bst		*build_job(t_tok *tokens, t_tok *delim)
 		if (tokens->type & CMD)
 			node->a = tokens->data;
 		if (tk1->type & (REDIRECT))
-		{
-			node->b = tk1->data;
-			free(tk1);
-		}
+			put_filename(node, tk1);
 		node->type |= CMD;
 		free(tokens);
 	}
@@ -59,10 +62,7 @@ static t_bst		*build_bst(t_tok *tokens)
 		return (NULL);
 	node->a = build_job(tokens, tk1);
 	if ((tk2 = find_next_operator(tk1->next, PIPE))->type & PIPE)
-	{
 		node->b = build_bst(tk1->next);
-		//free(tk2);
-	}
 	else if (find_next_operator(tk1, REDIRECT)->type & (REDIRECT))
 		node->b = build_job(tk1->next, NULL);
 	else

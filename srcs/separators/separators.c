@@ -6,12 +6,12 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/05 00:01:43 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/11 22:15:54 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/12 21:59:55 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <separators.h>
-#include <execution.h>
+#include <execution/execution.h>
 
 static t_tok	*increment(t_tok **target)
 {

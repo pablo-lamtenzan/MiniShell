@@ -51,7 +51,7 @@ static int		path_error(const char *name)
 	return (res);
 }
 
-char	*path_get(const char *name, const char *path)
+char	*path_get(const char *name, const char *path, bool *err_alloc)
 {
 	char		**paths;
 	char		*absolute;
@@ -76,6 +76,8 @@ char	*path_get(const char *name, const char *path)
 				i++;
 				free(absolute);
 			}
+			if (!absolute && (*err_alloc = true))
+				return (NULL);
 			if (!paths[i])
 			{
 				absolute = NULL;

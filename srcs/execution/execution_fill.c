@@ -6,11 +6,11 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/10 23:32:28 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/12 23:11:33 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <execution.h>
+#include <execution/execution.h>
 #include <errors.h>
 #include <errno.h>
 #include <builtins.h>
@@ -63,7 +63,6 @@ void				destroy_execve_args(t_exec *info)
 		strs_unload((char**)info->av);
 		info->av = NULL;
 	}
-	
 }
 
 bool				handle_subshell(t_executable exec, const char *name)
@@ -79,19 +78,20 @@ bool				handle_subshell(t_executable exec, const char *name)
 	return (true);
 }
 
-// TODO: Handle path concatenation alloc error
 t_exec_status		get_exec(t_exec *info)
 {
 	t_exec_status	status;
+	bool			err_alloc;
 
 	status = SUCCESS;
+	err_alloc = false;
 	if (!(info->exec = builtin_get(info->av[0])))
 	{
-		if (!(info->file_path =
-			path_get(info->av[0], env_get(info->session->env, "PATH", 4))))
+		if (!(info->file_path = path_get(info->av[0], \
+			env_get(info->session->env, "PATH", 4), &err_alloc)))
 		{
 			g_session.st = CMD_NOT_FOUND;
-			status = BAD_PATH;
+			status = !err_alloc ? BAD_PATH : BAD_ALLOC;
 		}
 		else if (!(info->ep = (char*const*)env_export(info->session->env)))
 			status = RDR_BAD_ALLOC;

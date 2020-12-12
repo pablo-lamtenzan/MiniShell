@@ -6,11 +6,11 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 10:27:06 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/11 18:24:58 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/12 21:59:55 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <execution.h>
+#include <execution/execution.h>
 
 size_t		get_separators_nb(char *input, const char **separators)
 {

@@ -6,12 +6,12 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/05 00:01:31 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 22:01:04 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/12 21:59:55 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <separators.h>
-#include <execution.h>
+#include <execution/execution.h>
 
 static void	handle_parentheses(int parser_st, int *flags, int *status)
 {

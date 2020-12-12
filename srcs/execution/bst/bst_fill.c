@@ -6,11 +6,11 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 16:44:01 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/08 20:32:04 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/12 22:03:56 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <bst.h>
+#include <execution/bst.h>
 
 t_tok		*find_next_operator(t_tok *start, t_tok_t type)
 {

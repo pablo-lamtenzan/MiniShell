@@ -6,13 +6,13 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/12 01:33:23 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/12 22:36:59 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <signal.h>
 
-#include <execution.h>
+#include <execution/execution.h>
 #include <builtins.h>
 #include <expansion.h>
 #include <job_control/jc_builtins.h>
@@ -50,7 +50,8 @@ static t_exec_status	executer(t_bst *cmd, t_exec *info)
 	info->session = g_session.flags & PIPED_CMD ? session_dup() : &g_session;
 	if (!info->session)
 		return (BAD_ALLOC);
-	if(!(info->av = tokens_expand((t_tok**)&cmd->a, &info->session->env, &info->ac)))
+	if (!(info->av = tokens_expand((t_tok**)&cmd->a, &info->session->env, \
+			&info->ac)))
 		exec_st = BAD_ALLOC;
 	else if (info->av[0])
 		exec_st = execute_process(info);

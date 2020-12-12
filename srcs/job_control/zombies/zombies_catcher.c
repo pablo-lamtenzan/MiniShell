@@ -6,11 +6,11 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 01:45:31 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/10 00:13:13 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/12 21:59:55 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <execution.h>
+#include <execution/execution.h>
 #include <job_control/session.h>
 
 void				handle_wstatus(t_group **group)
