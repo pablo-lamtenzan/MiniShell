@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 08:52:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/11 22:07:35 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/12 01:10:39 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ t_exec_status			print_redirection_error(t_redir_status rstatus,
 		return (BAD_ALLOC);
 	ft_dprintf(STDERR_FILENO, error_msg[-rstatus - 1], g_session.name, \
 		*filename);
+	strs_unload(filename);
 	g_session.st = STD_ERROR;
 	return (SUCCESS);
 }

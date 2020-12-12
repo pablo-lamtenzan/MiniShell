@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/11 23:09:21 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/12 01:33:23 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,11 @@ static t_exec_status	executer(t_bst *cmd, t_exec *info)
 		exec_st = BAD_ALLOC;
 	else if (info->av[0])
 		exec_st = execute_process(info);
+	else if (!info->av[0])
+	{
+		free((char**)info->av);
+		info->av = NULL;
+	}
 	return (exec_st);
 }
 
