@@ -70,23 +70,21 @@ t_term_err	term_write(const char *input, size_t length)
 	t_term_err	status;
 
 	status = TERM_EOK;
-	if (length && (status = cursor_insert(input, length)) == TERM_EOK)
+	if (length && (status = cursor_insert(input, length)) == TERM_EOK
+	&& (remaining = g_term.line->len - g_term.caps.index)
+	&& (g_term.caps.cursor.pos.x == 0
+	|| g_term.caps.cursor.pos.x + remaining >= (size_t)g_term.caps.width))
 	{
-		if ((remaining = g_term.line->len - g_term.caps.index)
-		&& (g_term.caps.cursor.pos.x == 0
-		|| g_term.caps.cursor.pos.x + remaining >= (size_t)g_term.caps.width))
-		{
-			pos = g_term.caps.cursor.pos;
-			index = g_term.line->len - remaining;
-			tputs(g_term.caps.modes.insert_end, 1, &putc_err);
-			g_term.caps.mode &= ~CAPS_MINS;
-			term_clear_eos();
-			status = cursor_write(g_term.line->data + index, remaining);
-			caps_goto(&g_term.caps, pos);
-			tputs(g_term.caps.modes.insert, 1, &putc_err);
-			g_term.caps.mode |= CAPS_MINS;
-			g_term.caps.index -= remaining;
-		}
+		pos = g_term.caps.cursor.pos;
+		index = g_term.line->len - remaining;
+		tputs(g_term.caps.modes.insert_end, 1, &putc_err);
+		g_term.caps.mode &= ~CAPS_MINS;
+		term_clear_eos();
+		status = cursor_write(g_term.line->data + index, remaining);
+		caps_goto(&g_term.caps, pos);
+		tputs(g_term.caps.modes.insert, 1, &putc_err);
+		g_term.caps.mode |= CAPS_MINS;
+		g_term.caps.index -= remaining;
 	}
 	return (status);
 }
