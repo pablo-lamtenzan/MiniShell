@@ -78,11 +78,9 @@ void				delete_group_input(t_group **group)
 void				delete_processes(t_group **group)
 {
 	t_process		*fill;
-	int				i;
 
 	while ((*group)->active_processes != (*group)->nil)
 	{
-		i = -1;
 		fill = (*group)->active_processes;
 		if ((*group)->active_processes->data)
 		{
@@ -91,6 +89,5 @@ void				delete_processes(t_group **group)
 		}
 		(*group)->active_processes = (*group)->active_processes->next;
 		free(fill);
-		fill = NULL;
 	}
 }

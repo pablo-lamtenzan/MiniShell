@@ -32,8 +32,8 @@ static void			handle_exec_error(t_bst *root, t_exec_status exec_st)
 		"dup2",
 		"fork" // probably never used
 	};
-	const int				exit_vals[] = {
-		SIGNAL_BASE + SIGABRT, 
+	static const int		exit_vals[] = {
+		SIGNAL_BASE + SIGABRT,
 		SIGNAL_BASE + SIGSYS,
 		SIGNAL_BASE + SIGSYS,
 		SIGNAL_BASE + SIGSYS,
@@ -155,22 +155,20 @@ static t_term_err	routine(void)
 	ft_bzero(&lex_data, sizeof(lex_data));
 	status = TERM_EOK;
 	lex_status = LEX_EOK;
-	while ((!g_term.is_interactive || (g_term.msg = msg_get(lex_status)))
+	while (lex_status != LEX_EALLOC
+	&& (!g_term.is_interactive || (g_term.msg = msg_get(lex_status)))
 	&& (status = term_prompt(&lex_data.input)) == TERM_ENL)
 	{
 		if ((lex_status = lex_tokens(&tokens, &lex_data)) == LEX_EOK)
-		{
 			exec(&tokens);
-			token_clr(&tokens);
-		}
-		else if (lex_status != LEX_EWAIT)
-		{
+		else if (lex_status == LEX_ESYNTAX)
 			syntax_error(&lex_data);
+		if (lex_status != LEX_EWAIT && tokens)
 			token_clr(&tokens);
-		}
 		line_clear(&g_term.msg);
 	}
-	return ((g_term.is_interactive && !g_term.msg) ? TERM_EALLOC : status);
+	return ((lex_status == LEX_EALLOC || (g_term.is_interactive && !g_term.msg))
+		? TERM_EALLOC : status);
 }
 
 int						main(int ac, const char **av, const char **ep)

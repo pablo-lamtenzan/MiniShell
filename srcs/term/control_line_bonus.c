@@ -1,27 +1,33 @@
 #include <term/term.h>
 
+// TODO: ROW and COLUMNS environment variables
+
 /*
 **	Write the line ending character and add the current line to history.
 */
 t_term_err	term_line_new(void)
 {
-	t_term_err	status;
-
-	status = TERM_ENL;
 	// TODO: Disable insertion and overwrite instead of clearing
-	term_clear_line();
-	if (write(STDERR_FILENO, g_term.line->data, g_term.line->len) == -1
-	|| write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) - 1) == -1)
-		status = TERM_EWRITE;
-	else if (g_term.line->len != 0)
+	if (g_term.line->len) // if we have content
 	{
-		if ((!g_term.caps.hist.next || g_term.line == g_term.caps.hist.next)
-		&& !(g_term.caps.hist.next = line_new(10)))
-			status = TERM_EALLOC;
+		term_clear_line(); // clear the line visually
+		if (write(STDERR_FILENO, g_term.line->data, g_term.line->len) == -1)
+			return (TERM_EWRITE);
+		else if ((!g_term.caps.hist.next || g_term.line == g_term.caps.hist.next) // if the next line does not exist or is the current line
+		&& !(g_term.caps.hist.next = line_new(10))) // allocate a new line
+			return (TERM_EALLOC);
 		else
-			hist_add(&g_term.caps.hist, g_term.line);
+			hist_add(&g_term.caps.hist, g_term.line); // connect the current line
 	}
-	return (status);
+	else if (g_term.caps.hist.curr != g_term.caps.hist.next)
+	{
+		line_clear(&g_term.line);
+		g_term.caps.hist.curr = g_term.caps.hist.next;
+		g_term.line = g_term.caps.hist.curr;
+	}
+	if (write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) - 1) == -1)
+		return(TERM_EWRITE);
+	return (TERM_ENL);
 }
 
 // TODO: Alt-backspace
