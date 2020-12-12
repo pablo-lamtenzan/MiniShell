@@ -55,7 +55,7 @@ void	term_destroy(void)
 		line_clear(&g_term.line);
 	line_clear(&g_term.msg);
 	if (g_term.is_interactive)
-		write(STDOUT_FILENO, TERM_EXIT, sizeof(TERM_EXIT) - 1);
+		write(STDERR_FILENO, TERM_EXIT, sizeof(TERM_EXIT) - 1);
 }
 
 /*
