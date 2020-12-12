@@ -27,12 +27,14 @@ $(addprefix $(INCDIR)/,\
 		line.h\
 		term.h\
 	)\
-	bst.h\
+	$(addprefix execution/,\
+		bst.h\
+		execution.h\
+	)\
 	builtins.h\
 	cross_plateform_signals.h\
 	env.h\
 	errors.h\
-	execution.h\
 	expansion.h\
 	path.h\
 	separators.h\
@@ -60,11 +62,15 @@ $(addprefix term/,\
 	line.c line_edit.c line_put.c\
 	read.c\
 )\
-$(addprefix bst/,\
-	bst_fill.c\
-	bst.c\
-)\
 $(addprefix builtins/,\
+	$(addprefix jc_builtins/,\
+		fg.c\
+		bg.c\
+		jobs.c jobs_helper.c\
+		kill.c kill_helper.c\
+		wait.c wait_helper.c\
+		disown.c disown_helper.c\
+	)\
 	cd.c\
 	echo.c\
 	env.c\
@@ -72,13 +78,7 @@ $(addprefix builtins/,\
 	export.c\
 	pwd.c\
 	unset.c\
-	fg.c\
 	history.c\
-	bg.c\
-	jobs.c jobs_helper.c\
-	kill.c kill_helper.c\
-	wait.c wait_helper.c\
-	disown.c disown_helper.c\
 	builtins.c builtins_utils.c\
 )\
 $(addprefix env/env,\
@@ -87,6 +87,10 @@ $(addprefix env/env,\
 	.c\
 )\
 $(addprefix execution/,\
+	$(addprefix bst/,\
+	bst_fill.c\
+	bst.c\
+	)\
 	execution_fd.c\
 	execution_fill.c\
 	redirection.c\

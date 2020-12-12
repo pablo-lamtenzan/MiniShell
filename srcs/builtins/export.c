@@ -6,13 +6,13 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 08:19:52 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/10 19:19:33 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/12 22:25:51 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <execution.h>
+#include <execution/execution.h>
 
-static void	print_env(int fd, t_env *env)
+static bool	print_env(int fd, t_env *env)
 {
 	while (env)
 	{
@@ -27,9 +27,16 @@ static void	print_env(int fd, t_env *env)
 		}
 		env = env->next;
 	}
+	return (SUCCESS);
 }
 
-// TODO: Maybe print errno on allocation error (STD_ERROR)
+static void	print_error(t_exec *args, int *ret, int i)
+{
+	ft_dprintf(STDERR_FILENO, "%s: export: `%s': not a valid identifier\n",
+			args->session->name, args->av[i]);
+	*ret = STD_ERROR;
+}
+
 int			b_export(t_exec *args)
 {
 	int		ret;
@@ -39,10 +46,7 @@ int			b_export(t_exec *args)
 	ret = SUCCESS;
 	i = 0;
 	if (args->ac == 1)
-	{
-		print_env(args->fds[FDS_STDOUT], args->session->env);
-		return (ret);
-	}
+		return (print_env(args->fds[FDS_STDOUT], args->session->env));
 	while (++i < args->ac)
 	{
 		if (env_key_len(args->av[i], true))
@@ -54,12 +58,7 @@ int			b_export(t_exec *args)
 				return (STD_ERROR);
 		}
 		else
-		{
-			ft_dprintf(STDERR_FILENO,
-				"%s: export: `%s': not a valid identifier\n",
-					args->session->name, args->av[i]);
-			ret = STD_ERROR;
-		}
+			print_error(args, &ret, i);
 	}
 	return (ret);
 }

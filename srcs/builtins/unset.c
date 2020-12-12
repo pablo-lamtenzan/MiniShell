@@ -6,11 +6,11 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/07 10:34:35 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/10 19:22:41 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/12 21:59:55 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <execution.h>
+#include <execution/execution.h>
 
 static void	free_node(t_exec *args, t_env **first, t_env **prev,
 		t_env *next)

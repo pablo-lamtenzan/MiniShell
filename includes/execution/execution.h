@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:51:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 23:43:49 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/12 22:03:42 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 /*
 ** Local
 */
-# include <bst.h>
+#include <execution/bst.h>
 # include <job_control/session.h>
 # include <libft.h>
 # include <expansion.h>

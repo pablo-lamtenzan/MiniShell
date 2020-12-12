@@ -6,11 +6,11 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 08:52:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/12 01:10:39 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/12 22:44:20 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <execution.h>
+#include <execution/execution.h>
 
 t_exec_status			print_redirection_error(t_redir_status rstatus,
 		char **filename)
@@ -68,8 +68,8 @@ static t_redir_status	try_catch_in(t_exec **info, t_tok_t type,
 static t_redir_status	try_catch_out(t_exec **info, t_tok_t type,
 		const char *filename)
 {
-	const int tmp = open(filename, O_WRONLY | O_CREAT | \
-			(type & REDIR_DG ? O_APPEND : O_TRUNC), UMASK);
+	const int opt = type & REDIR_DG ? O_APPEND : O_TRUNC;
+	const int tmp = open(filename, O_WRONLY | O_CREAT | opt, UMASK);
 
 	if (!((*info)->handle_dup & REDIR_OUT))
 		(*info)->fds[FDS_STDOUT] = tmp;

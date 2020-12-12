@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:08:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/10 21:28:42 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/12 22:15:28 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,8 @@ t_session		*session_dup(void)
 	&& ((dup->exit_count = g_session.exit_count) || !dup->exit_count)
 	&& (ft_strlcpy(dup->cwd, g_session.cwd, PATH_MAX)))
 		return (dup);
-	// TO DO: DOES NOT GO HERE
 	if (dup)
-		;//session_destroy(&dup);
+		session_destroy(&dup);
 	return (dup);
 }
 
