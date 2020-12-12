@@ -33,28 +33,32 @@ t_term_err	term_interrupt(void)
 	return (status);
 }
 
+
+// TO DO: sleep 2 ; bg ; (wait 2 secs) ctrl^D -> inf loop
+// TO DO: print prompt segfaults (heap overflow)
 /*
-**	End transmition when the line is empty and there are no jobs to be awaited.
+**	End transmission when the line is empty and there are no jobs to be awaited.
 */
 t_term_err	term_eof(void)
 {
+	t_term_err	status;
+
+	status = TERM_EOK;
 	if (g_term.line->len == 0)
 	{
 		if (g_session.exit_count == 1 || !is_background_stopped())
-			return (TERM_EEOF);
+			status = TERM_EEOF;
 		else
 		{
-			if (g_session.exit_count == 0)
-			{
-				// TO DO: sleep 2 ; bg ; (wait 2 secs) ctrl^D -> inf loop
-				// TO DO: print prompt segfaults (heap overflow)
-				write(STDERR_FILENO,
-					TERM_EXIT_JOBS, sizeof(TERM_EXIT_JOBS) - 1);
-				if (g_term.msg && g_term.msg->len)
-					write(STDERR_FILENO, g_term.msg->data, g_term.msg->len);
-			}
-			g_session.exit_count++;
+			if ((g_session.exit_count = (g_session.exit_count == 0))
+			&& (write(STDERR_FILENO,
+				TERM_EXIT_JOBS, sizeof(TERM_EXIT_JOBS) - 1) == -1
+			|| (g_term.msg && g_term.msg->len
+			&& write(STDERR_FILENO, g_term.msg->data, g_term.msg->len) == -1)))
+				status = TERM_EWRITE;
 		}
 	}
-	return (TERM_EOK);
+	else
+		term_line_del(1);
+	return (status);
 }
