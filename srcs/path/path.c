@@ -3,13 +3,14 @@
 #include <job_control/session.h>
 #include <unistd.h>
 
-char	*path_cat(const char *a, const char *b)
+char	*path_cat(const char *a, const char *b, bool *err_alloc)
 {
 	const size_t	len = ft_strlen(a) + ft_strlen(b) + 1;
 	char			*cat;
 	char			*c;
 
-	if (len > PATH_MAX || !(cat = ft_calloc(len + 1, sizeof(*cat))))
+	if (len > PATH_MAX || (!(cat = ft_calloc(len + 1, sizeof(*cat)))
+		&& (*err_alloc = true)))
 		return (NULL);
 	c = cat;
 	while (*a)
@@ -70,14 +71,18 @@ char	*path_get(const char *name, const char *path, bool *err_alloc)
 		{
 			i = 0;
 			while (paths[i]
-			&& (absolute = path_cat(paths[i], name))
+			&& (absolute = path_cat(paths[i], name, err_alloc))
 			&& !(stat(absolute, &s) == 0 && s.st_mode & S_IXUSR))
 			{
 				i++;
 				free(absolute);
 			}
-			if (!absolute && (*err_alloc = true))
+			(void)err_alloc;
+			if (!absolute && *err_alloc == true)
+			{
+				strs_unload(paths);
 				return (NULL);
+			}
 			if (!paths[i])
 			{
 				absolute = NULL;

@@ -8,7 +8,7 @@
 
 # include <libft.h>
 
-char	*path_cat(const char *a, const char *b);
+char	*path_cat(const char *a, const char *b, bool *err_alloc);
 char	*path_get(const char *name, const char *path, bool *err_alloc);
 
 #endif
