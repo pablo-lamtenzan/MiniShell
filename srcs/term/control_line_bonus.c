@@ -64,7 +64,7 @@ t_term_err	term_line_del(size_t n)
 */
 t_term_err	term_line_discard(void)
 {
-	select_clear();
+	g_term.caps.selec = (t_select){-1U, -1U};
 	if (g_term.line != g_term.caps.hist.next)
 	{
 		line_clear(&g_term.line);

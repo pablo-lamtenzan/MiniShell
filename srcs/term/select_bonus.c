@@ -101,8 +101,7 @@ t_term_err	select_clear(void)
 	status = TERM_EOK;
 	if (g_term.caps.selec.start != -1U || g_term.caps.selec.end != -1U)
 	{
-		g_term.caps.selec.start = -1U;
-		g_term.caps.selec.end = -1U;
+		g_term.caps.selec = (t_select){-1U, -1U};
 		if (g_term.line)
 		{
 			pos = g_term.caps.cursor.pos;

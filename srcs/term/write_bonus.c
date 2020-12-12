@@ -27,9 +27,6 @@ size_t		strglen(const char *str)
 	return (glen);
 }
 
-// TODO: Handle or reject ic
-// TODO: Handle or reject 1-width terminal
-
 t_term_err	cursor_insert(const char *input, size_t length)
 {
 	if (caps_insert(&g_term.caps, input, length) == -1)

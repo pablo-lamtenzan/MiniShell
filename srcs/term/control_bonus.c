@@ -27,8 +27,10 @@ t_term_err	term_interrupt(void)
 		return (TERM_EWRITE);
 	if (!g_term.msg)
 		g_term.caps.cursor.origin = g_term.caps.cursor.zero;
-	else if ((status = term_origin(g_term.msg->data, g_term.msg->len)) != TERM_EOK)
+	else if ((status =
+				term_origin(g_term.msg->data, g_term.msg->len)) != TERM_EOK)
 		return (status);
+	term_clear_eos();
 	term_line_discard();
 	return (status);
 }
