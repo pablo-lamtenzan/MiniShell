@@ -32,8 +32,8 @@ static void			handle_exec_error(t_bst *root, t_exec_status exec_st)
 		"dup2",
 		"fork" // probably never used
 	};
-	const int				exit_vals[] = {
-		SIGNAL_BASE + SIGABRT, 
+	static const int		exit_vals[] = {
+		SIGNAL_BASE + SIGABRT,
 		SIGNAL_BASE + SIGSYS,
 		SIGNAL_BASE + SIGSYS,
 		SIGNAL_BASE + SIGSYS,
