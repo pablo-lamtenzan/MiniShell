@@ -23,9 +23,10 @@ t_term_err	term_prev_line(void)
 {
 	t_term_err	status;
 
-	status = TERM_EOK;
 	if (g_term.caps.hist.curr->prev)
 		status = term_set_line(g_term.caps.hist.curr->prev);
+	else
+		status = TERM_EOK;
 	return (status);
 }
 
@@ -33,8 +34,9 @@ t_term_err	term_next_line(void)
 {
 	t_term_err	status;
 
-	status = TERM_EOK;
 	if (g_term.caps.hist.curr->next)
 		status = term_set_line(g_term.caps.hist.curr->next);
+	else
+		status = TERM_EOK;
 	return (status);
 }
