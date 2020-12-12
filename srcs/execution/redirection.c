@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 08:52:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/12 22:44:20 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/12 23:30:18 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,8 @@ t_redir_status			redirections_handler(t_exec **info, t_bst *cmd,
 	aux = (char*)((t_tok*)cmd->b)->data;
 	if (!(*filename = tokens_expand((t_tok**)&cmd->b, &g_session.env, &height)))
 		return (RDR_BAD_ALLOC);
-	if ((redir_st = try_catch_filename(filename, aux, height, cmd->type)) \
-			!= CONTINUE)
+	if (cmd->type & REDIRECT && (redir_st = \
+			try_catch_filename(filename, aux, height, cmd->type)) != CONTINUE)
 		return (redir_st);
 	if (cmd->type & (REDIR_GR | REDIR_DG))
 		redir_st = try_catch_out(info, cmd->type, (*filename)[0]);
