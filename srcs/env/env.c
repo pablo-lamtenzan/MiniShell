@@ -15,6 +15,7 @@
 /*
 ** returns the length of an assignment's key
 */
+
 size_t	env_key_len(const char *key, bool strict)
 {
 	const char	*i;
@@ -34,6 +35,7 @@ size_t	env_key_len(const char *key, bool strict)
 /*
 ** Free the allocated environment.
 */
+
 void	env_clr(t_env **env)
 {
 	t_env	*current;
@@ -49,6 +51,7 @@ void	env_clr(t_env **env)
 /*
 ** Allocates a new env node
 */
+
 t_env	*env_new(char *key, bool exported, size_t key_len)
 {
 	t_env *new;
@@ -66,6 +69,7 @@ t_env	*env_new(char *key, bool exported, size_t key_len)
 /*
 ** Return the number of nodes in env
 */
+
 size_t	env_size(t_env *env)
 {
 	size_t	size;
@@ -81,6 +85,7 @@ size_t	env_size(t_env *env)
 /*
 ** Add back a node in the target env lnk-list
 */
+
 bool	env_add_back(t_env **env, t_env *add)
 {
 	t_env	*rmb;
@@ -97,12 +102,13 @@ bool	env_add_back(t_env **env, t_env *add)
 		(*env)->next = add;
 		*env = rmb;
 	}
-	return (true);		
+	return (true);
 }
 
 /*
 ** Dup the current env and return a pointer to the first elem
 */
+
 t_env	*env_dup(t_env *env)
 {
 	t_env	*cp;

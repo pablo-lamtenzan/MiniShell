@@ -17,6 +17,7 @@
 **
 ** returns a pointer to the variable's value if it is found or NULL otherwise.
 */
+
 const char		*env_get(t_env *env, const char *key, size_t key_length)
 {
 	while (env && (key_length != env->key_length
@@ -33,6 +34,7 @@ const char		*env_get(t_env *env, const char *key, size_t key_length)
 ** returns a NULL-terminated array of the exported environment variables,
 ** or NULL in case of error.
 */
+
 const char		**env_export(t_env *env)
 {
 	size_t		length;

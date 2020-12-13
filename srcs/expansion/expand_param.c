@@ -24,6 +24,7 @@
 **
 ** returns the expanded value, or NULL if there is no expansion.
 */
+
 static const char	*tilde_expand(const char **input, t_env *env)
 {
 	const char	*val;
@@ -54,6 +55,7 @@ static const char	*tilde_expand(const char **input, t_env *env)
 **
 ** returns the expanded value, or NULL if there is no expansion.
 */
+
 static const char	*var_expand(const char **input, t_env *env)
 {
 	static char		conv_buff[4];
@@ -84,6 +86,7 @@ static const char	*var_expand(const char **input, t_env *env)
 **
 ** returns the expanded c-string's pointer if succesfull or NULL otherwise.
 */
+
 t_line				*string_expand(const char *input, t_env *env)
 {
 	t_line		*exp;
@@ -121,6 +124,7 @@ t_line				*string_expand(const char *input, t_env *env)
 ** The expanded data is freed and replaced.
 ** returns true if successfull or false otherwise.
 */
+
 bool				param_expand(t_tok *parts, t_env *env)
 {
 	t_line	*expanded;

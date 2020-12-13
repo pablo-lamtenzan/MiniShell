@@ -17,6 +17,7 @@
 **
 ** returns true if successfull or false otherwise.
 */
+
 static bool	str_split(t_line **curr_word, const char *data)
 {
 	const char	*i;
@@ -53,6 +54,7 @@ static bool	str_split(t_line **curr_word, const char *data)
 **
 ** returns a list of separated words if successfull, or NULL otherwise.
 */
+
 static bool param_split(t_line **words, t_tok **parts)
 {
 	t_tok		*part;
@@ -88,6 +90,7 @@ static bool param_split(t_line **words, t_tok **parts)
 **
 ** returns a list of separated words if successfull, or NULL otherwise.
 */
+
 t_line			*word_split(t_tok **params)
 {
 	t_line	*words;

@@ -51,6 +51,7 @@ static char		*param_export(t_tok *param, bool free_params)
 **
 ** returns true if successfull or false otherwise.
 */
+
 static bool			var_assign(t_tok **params, t_env **env)
 {
 	char	status;
@@ -85,6 +86,7 @@ static bool			var_assign(t_tok **params, t_env **env)
 **
 ** returns a pointer to the array if successfull, or NULL otherwise.
 */
+
 static char		**args_export(t_line **words, int *ac)
 {
 	const size_t	length = line_count(*words);
@@ -114,6 +116,7 @@ static char		**args_export(t_line **words, int *ac)
 **	Variables are evaluated and assigned using the environment.
 **	returns the allocated c-string array if successfull, or NULL otherwise
 */
+
 char				**tokens_expand(t_tok **params, t_env **env, int *ac)
 {
 	t_tok	*param;

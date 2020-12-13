@@ -74,6 +74,7 @@ void	term_destroy(void)
 /*
 **	Prompt the user of an interactive terminal.
 */
+
 t_term_err	term_prompt(const char **dst)
 {
 	t_term_err	status;

@@ -79,6 +79,7 @@ static void		update_dimensions(int signal)
 **
 **	returns true if the terminal appears to be supported or false otherwise.
 */
+
 bool		caps_load(t_caps *caps, bool is_login)
 {
 	bool	enabled;

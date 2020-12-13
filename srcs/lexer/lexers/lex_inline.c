@@ -49,6 +49,7 @@ static t_tok_t	lex_redir_op_type(t_lex_st *st)
 **
 ** REDIR_OPERATOR IFS PARAM
 */
+
 static t_lex_err	lex_redir(t_tok **tokens, t_lex_st *st)
 {
 	const t_tok_t	type = lex_redir_op_type(st);
@@ -81,6 +82,7 @@ static t_lex_err	lex_redir(t_tok **tokens, t_lex_st *st)
 **
 ** "<<" PARAM
 */
+
 static t_lex_err	lex_heredoc(t_tok **tokens, t_lex_st *st)
 {
 	if (ft_strncmp(st->input, "<<", 2))
@@ -94,6 +96,7 @@ static t_lex_err	lex_heredoc(t_tok **tokens, t_lex_st *st)
 **
 ** REDIR | HEREDOC
 */
+
 t_lex_err		lex_inline(t_tok **tokens, t_lex_st *st)
 {
 	t_lex_err		status;

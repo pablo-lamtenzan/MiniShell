@@ -64,6 +64,7 @@ static t_lex_err	lex_cmd_simple(t_tok **tokens, t_lex_st *st)
 **
 ** "|" | "||" | "&&"
 */
+
 static t_lex_err	lex_operator(t_tok **tokens, t_lex_st *st)
 {
 	t_tok_t		type;
@@ -99,6 +100,7 @@ static t_lex_err	lex_operator(t_tok **tokens, t_lex_st *st)
 **
 ** SUBSHELL | CMD_SIMPLE
 */
+
 t_lex_err			lex_cmd(t_tok **tokens, t_lex_st *st)
 {
 	t_lex_err	status;
@@ -114,6 +116,7 @@ t_lex_err			lex_cmd(t_tok **tokens, t_lex_st *st)
 **
 ** OPERATOR IFS CMD
 */
+
 t_lex_err			lex_operation(t_tok **tokens, t_lex_st *st)
 {
 	t_lex_err	status;

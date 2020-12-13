@@ -31,6 +31,7 @@ void	term_sig_interrupt(int signal)
 /*
 **	Read and parse a terminal's input.
 */
+
 int		term_read(void)
 {
 	int	read_st;

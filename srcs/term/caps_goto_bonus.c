@@ -59,6 +59,7 @@ void		caps_goto_y(t_caps *caps, int pos)
 /*
 **	Set the cursor's real position to pos.
 */
+
 void		caps_goto(t_caps *caps, const t_pos pos)
 {
 	const bool		insert = caps->mode & CAPS_MINS && !caps->flags.move_insert;

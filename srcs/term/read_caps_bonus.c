@@ -12,11 +12,10 @@
 
 #include <term/term.h>
 
-
-// TODO: CTRL('t') -> swap two last chars
 /*
 **	Control key-strokes.
 */
+
 static t_term_err	term_cntrl(char c)
 {
 	static const t_keybind	keys[] =
@@ -86,6 +85,7 @@ static t_term_err	post_read(t_term_err status)
 /*
 **	Read and parse an interactive terminal's input.
 */
+
 t_term_err	term_read_caps(void)
 {
 	t_term_err	status;

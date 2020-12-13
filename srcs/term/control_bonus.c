@@ -17,6 +17,7 @@
 /*
 **	Delete one character to the left of the cursor.
 */
+
 t_term_err	term_backspace(void)
 {
 	if (g_term.caps.index > 0)
@@ -30,6 +31,7 @@ t_term_err	term_backspace(void)
 /*
 **	Cancel the terminal's input line.
 */
+
 t_term_err	term_interrupt(void)
 {
 	t_term_err	status;
@@ -47,12 +49,10 @@ t_term_err	term_interrupt(void)
 	return (status);
 }
 
-
-// TO DO: sleep 2 ; bg ; (wait 2 secs) ctrl^D -> inf loop
-// TO DO: print prompt segfaults (heap overflow)
 /*
 **	End transmission when the line is empty and there are no jobs to be awaited.
 */
+
 t_term_err	term_eof(void)
 {
 	t_term_err	status;

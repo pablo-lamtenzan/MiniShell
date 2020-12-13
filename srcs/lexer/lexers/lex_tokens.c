@@ -18,6 +18,7 @@
 **
 ** ';' | '\n'
 */
+
 static t_lex_err	lex_sep(t_tok **tokens, t_lex_st *st)
 {
 	t_lex_err	status;
@@ -47,6 +48,7 @@ static t_lex_err	lex_sep(t_tok **tokens, t_lex_st *st)
 **
 ** CMD (IFS OPERATION)*
 */
+
 static t_lex_err	lex_token(t_tok **tokens, t_lex_st *st)
 {
 	t_lex_err	status;
@@ -67,20 +69,16 @@ static t_lex_err	lex_token(t_tok **tokens, t_lex_st *st)
 **
 ** ( IFS TOKEN IFS SEP )*
 */
+
 t_lex_err			lex_tokens(t_tok **tokens, t_lex_st *st)
 {
 	t_lex_err	status;
-
-	/* if (st->wait & TOK_CMD && (status = lex_cmd(st)) != LEX_EOK)
-		return (status); */
 
 	while ((status = lex_ifs(st)) == LEX_EOK
 	&& (status = lex_token(tokens, st)) == LEX_EOK
 	&& (status = lex_ifs(st)) == LEX_EOK
 	&& (status = lex_sep(tokens, st)) == LEX_EOK)
 		;
-	/* ft_dprintf(2, "[LEX][TOKNS] Status: %d, Wait: %d, Subsh-lvl: %d\n",
-		status, st->wait, st->subshell_level); */
 	if (status == LEX_ENOMATCH)
 		status = LEX_ESYNTAX;
 	else if (status == LEX_EEND && st->subshell_level == 0)

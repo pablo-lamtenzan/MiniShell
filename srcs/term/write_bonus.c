@@ -15,6 +15,7 @@
 /*
 **	Get a c-string's graphical character count
 */
+
 size_t		strglen(const char *str)
 {
 	size_t	len;

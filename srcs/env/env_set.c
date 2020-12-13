@@ -17,6 +17,7 @@
 **
 ** returns a pointer to the entry or NULL in case of error.
 */
+
 static t_env	*env_get_entry(t_env **env, const char *key, size_t key_length)
 {
 	t_env	*curr;
@@ -45,6 +46,7 @@ static t_env	*env_get_entry(t_env **env, const char *key, size_t key_length)
 **
 ** returns 0 if the assignment is invalid, 1 if successful and -1 otherwise.
 */
+
 char		env_assign(t_env **env, const char *assignment,
 	bool exported, bool strict)
 {
@@ -69,6 +71,7 @@ char		env_assign(t_env **env, const char *assignment,
 ** returns a pointer to the value that has been set successfully, or NULL
 ** otherwise.
 */
+
 const char		*env_set(t_env **env,
 	const char *key, const char *value, bool exported)
 {
@@ -104,6 +107,7 @@ const char		*env_set(t_env **env,
 ** returns a pointer to the environment,
 ** or NULL in case of error.
 */
+
 t_env			*env_import(const char **envp)
 {
 	t_env	*env;

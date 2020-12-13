@@ -32,6 +32,7 @@ void	cursor_goto_index(size_t index)
 **
 **	Updates the cursor's position and real position.
 */
+
 t_term_err	cursor_start_line(void)
 {
 	caps_goto(&g_term.caps, g_term.caps.cursor.origin);

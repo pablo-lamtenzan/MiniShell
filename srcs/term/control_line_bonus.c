@@ -15,6 +15,7 @@
 /*
 **	Write the line ending character and add the current line to history.
 */
+
 t_term_err	term_line_new(void)
 {
 	if (g_term.line->len)
@@ -42,6 +43,7 @@ t_term_err	term_line_new(void)
 **	Delete n characters from the terminal's input line, starting at the current
 **	cursor position.
 */
+
 t_term_err	term_line_del(size_t n)
 {
 	const t_pos		pos = g_term.caps.cursor.pos;
@@ -73,6 +75,7 @@ t_term_err	term_line_del(size_t n)
 /*
 **	Discard a line's content.
 */
+
 t_term_err	term_line_discard(void)
 {
 	g_term.caps.selec = (t_select){-1U, -1U};
@@ -91,6 +94,7 @@ t_term_err	term_line_discard(void)
 /*
 **	Kill a line's content on the left of the cursor.
 */
+
 t_term_err	term_line_kill(void)
 {
 	const size_t	index = g_term.caps.index;

@@ -18,6 +18,7 @@
 **
 ** '('
 */
+
 static t_lex_err	lex_scope_in(t_tok **tokens, t_lex_st *st)
 {
 	t_lex_err	status;
@@ -46,6 +47,7 @@ static t_lex_err	lex_scope_in(t_tok **tokens, t_lex_st *st)
 **
 ** ')'
 */
+
 static t_lex_err	lex_scope_out(t_tok **tokens, t_lex_st *st)
 {
 	t_tok	*scope_out;
@@ -74,6 +76,7 @@ static t_lex_err	lex_scope_out(t_tok **tokens, t_lex_st *st)
 **
 ** SCOPE_IN TOKENS SCOPE_OUT
 */
+
 t_lex_err	lex_subshell(t_tok **tokens, t_lex_st *st)
 {
 	t_lex_err	status;
@@ -87,83 +90,4 @@ t_lex_err	lex_subshell(t_tok **tokens, t_lex_st *st)
 		}
 	}
 	return (status);
-}
-
-/* MULTINE IMPLEMENTATION */
-
-/*
-** NOTES:
-** - When the multine is end the history remember to hole line (logical)
-** - It seems any level of subshells can be reached in multine format in bash
-** - Only seems to work with conditional separators or pipe operator
-**
-** IMPLEMENTATION IDEA
-** - If theres a multiline operator/separator put a flag
-** - If after this operator theres something remove the flag
-** - If starting a new lexer operation (new line lexed) the flag is on
-**		minish must require more input in a new line and block the execution
-** - Need to remember all the lexer flags/status of the previous lines
-** - So, need just a kind a linked-list who stores the t_lex_st
-**		- each operation, a node is created and keeped or deleted if theres no multiline
-**		- if there's multiline the nodes are keeped and added like a queue, yeah is that what i need: a queue
-**		- just need to use the nodes to execute:
-**			- 1) One node means a normal execution (and will be deleted just after send the tokens to the execution engine)
-**			- 2) More than one is the same but have to concatenate all the tokens
-*/
-
-/* I WILL IMPLEMENT ALL IN THIS FILE FOR THE MOMMENT */
-
-/* First of all we need a mini-lib to create-operate-destroy the queue */
-
-/* Data storage */
-typedef struct			s_input_line
-{
-	t_lex_st			*lexed_lines;
-	struct s_input_line	*next;
-}						t_input_line;
-
-/* Creation */
-t_input_line			*input_line_new(t_lex_st *input)
-{
-	t_input_line		*input_line;
-
-	if (!(input_line = malloc(sizeof(t_input_line))))
-		return (NULL);
-	*input_line = (t_input_line){.lexed_lines=input, .next=NULL};
-	return (input_line);
-}
-
-/* Destruction (destroy all always) */
-void					input_line_destroy(t_input_line *head)
-{
-	t_input_line		*next;
-
-	while (head)
-	{
-		next = head->next;
-		free(head);
-		head = next;
-	}
-}
-
-/* Adding a node, is bool because is implemented to do: "input_line_push_back(&input_line, input_line_new(st)); */
-bool					input_line_push_back(t_input_line **lines, t_input_line *new_line)
-{
-	t_input_line		*first;
-
-	if (!new_line)
-		return (false);
-	first = *lines;
-	/* At least one input line in the queue */
-	if (*lines)
-	{
-		while ((*lines)->next)
-			*lines = (*lines)->next;
-		(*lines)->next = new_line;
-		*lines = first;
-	}
-	/* Queue is empty */
-	else
-		*lines = new_line;
-	return (true);
 }

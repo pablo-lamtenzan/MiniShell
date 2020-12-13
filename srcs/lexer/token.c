@@ -68,6 +68,7 @@ void		token_add_front(t_tok **tokens, t_tok *token)
 **
 ** type & TOK_CMD and type == TOK_PARAM are cleared recursively.
 */
+
 void		token_clr(t_tok **tokens)
 {
 	t_tok	*curr;

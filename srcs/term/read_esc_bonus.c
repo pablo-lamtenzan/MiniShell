@@ -15,6 +15,7 @@
 /*
 **	Special key-strokes preceded by ANSI escape.
 */
+
 t_term_err			term_read_esc(void)
 {
 	static const t_keybind	keys[] = {

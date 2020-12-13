@@ -17,6 +17,7 @@
 **
 **	returns true if successful, or false otherwise.
 */
+
 static t_term_err	term_init_caps(const char *term_type, bool is_login)
 {
 	char		term_buff[MAX_ENTRY + 1];
@@ -73,6 +74,7 @@ void	term_destroy(void)
 /*
 **	Prompt the user of an interactive terminal.
 */
+
 t_term_err	term_prompt(const char **dst)
 {
 	t_term_err	status;

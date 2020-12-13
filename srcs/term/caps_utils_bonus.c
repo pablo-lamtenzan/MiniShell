@@ -15,6 +15,7 @@
 /*
 **	Put a character to the standard-error output.
 */
+
 int			putc_err(int c)
 {
 	return (write(STDERR_FILENO, &c, 1));
@@ -23,6 +24,7 @@ int			putc_err(int c)
 /*
 **	Delete n characters starting at the cursor's position.
 */
+
 void		caps_delete(t_caps *caps, size_t n)
 {
 	bool	toggle_del;

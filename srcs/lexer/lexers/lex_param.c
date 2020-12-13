@@ -18,6 +18,7 @@
 **
 ** ( char - [">|&;'\"\\"] )*
 */
+
 static t_lex_err	lex_param_simple(t_tok **tokens, t_lex_st *st, t_tok_t type)
 {
 	t_tok		*param;
@@ -41,6 +42,7 @@ static t_lex_err	lex_param_simple(t_tok **tokens, t_lex_st *st, t_tok_t type)
 **
 ** (PARAM_QUOTED | PARAM_SIMPLE)+
 */
+
 t_lex_err		lex_param(t_tok **tokens, t_lex_st *st, t_tok_t type)
 {
 	t_lex_err	status;

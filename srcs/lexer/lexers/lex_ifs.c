@@ -18,6 +18,7 @@
 **
 ** ( ' ' | [\t .. \r] )*
 */
+
 t_lex_err	lex_ifs(t_lex_st *st)
 {
 	while (ft_isspace(*st->input))

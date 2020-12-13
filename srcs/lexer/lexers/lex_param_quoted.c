@@ -19,6 +19,7 @@
 **
 ** '\'' ( char - \' )* '\''
 */
+
 t_lex_err	lex_param_squoted(t_tok **tokens, t_lex_st *st, t_tok_t type)
 {
 	t_tok		*param;
@@ -50,6 +51,7 @@ t_lex_err	lex_param_squoted(t_tok **tokens, t_lex_st *st, t_tok_t type)
 **
 ** '"' ( ( char - ["\"\\"] ) | ( '\\' ["\"\\"] ) )* '"'
 */
+
 t_lex_err	lex_param_dquoted(t_tok **tokens, t_lex_st *st, t_tok_t type)
 {
 	t_tok		*param;
@@ -94,6 +96,7 @@ t_lex_err	lex_param_dquoted(t_tok **tokens, t_lex_st *st, t_tok_t type)
 **
 ** PARAM_SQUOTED | PARAM_DQUOTED
 */
+
 t_lex_err	lex_param_quoted(t_tok **tokens, t_lex_st *st, t_tok_t type)
 {
 	t_lex_err	status;

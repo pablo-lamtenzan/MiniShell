@@ -15,6 +15,7 @@
 /*
 **	Clear the screen's content, keeping only the current line.
 */
+
 t_term_err	term_clear_screen(void)
 {
 	const t_pos	pos = g_term.caps.cursor.pos;
@@ -35,6 +36,7 @@ t_term_err	term_clear_screen(void)
 /*
 **	Clear the screen from the cursor to the end of the screen.
 */
+
 t_term_err	term_clear_eos(void)
 {
 	const int	x = g_term.caps.cursor.pos.x;
@@ -59,6 +61,7 @@ t_term_err	term_clear_eos(void)
 /*
 **	Clear the current line visually, without deleting it's content.
 */
+
 t_term_err	term_clear_line(void)
 {
 	caps_goto(&g_term.caps, g_term.caps.cursor.origin);
