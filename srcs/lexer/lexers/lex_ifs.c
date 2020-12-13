@@ -25,6 +25,6 @@ t_lex_err	lex_ifs(t_lex_st *st)
 		st->input++;
 	if (*st->input == '\0' || *st->input == '#'
 	|| (st->subshell_level != 0 && *st->input == ')'))
-		return (st->wait ? LEX_EWAIT : LEX_EEND);
+		return (LEX_EEND);
 	return (LEX_EOK);
 }

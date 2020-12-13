@@ -28,7 +28,6 @@ static t_lex_err	lex_scope_in(t_tok **tokens, t_lex_st *st)
 	if (*st->input == '(')
 	{
 		st->input++;
-		st->wait |= TOK_SCOPE_OUT;
 		st->subshell_level++;
 		if ((scope_in = token_new(NULL, TOK_SCOPE_IN)))
 		{
@@ -57,11 +56,8 @@ static t_lex_err	lex_scope_out(t_tok **tokens, t_lex_st *st)
 	{
 		if (st->subshell_level == 0)
 			return (LEX_ESYNTAX);
-		st->wait &= ~TOK_SEP;
 		st->input++;
 		st->subshell_level--;
-		if (st->subshell_level == 0)
-			st->wait &= ~TOK_SCOPE_OUT;
 		if (!(scope_out = token_new(NULL, TOK_SCOPE_OUT)))
 			return (LEX_EALLOC);
 		token_add_back(tokens, scope_out);
@@ -81,13 +77,8 @@ t_lex_err	lex_subshell(t_tok **tokens, t_lex_st *st)
 {
 	t_lex_err	status;
 
-	if ((status = lex_scope_in(tokens, st)) == LEX_EOK)
-	{
-		if ((status = lex_tokens(tokens, st)) == LEX_EOK
-		|| (status == LEX_EWAIT && st->wait & (TOK_SCOPE_OUT | TOK_SEP)))
-		{
-			status = lex_scope_out(tokens, st);
-		}
-	}
+	if ((status = lex_scope_in(tokens, st)) == LEX_EOK
+	&& ((status = lex_tokens(tokens, st)) == LEX_EOK || status == LEX_EEND))
+		status = lex_scope_out(tokens, st);
 	return (status);
 }

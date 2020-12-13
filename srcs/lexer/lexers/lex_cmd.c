@@ -34,7 +34,6 @@ static t_lex_err	cmd_new(t_tok **tokens,
 ** PARAMs or INLINEs separated by IFS
 **
 ** ( IFS ( PARAM | INLINE ) ) *
-** TODO: Handle st->wait
 */
 
 static t_lex_err	lex_cmd_simple(t_tok **tokens, t_lex_st *st)

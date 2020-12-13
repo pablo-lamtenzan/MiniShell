@@ -27,7 +27,6 @@ static t_lex_err	lex_sep(t_tok **tokens, t_lex_st *st)
 		status = LEX_EEND;
 	else if (*st->input == ';' || *st->input == '\n')
 	{
-		st->wait &= ~TOK_SEP;
 		st->input++;
 		if ((sep = token_new(NULL, TOK_SEP)))
 		{

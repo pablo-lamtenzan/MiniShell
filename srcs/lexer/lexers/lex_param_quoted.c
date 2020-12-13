@@ -25,23 +25,18 @@ t_lex_err	lex_param_squoted(t_tok **tokens, t_lex_st *st, t_tok_t type)
 	t_tok		*param;
 	const char	*start;
 
-	if (!(st->wait & TOK_SQUOTED))
-	{
-		if (*st->input != '\'')
-			return (LEX_ENOMATCH);
-		st->input++;
-		st->wait |= TOK_SQUOTED;
-	}
+	if (*st->input != '\'')
+		return (LEX_ENOMATCH);
+	st->input++;
 	start = st->input;
 	while (*st->input != '\0' && *st->input != '\'')
 		st->input++;
 	if (start == st->input || *st->input != '\'')
-		return (LEX_EWAIT);
+		return (LEX_ESYNTAX);
 	if (!(param = token_strndup(start, st->input - start, TOK_SQUOTED | type)))
 		return (LEX_EALLOC);
 	token_add_back(tokens, param);
 	st->input++;
-	st->wait &= ~TOK_SQUOTED;
 	return (LEX_EOK);
 }
 
@@ -57,13 +52,9 @@ t_lex_err	lex_param_dquoted(t_tok **tokens, t_lex_st *st, t_tok_t type)
 	t_tok		*param;
 	const char	*start;
 
-	if (!(st->wait & TOK_DQUOTED))
-	{
-		if (*st->input != '"')
-			return (LEX_ENOMATCH);
-		st->input++;
-		st->wait |= TOK_DQUOTED;
-	}
+	if (*st->input != '"')
+		return (LEX_ENOMATCH);
+	st->input++;
 	start = st->input;
 	while (*st->input != '\0' && *st->input != '"')
 	{
@@ -81,12 +72,11 @@ t_lex_err	lex_param_dquoted(t_tok **tokens, t_lex_st *st, t_tok_t type)
 		}
 	}
 	if (*st->input != '"')
-		return (LEX_EWAIT);
+		return (LEX_ESYNTAX);
 	if (!(param = token_strndup(start, st->input - start, TOK_DQUOTED | type)))
 		return (LEX_EALLOC);
 	token_add_back(tokens, param);
 	st->input++;
-	st->wait &= ~TOK_DQUOTED;
 	return (LEX_EOK);
 }
 
@@ -101,8 +91,7 @@ t_lex_err	lex_param_quoted(t_tok **tokens, t_lex_st *st, t_tok_t type)
 {
 	t_lex_err	status;
 
-	if (st->wait & TOK_SQUOTED
-	|| (status = lex_param_dquoted(tokens, st, type)) == LEX_ENOMATCH)
+	if ((status = lex_param_dquoted(tokens, st, type)) == LEX_ENOMATCH)
 		status = lex_param_squoted(tokens, st, type);
 	return (status);
 }

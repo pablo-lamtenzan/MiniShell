@@ -123,10 +123,10 @@ void					syntax_error(t_lex_st *st)
 	ft_bzero(st, sizeof(*st));
 }
 
-static t_line	*msg_get(t_lex_err status)
+static t_line	*msg_get(void)
 {
 	const char* const	src =
-		env_get(g_session.env, (status == LEX_EWAIT) ? "PS2" : "PS1", 3);
+		env_get(g_session.env, "PS1", 3);
 
 	return (src ? string_expand(src, g_session.env) : NULL);
 }
@@ -143,14 +143,14 @@ static t_term_err	routine(void)
 	status = TERM_EOK;
 	lex_status = LEX_EOK;
 	while (lex_status != LEX_EALLOC
-	&& (!g_term.is_interactive || (g_term.msg = msg_get(lex_status)))
+	&& (!g_term.is_interactive || (g_term.msg = msg_get()))
 	&& (status = term_prompt(&lex_data.input)) == TERM_ENL)
 	{
 		if ((lex_status = lex_tokens(&tokens, &lex_data)) == LEX_EOK)
 			exec(&tokens);
 		else if (lex_status == LEX_ESYNTAX)
 			syntax_error(&lex_data);
-		if (lex_status != LEX_EWAIT && tokens)
+		if (tokens)
 			token_clr(&tokens);
 		line_clear(&g_term.msg);
 	}

@@ -48,15 +48,13 @@ typedef enum		e_lex_err
 	LEX_ESYNTAX		= -2,
 	LEX_ENOMATCH	= -1,
 	LEX_EOK			= 0,
-	LEX_EWAIT		= 1,
-	LEX_EEND		= 2,
+	LEX_EEND		= 1,
 }					t_lex_err;
 
 typedef struct		s_lex_st
 {
 	const char	*input;
 	int			subshell_level;
-	t_tok_t		wait;
 }					t_lex_st;
 
 /*
