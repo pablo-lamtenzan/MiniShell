@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 01:08:59 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/12 22:15:28 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/13 02:49:50 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ bool			session_empty(void)
 }
 
 /*
-** Perform a allocated copy of the job control data structure.
+** Perform an allocated copy of the job control data structure.
 */
 
 t_session		*session_dup(void)
@@ -33,8 +33,8 @@ t_session		*session_dup(void)
 	if ((dup = ft_calloc(1, sizeof(t_session))) \
 	&& (dup->name = ft_strdup(g_session.name)) \
 	&& (dup->env = env_dup(g_session.env)) \
-	&& ((dup->flags = g_session.flags) || !dup->flags)
-	&& ((dup->exit_count = g_session.exit_count) || !dup->exit_count)
+	&& ((dup->flags = g_session.flags) || !dup->flags) \
+	&& ((dup->exit_count = g_session.exit_count) || !dup->exit_count) \
 	&& (ft_strlcpy(dup->cwd, g_session.cwd, PATH_MAX)))
 		return (dup);
 	if (dup)

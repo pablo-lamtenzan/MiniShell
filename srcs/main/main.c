@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 07:46:38 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/12 21:59:55 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/13 02:43:45 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 
 #include <string.h>
 #include <unistd.h>
+
+// TO DO: Check leaks job control
 
 static void			handle_exec_error(t_bst *root, t_exec_status exec_st)
 {

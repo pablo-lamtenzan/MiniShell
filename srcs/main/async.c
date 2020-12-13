@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 11:18:02 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/12 00:46:30 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/13 03:17:41 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,17 @@ static void		terminate_minishell(int signal)
 
 void			ignore_all_signals(void)
 {
-	signal(SIGTSTP, SIG_IGN);
-	signal(SIGCHLD, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGINT, SIG_IGN);
-	signal(SIGTERM, SIG_IGN);
-	signal(SIGHUP, SIG_IGN);
+	uint64_t			i;
+	static const int	cross_signals[] = {
+		SIGTSTP, SIGCHLD, SIGQUIT, SIGINT, SIGTERM, SIGHUP,
+		SIGILL, SIGABRT, SIGBUS, SIGFPE, SIGUSR1, SIGSEGV,
+		SIGUSR2, SIGPIPE, SIGALRM, SIGCONT, SIGTTIN, SIGTTOU,
+		SIGURG, SIGXCPU, SIGXFSZ, SIGVTALRM, SIGPROF, SIGWINCH,
+		};
+
+	i = 0;
+	while (i < sizeof(cross_signals) / sizeof(*cross_signals))
+		signal(cross_signals[i++], SIG_IGN);	
 }
 
 void			init_signal_handler(void)
