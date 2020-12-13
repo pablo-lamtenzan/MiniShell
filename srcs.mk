@@ -15,6 +15,7 @@ $(addprefix $(INCDIR)/,\
 		session.h\
 		utils.h\
 		zombies.h\
+		g_signals.h\
 	)\
 	$(addprefix lexer/,\
 		lexer.h\
