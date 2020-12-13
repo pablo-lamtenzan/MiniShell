@@ -84,23 +84,10 @@ void	exec(t_tok **tokens)
 	g_session.input_line = NULL;
 }
 
-// Export 42sh 
+// Export 42sh
 // Local-Var
-// binary 
+// binary
 
-/* static bool				init_login()
-{
-	// Load rc files
-	return (true);
-}
-
-static bool				init_interactive()
-{
-	// Bind interactive signal handlers
-	// Init environment variables (DIRNAME, PS1, PS2, etc...)
-	// Load history
-	return (true);
-} */
 
 static bool				init(const char *name, const char **ep)
 {
@@ -111,7 +98,8 @@ static bool				init(const char *name, const char **ep)
 		name++;
 	if (session_start(&g_session, name, ep))
 	{
-		if ((status = term_init(&g_session.env, g_session.cwd)) == TERM_EOK)
+		status = term_init(&g_session.env, g_session.cwd, is_login);
+		if (status == TERM_EOK)
 		{
 			init_signal_handler();
 			return (true);

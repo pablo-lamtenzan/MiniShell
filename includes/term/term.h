@@ -111,7 +111,7 @@ typedef struct		s_keybind
 /*
 **					term.c / term_bonus.c
 */
-t_term_err			term_init(t_env **env, const char *cwd);
+t_term_err			term_init(t_env **env, const char *cwd, bool is_login);
 void				term_destroy(void);
 t_term_err			term_prompt(const char **dest);
 

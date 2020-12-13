@@ -81,10 +81,11 @@ static void		update_dimensions(int signal)
 **
 **	returns true if the terminal appears to be supported or false otherwise.
 */
-bool		caps_load(t_caps *caps)
+bool		caps_load(t_caps *caps, bool is_login)
 {
 	bool	enabled;
 	char	*area;
+	char	*cap;
 
 	area = NULL;
 	enabled = load_modes(&caps->modes, &area)
@@ -94,6 +95,14 @@ bool		caps_load(t_caps *caps)
 		&& (caps->width = tgetnum("co")) > 1
 		&& (caps->height = tgetnum("li")) > 1;
 	if (enabled)
+	{
+		if ((cap = tgetstr("i1", &area)))
+			tputs(cap, 1, &putc_err);
+		if ((cap = tgetstr(is_login ? "is" : "if", &area)))
+			tputs(cap, 1, &putc_err);
+		if ((cap = tgetstr("i3", &area)))
+			tputs(cap, 1, &putc_err);
 		signal(SIGWINCH, &update_dimensions);
+	}
 	return (enabled);
 }
