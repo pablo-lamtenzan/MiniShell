@@ -13,8 +13,8 @@
 
 /* Just temporally defines */
 
-# define END 1 // end of input line
-# define WAIT 2 // requires more input
+# define END 1
+# define WAIT 2
 
 t_tok				*input_line_concatenate(t_input_line *lines);
 
@@ -47,7 +47,7 @@ t_tok				*input_line_update(t_input_line *lines, t_lex_st *st)
 	/* The input is multiline */
 	else
 	{
-		/* Return the first token of the first line 
+		/* Return the first token of the first line
 		This is just for no return NULL
 		In this case the tokens must not be used
 		*/
@@ -93,7 +93,7 @@ void				lex_init(t_input_line *lines, t_lex_st *st)
 	/* Go to the last line (the prevous line) */
 	while (lines->next)
 		lines = lines->next;
-	
+
 	/* Update */
 	st->wait = lines->lexed_lines->wait;
 	st->subshell_level = lines->lexed_lines->subshell_level;

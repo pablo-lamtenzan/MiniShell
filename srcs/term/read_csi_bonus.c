@@ -19,12 +19,8 @@ t_term_err	term_read_mod_none(void)
 
 	if ((read_st = read(STDIN_FILENO, &c, 1)) != 1)
 		return ((read_st == 0) ? TERM_EEOF: TERM_EREAD);
-	if (c == ';') // TODO: Handle unknown
-	{
-		//ft_dprintf(2, "[PROMPT][ESC][NONE ] Reentering CSI!\n");
+	if (c == ';')
 		return (term_read_csi());
-	}
-	ft_dprintf(2, "[PROMPT][ESC][NONE ] %hhu\n", c);
 	return (TERM_EOK);
 }
 
@@ -84,7 +80,7 @@ t_term_err	term_read_csi(void)
 		{'4', &term_read_mod_alt},
 	};
 	static const t_keybind	keys[] = {
-		{'H', &cursor_start_line}, // TODO: Get in terminfo or remove caps.key
+		{'H', &cursor_start_line},
 		{'F', &cursor_end_line},
 		{'A', &term_prev_line},
 		{'B', &term_next_line},
@@ -98,7 +94,7 @@ t_term_err	term_read_csi(void)
 
 	if ((read_st = read(0, &c, 1)) != 1)
 		return ((read_st == 0) ? TERM_EEOF: TERM_EREAD);
-	if (c == '\0') // -> Alt-[
+	if (c == '\0')
 		ft_dprintf(2, "[PROMPT][ESC] Alt + [\n");
 	if ((action = keybind_get(mods, sizeof(mods) / sizeof(*mods), c)))
 		return (action());

@@ -39,8 +39,6 @@ void		caps_delete(t_caps *caps, size_t n)
 			tputs(caps->modes.del_end, 1, &putc_err);
 	}
 }
-
-// TODO: Too much insert
 ssize_t		caps_insert(t_caps *caps, const char* input, size_t length)
 {
 	ssize_t	ret;

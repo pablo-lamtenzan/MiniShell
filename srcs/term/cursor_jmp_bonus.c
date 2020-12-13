@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include <term/term.h>
-
-// TODO: Consider using void for functions with arguments
 void	cursor_goto_index(size_t index)
 {
 	t_pos	pos;

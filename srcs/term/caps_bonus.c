@@ -54,8 +54,6 @@ static bool	load_flags(t_flags *flags)
 	};
 	return (true);
 }
-
-// TODO: Maybe handle errors (terminate)
 static void		update_dimensions(int signal)
 {
 	struct winsize	s_winsz;

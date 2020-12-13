@@ -12,8 +12,6 @@
 
 #include <term/term.h>
 
-//void	term_init_login(void)
-
 void		term_perror(t_term_err err)
 {
 	static const char*	msgs[] = {

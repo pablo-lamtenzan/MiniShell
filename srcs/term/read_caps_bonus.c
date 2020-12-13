@@ -14,7 +14,6 @@
 
 
 // TODO: CTRL('t') -> swap two last chars
-// TODO: Put keybinds in static variable at initialization
 /*
 **	Control key-strokes.
 */
@@ -94,7 +93,7 @@ t_term_err	term_read_caps(void)
 	char		c;
 
 	if ((status = pre_read()) != TERM_EOK)
-		return (status); 
+		return (status);
 	while (status == TERM_EOK)
 	{
 		if ((read_st = read(STDIN_FILENO, &c, 1)) != 1)

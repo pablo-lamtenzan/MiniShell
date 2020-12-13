@@ -24,12 +24,12 @@ static t_lex_err	lex_param_simple(t_tok **tokens, t_lex_st *st, t_tok_t type)
 	const char	*start;
 
 	start = st->input;
-//	ft_dprintf(2, "[LEX][PARAM][SIMPLE] Input: '%s'\n", st->input);
+
 	while (*st->input && !is_special(*st->input))
 		st->input++;
 	if (st->input == start)
 		return (LEX_ENOMATCH);
-	if (!(param = token_strndup(start, st->input - start, TOK_SIMPLE | type))) // type no quotes
+	if (!(param = token_strndup(start, st->input - start, TOK_SIMPLE | type)))
 		return (LEX_EALLOC);
 	token_add_back(tokens, param);
 	return (LEX_EOK);
@@ -41,7 +41,7 @@ static t_lex_err	lex_param_simple(t_tok **tokens, t_lex_st *st, t_tok_t type)
 **
 ** (PARAM_QUOTED | PARAM_SIMPLE)+
 */
-t_lex_err		lex_param(t_tok **tokens, t_lex_st *st, t_tok_t type) // handles multiple params in a cmd token (cmd.data)
+t_lex_err		lex_param(t_tok **tokens, t_lex_st *st, t_tok_t type)
 {
 	t_lex_err	status;
 	t_tok		*param;
@@ -51,7 +51,7 @@ t_lex_err		lex_param(t_tok **tokens, t_lex_st *st, t_tok_t type) // handles mult
 	status = LEX_EOK;
 	while (status == LEX_EOK)
 		if ((status = lex_param_quoted(&param_data, st, type)) == LEX_ENOMATCH)
-			status = lex_param_simple(&param_data, st, type); // allocates a param and set no flag
+			status = lex_param_simple(&param_data, st, type);
 	if (param_data && status == LEX_ENOMATCH)
 	{
 		if ((param = token_new(param_data, type)))

@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include <expansion.h>
-//#include <job_control/session.h>
 
 static char		*param_export(t_tok *param, bool free_params)
 {
@@ -71,7 +70,6 @@ static bool			var_assign(t_tok **params, t_env **env)
 		if ((status = env_assign(env, assignment, true, true)) == 1)
 		{
 			(*params) = (*params)->next;
-			//ft_dprintf(2, "[EXP][VAR][ASSIGN] assigned '%s'!\n", assignment);
 			token_clr((t_tok**)&param->data);
 			free(param);
 		}
@@ -106,7 +104,6 @@ static char		**args_export(t_line **words, int *ac)
 		free(curr);
 	}
 	av[*ac] = NULL;
-	//strs_print(av);
 	return (av);
 }
 

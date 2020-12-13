@@ -85,7 +85,6 @@ static t_lex_err	lex_heredoc(t_tok **tokens, t_lex_st *st)
 {
 	if (ft_strncmp(st->input, "<<", 2))
 		return (LEX_ENOMATCH);
-//	ft_dprintf(2, "[LEX][  CMD][INLINE][HEREDOC] Input: '%s'\n", st->input);
 	return (lex_param(tokens, st, OP_HEREDOC));
 }
 
@@ -99,7 +98,7 @@ t_lex_err		lex_inline(t_tok **tokens, t_lex_st *st)
 {
 	t_lex_err		status;
 
-	if ((status = lex_redir(tokens, st)) == LEX_ENOMATCH) // alocates a token redir
-		status = lex_heredoc(tokens, st); // alocates a token heredoc
+	if ((status = lex_redir(tokens, st)) == LEX_ENOMATCH)
+		status = lex_heredoc(tokens, st);
 	return (status);
 }

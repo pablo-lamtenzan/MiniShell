@@ -37,13 +37,9 @@ static t_term_err	term_init_caps(const char *term_type, bool is_login)
 	g_term.has_caps = caps_load(&g_term.caps, is_login);
 	return (true);
 }
-
-// TODO: Reference to term!
 t_term_err	term_init(t_env **env, const char *cwd, bool is_login)
 {
 	t_term_err	status;
-
-	// TODO: Cleanup: I think we do not nead to init history in noninteractive session
 	if ((g_term.line = line_new(TERM_LINE_SIZE)))
 	{
 		status = TERM_EOK;
@@ -74,8 +70,6 @@ void	term_destroy(void)
 	if (g_term.is_interactive)
 		write(STDOUT_FILENO, TERM_EXIT, sizeof(TERM_EXIT) - 1);
 }
-
-// TODO: Use less branches using separate caps routines
 /*
 **	Prompt the user of an interactive terminal.
 */

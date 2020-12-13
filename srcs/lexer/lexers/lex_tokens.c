@@ -22,8 +22,6 @@ static t_lex_err	lex_sep(t_tok **tokens, t_lex_st *st)
 {
 	t_lex_err	status;
 	t_tok		*sep;
-
-//	ft_dprintf(2, "[LEX][  SEP] Input: '%s'\n", st->input);
 	if (*st->input == '\0')
 		status = LEX_EEND;
 	else if (*st->input == ';' || *st->input == '\n')
@@ -52,8 +50,6 @@ static t_lex_err	lex_sep(t_tok **tokens, t_lex_st *st)
 static t_lex_err	lex_token(t_tok **tokens, t_lex_st *st)
 {
 	t_lex_err	status;
-
-//	ft_dprintf(2, "[LEX][TOKEN] Input: '%s'\n", st->input);
 	if ((status = lex_cmd(tokens, st)) == LEX_EOK)
 	{
 		while ((status = lex_ifs(st)) == LEX_EOK

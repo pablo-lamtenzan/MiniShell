@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include <expansion.h>
-
-// TODO: Put g_session and related files into session.h
 #include <job_control/session.h>
 
 /*
@@ -69,14 +67,12 @@ static const char	*var_expand(const char **input, t_env *env)
 		{
 			ft_snitoa(conv_buff, g_session.st, sizeof(conv_buff));
 			val = conv_buff;
-			//ft_dprintf(2, "%d: %s", g_session.st, val);
 			(*input) += 2;
 		}
 		else if ((key_len = env_key_len((*input) + 1, true)))
 		{
 			if (!(val = env_get(env, ++(*input), key_len)))
 				val = "";
-			//ft_dprintf(2, "[EXP][VAR] key: %.*s, val: %s\n", (int)key_len, (*input), val);
 			(*input) += key_len;
 		}
 	}

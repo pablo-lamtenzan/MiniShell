@@ -12,24 +12,21 @@
 
 #include <term/term.h>
 
-// TODO: ROW and COLUMNS environment variables
-
 /*
 **	Write the line ending character and add the current line to history.
 */
 t_term_err	term_line_new(void)
 {
-	// TODO: Disable insertion and overwrite instead of clearing
-	if (g_term.line->len) // if we have content
+	if (g_term.line->len)
 	{
-		term_clear_line(); // clear the line visually
+		term_clear_line();
 		if (write(STDERR_FILENO, g_term.line->data, g_term.line->len) == -1)
 			return (TERM_EWRITE);
-		else if ((!g_term.caps.hist.next || g_term.line == g_term.caps.hist.next) // if the next line does not exist or is the current line
-		&& !(g_term.caps.hist.next = line_new(10))) // allocate a new line
+		else if ((!g_term.caps.hist.next || g_term.line == g_term.caps.hist.next)
+		&& !(g_term.caps.hist.next = line_new(10)))
 			return (TERM_EALLOC);
 		else
-			hist_add(&g_term.caps.hist, g_term.line); // connect the current line
+			hist_add(&g_term.caps.hist, g_term.line);
 	}
 	else if (g_term.caps.hist.curr != g_term.caps.hist.next)
 	{
@@ -41,8 +38,6 @@ t_term_err	term_line_new(void)
 		return(TERM_EWRITE);
 	return (TERM_ENL);
 }
-
-// TODO: Alt-backspace
 /*
 **	Delete n characters from the terminal's input line, starting at the current
 **	cursor position.

@@ -22,17 +22,14 @@
 #include <string.h>
 #include <unistd.h>
 
-// TO DO: Check leaks job control
-
 static void			handle_exec_error(t_bst *root, t_exec_status exec_st)
 {
-	// TO DO: TEST the display of thease error msg
 	static const char*		labels[] = {
 		"malloc",
 		"close",
 		"pipe",
 		"dup2",
-		"fork" // probably never used
+		"fork"
 	};
 	static const int		exit_vals[] = {
 		SIGNAL_BASE + SIGABRT,

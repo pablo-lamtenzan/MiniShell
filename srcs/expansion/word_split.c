@@ -22,12 +22,12 @@ static bool	str_split(t_line **curr_word, const char *data)
 	const char	*i;
 	const char	*start;
 
-	i = data; // start at data
+	i = data;
 	while (*(start = i))
 	{
 		while (ft_isspace(*start))
-			start++; // skip spaces
-		if (i != start) // if there were spaces, create new word if there is one already
+			start++;
+		if (i != start)
 		{
 			if ((*curr_word)->len)
 			{
@@ -35,12 +35,12 @@ static bool	str_split(t_line **curr_word, const char *data)
 					return (false);
 				*curr_word = (*curr_word)->next;
 			}
-			i = start; // start after the spaces
+			i = start;
 		}
-		while (*i && !ft_isspace(*i)) // go to next space
+		while (*i && !ft_isspace(*i))
 			i++;
 		if (i != start
-		&& !line_insert(*curr_word, (*curr_word)->len, start, i - start)) // if there is any content
+		&& !line_insert(*curr_word, (*curr_word)->len, start, i - start))
 			return (false);
 	}
 	return (true);
@@ -73,7 +73,7 @@ static bool param_split(t_line **words, t_tok **parts)
 			token_clr(&part);
 			return (false);
 		}
-		free(part->data); // free popped part
+		free(part->data);
 		free(part);
 	}
 	if (!has_quotes && !(*words)->len)
@@ -98,15 +98,15 @@ t_line			*word_split(t_tok **params)
 	while ((param = *params))
 	{
 		*params = (*params)->next;
-		if (!(param_split(&new_words, (t_tok **)&param->data))) // split param parts into new words
+		if (!(param_split(&new_words, (t_tok **)&param->data)))
 		{
 			token_clr(&param);
 			line_clear(&words);
 			return (NULL);
 		}
 		if (new_words)
-			line_add_back(&words, new_words); // add new words to word list
-		free(param); // free popped param
+			line_add_back(&words, new_words);
+		free(param);
 	}
 	return (words);
 }

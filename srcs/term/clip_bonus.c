@@ -44,8 +44,6 @@ t_term_err	clip_cut(void)
 	}
 	return (TERM_EOK);
 }
-
-// TODO: Use term_write!
 t_term_err	clip_paste(void)
 {
 	t_term_err	status;

@@ -32,8 +32,6 @@ t_term_err	term_clear_screen(void)
 	return (status);
 }
 
-// TODO: Check if delete-mode needs to be activated before clearing parts
-
 /*
 **	Clear the screen from the cursor to the end of the screen.
 */

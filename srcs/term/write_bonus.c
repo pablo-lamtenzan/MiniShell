@@ -26,14 +26,14 @@ size_t		strglen(const char *str)
 	{
 		if (str[len] == ANSI_ESC && str[++len] == ANSI_CSI)
 		{
-			while ((str[++len] & 0xF0) == 0x30) // param
+			while ((str[++len] & 0xF0) == 0x30)
 				;
-			while ((str[len] & 0xF0) == 0x20) // inter
+			while ((str[len] & 0xF0) == 0x20)
 				len++;
-			if ((str[len] & 0xC0) == 0x40) // final
+			if ((str[len] & 0xC0) == 0x40)
 				len++;
 		}
-		else if (ft_isprint(str[len++])) // graphical
+		else if (ft_isprint(str[len++]))
 			glen++;
 	}
 	return (glen);
@@ -99,7 +99,6 @@ t_term_err	term_write(const char *input, size_t length)
 	return (status);
 }
 
-// TODO: Set msg line here
 t_term_err	term_origin(const char *input, size_t length)
 {
 	t_term_err		status;

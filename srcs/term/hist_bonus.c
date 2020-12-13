@@ -14,18 +14,12 @@
 
 void	hist_add(t_hist *hist, t_line *line)
 {
-	// If there was an existing history, link it to the new line
 	if (hist->last)
 		hist->last->next = line;
 	line->prev = hist->last;
-	// Link to next also
 	line->next = hist->next;
-
-	// Clear next data
 	*hist->next->data = '\0';
 	hist->next->len = 0;
-
-	// Advance existing history
 	hist->last = line;
 	hist->next->prev = line;
 	hist->curr = hist->next;
