@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 02:33:10 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/12 22:36:59 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/13 02:23:41 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,16 @@
 static t_exec_status	execute_process(t_exec *info)
 {
 	t_exec_status		exec_st;
+	t_executable		exec;
 
 	update_exit_count(info->av[0]);
-	if ((exec_st = get_exec(info)) == SUCCESS)
+	if ((exec_st = get_exec(info, &exec)) == SUCCESS)
 	{
 		signal(SIGCHLD, SIG_IGN);
 		zombies_list_purge_exited_zombies();
 		signal(SIGCHLD, zombies_catcher);
-		if (handle_subshell(info->exec, info->av[0]))
-			g_session.st = (unsigned char)info->exec(info);
+		if (handle_subshell(exec, info->av[0]))
+			g_session.st = (unsigned char)exec(info);
 		g_session.groups->active_processes->ret = \
 			g_session.groups->active_processes->flags \
 			& STOPPED ? -1 : (unsigned char)g_session.st;

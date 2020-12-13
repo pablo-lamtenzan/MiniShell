@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 02:45:41 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/12 23:11:33 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/13 02:18:48 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ void				destroy_execve_args(t_exec *info)
 	info->ep = NULL;
 	free((void*)info->file_path);
 	info->file_path = NULL;
-	info->exec = NULL;
 	if (g_session.flags & BUILTIN)
 	{
 		strs_unload((char**)info->av);
@@ -78,14 +77,14 @@ bool				handle_subshell(t_executable exec, const char *name)
 	return (true);
 }
 
-t_exec_status		get_exec(t_exec *info)
+t_exec_status		get_exec(t_exec *info, t_executable *exec)
 {
 	t_exec_status	status;
 	bool			err_alloc;
 
 	status = SUCCESS;
 	err_alloc = false;
-	if (!(info->exec = builtin_get(info->av[0])))
+	if (!(*exec = builtin_get(info->av[0])))
 	{
 		if (!(info->file_path = path_get(info->av[0], \
 			env_get(info->session->env, "PATH", 4), &err_alloc)))
@@ -94,10 +93,10 @@ t_exec_status		get_exec(t_exec *info)
 			status = !err_alloc ? BAD_PATH : BAD_ALLOC;
 		}
 		else if (!(info->ep = (char*const*)env_export(info->session->env)))
-			status = RDR_BAD_ALLOC;
+			status = BAD_ALLOC;
 		else
-			info->exec = &execute_child;
+			*exec = &execute_child;
 	}
-	g_session.flags |= info->exec != &execute_child ? BUILTIN : 0;
+	g_session.flags |= *exec != &execute_child ? BUILTIN : 0;
 	return (status);
 }

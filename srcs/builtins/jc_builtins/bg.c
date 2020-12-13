@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 23:11:42 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/12 21:59:55 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/13 01:45:47 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include <signal.h>
 
 #include <execution/execution.h>
-#include <job_control/jc_builtins.h>
 #include <job_control/background.h>
 #include <job_control/jobspec_parser.h>
 #include <job_control/utils.h>

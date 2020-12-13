@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/07 10:34:35 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/12 21:59:55 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/13 00:50:15 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ static void	free_node(t_exec *args, t_env **first, t_env **prev,
 {
 	if (*first && *first == args->session->env)
 		*first = (*first)->next;
+	free(args->session->env->key);
 	free(args->session->env);
 	if (*prev)
 		(*prev)->next = next;

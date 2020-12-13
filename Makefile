@@ -7,7 +7,7 @@ RM			=		/bin/rm
 
 include srcs.mk
 
-CFLAGS	=		-Wall -Wextra -Werror -g3 -fsanitize=address
+CFLAGS	=		-Wall -Wextra #-Werror -g3 -fsanitize=address
 IFLAGS	=		-I$(INCDIR) -I$(LIBFT)/includes
 LFLAGS	=		-L$(LIBFT) -lft
 

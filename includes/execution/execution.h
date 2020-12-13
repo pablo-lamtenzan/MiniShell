@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 19:51:14 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/12 22:03:42 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/13 02:23:47 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,11 @@
 /*
 ** Local
 */
-#include <execution/bst.h>
+# include <execution/bst.h>
 # include <job_control/session.h>
 # include <libft.h>
 # include <expansion.h>
 # include <errors.h>
-
 
 /*
 ** Multiple redirections handler
@@ -54,23 +53,20 @@
 # define PIPE_WRITE		1
 # define PIPE_READ		0
 
-# define UMASK			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
-
-typedef struct s_exec	t_exec;
-
-typedef int				(*t_executable)(t_exec *args);
+# define UMASK			420
 
 typedef struct			s_exec
 {
 	int					fds[3];
 	char				handle_dup;
-	t_executable		exec;
 	char				*file_path;
 	int					ac;
-    char*const			*av;
-    char*const			*ep;
+	char*const			*av;
+	char*const			*ep;
 	t_session			*session;
 }						t_exec;
+
+typedef int				(*t_executable)(t_exec *args);
 
 t_exec_status			wait_processes(t_exec_status st);
 
@@ -85,7 +81,8 @@ t_exec_status			execute_bst(t_bst *root);
 t_exec_status			dup_stdio(int *fds);
 t_exec_status			open_pipe_fds(t_exec **info, t_tok_t type);
 t_exec_status			close_pipe_fds(int *fds);
-t_redir_status			redirections_handler(t_exec **info, t_bst *cmd, char ***filename);
+t_redir_status			redirections_handler(t_exec **info, t_bst *cmd,
+		char ***filename);
 
 /*
 ** Exectution fill
@@ -93,18 +90,22 @@ t_redir_status			redirections_handler(t_exec **info, t_bst *cmd, char ***filenam
 int						execute_child(t_exec *info);
 t_exec_status			build_execve_args(t_exec *info);
 void					destroy_execve_args(t_exec *info);
-bool					handle_subshell(t_executable exec, const char *name);
-t_exec_status			get_exec(t_exec *info);
+bool					handle_subshell(t_executable exec,
+		const char *name);
+t_exec_status			get_exec(t_exec *info, t_executable *exec);
 
 /*
 ** Redirections
 */
-t_exec_status			print_redirection_error(t_redir_status rstatus, char **filename);
+t_exec_status			print_redirection_error(t_redir_status rstatus,
+		char **filename);
 
 /*
 ** Separators
 */
-t_tok					*handle_separators(t_tok **tokens, int *status, int *parentheses_nb);
-int						handle_conditionals(int parser_st, int *flags, int parentheses_nb);
+t_tok					*handle_separators(t_tok **tokens, int *status,
+		int *parentheses_nb);
+int						handle_conditionals(int parser_st, int *flags,
+		int parentheses_nb);
 
 #endif

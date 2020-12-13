@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/09 22:32:24 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/09 23:53:03 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/13 01:57:21 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,10 @@ typedef struct			s_session
 	char				flags;
 }						t_session;
 
+# ifndef g_session
+
 t_session				g_session;
+# endif
 
 t_session				*session_start(t_session *session,
 	const char *name, const char **envp);

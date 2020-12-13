@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 08:52:03 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/12 23:30:18 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/13 01:39:23 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ t_redir_status			redirections_handler(t_exec **info, t_bst *cmd,
 	t_redir_status		redir_st;
 	char				*aux;
 
+	redir_st = CONTINUE;
 	if (!(t_tok*)cmd->b)
 		return (CONTINUE);
 	aux = (char*)((t_tok*)cmd->b)->data;

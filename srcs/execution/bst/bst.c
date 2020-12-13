@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/01 16:23:23 by pablo             #+#    #+#             */
-/*   Updated: 2020/12/12 22:35:28 by pablo            ###   ########lyon.fr   */
+/*   Updated: 2020/12/13 01:33:49 by pablo            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ static t_bst		*build_bst(t_tok *tokens)
 	if (!node)
 		return (NULL);
 	node->a = build_job(tokens, tk1);
-	if ((tk2 = find_next_operator(tk1->next, PIPE))->type & PIPE)
+	if (find_next_operator(tk1->next, PIPE)->type & PIPE)
 		node->b = build_bst(tk1->next);
 	else if (find_next_operator(tk1, REDIRECT)->type & (REDIRECT))
 		node->b = build_job(tk1->next, NULL);
