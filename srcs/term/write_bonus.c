@@ -70,6 +70,7 @@ t_term_err	term_write(const char *input, size_t length)
 	if (length && (status = cursor_insert(input, length)) == TERM_EOK
 	&& (remaining = g_term.line->len - g_term.caps.index)
 	&& (g_term.caps.cursor.pos.x == 0
+	|| length > remaining
 	|| g_term.caps.cursor.pos.x + remaining >= (size_t)g_term.caps.width))
 	{
 		pos = g_term.caps.cursor.pos;

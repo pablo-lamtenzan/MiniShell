@@ -40,9 +40,9 @@ t_term_err	cursor_next_word(void)
 	size_t	i;
 
 	i = g_term.caps.index;
-	while (i < g_term.line->len && ft_isspace(g_term.line->data[i]))
+	while (i < g_term.line->len && !ft_isalnum(g_term.line->data[i]))
 		i++;
-	while (i < g_term.line->len && !ft_isspace(g_term.line->data[i]))
+	while (i < g_term.line->len && ft_isalnum(g_term.line->data[i]))
 		i++;
 	if (i != g_term.caps.index)
 		cursor_goto_index(i);
@@ -54,9 +54,9 @@ t_term_err	cursor_prev_word(void)
 	size_t	i;
 
 	i = g_term.caps.index;
-	while (i > 0 && ft_isspace(g_term.line->data[i - 1]))
+	while (i > 0 && !ft_isalnum(g_term.line->data[i - 1]))
 		i--;
-	while (i > 0 && !ft_isspace(g_term.line->data[i - 1]))
+	while (i > 0 && ft_isalnum(g_term.line->data[i - 1]))
 		i--;
 	if (i != g_term.caps.index)
 		cursor_goto_index(i);

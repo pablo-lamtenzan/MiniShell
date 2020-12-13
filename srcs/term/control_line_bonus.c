@@ -41,21 +41,25 @@ t_term_err	term_line_del(size_t n)
 	const size_t	index = g_term.caps.index;
 	const size_t	remaining = g_term.line->len - n - index;
 	t_term_err		status;
+	bool			toggle_ins;
 
 	status = TERM_EOK;
-	if (line_erase(g_term.line, index, n))
+
+	if (pos.x + n < (size_t)g_term.caps.width
+	&& pos.x + remaining < (size_t)g_term.caps.width)
+		caps_delete(&g_term.caps, n);
+	else
 	{
-		if (pos.x + remaining < (size_t)g_term.caps.width)
-			caps_delete(&g_term.caps, n);
-		else
-		{
-			// TODO: Toggle insert mode and delete overflow instead of eos
-			term_clear_eos();
-			status = term_write(g_term.line->data + index, remaining);
-			caps_goto(&g_term.caps, pos);
-			g_term.caps.index = index;
-		}
+		if ((toggle_ins = (g_term.caps.mode & CAPS_MINS)))
+			tputs(g_term.caps.modes.insert_end, 1, &putc_err);
+		status = cursor_write(g_term.line->data + index, remaining);
+		if (toggle_ins)
+			tputs(g_term.caps.modes.insert, 1, &putc_err);
+		term_clear_eos();
+		caps_goto(&g_term.caps, pos);
+		g_term.caps.index = index;
 	}
+	line_erase(g_term.line, index, n);
 	return (status);
 }
 

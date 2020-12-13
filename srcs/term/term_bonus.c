@@ -5,7 +5,7 @@
 **
 **	returns true if successful, or false otherwise.
 */
-static t_term_err	term_init_caps(const char *term_type)
+static t_term_err	term_init_caps(const char *term_type, bool is_login)
 {
 	char		term_buff[MAX_ENTRY + 1];
 	int			ent_st;
@@ -22,12 +22,12 @@ static t_term_err	term_init_caps(const char *term_type)
 	g_term.caps.s_ios.c_cflag |= ONLCR;
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &g_term.caps.s_ios) == -1)
 		return (TERM_ESETATTR);
-	g_term.has_caps = caps_load(&g_term.caps);
+	g_term.has_caps = caps_load(&g_term.caps, is_login);
 	return (true);
 }
 
 // TODO: Reference to term!
-t_term_err	term_init(t_env **env, const char *cwd)
+t_term_err	term_init(t_env **env, const char *cwd, bool is_login)
 {
 	t_term_err	status;
 
@@ -43,7 +43,7 @@ t_term_err	term_init(t_env **env, const char *cwd)
 		g_term.is_interactive = isatty(STDIN_FILENO) && isatty(STDERR_FILENO);
 		if (g_term.is_interactive
 		&& (status = term_init_env(env, cwd)) == TERM_EOK)
-			status = term_init_caps(env_get(*env, "TERM", 4));
+			status = term_init_caps(env_get(*env, "TERM", 4), is_login);
 	}
 	else
 		status = TERM_EALLOC;

@@ -39,9 +39,6 @@ t_term_err	clip_cut(void)
 	if (g_term.caps.selec.start != -1U && g_term.caps.selec.end != -1U
 	&& (status = clip_copy()) == TERM_EOK)
 	{
-		//ft_dprintf(2, "start: %lu len: %lu\n", g_term.caps.selec.start, g_term.clip.len);
-		//caps_goto(&g_term.caps, g_term.caps.origin + g_term.pos);
-		// TODO: Fix line_erase with full line (Actually it seems to work...)
 		term_line_del(g_term.caps.clip.len);
 		select_clear();
 	}

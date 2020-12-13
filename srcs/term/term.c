@@ -29,10 +29,11 @@ static int	ft_isatty(int fd)
 	return (ret);
 }
 
-t_term_err	term_init(t_env **env, const char *cwd)
+t_term_err	term_init(t_env **env, const char *cwd, bool is_login)
 {
 	t_term_err	status;
 
+	(void) is_login;
 	if ((g_term.line = line_new(0)))
 	{
 		status = TERM_EOK;

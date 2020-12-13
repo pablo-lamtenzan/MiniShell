@@ -62,7 +62,7 @@ char	*path_get(const char *name, const char *path, bool *err_alloc)
 	absolute = NULL;
 	if (name && *name && path_error(name) == 0)
 	{
-		if (*name == '/' || *name == '.')
+		if (*name == '/' || *name == '.' || !*path)
 		{
 			if (stat(name, &s) == 0 && s.st_mode & S_IXUSR)
 				absolute = ft_strdup(name);

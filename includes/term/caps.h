@@ -133,7 +133,7 @@ typedef struct	s_caps
 /*
 **					caps.c
 */
-bool				caps_load(t_caps *caps);
+bool				caps_load(t_caps *caps, bool is_login);
 
 /*
 **					caps_utils.c
