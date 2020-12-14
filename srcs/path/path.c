@@ -49,7 +49,7 @@ static bool		is_executable(const char *name, bool print_err)
 
 	valid = false;
 	if (!print_err)
-		valid = !S_ISDIR(st.st_mode) && (st.st_mode & S_IXUSR);
+		valid = !error && !S_ISDIR(st.st_mode) && (st.st_mode & S_IXUSR);
 	else if (error)
 		ft_dprintf(STDERR_FILENO, "%s: %s: %s\n",
 			g_session.name, name, strerror(errno));
