@@ -8,7 +8,15 @@
 
 # include <libft.h>
 
-char	*path_cat(const char *a, const char *b, bool *err_alloc);
-char	*path_get(const char *name, const char *path, bool *err_alloc);
+# include <string.h>
+# include <errno.h>
+
+# define PATH_DELIM	'/'
+
+
+char		*path_cat(char dest[PATH_MAX + 1], const char *a, const char *b);
+const char	*delim_skip(const char *path);
+
+bool		path_get(char **dest, const char *name, const char *path);
 
 #endif

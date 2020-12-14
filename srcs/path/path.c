@@ -15,94 +15,88 @@
 #include <job_control/session.h>
 #include <unistd.h>
 
-char	*path_cat(const char *a, const char *b, bool *err_alloc)
-{
-	const size_t	len = ft_strlen(a) + ft_strlen(b) + 1;
-	char			*cat;
-	char			*c;
 
-	if (len > PATH_MAX || (!(cat = ft_calloc(len + 1, sizeof(*cat)))
-		&& (*err_alloc = true)))
-		return (NULL);
-	c = cat;
-	while (*a)
-		*c++ = *a++;
-	*c++ = '/';
-	while (*b)
-		*c++ = *b++;
-	return (cat);
+
+// TODO: Match PATH_MAX check with redirections
+static bool		is_filepath(const char *name, bool print_err)
+{
+	size_t	path_len;
+	size_t	name_len;
+	const char	*next;
+	const char	*last;
+	bool	valid;
+
+	path_len = 0;
+	last = delim_skip(name);
+	while ((next = ft_strchr(last, PATH_DELIM))
+	&& (name_len = next - last) <= NAME_MAX)
+	{
+		path_len += name_len + 1;
+		last = delim_skip(next + 1);
+	}
+	if (!(valid = !(path_len > PATH_MAX || next || ft_strlen(last) > NAME_MAX))
+	&& print_err)
+		ft_dprintf(STDERR_FILENO, "%s: %s: Filename too long\n",
+			g_session.name, name);
+	return (valid);
 }
 
-static int		path_error(const char *name)
+static bool		is_executable(const char *name, bool print_err)
 {
-	struct stat	s;
-	int			res;
-	const int	st = stat(name, &s);
+	struct stat	st;
+	const bool	error = stat(name, &st);
+	bool		valid;
 
-	res = SUCCESS;
-	if (!ft_strncmp(name, "./", 2))
-	{
-		if (st == 0 && S_ISDIR(s.st_mode))
-			res = ft_dprintf(STDERR_FILENO, \
-				"%s: %s: Is a directory\n", g_session.name, name);
-		else if (st == 0 && !(s.st_mode & S_IXUSR))
-			res = ft_dprintf(STDERR_FILENO, \
-				"%s: %s: Permission denied\n", g_session.name, name);
-		else if (st)
-			res = ft_dprintf(STDERR_FILENO, \
-				"%s: %s: No such file or directory\n", g_session.name, name);
-	}
+	valid = false;
+	if (!print_err)
+		valid = !S_ISDIR(st.st_mode) && (st.st_mode & S_IXUSR);
+	else if (error)
+		ft_dprintf(STDERR_FILENO, "%s: %s: %s\n",
+			g_session.name, name, strerror(errno));
 	else
 	{
-		if (st == 0 && ft_strchr(name, '/') && S_ISDIR(s.st_mode))
-			res = ft_dprintf(STDERR_FILENO, \
-				"%s: %s: Is a directory\n", g_session.name, name);
-		else if (st && ft_strchr(name, '/'))
-			res = ft_dprintf(STDERR_FILENO, \
-				"%s: %s: No such file or directory\n", g_session.name, name);
+		if (S_ISDIR(st.st_mode))
+			ft_dprintf(STDERR_FILENO, "%s: %s: Is a directory\n",
+				g_session.name, name);
+		else if (!(st.st_mode & S_IXUSR))
+			ft_dprintf(STDERR_FILENO, "%s: %s: Permission denied\n",
+				g_session.name, name);
+		else
+			valid = true;
 	}
-	return (res);
+	return (valid);
 }
 
-char	*path_get(const char *name, const char *path, bool *err_alloc)
+bool	path_get(char **dest, const char *name, const char *path)
 {
+	static char	real[PATH_MAX + 1];
 	char		**paths;
-	char		*absolute;
-	struct stat	s;
 	size_t		i;
 
-	absolute = NULL;
-	if (name && *name && path_error(name) == 0)
+	i = 0;
+	*dest = NULL;
+	if (name && *name && is_filepath(name, true))
 	{
-		if (*name == '/' || *name == '.' || !*path)
+		if (*name == '/' || *name == '.' || !path || !*path)
 		{
-			if (stat(name, &s) == 0 && s.st_mode & S_IXUSR)
-				absolute = ft_strdup(name);
+			if (is_executable(name, true))
+				ft_strlcpy((*dest = real), name, sizeof(real));
+			return (true);
 		}
 		else if ((paths = ft_split(path, ':')))
 		{
-			i = 0;
-			while (paths[i]
-			&& (absolute = path_cat(paths[i], name, err_alloc))
-			&& !(stat(absolute, &s) == 0 && s.st_mode & S_IXUSR))
-			{
+			while (paths[i] && (!path_cat(real, paths[i], name)
+			|| !(is_filepath(real, false) && is_executable(real, false))))
 				i++;
-				free(absolute);
-			}
-			(void)err_alloc;
-			if (!absolute && *err_alloc == true)
-			{
-				strs_unload(paths);
-				return (NULL);
-			}
-			if (!paths[i])
-			{
-				absolute = NULL;
-				ft_dprintf(STDERR_FILENO, "%s: %s: command not found\n",
-						g_session.name, name);
-			}
+			if (paths[i])
+				*dest = real;
 			strs_unload(paths);
 		}
+		else
+			return (false);
 	}
-	return (absolute);
+	if (!*dest)
+		ft_dprintf(STDERR_FILENO, "%s: %s: command not found\n",
+			g_session.name, name);
+	return (true);
 }

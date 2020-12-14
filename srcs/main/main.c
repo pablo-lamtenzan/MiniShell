@@ -40,11 +40,11 @@ static void			handle_exec_error(t_bst *root, t_exec_status exec_st)
 	};
 	int						exit_val;
 
-	if (exec_st < sizeof(labels) / sizeof(*labels))
+	if (--exec_st >= 0 && exec_st < sizeof(labels) / sizeof(*labels))
 	{
 		exit_val = exit_vals[exec_st];
-		ft_dprintf(STDERR_FILENO, "[%d] %s: %s: %s\n",
-			exit_val, g_session.name, labels[exec_st], strerror(errno));
+		ft_dprintf(STDERR_FILENO, "%s: %s: %s\n",
+			g_session.name, labels[exec_st], strerror(errno));
 	}
 	else
 	{
@@ -82,11 +82,6 @@ void	exec(t_tok **tokens)
 	strs_unload(g_session.input_line);
 	g_session.input_line = NULL;
 }
-
-// Export 42sh
-// Local-Var
-// binary
-
 
 static bool				init(const char *name, const char **ep)
 {

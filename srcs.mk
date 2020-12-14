@@ -154,7 +154,7 @@ $(addprefix main/,\
 	async.c\
 )\
 $(addprefix path/,\
-	path.c\
+	path.c path_utils.c\
 )
 
 SRCS		=\

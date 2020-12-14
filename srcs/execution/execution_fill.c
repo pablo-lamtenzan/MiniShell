@@ -43,7 +43,7 @@ int					execute_child(t_exec *info)
 			return (st);
 		ret = execve(info->file_path, info->av, info->ep);
 		ft_dprintf(STDERR_FILENO, "%s: %s: execve returned '%d'!\n", \
-				g_session.name, info->av[0], ret);
+				g_session.name, info->file_path, ret);
 		exit(EXIT_FAILURE);
 	}
 	else if (pid < 0)
@@ -55,8 +55,6 @@ void				destroy_execve_args(t_exec *info)
 {
 	free((char **)info->ep);
 	info->ep = NULL;
-	free((void*)info->file_path);
-	info->file_path = NULL;
 	if (g_session.flags & BUILTIN)
 	{
 		strs_unload((char**)info->av);
@@ -80,17 +78,17 @@ bool				handle_subshell(t_executable exec, const char *name)
 t_exec_status		get_exec(t_exec *info, t_executable *exec)
 {
 	t_exec_status	status;
-	bool			err_alloc;
 
 	status = SUCCESS;
-	err_alloc = false;
 	if (!(*exec = builtin_get(info->av[0])))
 	{
-		if (!(info->file_path = path_get(info->av[0], \
-			env_get(info->session->env, "PATH", 4), &err_alloc)))
+		if (!path_get(&info->file_path, info->av[0], \
+			env_get(info->session->env, "PATH", 4)))
+			status = BAD_ALLOC;
+		else if (!info->file_path)
 		{
 			g_session.st = CMD_NOT_FOUND;
-			status = !err_alloc ? BAD_PATH : BAD_ALLOC;
+			status = BAD_PATH;
 		}
 		else if (!(info->ep = (char*const*)env_export(info->session->env)))
 			status = BAD_ALLOC;
