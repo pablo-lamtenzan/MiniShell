@@ -25,7 +25,7 @@
 # include <string.h>
 # include <unistd.h>
 
-void					handle_exec_error(t_bst *root, t_exec_status exec_st);
-void					syntax_error(t_lex_st *st);
+void	handle_exec_error(t_bst *root, t_exec_status exec_st);
+void	syntax_error(t_lex_st *st);
 
 #endif
