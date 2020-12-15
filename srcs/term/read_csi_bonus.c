@@ -75,7 +75,7 @@ t_term_err	term_read_csi(void)
 	if ((read_st = read(0, &c, 1)) != 1)
 		return ((read_st == 0) ? TERM_EEOF : TERM_EREAD);
 	if (c == '\0')
-		ft_dprintf(2, "[PROMPT][ESC] Alt + [\n");
+		return (TERM_EOK);
 	if ((action = keybind_get(g_keybinds.mods,
 		sizeof(g_keybinds.mods) / sizeof(*g_keybinds.mods), c)))
 		return (action());
