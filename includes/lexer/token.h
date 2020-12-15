@@ -50,7 +50,7 @@
 # define OP_REDIR_RD	8192
 # define OP_HEREDOC		16384
 
-# define OP_MREDIR		39720
+# define OP_MREDIR		30720
 
 typedef uint16_t	t_tok_t;
 
