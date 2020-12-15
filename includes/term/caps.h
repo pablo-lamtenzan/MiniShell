@@ -17,6 +17,8 @@
 # include <sys/stat.h>
 # include <sys/ioctl.h>
 
+# include <cross_platform_signals.h>
+
 # include <stdint.h>
 # include <stdbool.h>
 # include <unistd.h>
@@ -142,7 +144,8 @@ typedef struct		s_caps
 /*
 **					caps_bonus.c
 */
-bool				caps_load(t_caps *caps, bool is_login, sig_t on_resize);
+bool				caps_load(t_caps *caps, bool is_login,
+	void (*on_resize)(int));
 
 /*
 **					caps_utils_bonus.c

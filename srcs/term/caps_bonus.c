@@ -59,7 +59,7 @@ static bool	load_flags(t_flags *flags)
 **	returns true if the terminal appears to be supported or false otherwise.
 */
 
-bool		caps_load(t_caps *caps, bool is_login, sig_t on_resize)
+bool		caps_load(t_caps *caps, bool is_login, void (*on_resize)(int))
 {
 	bool	enabled;
 	char	*area;
