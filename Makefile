@@ -7,12 +7,12 @@ RM			=		/bin/rm
 
 include srcs.mk
 
-CFLAGS	=		-Wall -Wextra -Werror -g3 -fsanitize=address
-IFLAGS	=		-I$(INCDIR) -I$(LIBFT)/includes
-LFLAGS	=		-L$(LIBFT) -lft
+CFLAGS		=		-Wall -Wextra -Werror -g3 -fsanitize=address
+IFLAGS		=		-I$(INCDIR) -I$(LIBFT)/includes
+LFLAGS		=		-L$(LIBFT) -lft
 
-OBJS	=		$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
-OBJS_BONUS	=	$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS_BONUS))
+OBJS		=		$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
+OBJS_BONUS	=		$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS_BONUS))
 
 
 all:			libft $(NAME)
