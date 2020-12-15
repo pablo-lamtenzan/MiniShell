@@ -12,7 +12,7 @@
 
 #include <term/term.h>
 
-void				term_resize_window(int signal)
+static void			term_resize_window(int signal)
 {
 	struct winsize	s_winsz;
 	int				index;
@@ -57,7 +57,7 @@ static t_term_err	term_init_caps(const char *term_type, bool is_login)
 	g_term.caps.s_ios.c_cflag |= ONLCR;
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &g_term.caps.s_ios) == -1)
 		return (TERM_ESETATTR);
-	g_term.has_caps = caps_load(&g_term.caps, is_login);
+	g_term.has_caps = caps_load(&g_term.caps, is_login, &term_resize_window);
 	return (true);
 }
 

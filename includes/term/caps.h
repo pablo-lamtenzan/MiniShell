@@ -15,6 +15,7 @@
 
 # include <sys/ttydefaults.h>
 # include <sys/stat.h>
+# include <sys/ioctl.h>
 
 # include <stdint.h>
 # include <stdbool.h>
@@ -139,19 +140,19 @@ typedef struct		s_caps
 }					t_caps;
 
 /*
-**					caps.c
+**					caps_bonus.c
 */
-bool				caps_load(t_caps *caps, bool is_login);
+bool				caps_load(t_caps *caps, bool is_login, sig_t on_resize);
 
 /*
-**					caps_utils.c
+**					caps_utils_bonus.c
 */
 int					putc_err(int c);
 void				caps_delete(t_caps *caps, size_t n);
 ssize_t				caps_insert(t_caps *caps, const char *input, size_t length);
 
 /*
-**					caps_goto.c
+**					caps_goto_bonus.c
 */
 void				caps_goto_x(t_caps *caps, int pos);
 void				caps_goto_y(t_caps *caps, int pos);

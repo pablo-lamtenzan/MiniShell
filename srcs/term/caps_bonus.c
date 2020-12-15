@@ -10,9 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <term/term.h>
-#include <sys/ioctl.h>
-#include <signals_print.h>
+#include <term/caps.h>
 
 static bool	load_modes(t_modes *modes, char **area)
 {
@@ -61,7 +59,7 @@ static bool	load_flags(t_flags *flags)
 **	returns true if the terminal appears to be supported or false otherwise.
 */
 
-bool		caps_load(t_caps *caps, bool is_login)
+bool		caps_load(t_caps *caps, bool is_login, sig_t on_resize)
 {
 	bool	enabled;
 	char	*area;
@@ -82,7 +80,7 @@ bool		caps_load(t_caps *caps, bool is_login)
 			tputs(cap, 1, &putc_err);
 		if ((cap = tgetstr("i3", &area)))
 			tputs(cap, 1, &putc_err);
-		signal(SIGWINCH, &term_resize_window);
+		signal(SIGWINCH, on_resize);
 	}
 	return (enabled);
 }
