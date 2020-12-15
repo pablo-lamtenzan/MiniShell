@@ -14,15 +14,15 @@
 #include <job_control/session.h>
 
 /*
-** Expand the ~, ~+ and ~- patterns using the environment.
+**	Expand the ~, ~+ and ~- patterns using the environment.
 **
-** ~ -> $HOME if set or "" otherwise
-** ~+ -> $PWD if set
-** ~- -> $OLDPWD if set
+**	~ -> $HOME if set or "" otherwise
+**	~+ -> $PWD if set
+**	~- -> $OLDPWD if set
 **
-** This function sets the input pointer past the last parsed character.
+**	This function sets the input pointer past the last parsed character.
 **
-** returns the expanded value, or NULL if there is no expansion.
+**	returns the expanded value, or NULL if there is no expansion.
 */
 
 static const char	*tilde_expand(const char **input, t_env *env)
@@ -51,9 +51,9 @@ static const char	*tilde_expand(const char **input, t_env *env)
 }
 
 /*
-** Expand the $[KEY] pattern to it's value using the environment.
+**	Expand the $[KEY] pattern to it's value using the environment.
 **
-** returns the expanded value, or NULL if there is no expansion.
+**	returns the expanded value, or NULL if there is no expansion.
 */
 
 static const char	*var_expand(const char **input, t_env *env)
@@ -82,9 +82,9 @@ static const char	*var_expand(const char **input, t_env *env)
 }
 
 /*
-** Expand a string using tilde and variable expansion.
+**	Expand a string using tilde and variable expansion.
 **
-** returns the expanded c-string's pointer if succesfull or NULL otherwise.
+**	returns the expanded line's pointer if succesfull or NULL otherwise.
 */
 
 t_line				*string_expand(const char *input, t_env *env)
@@ -117,10 +117,10 @@ t_line				*string_expand(const char *input, t_env *env)
 }
 
 /*
-** Expand a parameter's parts that are not single quoted.
+**	Expand a parameter's parts that are not single quoted.
 **
-** The expanded data is freed and replaced.
-** returns true if successfull or false otherwise.
+**	The expanded data is freed and replaced.
+**	returns true if successfull or false otherwise.
 */
 
 bool				param_expand(t_tok *parts, t_env *env)
