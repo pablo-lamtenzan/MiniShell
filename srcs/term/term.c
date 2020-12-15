@@ -15,8 +15,6 @@
 static int	ft_isatty(int fd)
 {
 	struct stat	st;
-	struct stat	null_st;
-	int			null_fd;
 	int			ret;
 
 	ret = 0;
@@ -24,20 +22,7 @@ static int	ft_isatty(int fd)
 		ft_dprintf(STDERR_FILENO, "Could not stat fd %d: %s\n",
 			fd, strerror(errno));
 	else if (S_ISCHR(st.st_mode))
-	{
-		if ((null_fd = open(TERM_DEV_NULL, O_RDONLY)) == -1)
-			ft_dprintf(STDERR_FILENO, "Could not open "TERM_DEV_NULL": %s",
-				strerror(errno));
-		else
-		{
-			if (fstat(null_fd, &null_st))
-				ft_dprintf(STDERR_FILENO, "Could not stat fd %d: %s\n",
-					null_fd, strerror(errno));
-			else
-				ret = st.st_ino != null_st.st_ino;
-			close(null_fd);
-		}
-	}
+		ret = 1;
 	return (ret);
 }
 

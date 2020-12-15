@@ -35,11 +35,6 @@
 # endif
 
 /*
-**	Character device file to exclude during tty-detection.
-*/
-# define TERM_DEV_NULL	"/dev/null"
-
-/*
 **	The starting size of a newly allocated empty line.
 */
 # define TERM_LINE_SIZE	8
