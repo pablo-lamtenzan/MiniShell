@@ -12,6 +12,9 @@
 
 #include <minishell.h>
 
+t_session	g_session = {};
+t_term		g_term = {};
+
 void				exec(t_tok **tokens)
 {
 	t_exec_status	exec_st;

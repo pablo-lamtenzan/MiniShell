@@ -89,8 +89,7 @@ typedef struct		s_term
 	t_line		*msg;
 }					t_term;
 
-// TODO: Extern in main
-t_term				g_term;
+extern t_term		g_term;
 
 typedef t_term_err	(*t_term_action)(void);
 

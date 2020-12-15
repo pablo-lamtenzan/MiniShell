@@ -49,8 +49,7 @@ typedef struct			s_session
 	char				flags;
 }						t_session;
 
-// TODO: Extern in main
-t_session				g_session;
+extern t_session		g_session;
 
 t_session				*session_start(t_session *session,
 	const char *name, const char **envp);
