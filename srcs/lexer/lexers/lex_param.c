@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/20 13:20:59 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/10 22:55:25 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/11/20 13:20:59 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/10 22:55:25 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ static t_lex_err	lex_param_simple(t_tok **tokens, t_lex_st *st, t_tok_t type)
 	const char	*start;
 
 	start = st->input;
-
 	while (*st->input && !is_special(*st->input))
 		st->input++;
 	if (st->input == start)
@@ -43,7 +42,7 @@ static t_lex_err	lex_param_simple(t_tok **tokens, t_lex_st *st, t_tok_t type)
 ** (PARAM_QUOTED | PARAM_SIMPLE)+
 */
 
-t_lex_err		lex_param(t_tok **tokens, t_lex_st *st, t_tok_t type)
+t_lex_err			lex_param(t_tok **tokens, t_lex_st *st, t_tok_t type)
 {
 	t_lex_err	status;
 	t_tok		*param;

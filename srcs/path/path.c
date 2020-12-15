@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/13 05:46:07 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/13 01:15:37 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/11/13 05:46:07 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/13 01:15:37 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,13 @@
 #include <job_control/session.h>
 #include <unistd.h>
 
-
-
-// TODO: Match PATH_MAX check with redirections
 static bool		is_filepath(const char *name, bool print_err)
 {
-	size_t	path_len;
-	size_t	name_len;
+	size_t		path_len;
+	size_t		name_len;
 	const char	*next;
 	const char	*last;
-	bool	valid;
+	bool		valid;
 
 	path_len = 0;
 	last = delim_skip(name);
@@ -67,13 +64,22 @@ static bool		is_executable(const char *name, bool print_err)
 	return (valid);
 }
 
-bool	path_get(char **dest, const char *name, const char *path)
+static bool		path_find(char *real, const char *name, char **paths)
+{
+	size_t	i;
+
+	i = 0;
+	while (paths[i] && (!path_cat(real, paths[i], name)
+	|| !(is_filepath(real, false) && is_executable(real, false))))
+		i++;
+	return (paths[i] != NULL);
+}
+
+bool			path_get(char **dest, const char *name, const char *path)
 {
 	static char	real[PATH_MAX + 1];
 	char		**paths;
-	size_t		i;
 
-	i = 0;
 	*dest = NULL;
 	if (name && *name && is_filepath(name, true))
 	{
@@ -85,10 +91,7 @@ bool	path_get(char **dest, const char *name, const char *path)
 		}
 		else if ((paths = ft_split(path, ':')))
 		{
-			while (paths[i] && (!path_cat(real, paths[i], name)
-			|| !(is_filepath(real, false) && is_executable(real, false))))
-				i++;
-			if (paths[i])
+			if (path_find(real, name, paths))
 				*dest = real;
 			strs_unload(paths);
 		}

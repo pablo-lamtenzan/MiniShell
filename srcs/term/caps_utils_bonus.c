@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/04 12:16:46 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/12 16:33:07 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/12/04 12:16:46 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/12 16:33:07 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,10 @@ void		caps_delete(t_caps *caps, size_t n)
 			tputs(caps->modes.del_end, 1, &putc_err);
 	}
 }
-ssize_t		caps_insert(t_caps *caps, const char* input, size_t length)
+
+ssize_t		caps_insert(t_caps *caps, const char *input, size_t length)
 {
-	ssize_t	ret;
+	ssize_t		ret;
 	const bool	toggle_ins = !(caps->mode & CAPS_MINS);
 
 	ret = 0;

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cross_plateform_signals.h                          :+:      :+:    :+:   */
+/*   cross_platform_signals.h                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pablo <pablo@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CROSS_PLATEFORM_SIGNALS_H
-# define CROSS_PLATEFORM_SIGNALS_H
+#ifndef CROSS_PLATFORM_SIGNALS_H
+# define CROSS_PLATFORM_SIGNALS_H
 
 # include <signal.h>
 

@@ -5,13 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/04 12:16:46 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/13 00:40:13 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/12/04 12:16:46 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/13 00:40:13 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <term/term.h>
-void	cursor_goto_index(size_t index)
+
+void		cursor_goto_index(size_t index)
 {
 	t_pos	pos;
 

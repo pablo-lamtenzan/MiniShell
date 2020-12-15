@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/16 13:20:36 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/13 01:50:28 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/11/16 13:20:36 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/13 01:50:28 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ t_term_err	term_init(t_env **env, const char *cwd, bool is_login)
 {
 	t_term_err	status;
 
-	(void) is_login;
+	(void)is_login;
 	if ((g_term.line = line_new(0)))
 	{
 		status = TERM_EOK;
@@ -60,7 +60,7 @@ t_term_err	term_init(t_env **env, const char *cwd, bool is_login)
 	return (status);
 }
 
-void	term_destroy(void)
+void		term_destroy(void)
 {
 	if (g_term.caps.hist.next != g_term.line)
 		line_clear(&g_term.caps.hist.next);
@@ -86,5 +86,5 @@ t_term_err	term_prompt(const char **dst)
 		status = term_read();
 	if (dst)
 		*dst = g_term.line->data;
-	return(status);
+	return (status);
 }

@@ -46,13 +46,13 @@ typedef enum			e_exec_status
 */
 typedef enum			e_redir_status
 {
-	CONTINUE			= 0,
-	FILE_NOT_FOUND		= -1,
-	AMBIG_REDIRECT		= -2,
-	FLNAME_TO_LONG		= -3,
-	IS_A_DIR			= -4,
-	NO_PERMISSIONS		= -5,
-	RDR_BAD_ALLOC		= -6
+	CONTINUE = 0,
+	FILE_NOT_FOUND = -1,
+	AMBIG_REDIRECT = -2,
+	FLNAME_TO_LONG = -3,
+	IS_A_DIR = -4,
+	NO_PERMISSIONS = -5,
+	RDR_BAD_ALLOC = -6
 }						t_redir_status;
 
 #endif

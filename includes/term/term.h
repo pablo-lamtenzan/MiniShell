@@ -5,16 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/16 13:20:36 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/13 01:50:28 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/11/16 13:20:36 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/13 01:50:28 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TERM_H
 # define TERM_H
 
-// TODO: Migrate headers
-// TODO: ONOEOT (Discard ^D)
 # include <unistd.h>
 # include <fcntl.h>
 # include <string.h>
@@ -47,17 +45,6 @@
 # define TERM_LINE_SIZE	8
 
 /*
-**	Displayed before reading the first-line of a command.
-*/
-# define TERM_PS1\
-	C_D"["S_B""C_BRI"$USER"S_D""C_D""C_BYI"@"S_BGI"$DIRNAME"S_D"]"C_W"$"C_D" "
-
-/*
-**	Displayed before reading the second and subsquent lines of a command.
-*/
-# define TERM_PS2		"> "
-
-/*
 **	Default new-line character.
 */
 # define TERM_NL		'\n'
@@ -70,34 +57,27 @@
 /*
 **	Default exit message.
 */
-# define TERM_EXIT		"exit"TERM_ENDL
+# define TERM_EXIT		"exit\n"
 
 /*
 **	Exit message when there are stopped jobs.
 */
-# define TERM_EXIT_JOBS	TERM_ENDL"There are stopped jobs."TERM_ENDL
-
-/*
-**	Help message when encountering unknown ttys.
-*/
-# define TERM_HUNKNOWN	"Could not detect terminal type!"TERM_ENDL\
-	"Specify a terminal type with `setenv TERM <type>'\
-	to enable advanced capabilities."TERM_ENDL
+# define TERM_EXIT_JOBS	"\nThere are stopped jobs.\n"
 
 /*
 **	Terminal error codes.
 */
 typedef enum		e_term_err
 {
-	TERM_ESETATTR	= -7,
-	TERM_EGETATTR	= -6,
-	TERM_EGETENT	= -5,
-	TERM_EALLOC		= -3,
-	TERM_EWRITE		= -2,
-	TERM_EREAD		= -1,
-	TERM_EEOF		= 0,
-	TERM_EOK		= 1,
-	TERM_ENL		= 2
+	TERM_ESETATTR = -7,
+	TERM_EGETATTR = -6,
+	TERM_EGETENT = -5,
+	TERM_EALLOC = -3,
+	TERM_EWRITE = -2,
+	TERM_EREAD = -1,
+	TERM_EEOF = 0,
+	TERM_EOK = 1,
+	TERM_ENL = 2
 }					t_term_err;
 
 typedef struct		s_term
@@ -109,7 +89,7 @@ typedef struct		s_term
 	t_line		*msg;
 }					t_term;
 
-// TODO: Fix multiple definitions from header inclusion
+// TODO: Extern in main
 t_term				g_term;
 
 typedef t_term_err	(*t_term_action)(void);
@@ -123,6 +103,7 @@ typedef struct		s_keybind
 /*
 **					term.c / term_bonus.c
 */
+void				term_resize_window(int signal);
 t_term_err			term_init(t_env **env, const char *cwd, bool is_login);
 void				term_destroy(void);
 t_term_err			term_prompt(const char **dest);
@@ -162,7 +143,10 @@ t_term_err			term_read_esc(void);
 **					read_csi_bonus.c
 */
 t_term_err			term_read_csi(void);
-
+t_term_err			term_read_mod_none(void);
+t_term_err			term_read_mod_shift(void);
+t_term_err			term_read_mod_alt(void);
+t_term_err			term_read_del(void);
 
 /*
 **					clear_bonus.c

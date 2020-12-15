@@ -1,34 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   hist.h                                             :+:      :+:    :+:   */
+/*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/16 13:20:36 by chamada           #+#    #+#             */
-/*   Updated: 2020/12/01 20:45:08 by chamada          ###   ########lyon.fr   */
+/*   Created: 2020/12/14 22:41:13 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/14 22:41:26 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HIST_H
-# define HIST_H
+#ifndef MINISHELL_H
+# define MINISHELL_H
 
-# include <term/line.h>
+# include <term/term.h>
+# include <lexer/lexer.h>
+# include <execution/execution.h>
+# include <separators.h>
+# include <builtins.h>
+# include <signals_print.h>
+# include <job_control/utils.h>
+# include <signal_handler.h>
 
-typedef struct		s_hist
-{
-	t_line	*head;
-	t_line	*last;
-	t_line	*curr;
-	t_line	*next;
-}					t_hist;
+# include <string.h>
+# include <unistd.h>
 
-/*
-**					hist.c
-*/
-void				hist_add(t_hist *hist, t_line *line);
-void				hist_pop(t_hist *hist);
-void				hist_clear(t_hist *hist);
-void				hist_commit(t_hist *hist, t_line *line);
+void					handle_exec_error(t_bst *root, t_exec_status exec_st);
+void					syntax_error(t_lex_st *st);
 
 #endif

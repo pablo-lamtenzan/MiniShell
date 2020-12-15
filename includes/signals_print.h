@@ -24,7 +24,7 @@
 ** Local
 */
 # include <job_control/group.h>
-# include <cross_plateform_signals.h>
+# include <cross_platform_signals.h>
 # include <libft.h>
 
 /*

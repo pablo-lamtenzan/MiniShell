@@ -5,14 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/14 01:31:51 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/12 20:59:15 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/11/14 01:31:51 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/12 20:59:15 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <expansion.h>
 
-static char		*param_export(t_tok *param, bool free_params)
+static char	*param_export(t_tok *param, bool free_params)
 {
 	t_line	*line;
 	char	*arg;
@@ -27,8 +27,7 @@ static char		*param_export(t_tok *param, bool free_params)
 		{
 			if (free_params)
 				token_clr(&curr);
-			line_clear(&line);
-			return (NULL);
+			return (line_clear(&line));
 		}
 		if (free_params)
 		{
@@ -52,7 +51,7 @@ static char		*param_export(t_tok *param, bool free_params)
 ** returns true if successfull or false otherwise.
 */
 
-static bool			var_assign(t_tok **params, t_env **env)
+static bool	var_assign(t_tok **params, t_env **env)
 {
 	char	status;
 	t_tok	*param;
@@ -61,8 +60,8 @@ static bool			var_assign(t_tok **params, t_env **env)
 	char	*assignment;
 
 	status = 1;
-	while (status == 1 && (param = *params) && (part = param->data)
-	&& !(part->type & (TOK_MQUOTED))
+	while (status == 1 && (param = *params)
+	&& (part = param->data) && !(part->type & (TOK_MQUOTED))
 	&& (key_len = env_key_len(part->data, true))
 	&& (((char*)part->data)[key_len] == '='))
 	{
@@ -87,7 +86,7 @@ static bool			var_assign(t_tok **params, t_env **env)
 ** returns a pointer to the array if successfull, or NULL otherwise.
 */
 
-static char		**args_export(t_line **words, int *ac)
+static char	**args_export(t_line **words, int *ac)
 {
 	const size_t	length = line_count(*words);
 	char			**av;
@@ -109,7 +108,6 @@ static char		**args_export(t_line **words, int *ac)
 	return (av);
 }
 
-
 /*
 **	Expand command tokens into a NULL-terminated c-string array.
 **
@@ -117,7 +115,7 @@ static char		**args_export(t_line **words, int *ac)
 **	returns the allocated c-string array if successfull, or NULL otherwise
 */
 
-char				**tokens_expand(t_tok **params, t_env **env, int *ac)
+char		**tokens_expand(t_tok **params, t_env **env, int *ac)
 {
 	t_tok	*param;
 	t_line	*args;

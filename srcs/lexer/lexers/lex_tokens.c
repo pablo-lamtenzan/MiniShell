@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/20 13:20:59 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/10 22:51:48 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/11/20 13:20:59 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/10 22:51:48 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ static t_lex_err	lex_sep(t_tok **tokens, t_lex_st *st)
 {
 	t_lex_err	status;
 	t_tok		*sep;
+
 	if (*st->input == '\0')
 		status = LEX_EEND;
 	else if (*st->input == ';' || *st->input == '\n')
@@ -51,6 +52,7 @@ static t_lex_err	lex_sep(t_tok **tokens, t_lex_st *st)
 static t_lex_err	lex_token(t_tok **tokens, t_lex_st *st)
 {
 	t_lex_err	status;
+
 	if ((status = lex_cmd(tokens, st)) == LEX_EOK)
 	{
 		while ((status = lex_ifs(st)) == LEX_EOK

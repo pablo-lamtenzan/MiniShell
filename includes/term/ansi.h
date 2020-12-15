@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/06 00:03:30 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/06 08:35:25 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/12/06 00:03:30 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/06 08:35:25 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,30 +25,6 @@
 */
 # define C_D			"\033[39m"
 /*
-**	Light green
-*/
-# define C_GL			"\033[92m"
-/*
-**	Blue
-*/
-# define C_B			"\033[34m"
-/*
-**	Light Blue
-*/
-# define C_BL			"\033[94m"
-/*
-**	Yellow
-*/
-# define C_Y			"\033[33m"
-/*
-** Red
-*/
-# define C_R			"\033[0;31m"
-/*
-** White
-*/
-# define C_W			"\033[0;37m"
-/*
 **	Default style
 */
 # define S_D			"\033[0m"
@@ -57,24 +33,16 @@
 */
 # define S_B			"\033[1m"
 /*
-** Bold purple intesity
+**	Green intensity
 */
-# define C_PI			"\033[1;95m"
+# define C_GI			"\033[92m"
 /*
-** Bold white intesity
+**	Red bright intensity
 */
-# define C_WI			"\033[1;97m"
+# define C_RI			"\033[91m"
 /*
-** Bold green intensity
+**	Yellow bright intensity
 */
-# define S_BGI			"\033[1;92m"
-/*
-** Bold red intensity
-*/
-# define C_BRI			"\033[1;91m"
-/*
-** Bold yellow intensity
-*/
-# define C_BYI			"\033[1;93m"
+# define C_YI			"\033[93m"
 
 #endif

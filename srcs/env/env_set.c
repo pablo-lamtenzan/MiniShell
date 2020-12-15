@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/20 13:20:59 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/07 15:38:01 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/11/20 13:20:59 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/07 15:38:01 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,13 @@ static t_env	*env_get_entry(t_env **env, const char *key, size_t key_length)
 ** returns 0 if the assignment is invalid, 1 if successful and -1 otherwise.
 */
 
-char		env_assign(t_env **env, const char *assignment,
+char			env_assign(t_env **env, const char *assignment,
 	bool exported, bool strict)
 {
-	size_t			key_len = env_key_len(assignment, strict);
+	const size_t	key_len = env_key_len(assignment, strict);
 	t_env			*entry;
 
-	if (!key_len || assignment[key_len] != ENV_OP_ASSIGN)
+	if (!key_len || assignment[key_len] != ENV_ASGN)
 		return (0);
 	if (!(entry = env_get_entry(env, assignment, key_len)))
 		return (-1);
@@ -84,8 +84,7 @@ const char		*env_set(t_env **env,
 		return (NULL);
 	entry->exported = exported;
 	if (!value && entry->key)
-		return (entry->key + key_length
-			+ (entry->key[key_length] == ENV_OP_ASSIGN));
+		return (entry->key + key_length + (entry->key[key_length] == ENV_ASGN));
 	entry->key_length = key_length;
 	free(entry->key);
 	if (!(entry->key = malloc(sizeof(*entry->key) * data_size)))
@@ -94,7 +93,7 @@ const char		*env_set(t_env **env,
 	entry->key[data_size - 1] = '\0';
 	if (value)
 	{
-		entry->key[key_length] = ENV_OP_ASSIGN;
+		entry->key[key_length] = ENV_ASGN;
 		ft_memcpy(entry->key + key_length + 1, value, value_length);
 		return (entry->key + key_length + 1);
 	}

@@ -5,12 +5,32 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/04 12:16:46 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/13 01:50:28 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/12/04 12:16:46 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/13 01:50:28 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <term/term.h>
+
+void				term_resize_window(int signal)
+{
+	struct winsize	s_winsz;
+	int				index;
+
+	(void)signal;
+	if (ioctl(0, TIOCGWINSZ, &s_winsz) != -1)
+	{
+		g_term.caps.width = s_winsz.ws_col;
+		g_term.caps.height = s_winsz.ws_row;
+		index = g_term.caps.index;
+		caps_goto(&g_term.caps, (t_pos){0, 0});
+		g_term.caps.index = 0;
+		tputs(g_term.caps.ctrls.del_eos, 1, &putc_err);
+		term_origin(g_term.msg->data, g_term.msg->len);
+		term_write(g_term.line->data, g_term.line->len);
+		cursor_goto_index(index);
+	}
+}
 
 /*
 **	Detect and init the terminal's capabilities
@@ -20,12 +40,14 @@
 
 static t_term_err	term_init_caps(const char *term_type, bool is_login)
 {
-	char		term_buff[MAX_ENTRY + 1];
-	int			ent_st;
+	char				term_buff[MAX_ENTRY + 1];
+	int					ent_st;
 
 	if (!term_type || (ent_st = tgetent(term_buff, term_type)) == 0)
-		return (write(STDERR_FILENO, TERM_HUNKNOWN, sizeof(TERM_HUNKNOWN) - 1)
+	{
+		return (write(STDERR_FILENO, "Could not detect terminal type!", 31)
 			== -1 ? TERM_EWRITE : TERM_EOK);
+	}
 	if (ent_st == -1)
 		return (TERM_ESETATTR);
 	if (tcgetattr(STDIN_FILENO, &g_term.caps.s_ios) == -1)
@@ -38,9 +60,11 @@ static t_term_err	term_init_caps(const char *term_type, bool is_login)
 	g_term.has_caps = caps_load(&g_term.caps, is_login);
 	return (true);
 }
-t_term_err	term_init(t_env **env, const char *cwd, bool is_login)
+
+t_term_err			term_init(t_env **env, const char *cwd, bool is_login)
 {
 	t_term_err	status;
+
 	if ((g_term.line = line_new(TERM_LINE_SIZE)))
 	{
 		status = TERM_EOK;
@@ -59,7 +83,7 @@ t_term_err	term_init(t_env **env, const char *cwd, bool is_login)
 	return (status);
 }
 
-void	term_destroy(void)
+void				term_destroy(void)
 {
 	if (g_term.caps.hist.next != g_term.line)
 		line_clear(&g_term.caps.hist.next);
@@ -71,11 +95,12 @@ void	term_destroy(void)
 	if (g_term.is_interactive)
 		write(STDOUT_FILENO, TERM_EXIT, sizeof(TERM_EXIT) - 1);
 }
+
 /*
 **	Prompt the user of an interactive terminal.
 */
 
-t_term_err	term_prompt(const char **dst)
+t_term_err			term_prompt(const char **dst)
 {
 	t_term_err	status;
 
@@ -87,5 +112,5 @@ t_term_err	term_prompt(const char **dst)
 		if (dst)
 			*dst = g_term.line->data;
 	}
-	return(status);
+	return (status);
 }

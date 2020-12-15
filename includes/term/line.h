@@ -36,7 +36,7 @@ void			line_add_back(t_line **line_list, t_line *line);
 
 size_t			line_count(t_line *line_list);
 
-void			line_clear(t_line **line);
+void			*line_clear(t_line **line);
 void			lines_clear(t_line **line_list);
 
 /*

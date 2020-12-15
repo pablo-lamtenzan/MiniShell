@@ -5,12 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/04 12:16:46 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/09 16:49:07 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/12/04 12:16:46 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/09 16:49:07 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <term/term.h>
+#include <term/keybinds.h>
 
 /*
 **	Control key-strokes.
@@ -18,26 +18,10 @@
 
 static t_term_err	term_cntrl(char c)
 {
-	static const t_keybind	keys[] =
-	{
-		{CINTR, &term_interrupt},
-		{CERASE, &term_backspace},
-		{CEOF, &term_eof},
-		{CWERASE, &term_line_kill},
-		{CKILL, &term_line_kill},
-		{CTRL('h'), &term_backspace},
-		{CTRL('l'), &term_clear_screen},
-		{CTRL('j'), &term_line_new},
-		{CTRL('a'), &cursor_start_line},
-		{CTRL('e'), &cursor_end_line},
-		{CTRL('y'), &clip_paste},
-		{CTRL('k'), &clip_cut},
-		{CTRL('p'), &term_prev_line},
-		{CTRL('n'), &term_next_line}
-	};
 	t_term_action	action;
 
-	if ((action = keybind_get(keys, sizeof(keys) / sizeof(*keys), c)))
+	if ((action = keybind_get(g_keybinds.cntrls,
+		sizeof(g_keybinds.cntrls) / sizeof(*g_keybinds.cntrls), c)))
 		return (action());
 	return (TERM_EOK);
 }
@@ -73,7 +57,7 @@ static t_term_err	post_read(t_term_err status)
 {
 	if (g_term.caps.mode & CAPS_MINS)
 	{
-		tputs(g_term.caps.modes.insert_end, 1,  &putc_err);
+		tputs(g_term.caps.modes.insert_end, 1, &putc_err);
 		g_term.caps.mode &= ~CAPS_MINS;
 	}
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &g_term.caps.s_ios_orig) == -1
@@ -86,7 +70,7 @@ static t_term_err	post_read(t_term_err status)
 **	Read and parse an interactive terminal's input.
 */
 
-t_term_err	term_read_caps(void)
+t_term_err			term_read_caps(void)
 {
 	t_term_err	status;
 	ssize_t		read_st;

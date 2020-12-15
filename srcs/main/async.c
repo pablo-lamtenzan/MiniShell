@@ -13,7 +13,7 @@
 #include <job_control/session.h>
 #include <term/term.h>
 #include <signals_print.h>
-#include <cross_plateform_signals.h>
+#include <cross_platform_signals.h>
 #include <signal_handler.h>
 
 void			suspend_process(int signal)
@@ -48,11 +48,11 @@ void			ignore_all_signals(void)
 		SIGILL, SIGABRT, SIGBUS, SIGFPE, SIGUSR1, SIGSEGV,
 		SIGUSR2, SIGPIPE, SIGALRM, SIGCONT, SIGTTIN, SIGTTOU,
 		SIGURG, SIGXCPU, SIGXFSZ, SIGVTALRM, SIGPROF, SIGWINCH,
-		};
+	};
 
 	i = 0;
 	while (i < sizeof(cross_signals) / sizeof(*cross_signals))
-		signal(cross_signals[i++], SIG_IGN);	
+		signal(cross_signals[i++], SIG_IGN);
 }
 
 void			init_signal_handler(void)

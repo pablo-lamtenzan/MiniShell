@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/09 16:34:40 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/09 16:34:40 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/12/09 16:34:40 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/09 16:34:40 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ void		caps_goto_y(t_caps *caps, int pos)
 		caps->cursor.pos.y = pos;
 	}
 }
+
 /*
 **	Set the cursor's real position to pos.
 */

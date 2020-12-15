@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/16 12:10:57 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/10 00:09:06 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/11/16 12:10:57 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/10 00:09:06 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,14 +99,12 @@ t_line				*string_expand(const char *input, t_env *env)
 	i = input;
 	while (*(n = i))
 	{
-		if (!((val = var_expand(&n, env)) || (val = tilde_expand(&n, env))))
+		if (!((val = var_expand(&n, env))
+		|| (val = tilde_expand(&n, env))))
 			i++;
 		else if ((input != i && !line_insert(exp, exp->len, input, i - input))
 		|| (*val && !line_insert(exp, exp->len, val, ft_strlen(val))))
-		{
-			line_clear(&exp);
-			return (NULL);
-		}
+			return (line_clear(&exp));
 		else
 		{
 			input = n;

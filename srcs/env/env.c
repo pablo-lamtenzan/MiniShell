@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/20 13:20:59 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/10 21:00:42 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/11/20 13:20:59 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/10 21:00:42 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ size_t	env_key_len(const char *key, bool strict)
 	{
 		i = key;
 		if (!ft_isdigit(*i))
-			while(ft_isalnum(*i) || *i == '_')
+			while (ft_isalnum(*i) || *i == '_')
 				i++;
 	}
 	else if ((i = ft_strchr(key, '=')) == NULL)
@@ -64,22 +64,6 @@ t_env	*env_new(char *key, bool exported, size_t key_len)
 		new->next = NULL;
 	}
 	return (new ? new : NULL);
-}
-
-/*
-** Return the number of nodes in env
-*/
-
-size_t	env_size(t_env *env)
-{
-	size_t	size;
-	t_env	*cp;
-
-	size = 0;
-	cp = env;
-	while (cp && (cp = cp->next))
-		size++;
-	return (size);
 }
 
 /*

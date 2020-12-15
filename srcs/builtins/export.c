@@ -18,7 +18,7 @@ static bool	print_env(int fd, t_env *env)
 	{
 		if (env->exported)
 		{
-			if (env->key[env->key_length] == ENV_OP_ASSIGN)
+			if (env->key[env->key_length] == ENV_ASGN)
 				ft_dprintf(fd, "declare -x %.*s=\"%s\"\n",
 					(int)env->key_length, env->key, env->key + \
 						env->key_length + 1);

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/20 13:20:59 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/10 22:51:48 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/11/20 13:20:59 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/10 22:51:48 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 ** ">" | ">>" | "<"
 */
 
-static t_tok_t	lex_redir_op_type(t_lex_st *st)
+static t_tok_t		lex_redir_op_type(t_lex_st *st)
 {
 	t_tok_t		type;
 
@@ -97,7 +97,7 @@ static t_lex_err	lex_heredoc(t_tok **tokens, t_lex_st *st)
 ** REDIR | HEREDOC
 */
 
-t_lex_err		lex_inline(t_tok **tokens, t_lex_st *st)
+t_lex_err			lex_inline(t_tok **tokens, t_lex_st *st)
 {
 	t_lex_err		status;
 

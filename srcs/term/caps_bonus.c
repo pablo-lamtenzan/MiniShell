@@ -54,25 +54,6 @@ static bool	load_flags(t_flags *flags)
 	};
 	return (true);
 }
-static void		update_dimensions(int signal)
-{
-	struct winsize	s_winsz;
-	int				index;
-
-	(void)signal;
-	if (ioctl(0, TIOCGWINSZ, &s_winsz) != -1)
-	{
-		g_term.caps.width = s_winsz.ws_col;
-		g_term.caps.height = s_winsz.ws_row;
-		index = g_term.caps.index;
-		caps_goto(&g_term.caps, (t_pos){0, 0});
-		g_term.caps.index = 0;
-		tputs(g_term.caps.ctrls.del_eos, 1, &putc_err);
-		term_origin(g_term.msg->data, g_term.msg->len);
-		term_write(g_term.line->data, g_term.line->len);
-		cursor_goto_index(index);
-	}
-}
 
 /*
 **	Detect and load the terminal's capabilities.
@@ -101,7 +82,7 @@ bool		caps_load(t_caps *caps, bool is_login)
 			tputs(cap, 1, &putc_err);
 		if ((cap = tgetstr("i3", &area)))
 			tputs(cap, 1, &putc_err);
-		signal(SIGWINCH, &update_dimensions);
+		signal(SIGWINCH, &term_resize_window);
 	}
 	return (enabled);
 }

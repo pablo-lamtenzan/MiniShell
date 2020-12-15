@@ -44,6 +44,7 @@ t_term_err	clip_cut(void)
 	}
 	return (TERM_EOK);
 }
+
 t_term_err	clip_paste(void)
 {
 	t_term_err	status;
@@ -52,7 +53,8 @@ t_term_err	clip_paste(void)
 	if (g_term.caps.clip.len)
 	{
 		select_clear();
-		if (!line_insert(g_term.line, g_term.caps.index, g_term.caps.clip.data, g_term.caps.clip.len))
+		if (!line_insert(g_term.line, g_term.caps.index,
+			g_term.caps.clip.data, g_term.caps.clip.len))
 			status = TERM_EALLOC;
 		else
 			status = term_write(g_term.caps.clip.data, g_term.caps.clip.len);

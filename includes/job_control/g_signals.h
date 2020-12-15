@@ -16,7 +16,7 @@
 /*
 ** Local
 */
-# include <cross_plateform_signals.h>
+# include <cross_platform_signals.h>
 
 /*
 ** Kill globals

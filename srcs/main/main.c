@@ -10,70 +10,28 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <term/term.h>
-#include <lexer/lexer.h>
-#include <execution/execution.h>
-#include <separators.h>
-#include <builtins.h>
-#include <signals_print.h>
-#include <job_control/utils.h>
-#include <signal_handler.h>
+#include <minishell.h>
 
-#include <string.h>
-#include <unistd.h>
-
-static void			handle_exec_error(t_bst *root, t_exec_status exec_st)
-{
-	static const char*		labels[] = {
-		"malloc",
-		"close",
-		"pipe",
-		"dup2",
-		"fork"
-	};
-	static const int		exit_vals[] = {
-		SIGNAL_BASE + SIGABRT,
-		SIGNAL_BASE + SIGSYS,
-		SIGNAL_BASE + SIGSYS,
-		SIGNAL_BASE + SIGSYS,
-		SIGNAL_BASE + SIGSYS
-	};
-	int						exit_val;
-
-	if (--exec_st >= 0 && exec_st < sizeof(labels) / sizeof(*labels))
-	{
-		exit_val = exit_vals[exec_st];
-		ft_dprintf(STDERR_FILENO, "%s: %s: %s\n",
-			g_session.name, labels[exec_st], strerror(errno));
-	}
-	else
-	{
-		exit_val = exec_st;
-		ft_dprintf(STDERR_FILENO, "%s: unknown fatal error: %d!\n",
-			g_session.name, exit_val);
-	}
-	free_bst(root);
-	term_destroy();
-	session_end(&g_session);
-	exit(exit_val);
-}
-
-void	exec(t_tok **tokens)
+void				exec(t_tok **tokens)
 {
 	t_exec_status	exec_st;
 	int				flags[3];
 	t_tok			*exec_tokens;
 	t_bst			*root;
 
-	g_session.input_line_index = 0;
-	g_session.input_line = split_separators(g_term.line->data);
 	ft_bzero(flags, sizeof(flags));
-	while ((exec_tokens = handle_separators(tokens, &flags[STATUS], &flags[PARETHESES_NB])))
+	while ((exec_tokens = \
+		handle_separators(tokens, &flags[STATUS], &flags[PARETHESES_NB])))
 	{
-		if (handle_conditionals(flags[STATUS], &flags[CONDITIONALS], flags[PARETHESES_NB]))
+		if (handle_conditionals(flags[STATUS], &flags[CONDITIONALS],
+			flags[PARETHESES_NB]))
 		{
-			if ((exec_st = execute_bst(root = bst(exec_tokens))) != SUCCESS)
+			root = bst(exec_tokens);
+			if ((exec_st = execute_bst(root)) != SUCCESS)
+			{
+				token_clr(&exec_tokens);
 				handle_exec_error(root, exec_st);
+			}
 			free_bst(root);
 		}
 		else
@@ -83,7 +41,7 @@ void	exec(t_tok **tokens)
 	g_session.input_line = NULL;
 }
 
-static bool				init(const char *name, const char **ep)
+static bool			init(const char *name, const char **ep)
 {
 	t_term_err	status;
 	bool		is_login;
@@ -104,24 +62,9 @@ static bool				init(const char *name, const char **ep)
 	return (false);
 }
 
-void					syntax_error(t_lex_st *st)
+static t_line		*msg_get(void)
 {
-	const char			*input;
-
-	if (*st->input == '\n' || *st->input == '\0')
-		input = "newline";
-	else
-		input = st->input;
-	ft_dprintf(2, "%s: syntax error near unexpected token `%s'\n",
-		g_session.name, input);
-	g_session.st = STD_ERROR;
-	ft_bzero(st, sizeof(*st));
-}
-
-static t_line	*msg_get(void)
-{
-	const char* const	src =
-		env_get(g_session.env, "PS1", 3);
+	const char *const	src = env_get(g_session.env, "PS1", 3);
 
 	return (src ? string_expand(src, g_session.env) : NULL);
 }
@@ -141,6 +84,8 @@ static t_term_err	routine(void)
 	&& (!g_term.is_interactive || (g_term.msg = msg_get()))
 	&& (status = term_prompt(&lex_data.input)) == TERM_ENL)
 	{
+		g_session.input_line_index = 0;
+		g_session.input_line = split_separators(g_term.line->data);
 		if ((lex_status = lex_tokens(&tokens, &lex_data)) == LEX_EOK)
 			exec(&tokens);
 		else if (lex_status == LEX_ESYNTAX)
@@ -153,7 +98,7 @@ static t_term_err	routine(void)
 		? TERM_EALLOC : status);
 }
 
-int						main(int ac, const char **av, const char **ep)
+int					main(int ac, const char **av, const char **ep)
 {
 	t_term_err	status;
 

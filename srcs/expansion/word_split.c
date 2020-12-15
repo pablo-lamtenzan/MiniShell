@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/16 12:10:57 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/12 22:30:18 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/11/16 12:10:57 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/12 22:30:18 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static bool	str_split(t_line **curr_word, const char *data)
 ** returns a list of separated words if successfull, or NULL otherwise.
 */
 
-static bool param_split(t_line **words, t_tok **parts)
+static bool	param_split(t_line **words, t_tok **parts)
 {
 	t_tok		*part;
 	t_line		*curr;
@@ -91,7 +91,7 @@ static bool param_split(t_line **words, t_tok **parts)
 ** returns a list of separated words if successfull, or NULL otherwise.
 */
 
-t_line			*word_split(t_tok **params)
+t_line		*word_split(t_tok **params)
 {
 	t_line	*words;
 	t_line	*new_words;
@@ -104,8 +104,7 @@ t_line			*word_split(t_tok **params)
 		if (!(param_split(&new_words, (t_tok **)&param->data)))
 		{
 			token_clr(&param);
-			line_clear(&words);
-			return (NULL);
+			return (line_clear(&words));
 		}
 		if (new_words)
 			line_add_back(&words, new_words);

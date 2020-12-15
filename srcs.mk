@@ -33,10 +33,11 @@ $(addprefix $(INCDIR)/,\
 		execution.h\
 	)\
 	builtins.h\
-	cross_plateform_signals.h\
+	cross_platform_signals.h\
 	env.h\
 	errors.h\
 	expansion.h\
+	minishell.h\
 	path.h\
 	separators.h\
 	signal_handler.h\
@@ -152,6 +153,7 @@ $(addprefix signals_print/,\
 $(addprefix main/,\
 	main.c\
 	async.c\
+	errors.c\
 )\
 $(addprefix path/,\
 	path.c path_utils.c\

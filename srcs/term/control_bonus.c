@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/09 11:58:30 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/12 23:08:53 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/12/09 11:58:30 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/12 23:08:53 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ t_term_err	term_interrupt(void)
 	t_term_err	status;
 
 	status = TERM_EOK;
-	if (write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) -1) == -1)
+	if (write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) - 1) == -1)
 		return (TERM_EWRITE);
 	if (!g_term.msg)
 		g_term.caps.cursor.origin = g_term.caps.cursor.zero;

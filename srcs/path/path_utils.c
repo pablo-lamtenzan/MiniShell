@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   path_utils.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/12/14 17:33:51 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/14 17:33:52 by chamada          ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <path.h>
 
-char		*path_cat(char dest[PATH_MAX + 1], const char *a, const char *b)
+char		*path_cat(char *dest, const char *a, const char *b)
 {
 	const size_t	len = ft_strlen(a) + ft_strlen(b) + 1;
 	char			*c;

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/16 13:20:36 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/11 17:20:21 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/11/16 13:20:36 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/11 17:20:21 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void		term_perror(t_term_err err)
 {
-	static const char*	msgs[] = {
+	static const char	*msgs[] = {
 		"Read error",
 		"Write error",
 		"Allocation error",
@@ -31,12 +31,16 @@ void		term_perror(t_term_err err)
 
 t_term_err	term_init_env(t_env **env, const char *cwd)
 {
-	char *const	dirname = ft_basename(cwd);
-	const bool	success = dirname
-		&& env_set(env, "DIRNAME", dirname, false)
-		&& env_set(env, "PS1", TERM_PS1, false)
-		&& env_set(env, "PS2", TERM_PS2, false);
+	static const char	*ps[2] = {
+		C_D"["S_B""C_RI"$USER"C_YI"@"C_GI"$DIRNAME"S_D""C_D"]$ ",
+		"> ",
+	};
+	char *const			dirname = ft_basename(cwd);
+	bool				success;
 
+	success = dirname && env_set(env, "DIRNAME", dirname, false)
+		&& env_set(env, "PS1", ps[0], false)
+		&& env_set(env, "PS2", ps[1], false);
 	free(dirname);
 	return ((success) ? TERM_EOK : TERM_EALLOC);
 }

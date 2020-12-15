@@ -18,7 +18,7 @@
 #include <job_control/jc_builtins.h>
 #include <job_control/background.h>
 #include <job_control/utils.h>
-#include <cross_plateform_signals.h>
+#include <cross_platform_signals.h>
 #include <signal_handler.h>
 #include <errors.h>
 

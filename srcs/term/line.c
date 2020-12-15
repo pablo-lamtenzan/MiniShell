@@ -6,7 +6,7 @@
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/18 19:30:00 by chamada           #+#    #+#             */
-/*   Updated: 2020/09/26 15:15:07 by chamada          ###   ########.fr       */
+/*   Updated: 2020/09/26 15:15:07 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ size_t	line_count(t_line *line_list)
 	return (count);
 }
 
-void	line_clear(t_line **line)
+void	*line_clear(t_line **line)
 {
 	if (*line)
 	{
@@ -70,6 +70,7 @@ void	line_clear(t_line **line)
 		free(*line);
 		*line = NULL;
 	}
+	return (NULL);
 }
 
 void	lines_clear(t_line **line_list)

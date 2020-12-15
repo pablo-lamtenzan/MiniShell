@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/20 13:20:59 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/10 22:51:48 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/11/20 13:20:59 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/10 22:51:48 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ static t_lex_err	lex_scope_out(t_tok **tokens, t_lex_st *st)
 {
 	t_tok	*scope_out;
 
-
 	if (*st->input == ')')
 	{
 		if (st->subshell_level == 0)
@@ -73,7 +72,7 @@ static t_lex_err	lex_scope_out(t_tok **tokens, t_lex_st *st)
 ** SCOPE_IN TOKENS SCOPE_OUT
 */
 
-t_lex_err	lex_subshell(t_tok **tokens, t_lex_st *st)
+t_lex_err			lex_subshell(t_tok **tokens, t_lex_st *st)
 {
 	t_lex_err	status;
 

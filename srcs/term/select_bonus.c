@@ -12,35 +12,41 @@
 
 #include <term/term.h>
 
-t_term_err	select_highlight(void)
+t_term_err	cursor_write_so(const char *data, size_t length)
 {
-	int			index;
-	t_pos		pos;
 	t_term_err	status;
 
-	if (g_term.caps.selec.start != -1U && g_term.caps.selec.end != -1U)
+	status = TERM_EOK;
+	tputs(g_term.caps.modes.standout, 1, &putc_err);
+	g_term.caps.mode |= CAPS_MSO;
+	if ((status = cursor_write(data, length)) != TERM_EOK)
 	{
-		/* ft_dprintf(2, "[SELECT] start: %lu, end: %lu\n",
-			g_term.caps.selec.start, g_term.caps.selec.end); */
+		tputs(g_term.caps.modes.standout_end, 1, &putc_err);
+		g_term.caps.mode &= ~CAPS_MSO;
+		return (status);
+	}
+	tputs(g_term.caps.modes.standout_end, 1, &putc_err);
+	g_term.caps.mode &= ~CAPS_MSO;
+	return (status);
+}
+
+t_term_err	select_highlight(void)
+{
+	int				index;
+	t_pos			pos;
+	t_term_err		status;
+	const t_select	*selec = &g_term.caps.selec;
+
+	if (selec->start != -1U && selec->end != -1U)
+	{
 		pos = g_term.caps.cursor.pos;
 		index = g_term.caps.index;
 		term_clear_line();
-		if ((status = cursor_write(g_term.line->data, g_term.caps.selec.start))
-			!= TERM_EOK)
-			return (status);
-		tputs(g_term.caps.modes.standout, 1, &putc_err);
-		g_term.caps.mode |= CAPS_MSO;
-		if ((status = cursor_write(g_term.line->data + g_term.caps.selec.start,
-			g_term.caps.selec.end - g_term.caps.selec.start)) != TERM_EOK)
-		{
-			tputs(g_term.caps.modes.standout_end, 1, &putc_err);
-			g_term.caps.mode &= ~CAPS_MSO;
-			return (status);
-		}
-		tputs(g_term.caps.modes.standout_end, 1, &putc_err);
-		g_term.caps.mode &= ~CAPS_MSO;
-		if ((status = cursor_write(g_term.line->data + g_term.caps.selec.end,
-			g_term.line->len - g_term.caps.selec.end)) != TERM_EOK)
+		if ((status = cursor_write(g_term.line->data, selec->start)) != TERM_EOK
+		|| (status = cursor_write_so(g_term.line->data + selec->start,
+			selec->end - selec->start)) != TERM_EOK
+		|| (status = cursor_write(g_term.line->data + selec->end,
+			g_term.line->len - selec->end)) != TERM_EOK)
 			return (status);
 		caps_goto(&g_term.caps, pos);
 		g_term.caps.index = index;

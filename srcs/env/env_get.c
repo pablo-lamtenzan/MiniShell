@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/20 13:20:59 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/10 17:08:39 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/11/20 13:20:59 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/10 17:08:39 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,22 +46,20 @@ const char		**env_export(t_env *env)
 	while (current)
 	{
 		if (current->exported
-		&& current->key[current->key_length] == ENV_OP_ASSIGN)
+		&& current->key[current->key_length] == ENV_ASGN)
 			length++;
 		current = current->next;
 	}
-	strs = malloc(sizeof(*strs) * (length + 1));
-	if (strs)
+	if (!(strs = malloc(sizeof(*strs) * (length + 1))))
+		return (NULL);
+	current = env;
+	strs[length--] = NULL;
+	while (current)
 	{
-		current = env;
-		strs[length--] = NULL;
-		while (current)
-		{
-			if (current->exported
-			&& current->key[current->key_length] == ENV_OP_ASSIGN)
-				strs[length--] = current->key;
-			current = current->next;
-		}
+		if (current->exported
+		&& current->key[current->key_length] == ENV_ASGN)
+			strs[length--] = current->key;
+		current = current->next;
 	}
 	return (strs);
 }

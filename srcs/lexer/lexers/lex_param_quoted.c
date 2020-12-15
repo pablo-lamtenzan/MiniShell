@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/20 13:20:59 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/10 22:51:48 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/11/20 13:20:59 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/10 22:51:48 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@
 ** '\'' ( char - \' )* '\''
 */
 
-t_lex_err			lex_param_squoted(t_tok **tokens, t_lex_st *st, t_tok_t type)
+t_lex_err			lex_param_squoted(t_tok **tokens, t_lex_st *st,
+	t_tok_t type)
 {
 	t_tok		*param;
 	const char	*start;
@@ -68,7 +69,8 @@ static t_lex_err	lex_backslash(t_tok **tokens, t_lex_st *st, t_tok_t type,
 ** '"' ( ( char - ["\"\\"] ) | ( '\\' ["\"\\"] ) )* '"'
 */
 
-t_lex_err			lex_param_dquoted(t_tok **tokens, t_lex_st *st, t_tok_t type)
+t_lex_err			lex_param_dquoted(t_tok **tokens, t_lex_st *st,
+	t_tok_t type)
 {
 	t_lex_err	status;
 	t_tok		*param;

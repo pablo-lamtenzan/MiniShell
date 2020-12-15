@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/28 03:56:49 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/10 22:51:48 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/11/28 03:56:49 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/10 22:51:48 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,18 @@ typedef uint16_t	t_tok_t;
 /*
 ** A character that, when unquoted, separates words
 */
-# define LEX_META		" \t\n|&;()<>"
+# define LEX_META	" \t\n|&;()<>"
 
 /*
 ** A character that, when unquoted, quotes following words
 */
-# define LEX_QUOT		"'\"\\"
+# define LEX_QUOT	"'\"\\"
 
 /*
 ** A character that, when unquoted, cannot be part of a word
+** # define LEX_SPEC	LEX_META""LEX_QUOT
 */
-# define LEX_SPEC		LEX_META""LEX_QUOT
+# define LEX_SPEC	" \t\n|&;()<>'\"\\"
 
 /*
 ** LEX_EALLOC: Could not allocate memory!
@@ -44,11 +45,11 @@ typedef uint16_t	t_tok_t;
 */
 typedef enum		e_lex_err
 {
-	LEX_EALLOC		= -3,
-	LEX_ESYNTAX		= -2,
-	LEX_ENOMATCH	= -1,
-	LEX_EOK			= 0,
-	LEX_EEND		= 1,
+	LEX_EALLOC = -3,
+	LEX_ESYNTAX = -2,
+	LEX_ENOMATCH = -1,
+	LEX_EOK = 0,
+	LEX_EEND = 1,
 }					t_lex_err;
 
 typedef struct		s_lex_st
@@ -86,7 +87,6 @@ t_lex_err			lex_subshell(t_tok **tokens, t_lex_st *st);
 */
 t_lex_err			lex_cmd(t_tok **tokens, t_lex_st *st);
 
-
 /*
 ** OPERATION
 ** OPERATOR followed by CMD
@@ -109,7 +109,8 @@ t_lex_err			lex_param(t_tok **tokens, t_lex_st *st, t_tok_t type);
 **
 ** PARAM_SQUOTED | PARAM_DQUOTED
 */
-t_lex_err			lex_param_quoted(t_tok **tokens, t_lex_st *st, t_tok_t type);
+t_lex_err			lex_param_quoted(t_tok **tokens, t_lex_st *st,
+	t_tok_t type);
 
 /*
 ** PARAM_SQUOTED
@@ -118,7 +119,8 @@ t_lex_err			lex_param_quoted(t_tok **tokens, t_lex_st *st, t_tok_t type);
 **
 ** '\'' ( char - \' )* '\''
 */
-t_lex_err			lex_param_squoted(t_tok **tokens, t_lex_st *st, t_tok_t type);
+t_lex_err			lex_param_squoted(t_tok **tokens, t_lex_st *st,
+	t_tok_t type);
 
 /*
 ** PARAM_DQUOTED
@@ -126,7 +128,8 @@ t_lex_err			lex_param_squoted(t_tok **tokens, t_lex_st *st, t_tok_t type);
 **
 ** '"' ( ( char - ["\"\\"] ) | ( '\\' ["\"\\"] ) )* '"'
 */
-t_lex_err			lex_param_dquoted(t_tok **tokens, t_lex_st *st, t_tok_t type);
+t_lex_err			lex_param_dquoted(t_tok **tokens, t_lex_st *st,
+	t_tok_t type);
 
 /*
 ** INLINE
@@ -143,7 +146,5 @@ t_lex_err			lex_inline(t_tok **tokens, t_lex_st *st);
 ** ( ' ' | [\t .. \r] )*
 */
 t_lex_err			lex_ifs(t_lex_st *st);
-
-void	token_print(t_tok *tokens, const char *prefix);
 
 #endif

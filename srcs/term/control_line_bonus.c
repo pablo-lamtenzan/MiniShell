@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/09 11:58:30 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/13 00:35:21 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/12/09 11:58:30 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/13 00:35:21 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ t_term_err	term_line_new(void)
 		term_clear_line();
 		if (write(STDERR_FILENO, g_term.line->data, g_term.line->len) == -1)
 			return (TERM_EWRITE);
-		else if ((!g_term.caps.hist.next || g_term.line == g_term.caps.hist.next)
+		else if ((!g_term.caps.hist.next
+		|| g_term.line == g_term.caps.hist.next)
 		&& !(g_term.caps.hist.next = line_new(10)))
 			return (TERM_EALLOC);
 		else
@@ -36,9 +37,10 @@ t_term_err	term_line_new(void)
 		g_term.line = g_term.caps.hist.curr;
 	}
 	if (write(STDERR_FILENO, TERM_ENDL, sizeof(TERM_ENDL) - 1) == -1)
-		return(TERM_EWRITE);
+		return (TERM_EWRITE);
 	return (TERM_ENL);
 }
+
 /*
 **	Delete n characters from the terminal's input line, starting at the current
 **	cursor position.
@@ -53,7 +55,6 @@ t_term_err	term_line_del(size_t n)
 	bool			toggle_ins;
 
 	status = TERM_EOK;
-
 	if (pos.x + n < (size_t)g_term.caps.width
 	&& pos.x + remaining < (size_t)g_term.caps.width)
 		caps_delete(&g_term.caps, n);

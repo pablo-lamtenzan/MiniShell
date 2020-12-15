@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chamada <chamada@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/09 10:51:59 by: chamada          #+#    #+#             */
-/*   Updated: 2020/12/09 10:51:59 by: chamada         ###   ########lyon.fr   */
+/*   Created: 2020/12/09 10:51:59 by chamada           #+#    #+#             */
+/*   Updated: 2020/12/09 10:51:59 by chamada          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ t_term_err	term_clear_eos(void)
 	if (x)
 	{
 		tputs(g_term.caps.ctrls.del_eol, 1, &putc_err);
-		if (x + g_term.line->len - g_term.caps.index >= (size_t)g_term.caps.width)
+		if (x + g_term.line->len - g_term.caps.index >=
+			(size_t)g_term.caps.width)
 		{
 			caps_goto_x(&g_term.caps, 0);
 			caps_goto_y(&g_term.caps, g_term.caps.cursor.pos.y + 1);
